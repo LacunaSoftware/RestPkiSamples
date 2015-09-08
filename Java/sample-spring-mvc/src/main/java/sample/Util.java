@@ -19,7 +19,16 @@ public class Util {
     }
 
     public static SecurityContext getSecurityContext() {
+        /*
+         * By changing the argument below, you can accept signatures only signed with certificates
+         * from a certain PKI, for instance, ICP-Brasil (SecurityContext.pkiBrazil) or Italy's PKI (SecurityContext.pkiItaly).
+         */
         return SecurityContext.pkiBrazil;
+        /*
+         * You can also define a custom security context on the REST PKI website accepting whatever
+         * root certification authorities you desire and then reference that context by its ID.
+         */
+        //return new SecurityContext("id-of-your-custom-security-context");
     }
 
     public static byte[] getSampleDocContent() throws IOException {
