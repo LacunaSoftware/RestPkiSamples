@@ -16,15 +16,20 @@ A sample for a Java web application using the Spring MVC framework can be found 
 Java/sample-spring-mvc. The sample uses spring boot to provide a self-contained web application,
 not requiring a web server installed. The only requirement is having a JDK installed.
 
-First, edit the file src/main/java/sample/Util.java and paste with your access token.
+Steps to execute the sample:
 
-Then, navigate to the sample's root folder and run the command "gradlew run". This can
-take some time on the first run, since all dependencies will be downloaded. If you are using
-Windows, you can alternatively execute the Run-Sample.bat file.
-
+1. Edit the file Java/sample-spring-mvc/src/main/java/sample/Util.java and paste your access
+   token.
+   
+2. Navigate to the folder Java/sample-spring-mvc and run the command "gradlew run". If you are
+   using Windows, you can alternatively execute the Run-Sample.bat file.
+  
+3. Once you see the message "Started Application in x.xxx seconds" (the on-screen percentage
+   will NOT reach 100%), open a web browser and type in the URL http://localhost:8080/
+   
 In order to open the project on IntelliJ IDEA, run "gradlew idea" and then use the "Open"
 funcionality inside IDEA (works better than "Import"). In order to open the project on Eclipse,
-run "gradlew eclipse" and the import the project from Eclipse.
+run "gradlew eclipse" and then import the project from Eclipse.
 
 The source code is thoroughly documented, explaining in detail the calls to REST PKI and
 also the integration with the Web PKI component for performing the necessary client-side
