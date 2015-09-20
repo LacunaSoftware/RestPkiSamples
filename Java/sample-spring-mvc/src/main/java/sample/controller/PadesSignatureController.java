@@ -1,19 +1,12 @@
-package sample;
+package sample.controller;
 
 import com.lacunasoftware.restpki.*;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import sample.models.*;
+import sample.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.UUID;
 
 /**
  * This controller contains the server-side logic for the PAdES signature example. The client-side is implemented at:
@@ -28,14 +21,14 @@ import java.util.UUID;
 public class PadesSignatureController {
 
     /**
-     * POST Api/PadesSignature/Start
+     * GET api/pades-signature
      *
      * This action is called once the user's certificate encoding has been read, and contains the
      * logic to prepare the byte array, encoded in base64, that needs to be actually signed with the user's private key
      * (the "to-sign-bytes").
      */
-    @RequestMapping(value = "/Api/PadesSignature/Start", method = {RequestMethod.POST})
-    public SignatureStartResponse start(@RequestBody SignatureStartRequest request) throws IOException, RestException {
+    @RequestMapping(value = "/api/pades-signature", method = {RequestMethod.GET})
+    public String start() throws IOException, RestException {
 
         RestPkiClient client = new RestPkiClient(Util.getRestPkiEndpoint(), Util.getAuthToken());
 
@@ -45,9 +38,6 @@ public class PadesSignatureController {
 
         // Set the PDF to sign, which in the case of this example is a fixed sample document
         signatureStarter.setPdfToSign(Util.getSampleDocContent());
-
-        // Set the signer certificate content bytes encoded in base64
-        signatureStarter.setSignerCertificate(request.certificate);
 
         // Set the signature policy
         signatureStarter.setSignaturePolicy(SignaturePolicy.PadesBasic);
@@ -74,43 +64,23 @@ public class PadesSignatureController {
         // Set the visual representation created
         signatureStarter.setVisualRepresentation(visualRepresentation);
 
-        ClientSideSignatureInstructions signatureInstructions;
-        SignatureStartResponse response = new SignatureStartResponse();
+        String token = signatureStarter.startWithWebPki();
 
-        try {
-
-            signatureInstructions = signatureStarter.start();
-
-        } catch (ValidationException e) {
-
-            response.success = false;
-            response.message = "A validation error has occurred";
-            response.validationResults = e.getValidationResults().toString();
-            return response;
-
-        }
-
-        response.success = true;
-        response.token = signatureInstructions.getToken();
-        response.toSignHash = signatureInstructions.getToSignHash();
-        response.digestAlgorithmOid = signatureInstructions.getDigestAlgorithmOid();
-
-        return response;
+        return token;
     }
 
     /**
-     * POST Api/PadesSignature/Complete
+     * POST api/pades-signature
      *
      * This action is called once the "to-sign-bytes" are signed using the user's certificate. The
      * page sends back the SignatureProcess ID and the signature operation result.
      */
-    @RequestMapping(value = "/Api/PadesSignature/Complete", method = {RequestMethod.POST})
-    public SignatureCompleteResponse complete(HttpServletRequest httpRequest, @RequestBody SignatureCompleteRequest request) throws IOException, RestException {
+    @RequestMapping(value = "/api/pades-signature", method = {RequestMethod.POST})
+    public SignatureCompleteResponse complete(HttpServletRequest httpRequest, @RequestParam(value="token", required=true) String token) throws IOException, RestException {
 
         RestPkiClient client = new RestPkiClient(Util.getRestPkiEndpoint(), Util.getAuthToken());
         PadesSignatureFinisher signatureFinisher = new PadesSignatureFinisher(client);
-        signatureFinisher.setToken(request.token);
-        signatureFinisher.setSignature(request.signature);
+        signatureFinisher.setToken(token);
 
         SignatureCompleteResponse response = new SignatureCompleteResponse();
 
@@ -120,9 +90,9 @@ public class PadesSignatureController {
 
         } catch (ValidationException e) {
 
-            response.success = false;
-            response.message = "A validation error has occurred";
-            response.validationResults = e.getValidationResults().toString();
+            response.setSuccess(false);
+            response.setMessage("A validation error has occurred");
+            response.setValidationResults(e.getValidationResults().toString());
             return response;
 
         }
@@ -130,8 +100,8 @@ public class PadesSignatureController {
         DatabaseMock dbMock = new DatabaseMock(httpRequest.getSession());
         String signatureId = dbMock.putSignedPdf(signatureFinisher.getSignedPdf());
 
-        response.success = true;
-        response.signatureId = signatureId;
+        response.setSuccess(true);
+        response.setSignatureId(signatureId);
 
         return response;
     }

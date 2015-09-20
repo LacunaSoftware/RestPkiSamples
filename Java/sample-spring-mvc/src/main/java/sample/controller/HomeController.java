@@ -1,4 +1,4 @@
-package sample;
+package sample.controller;
 
 
 import org.springframework.stereotype.Controller;
@@ -19,7 +19,7 @@ public class HomeController {
 
     @RequestMapping("/Home/PadesSignature")
     public String padesSignature() {
-        return "padesSignature";
+        return "pades-signature";
     }
 }
 

@@ -1,4 +1,4 @@
-package sample;
+package sample.util;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;

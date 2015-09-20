@@ -1,0 +1,59 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>br.com.lacuna</groupId>
+  <artifactId>lacuna</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<spring.boot>1.2.5.RELEASE</spring.boot>
+	</properties>    
+  <dependencies>
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+            <version>${spring.boot}</version>
+        </dependency>  
+        <dependency>
+	        <groupId>com.lacunasoftware.restpki</groupId>
+	        <artifactId>restpki-client</artifactId>
+	        <version>1.0.0</version>
+        </dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+        
+  </dependencies>
+	<build>
+
+		<plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>1.2.3.RELEASE</version>
+				<configuration>
+					<mainClass>br.com.lacuna.Application</mainClass>
+					<source>1.8</source>
+					<target>1.8</target>
+					<addResources>false</addResources>
+				</configuration>
+				
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+            </plugin>
+ 		</plugins>
+	</build>	  
+	<repositories>
+		<repository>
+			<id>lacuna.repository</id>
+			<name>lacuna repository</name>
+			<url>http://dl.bintray.com/lacunasoftware/maven</url>
+		</repository>
+	</repositories>  
+</project>

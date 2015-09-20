@@ -1,17 +1,11 @@
-package sample;
-
-import java.io.IOException;
+package sample.controller;
 
 import com.lacunasoftware.restpki.*;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import sample.models.AuthenticationGetResponse;
-import sample.models.AuthenticationPostRequest;
 import sample.models.AuthenticationPostResponse;
+import sample.util.*;
 
 /**
  * This controller contains the server-side logic for the authentication example. The client-side is implemented at:
@@ -31,20 +25,17 @@ public class AuthenticationController {
      *	class to generate and store a cryptographic nonce, which will then be sent to the page for signature using
      *	the user's certificate.
      */
-	@RequestMapping (value = "/Api/Authentication", method = {RequestMethod.GET})
-    public AuthenticationGetResponse get() throws RestException {
+	@RequestMapping (value = "/api/authentication", method = {RequestMethod.GET})
+    public String get() throws RestException {
         // Instantiate the RestPkiClient
 		RestPkiClient client = new RestPkiClient(Util.getRestPkiEndpoint(), Util.getAuthToken());
 
-        // Call the Authentication start() method. which is the first of the two server-side steps. This yields the nonce,
-        // a 16-byte-array encoded in base64, which we'll send to the page. If you are using the Lacuna Web PKI component to
-        // perform the client-side signature, this value is the exact argument that you must pass to signData()
-		String nonce = new Authentication(client).start();
+        // Call the Authentication start() method. which is the first of the two server-side steps. This yields the token,
+        // a 22-character case-sensitive string, which we'll send to the page in order to pass on the signWithRestPki
+        // method of the Web PKI component.
+		String token = new Authentication(client).startWithWebPki(Util.getSecurityContext());
 
-        // Instantiate an authentication response with the returned nonce and send it back to the page
-		AuthenticationGetResponse response = new AuthenticationGetResponse();
-		response.nonce = nonce;
-		return response;
+		return token;
     }
 
     /**
@@ -53,8 +44,8 @@ public class AuthenticationController {
      * This action is called after signing the nonce on the client-side with the user's certificate. We'll once
      * again use the Authentication class to do the actual work.
      */
-	@RequestMapping (value = "/Api/Authentication", method = {RequestMethod.POST})
-    public AuthenticationPostResponse post(@RequestBody AuthenticationPostRequest request) throws RestException {
+	@RequestMapping (value = "/api/authentication", method = {RequestMethod.POST})
+    public AuthenticationPostResponse post(@RequestParam(value="token", required=true) String token) throws RestException {
         // Instantiate the RestPkiClient
         RestPkiClient client = new RestPkiClient(Util.getRestPkiEndpoint(), Util.getAuthToken());
         // Instantiate the Authentication class passing our rest pki client
@@ -67,7 +58,7 @@ public class AuthenticationController {
         // securityContext - A SecurityContext to be used to determine trust in the certificate chain
         // The call yields:
         // - A ValidationResults which denotes whether the authentication was successful or not
-		ValidationResults vr = auth.complete(request.nonce, request.certificate, request.signature, Util.getSecurityContext());
+		ValidationResults vr = auth.completeWithWebPki(token);
 
         // Note: By changing the SecurityContext above you can accept only certificates from a certain PKI,
         // for instance, ICP-Brasil (SecurityContext.pkiBrazil).
@@ -77,9 +68,9 @@ public class AuthenticationController {
         // Check the authentication result
 		if (!vr.isValid()) {
             // If the authentication failed, inform the page
-			response.success = false;
-			response.message = "Authentication failed";
-			response.validationResults = vr.toString();
+			response.setSuccess(false);
+			response.setMessage("Authentication failed");
+			response.setValidationResults(vr.toString());
 			return response;
 		}
 
@@ -103,8 +94,8 @@ public class AuthenticationController {
         }
 
         // Return success to the page
-        response.success = true;
-        response.message = message.toString();
+        response.setSuccess(true);
+        response.setMessage(message.toString());
 		return response;
     }
 

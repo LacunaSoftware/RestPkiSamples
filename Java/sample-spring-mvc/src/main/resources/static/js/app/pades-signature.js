@@ -32,6 +32,7 @@ function init() {
 	// https://webpki.lacunasoftware.com/#/Documentation#coding-the-first-lines
 	// http://webpki.lacunasoftware.com/Help/classes/LacunaWebPKI.html#method_init
 	pki.init({
+		restPkiUrl: 'https://restpkibeta.azurewebsites.net/',
 		ready: onWebPkiReady,
 		defaultError: onWebPkiError // generic error callback on src/main/resources/static/js/app/site.js
 	});
@@ -99,78 +100,43 @@ function sign() {
 	// retrieving the thumbprint of the selected certificate.
 	selectedCertThumbprint = $('#certificateSelect').val();
 
-	// Reset global state
-	token = null;
-
-	// Call readCertificate() on the LacunaWebPKI object passing the selected certificate's thumbprint. This
-	// reads the certificate's encoding, which we'll need later on. For more information, see
-	// http://webpki.lacunasoftware.com/Help/classes/LacunaWebPKI.html#method_readCertificate
-	pki.readCertificate(selectedCertThumbprint).success(onCertificateRetrieved);
-}
-
-// -------------------------------------------------------------------------------------------------
-// Function called once the user's certificate encoding has been read
-// -------------------------------------------------------------------------------------------------
-function onCertificateRetrieved(cert) {
-	// Call the server to initiate the signature (for more information see method CadesSignatureController.Start())
-	$.ajax({
-		method: 'POST',
-		url: '/Api/PadesSignature/Start',
-		data: JSON.stringify({
-			certificate: cert // the server needs the user's certificate on this step
-		}),
-		contentType: 'application/json',
-		success: onSignatureStartCompleted,
-		error: onServerError // generic error callback on src/main/resources/static/js/app/site.js
-	});
-
-	// Note on the encodings: the Web PKI component returns the certificate encoding in Base64. The
-	// server-side models expect byte arrays. The ASP.NET Web API framework does the conversion for us.
-}
-
-// -------------------------------------------------------------------------------------------------
-// Function called once the server replies with the "to-sign-hash"
-// -------------------------------------------------------------------------------------------------
-function onSignatureStartCompleted(data, textStatus, jqXHR) {
-
-	if (!data.success) {
-		// Pre-validation of the signature parameters failed (there's probably something wrong
-		// with the selected certificate, for instance it might be expired). We call our
-		// onServerOperationFailed which displays the error.
-		onServerOperationFailed(data);
-		return;
+	if (token) {
+	    onSignatureStarted();
+	} else {
+	    $.ajax({
+	        method: 'GET',
+	        url: '/api/pades-signature',
+	        contentType: 'application/json',
+	        success: function (response) {
+	            token = response;
+	            onSignatureStarted();
+	        },
+	        error: onServerError // generic error callback on Content/js/app/site.js
+	    });
 	}
-
-	// Store the "process ID" in a global variable (we'll need it later)
-	token = data.token;
-
-	// Call signHash() on the LacunaWebPKI object
-	pki.signHash({
-		thumbprint: selectedCertThumbprint,      // selected certificate's thumbprint
-		hash: data.toSignHash,                   // "to-sign-hash" received from the server
-		digestAlgorithm: data.digestAlgorithmOid // digest algorithm OID to be used, also received from the server
-	}).success(onSignDataCompleted); // callback for when the operation completes
 }
 
 // -------------------------------------------------------------------------------------------------
-// Function called once the signature of the "to-sign-bytes" is completed
+// ?
 // -------------------------------------------------------------------------------------------------
-function onSignDataCompleted(signature) {
-	// Send the signature output to the server to complete the process (for more information see method CadesSignatureController.Complete())
+function onSignatureStarted() {
+    pki.signWithRestPki({
+        thumbprint: selectedCertThumbprint,
+        token: token
+    }).success(onSignatureCompleted); // callback for when the operation completes
+}
+
+// -------------------------------------------------------------------------------------------------
+// ?
+// -------------------------------------------------------------------------------------------------
+function onSignatureCompleted() {
 	$.ajax({
 		method: 'POST',
-		url: '/Api/PadesSignature/Complete',
-		data: JSON.stringify({
-			token: token, // signature process ID, returned by the server along with the "to-sign-bytes"
-			signature: signature  // signature of the "to-sign-bytes" using the selected certificate
-		}),
-		contentType: 'application/json',
+		url: '/api/pades-signature?token=' + token,
 		success: onSignatureCompleteCompleted,
-		error: onServerError // generic error callback on src/main/resources/static/js/app/site.js
+		error: onServerError // generic error callback on Content/js/app/site.js
 	});
-
-	// Note on the encodings: the Web PKI component returns the signature encoded in Base64. The server-side
-	// models expect byte arrays. The ASP.NET Web API framework does the conversion for us.
+	token = null;
 }
 
 // -------------------------------------------------------------------------------------------------
