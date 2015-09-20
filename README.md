@@ -61,3 +61,24 @@ for instructions on how to include Lacuna Software's BinTray repository on your 
 The documentation for the Java client SDK can be found at
 
 	https://restpki.lacunasoftware.com/Content/docs/java-client/
+
+PHP sample
+----------
+
+If you get the following error when executing the sample:
+
+	Fatal error: Uncaught exception 'GuzzleHttp\Exception\RequestException' with message 'cURL error 60: SSL certificate problem: unable to get local issuer certificate
+
+It means you don't have the CURLOPT_CAINFO option configured in your php.ini file. This option tells PHP to look in a certain PEM file for a list
+of the trusted root certificates. One file commonly used is:
+	
+	http://curl.haxx.se/ca/cacert.pem
+
+But you can choose other files or, if you're using Windows Server, you can even generate one yourself based on the OS's trusted certificate roots:
+
+	http://www.swiftsoftwaregroup.com/configuring-phpcurl-root-certificates-windows-server/
+	
+Whatever file you use, you must save on on the server and then update your php.ini file:
+
+	curl.cainfo=path-to-your-pem-file
+	
