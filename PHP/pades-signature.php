@@ -4,11 +4,13 @@
 	- Server-side: src/main/java/sample/models/PadesSignatureController.cs
 */-->
 <!DOCTYPE html>
-<html xmlns:th="http://www.w3.org/1999/xhtml">
-<head th:include="head"></head>
+<html>
+<head>
+    <?php include 'head.php' ?>
+</head>
 <body>
 
-<div th:replace="top"></div>
+<?php include 'top.php' ?>
 
 <div class="container">
 
@@ -17,7 +19,7 @@
     <form>
         <div class="form-group">
             <label>File to sign</label>
-            <p>You'll be signing <a href='/Signature/SampleDocument'>this sample document</a>.</p>
+            <p>You'll be signing <a href='content/SampleDocument.pdf'>this sample document</a>.</p>
         </div>
         <div class="form-group">
             <label for="certificateSelect">Choose a certificate</label>
@@ -32,8 +34,8 @@
         <textarea readonly="true" rows="25" style="width: 100%"></textarea>
     </fieldset>
 
-    <script src="/js/lacuna-web-pki.js"></script>
-    <script src="/js/app/pades-signature.js"></script>
+    <script src="content/js/lacuna-web-pki.js"></script>
+    <script src="content/js/app/pades-signature.js"></script>
 
 </div>
 </body>

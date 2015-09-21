@@ -19,15 +19,13 @@ switch ($method) {
 header('Content-Type: application/json');
 echo json_encode($response);
 
-function get()
-{
+function get() {
 	$auth = getRestPkiClient()->getAuthentication();
 	$token = $auth->startWithWebPki(\Lacuna\StandardSecurityContexts::PKI_BRAZIL);
 	return $token;
 }
 
-function post()
-{
+function post() {
 	$token = $_GET['token'];
 	$auth = getRestPkiClient()->getAuthentication();
 	$vr = $auth->completeWithWebPki($token);

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.w3.org/1999/xhtml">
+<html>
 <head>
     <?php include 'head.php' ?>
 </head>
@@ -13,8 +13,7 @@
 		Choose one of the following samples:
 		<ul>
 			<li><a href="authentication.php">Authentication with digital certificate</a></li>
-			<!--/*<li><a href="/Home/CadesSignature">Create a CAdES signature</a></li>*/-->
-			<li><a href="/Home/PadesSignature">Create a PAdES signature</a></li>
+			<li><a href="pades-signature.php">Create a PAdES signature</a></li>
 		</ul>
 
 	</div>

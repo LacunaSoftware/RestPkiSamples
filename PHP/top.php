@@ -11,9 +11,8 @@
 		</div>
 		<div id="navbar" class="collapse navbar-collapse">
 			<ul class="nav navbar-nav">
-				<li><a href="/Home/Authentication">Authentication</a></li>
-				<!--/*<li><a href="/Home/CadesSignature">CAdES Signature</a></li>*/-->
-				<li><a href="/Home/PadesSignature">PAdES Signature</a></li>
+				<li><a href="authentication.php">Authentication</a></li>
+				<li><a href="pades-signature.php">PAdES Signature</a></li>
 			</ul>
 		</div><!--/.nav-collapse -->
 	</div>

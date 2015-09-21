@@ -105,7 +105,7 @@ function sign() {
 	} else {
 	    $.ajax({
 	        method: 'GET',
-	        url: '/api/pades-signature',
+	        url: '/api/pades-signature.php',
 	        contentType: 'application/json',
 	        success: function (response) {
 	            token = response;
@@ -132,7 +132,7 @@ function onSignatureStarted() {
 function onSignatureCompleted() {
 	$.ajax({
 		method: 'POST',
-		url: '/api/pades-signature?token=' + token,
+		url: '/api/pades-signature.php?token=' + token,
 		success: onSignatureCompleteCompleted,
 		error: onServerError // generic error callback on Content/js/app/site.js
 	});
@@ -154,7 +154,7 @@ function onSignatureCompleteCompleted(data, textStatus, jqXHR) {
 
 	// The signature was successful. Unblock the UI, inform the user and render a link to download the signature
 	$.unblockUI();
-	addAlert('success', 'File signed successfully! <a href="/Signature/Download/' + data.signatureId + '">click here</a> to download the signed file');
+	addAlert('success', 'File signed successfully! <a href="' + data.signedFileUrl + '">click here</a> to download the signed file');
 }
 
 // -------------------------------------------------------------------------------------------------
