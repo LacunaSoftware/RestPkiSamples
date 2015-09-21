@@ -1,0 +1,26 @@
+﻿@*
+	This is the page for authentication. Actual logic can be found at:
+	- Client-side: Content/js/app/authentication.js
+	- Server-side: Api/AuthenticationController.cs
+*@
+<h2>Authentication</h2>
+
+<form>
+	<div class="form-group">
+		<label for="certificateSelect">Choose a certificate</label>
+		<select id="certificateSelect" class="form-control"></select>
+	</div>
+	<button id="signInButton" type="button" class="btn btn-primary">Sign In</button>
+	<button id="refreshButton" type="button" class="btn btn-default">Refresh Certificates</button>
+</form>
+
+<fieldset id="validationResultsPanel" style="display: none;">
+	<legend>Validation Results</legend>
+	<textarea readonly rows="25" style="width: 100%"></textarea>
+</fieldset>
+
+@section Scripts {
+	@* Include the JS for using the Web PKI component for accessing the user's certificates on the browser *@
+	<script src="@Url.Content("~/Content/js/lacuna-web-pki.js")"></script>
+	<script src="@Url.Content("~/Content/js/app/authentication.js")"></script>
+}

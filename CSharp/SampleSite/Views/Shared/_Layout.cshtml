@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Lacuna PKI Samples</title>
+	<link href="@Url.Content("~/Content/css/bootstrap.css")" rel="stylesheet">
+	<link href="@Url.Content("~/Content/css/bootstrap-theme.css")" rel="stylesheet">
+	<link href="@Url.Content("~/Content/css/site.css")" rel="stylesheet">
+</head>
+
+<body>
+
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/">Lacuna PKI Samples</a>
+			</div>
+			<div id="navbar" class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li><a href="/Home/Authentication">Authentication</a></li>
+					<li><a href="/Home/PadesSignature">PAdES Signature</a></li>
+				</ul>
+			</div><!--/.nav-collapse -->
+		</div>
+	</nav>
+
+	<div class="container">
+		@if (User.Identity.IsAuthenticated) {
+			<p>You are signed in as @User.Identity.Name -- <a href="/Home/SignOut">sign out</a></p>
+		}
+		<div id="messagesPanel"></div>
+		@RenderBody()
+	</div>
+	
+	<script src="@Url.Content("~/Content/js/jquery-1.11.3.js")"></script>
+	<script src="@Url.Content("~/Content/js/jquery.blockUI.js")"></script>
+	<script src="@Url.Content("~/Content/js/bootstrap.js")"></script>
+	<script src="@Url.Content("~/Content/js/app/site.js")"></script>
+	@RenderSection("Scripts", required: false)
+</body>
+</html>
