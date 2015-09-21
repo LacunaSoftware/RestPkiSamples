@@ -80,6 +80,7 @@ class PadesSignatureStarter {
 	private $pdfContent;
 	private $securityContextId;
 	private $signaturePolicyId;
+	private $visualRepresentation;
 
 	public function __construct($restPkiClient) {
 		$this->restPkiClient = $restPkiClient;
@@ -101,6 +102,10 @@ class PadesSignatureStarter {
 		$this->signaturePolicyId = $signaturePolicyId;
 	}
 
+	public function setVisualRepresentation($visualRepresentation) {
+		$this->visualRepresentation = $visualRepresentation;
+	}
+
 	public function startWithWebPki() {
 
 		if (empty($this->pdfContent)) {
@@ -115,7 +120,8 @@ class PadesSignatureStarter {
 			'json' => [
 				'pdfToSign' => base64_encode($this->pdfContent),
 				'signaturePolicyId' => $this->signaturePolicyId,
-				'securityContextId' => $this->securityContextId
+				'securityContextId' => $this->securityContextId,
+				'visualRepresentation' => $this->visualRepresentation
 			]
 		]);
 		$response = json_decode($httpResponse->getBody());
@@ -182,6 +188,36 @@ class StandardSecurityContexts {
 
 class StandardSignaturePolicies {
 	const PADES_BASIC = '78d20b33-014d-440e-ad07-929f05d00cdf';
+}
+
+class PadesVisualPositioningPresets {
+
+	private static $cachedPresets = [];
+
+	public static function getFootnote(RestPkiClient $restPkiClient, $pageNumber = null, $rows = null) {
+		$urlSegment = 'Footnote';
+		if (!empty($pageNumber)) {
+			$urlSegment .= "?pageNumber=" . $pageNumber;
+		}
+		if (!empty($rows)) {
+			$urlSegment .= "?rows=" . $rows;
+		}
+		return self::getPreset($restPkiClient, $urlSegment);
+	}
+
+	public static function getNewPage(RestPkiClient $restPkiClient) {
+		return self::getPreset($restPkiClient, 'NewPage');
+	}
+
+	private static function getPreset(RestPkiClient $restPkiClient, $urlSegment) {
+		if (array_key_exists($urlSegment, self::$cachedPresets)) {
+			return self::$cachedPresets[$urlSegment];
+		}
+		$httpResponse = $restPkiClient->getRestClient()->get("Api/PadesVisualPositioningPresets/$urlSegment");
+		$preset = json_decode($httpResponse->getBody());
+		self::$cachedPresets[$urlSegment] = $preset;
+		return $preset;
+	}
 }
 
 class ValidationResults {
