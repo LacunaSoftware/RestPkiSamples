@@ -1,5 +1,5 @@
 // -------------------- Add-on placeholder (IE only) --------------------
-var lacunaWebPKIExtensionBeta = null;
+var lacunaWebPKIExtension = null;
 
 // -------------------- Class declaration --------------------
 
@@ -186,10 +186,10 @@ LacunaWebPKI = function (license) {
 
 	// -------------------- Constants --------------------
 
-	$._installUrl = 'https://getwebpkibeta.lacunasoftware.com/';
-	$._chromeExtensionId = 'bilncomoicocegjjailledgehhanjgmc';
-	$._chromeExtensionRequiredVersion = '2.0.22';
-	$._chromeNativeWinRequiredVersion = '2.0.9';
+	$._installUrl = 'https://get.webpkiplugin.com/';
+	$._chromeExtensionId = 'dcngeagmmhegagicpcmpinaoklddcgon';
+	$._chromeExtensionRequiredVersion = '2.2.8';
+	$._chromeNativeWinRequiredVersion = '2.1.0';
 	$._ieLatestAddonVersion = '1.6.1';
 	$._chromeExtensionFirstVersionWithSelfUpdate = '2.0.20';
 
@@ -872,8 +872,8 @@ LacunaWebPKI = function (license) {
 
 			$._requestHandler = new function () {
 
-				var requestEventName = 'com.lacunasoftware.WebPKIBeta.RequestEvent';
-				var responseEventName = 'com.lacunasoftware.WebPKIBeta.ResponseEvent';
+				var requestEventName = 'com.lacunasoftware.WebPKI.RequestEvent';
+				var responseEventName = 'com.lacunasoftware.WebPKI.ResponseEvent';
 				var pendingRequests = {};
 
 				var s4 = function () {
@@ -955,16 +955,18 @@ LacunaWebPKI = function (license) {
 					var subPromise = new $.Promise(null);
 					subPromise.success(function (response) {
 						if (response.isReady) {
-							if (response.nativeInfo.os !== 'Windows' || $._compareVersions(response.nativeInfo.installedVersion, $._chromeNativeWinRequiredVersion) >= 0) {
-								context.promise._invokeSuccess({
-									isInstalled: true
-								});
-							} else {
+							if (response.nativeInfo.os === 'Windows' && $._compareVersions(response.nativeInfo.installedVersion, $._chromeNativeWinRequiredVersion) < 0) {
 								context.promise._invokeSuccess({
 									isInstalled: false,
 									status: $.installationStates.OUTDATED,
 									browserSpecificStatus: $._chromeInstallationStates.NATIVE_OUTDATED,
-									message: 'The Web PKI native component is outdated (installed version: ' + response.nativeInfo.installedVersion + ', required version: ' + $._chromeNativeWinRequiredVersion + ')'
+									message: 'The Web PKI native component is outdated (installed version: ' + response.nativeInfo.installedVersion + ', required version: ' + $._chromeNativeWinRequiredVersion + ')',
+									platformInfo: response.platformInfo,
+									nativeInfo: response.nativeInfo
+								});
+							} else {
+								context.promise._invokeSuccess({
+									isInstalled: true
 								});
 							}
 						} else {
@@ -972,7 +974,9 @@ LacunaWebPKI = function (license) {
 								isInstalled: false,
 								status: convertInstallationStatus(response.status),
 								browserSpecificStatus: response.status,
-								message: response.message
+								message: response.message,
+								platformInfo: response.platformInfo,
+								nativeInfo: response.nativeInfo
 							});
 						}
 					});
@@ -1042,7 +1046,7 @@ LacunaWebPKI = function (license) {
 				};
 
 				var getAddon = function() {
-					return lacunaWebPKIExtensionBeta;
+					return lacunaWebPKIExtension;
 				};
 
 				var poll = function () {
