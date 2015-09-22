@@ -9,6 +9,6 @@ To run the samples, you will need an API access token. If you don't have one, re
 
 Samples are available in the following programming languages:
 
-* [Java](tree/master/Java/)
-* [PHP](tree/master/PHP/)
-* [C#](tree/master/CSharp/)
+* [Java](Java/)
+* [PHP](PHP/)
+* [C#](CSharp/)
