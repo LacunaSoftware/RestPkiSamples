@@ -190,6 +190,7 @@ LacunaWebPKI = function (license) {
 	$._chromeExtensionId = 'dcngeagmmhegagicpcmpinaoklddcgon';
 	$._chromeExtensionRequiredVersion = '2.2.8';
 	$._chromeNativeWinRequiredVersion = '2.1.0';
+	$._chromeNativeLinuxRequiredVersion = '2.1.0';
 	$._ieLatestAddonVersion = '1.6.1';
 	$._chromeExtensionFirstVersionWithSelfUpdate = '2.0.20';
 
@@ -643,7 +644,11 @@ LacunaWebPKI = function (license) {
 		}
 		var context = this._createContext(args);
 		var requiredNativeWinVersion = $._chromeNativeWinRequiredVersion;
-		$._requestHandler.sendCommand(context, 'pollNative', { requiredNativeWinVersion: requiredNativeWinVersion });
+		var requiredNativeLinuxVersion = $._chromeNativeLinuxRequiredVersion;
+		$._requestHandler.sendCommand(context, 'pollNative', {
+			requiredNativeWinVersion: requiredNativeWinVersion,
+			requiredNativeLinuxVersion: requiredNativeLinuxVersion
+		});
 		return context.promise;
 	};
 
@@ -961,6 +966,15 @@ LacunaWebPKI = function (license) {
 									status: $.installationStates.OUTDATED,
 									browserSpecificStatus: $._chromeInstallationStates.NATIVE_OUTDATED,
 									message: 'The Web PKI native component is outdated (installed version: ' + response.nativeInfo.installedVersion + ', required version: ' + $._chromeNativeWinRequiredVersion + ')',
+									platformInfo: response.platformInfo,
+									nativeInfo: response.nativeInfo
+								});
+							} else if (response.nativeInfo.os === 'Linux' && $._compareVersions(response.nativeInfo.installedVersion, $._chromeNativeLinuxRequiredVersion) < 0) {
+								context.promise._invokeSuccess({
+									isInstalled: false,
+									status: $.installationStates.OUTDATED,
+									browserSpecificStatus: $._chromeInstallationStates.NATIVE_OUTDATED,
+									message: 'The Web PKI native component is outdated (installed version: ' + response.nativeInfo.installedVersion + ', required version: ' + $._chromeNativeLinuxRequiredVersion + ')',
 									platformInfo: response.platformInfo,
 									nativeInfo: response.nativeInfo
 								});

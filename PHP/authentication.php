@@ -30,7 +30,7 @@
 		<textarea readonly="true" rows="25" style="width: 100%"></textarea>
 	</fieldset>
 
-	<script src="content/js/lacuna-web-pki-2.2.1.js"></script>
+	<script src="content/js/lacuna-web-pki-2.2.2.js"></script>
 	<script src="content/js/app/authentication.js"></script>
 
 </div>

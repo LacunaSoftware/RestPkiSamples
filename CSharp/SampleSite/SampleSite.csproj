@@ -131,7 +131,7 @@
     <Content Include="Content\js\bootstrap.js" />
     <Content Include="Content\js\jquery-1.11.3.js" />
     <Content Include="Content\js\jquery.blockUI.js" />
-    <Content Include="Content\js\lacuna-web-pki-2.2.1.js" />
+    <Content Include="Content\js\lacuna-web-pki-2.2.2.js" />
     <Content Include="Content\PdfStamp.png" />
     <Content Include="Content\SampleDocument.pdf" />
     <Content Include="Global.asax" />
