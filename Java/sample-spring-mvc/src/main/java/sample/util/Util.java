@@ -11,12 +11,12 @@ import java.io.InputStream;
 public class Util {
 
     public static String getRestPkiEndpoint() {
-        //return "https://restpki.lacunasoftware.com/";
-        return "https://restpkibeta.azurewebsites.net/";
+        return "https://restpki.lacunasoftware.com/";
+        //return "https://restpkibeta.azurewebsites.net/";
     }
 
     public static String getAuthToken() {
-        return "avsuNZU9jptSbC2-hco6899Gq12roN_88uEZF-M6pPvS6uf03DqIFoFw2qplFatvKKq94DYUho9AWCzYSIND5w3uDRpzhHJcrIPwluMI5AB_OsWFl9iZcyxga8b6qYftgzuxce6C7V2Dy4YK8zaeOQSHDKilpCkiJLmdaYF5mXlect3VB4nqqOH1QjK0Wvdo45K_OlZpsyTXXxhJHr-3AQnc17F98K3m8VLKDYmlgvHsc0zEko5k2ake4QdfvUrgrM2TQ6lhDoPy0EQ7zGLrDVlUEV50_wEe_fxJvh4QVb30gPuOlNP8IrFwhtDqCRoYdFGRh8VoR2juU-zBJsWMgoctjSjENsqWRcKmoKhVXh9xfkeSbgjYuGPBWr3jEmeTADq9Ug1wZ9zlpLOSFlUVMLCg7oiPwaJ9b23fXlKxXCUIbqcLJNkbk94UllzrZEmeHcE1D4PfG-CSXPBtDtYpuxFK236FtY8P7sEZBJ-o2D0Q6nnuxj5KjZDspl7EqcHb4nMFog";
+        return "lie0i89rmua-cXwA7KKS1P8XBDmZSPPkr93b2arD-PlO4nPTsruYGGJ395vsL0WDZQLqdYHHcmi5QCqI2C-dfsHSO5W-yCs6H-ui5TDDE445qLwg7K4bMq5-rY8B5c0_yzFmEgEEdbbT41sj_ryPqpcbhygWvz86J1-bUZrV4FbRt9Ew64rFdQnhSuMUTHavSUGrQjjJL57L5FOzmTo5SNTHqBtOAkP9zK0s1FxsIXZb_04z_u-snd25xE1PFOeF5nwWbipowe-w44jGUY9lZ9_OzHpTikMvdZA-r3c4WwIz4srwsaK4HphuNmPgaHKrnDdjfICV1uuvt7pwqRNiiWbw6uZL_8AA8jntgPjCvORnKL37hlD_g7nVtADHZlD8EuvBOFk1U9vdqEVU6D6yPOLxVt-4RLThePAS0i8vrO-eRzeCkPghKjD1KGVIBerwXpH9cbHfc7B0NgLq81KehCGhd3JhRmycsulha47W5Q6QSqkS2cn7Mm9A_4WWsuTikULQLQ";
     }
 
     public static SecurityContext getSecurityContext() {
