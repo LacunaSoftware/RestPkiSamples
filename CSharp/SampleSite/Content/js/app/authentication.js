@@ -32,8 +32,6 @@ function init() {
 	// https://webpki.lacunasoftware.com/#/Documentation#coding-the-first-lines
 	// http://webpki.lacunasoftware.com/Help/classes/LacunaWebPKI.html#method_init
 	pki.init({
-		restPkiUrl: 'https://restpkibeta.azurewebsites.net/',
-		//restPkiUrl: 'http://localhost:53358/',
 		ready: onWebPkiReady,
 		defaultError: onWebPkiError // generic error callback on Content/js/app/site.js
 	});
