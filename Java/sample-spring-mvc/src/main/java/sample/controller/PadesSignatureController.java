@@ -54,10 +54,9 @@ public class PadesSignatureController {
         // Set a image to stamp the signature visual representation
         visualRepresentation.setImage(new PadesVisualImage(Util.getPdfStampContent(), "image/png"));
 
-        // Set the position that the visual representation will be inserted in the document. The getFootnote() is an
-        // auto positioning preset. It will insert the signature, and future signatures, ordered as a footnote of the
-        // document
-        visualRepresentation.setPosition(PadesVisualPositioning.getFootnote(Util.getRestPkiClient()));
+        // Set the position that the visual representation will be inserted in the document. Changing
+        // the number below will result in different examples of signature positioning being used.
+        visualRepresentation.setPosition(getVisualRepresentationPosition(4));
 
         // Set the visual representation created
         signatureStarter.setVisualRepresentation(visualRepresentation);
@@ -69,6 +68,43 @@ public class PadesSignatureController {
 
         // Return the token to the page
         return token;
+    }
+
+    // This method is called by the get() method. It contains examples of signature visual representation positionings.
+    private PadesVisualPositioning getVisualRepresentationPosition(int sampleNumber) throws RestException {
+
+        switch (sampleNumber) {
+
+            case 1:
+                // Example #1: automatic positioning on footnote. This will insert the signature, and future signatures,
+                // ordered as a footnote of the last page of the document
+                return PadesVisualPositioning.getFootnote(Util.getRestPkiClient());
+
+            case 2:
+                // Example #2: get the footnote positioning preset and customize it
+                PadesVisualAutoPositioning footnotePosition = PadesVisualPositioning.getFootnote(Util.getRestPkiClient());
+                footnotePosition.getContainer().setBottom(3.0);
+                return footnotePosition;
+
+            case 3:
+                // Example #3: manual positioning
+                PadesVisualRectangle pos = new PadesVisualRectangle();
+                pos.setWidthLeftAnchored(5.0, 2.54);
+                pos.setHeightBottomAnchored(3.0, 2.54);
+                // The first parameter is the page number. Negative numbers represent counting from end of the document
+                // (-1 is last page)
+                return new PadesVisualManualPositioning(-1, PadesMeasurementUnits.Centimeters, pos);
+
+            case 4:
+                // Example #4: auto positioning
+                PadesVisualRectangle container = new PadesVisualRectangle();
+                container.setHorizontalStretch(2.54, 2.54);
+                container.setHeightBottomAnchored(12.31, 2.54);
+                return new PadesVisualAutoPositioning(-1, PadesMeasurementUnits.Centimeters, container, new PadesSize(5.0, 3.0), 1.0);
+
+            default:
+                return null;
+        }
     }
 
     /**
