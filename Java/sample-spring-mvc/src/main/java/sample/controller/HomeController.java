@@ -3,6 +3,7 @@ package sample.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import sample.util.Util;
 
 @Controller
 public class HomeController {
@@ -14,11 +15,17 @@ public class HomeController {
     
     @RequestMapping("/Home/Authentication")
     public String authentication() {
-    	return "authentication";
+        // Checks that the access token was set (this can be removed on production code)
+        Util.checkAccessToken();
+        // Render authentication view
+        return "authentication";
     }
 
     @RequestMapping("/Home/PadesSignature")
     public String padesSignature() {
+        // Checks that the access token was set (this can be removed on production code)
+        Util.checkAccessToken();
+        // Render PAdES signature view
         return "pades-signature";
     }
 }

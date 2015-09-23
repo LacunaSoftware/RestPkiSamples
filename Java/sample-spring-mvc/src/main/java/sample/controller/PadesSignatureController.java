@@ -10,12 +10,13 @@ import java.io.IOException;
 
 /**
  * This controller contains the server-side logic for the PAdES signature example. The client-side is implemented at:
- * - HTML: src/main/resources/templates/padesSignature.html
+ * - View: src/main/resources/templates/pades-signature.html
  * - JS: src/main/resources/static/js/app/pades-signature.js
  *
- * This controller implements the logic described at
- * http://pki.lacunasoftware.com/Help/html/c5494b89-d573-4a35-a911-721e32b08dd9.htm
- *
+ * This controller uses the classes PadesSignatureStarter and PadesSignatureFinisher of the REST PKI Java client lib.
+ * For more information, see:
+ * https://restpki.lacunasoftware.com/Content/docs/java-client/index.html?com/lacunasoftware/restpki/PadesSignatureStarter.html
+ * https://restpki.lacunasoftware.com/Content/docs/java-client/index.html?com/lacunasoftware/restpki/PadesSignatureFinisher.html
  */
 @RestController
 public class PadesSignatureController {
@@ -23,20 +24,16 @@ public class PadesSignatureController {
     /**
      * GET api/pades-signature
      *
-     * This action is called once the user's certificate encoding has been read, and contains the
-     * logic to prepare the byte array, encoded in base64, that needs to be actually signed with the user's private key
-     * (the "to-sign-bytes").
+     * This action is called by the page to initiate the signature process.
      */
     @RequestMapping(value = "/api/pades-signature", method = {RequestMethod.GET})
-    public String start() throws IOException, RestException {
+    public String get() throws IOException, RestException {
 
-        RestPkiClient client = new RestPkiClient(Util.getRestPkiEndpoint(), Util.getAuthToken());
-
-        // Instantiate the PadesSignatureStarter class, responsible for receiving the signature elements and star the
+        // Instantiate the PadesSignatureStarter class, responsible for receiving the signature elements and start the
         // signature process
-        PadesSignatureStarter signatureStarter = new PadesSignatureStarter(client);
+        PadesSignatureStarter signatureStarter = new PadesSignatureStarter(Util.getRestPkiClient());
 
-        // Set the PDF to sign, which in the case of this example is a fixed sample document
+        // Set the PDF to be signed, which in the case of this example is a fixed sample document
         signatureStarter.setPdfToSign(Util.getSampleDocContent());
 
         // Set the signature policy
@@ -57,39 +54,51 @@ public class PadesSignatureController {
         // Set a image to stamp the signature visual representation
         visualRepresentation.setImage(new PadesVisualImage(Util.getPdfStampContent(), "image/png"));
 
-        // Set the position that the visual representation will be inserted in the document. The getFootnot() its an
-        // auto positioning preset. It will insert the signature, and future signatures, ordered in the footnote of the document
-        visualRepresentation.setPosition(PadesVisualPositioning.getFootnote(client));
+        // Set the position that the visual representation will be inserted in the document. The getFootnote() is an
+        // auto positioning preset. It will insert the signature, and future signatures, ordered as a footnote of the
+        // document
+        visualRepresentation.setPosition(PadesVisualPositioning.getFootnote(Util.getRestPkiClient()));
 
         // Set the visual representation created
         signatureStarter.setVisualRepresentation(visualRepresentation);
 
+        // Call the startWithWebPki, which initiates the signature. This yields the token,
+        // a 43-character case-sensitive URL-safe string, which we'll send to the page in order to pass on the
+        // signWithRestPki method of the Web PKI component.
         String token = signatureStarter.startWithWebPki();
 
+        // Return the token to the page
         return token;
     }
 
     /**
-     * POST api/pades-signature
+     * POST api/pades-signature?token=xxx
      *
-     * This action is called once the "to-sign-bytes" are signed using the user's certificate. The
-     * page sends back the SignatureProcess ID and the signature operation result.
+     * This action is called once the signature is complete on the client-side. The page sends back on the URL the token
+     * originally yielded by the get() method.
      */
     @RequestMapping(value = "/api/pades-signature", method = {RequestMethod.POST})
-    public SignatureCompleteResponse complete(HttpServletRequest httpRequest, @RequestParam(value="token", required=true) String token) throws IOException, RestException {
+    public SignatureCompleteResponse post(HttpServletRequest httpRequest, @RequestParam(value="token", required=true) String token) throws IOException, RestException {
 
-        RestPkiClient client = new RestPkiClient(Util.getRestPkiEndpoint(), Util.getAuthToken());
-        PadesSignatureFinisher signatureFinisher = new PadesSignatureFinisher(client);
+        // Instantiate the PadesSignatureFinisher class, responsible for completing the signature process
+        PadesSignatureFinisher signatureFinisher = new PadesSignatureFinisher(Util.getRestPkiClient());
+
+        // Set the token previously yielded by the startWithWebPki() method (which we sent to the page and the page
+        // sent us back on the URL)
         signatureFinisher.setToken(token);
 
         SignatureCompleteResponse response = new SignatureCompleteResponse();
+        byte[] signedPdf;
 
         try {
 
-            signatureFinisher.finish();
+            // Call the finish() method, which finalizes the signature process. Unlike the complete() method of the
+            // Authentication class, this method throws an exception if validation of the signature fails.
+            signedPdf = signatureFinisher.finish();
 
         } catch (ValidationException e) {
 
+            // If validation of the signature failed, inform the page
             response.setSuccess(false);
             response.setMessage("A validation error has occurred");
             response.setValidationResults(e.getValidationResults().toString());
@@ -97,8 +106,10 @@ public class PadesSignatureController {
 
         }
 
+        // At this point, you'd typically store the signed PDF on your database. For demonstration purposes, we'll
+        // store the PDF on a temporary folder and return to the page an ID that can be used to open the signed PDF.
         DatabaseMock dbMock = new DatabaseMock(httpRequest.getSession());
-        String signatureId = dbMock.putSignedPdf(signatureFinisher.getSignedPdf());
+        String signatureId = dbMock.putSignedPdf(signedPdf);
 
         response.setSuccess(true);
         response.setSignatureId(signatureId);

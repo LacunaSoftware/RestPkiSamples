@@ -1,7 +1,7 @@
 ﻿/*
  * This javascript file contains the client-side logic for the PAdES signature example. Other parts can be found at:
- * - HTML: src/main/resources/templates/padesSignature.html
- * - Server-side logic: src/main/java/sample/models/PadesSignatureController
+ * - View: src/main/resources/templates/pades-signature.html
+ * - Server-side logic: src/main/java/sample/controller/PadesSignatureController
  *
  * This code uses the Lacuna Web PKI component to access the user's certificates. For more information, see
  * https://webpki.lacunasoftware.com/#/Documentation
@@ -99,6 +99,9 @@ function sign() {
 	// retrieving the thumbprint of the selected certificate.
 	selectedCertThumbprint = $('#certificateSelect').val();
 
+	// Call the server to initiate the signature (for more information see method
+	// PadesSignatureController.get(). The server will yield a token, which we'll store in a global variable. If the
+	// variable is already filled, it means we already started the process, so we'll skip to the next step.
 	if (token) {
 	    onSignatureStarted();
 	} else {
@@ -116,9 +119,11 @@ function sign() {
 }
 
 // -------------------------------------------------------------------------------------------------
-// ?
+// Function called when the server replies with a token
 // -------------------------------------------------------------------------------------------------
 function onSignatureStarted() {
+    // Call signWithRestPki() on the Web PKI component passing the token received from the server and the certificate
+    // selected by the user.
     pki.signWithRestPki({
         thumbprint: selectedCertThumbprint,
         token: token
@@ -126,22 +131,23 @@ function onSignatureStarted() {
 }
 
 // -------------------------------------------------------------------------------------------------
-// ?
+// Function called once the signature is completed
 // -------------------------------------------------------------------------------------------------
 function onSignatureCompleted() {
+	// Call the server to complete the signature (for more information see method PadesSignatureController.post())
 	$.ajax({
 		method: 'POST',
-		url: '/api/pades-signature?token=' + token,
-		success: onSignatureCompleteCompleted,
+		url: '/api/pades-signature?token=' + token, // the token is guaranteed to be a URL-safe string
+		success: onProcessCompleted, // success callback
 		error: onServerError // generic error callback on Content/js/app/site.js
 	});
 	token = null;
 }
 
 // -------------------------------------------------------------------------------------------------
-// Function called once the server replies with the signature completion result
+// Function called once the server replies with the result of the signature
 // -------------------------------------------------------------------------------------------------
-function onSignatureCompleteCompleted(data, textStatus, jqXHR) {
+function onProcessCompleted(data, textStatus, jqXHR) {
 
 	if (!data.success) {
 		// The signature could not be completed successfully, probably because there's something

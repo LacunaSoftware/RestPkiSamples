@@ -9,59 +9,56 @@ import sample.util.*;
 
 /**
  * This controller contains the server-side logic for the authentication example. The client-side is implemented at:
- * - HTML: src/main/resources/template/Authentication.cshtml
+ * - View: src/main/resources/template/authentication.html
  * - JS: src/main/resources/static/js/app/authentication.js
  *
- * This controller uses the Authentication class to implement the authentication. For more information, see:
- * http://pki.lacunasoftware.com/Help/html/c7e43b5d-f745-43a7-92dc-74e777c1caa0.htm
+ * This controller uses the com.lacunasoftware.restpki.Authentication class to implement the authentication. For more
+ * information, see:
+ * https://restpki.lacunasoftware.com/Content/docs/java-client/index.html?com/lacunasoftware/restpki/Authentication.html
  */
 @RestController
 public class AuthenticationController {
 
     /**
-     * GET Api/Authentication
+     * GET api/authentication
      *
-     *	This action is called once the user clicks the "Sign In" button. It uses the Authentication
-     *	class to generate and store a cryptographic nonce, which will then be sent to the page for signature using
-     *	the user's certificate.
+     * This action is called once the user clicks the "Sign In" button.
      */
 	@RequestMapping (value = "/api/authentication", method = {RequestMethod.GET})
     public String get() throws RestException {
-        // Instantiate the RestPkiClient
-		RestPkiClient client = new RestPkiClient(Util.getRestPkiEndpoint(), Util.getAuthToken());
 
-        // Call the Authentication start() method. which is the first of the two server-side steps. This yields the token,
-        // a 22-character case-sensitive string, which we'll send to the page in order to pass on the signWithRestPki
-        // method of the Web PKI component.
-		String token = new Authentication(client).startWithWebPki(Util.getSecurityContext());
+        // Instantiate the Authentication class
+        Authentication auth = new Authentication(Util.getRestPkiClient());
 
+        // Call the Authentication startWithWebPki() method, which initiates the authentication. This yields the token,
+        // a 22-character case-sensitive URL-safe string, which we'll send to the page in order to pass on the
+        // signWithRestPki method of the Web PKI component.
+		String token = auth.startWithWebPki(Util.getSecurityContext());
+
+        // Note: By changing the SecurityContext above you can accept only certificates from a certain PKI,
+        // for instance, ICP-Brasil (SecurityContext.pkiBrazil).
+
+        // Return the token to the page
 		return token;
     }
 
     /**
-     * POST Api/Authentication
+     * POST api/authentication?token=xxx
      *
      * This action is called after signing the nonce on the client-side with the user's certificate. We'll once
      * again use the Authentication class to do the actual work.
      */
 	@RequestMapping (value = "/api/authentication", method = {RequestMethod.POST})
     public AuthenticationPostResponse post(@RequestParam(value="token", required=true) String token) throws RestException {
-        // Instantiate the RestPkiClient
-        RestPkiClient client = new RestPkiClient(Util.getRestPkiEndpoint(), Util.getAuthToken());
-        // Instantiate the Authentication class passing our rest pki client
-		Authentication auth = new Authentication(client);
 
-        // Call the complete() method, which is the last of the two server-side steps. It receives:
-        // nonce           - The nonce which was signed using the user's certificate
-        // certificate     - The user's certificate encoding
-        // signature       - The nonce signature
-        // securityContext - A SecurityContext to be used to determine trust in the certificate chain
+        // Instantiate the Authentication class
+		Authentication auth = new Authentication(Util.getRestPkiClient());
+
+        // Call the completeWithWebPki() method, which finalizes the authentication process. It receives as input
+        // only the token that was yielded previously (which we sent to the page and the page sent us back on the URL).
         // The call yields:
         // - A ValidationResults which denotes whether the authentication was successful or not
 		ValidationResults vr = auth.completeWithWebPki(token);
-
-        // Note: By changing the SecurityContext above you can accept only certificates from a certain PKI,
-        // for instance, ICP-Brasil (SecurityContext.pkiBrazil).
 
         AuthenticationPostResponse response = new AuthenticationPostResponse();
 
@@ -75,7 +72,7 @@ public class AuthenticationController {
 		}
 
         // At this point, you have assurance that the certificate is valid according to the
-        // SecurityContext you selected above and that the user is indeed the certificate's
+        // SecurityContext passed on the first step (see method get()) and that the user is indeed the certificate's
         // subject. Now, you'd typically query your database for a user that matches one of the
         // certificate's fields, such as cert.getEmailAddress() or cert.getPkiBrazil().getCpf() (the actual field
         // to be used as key depends on your application's business logic) and set the user

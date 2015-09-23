@@ -1,5 +1,6 @@
 package sample.util;
 
+import com.lacunasoftware.restpki.RestPkiClient;
 import com.lacunasoftware.restpki.SecurityContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -10,14 +11,23 @@ import java.io.InputStream;
 
 public class Util {
 
-    public static String getRestPkiEndpoint() {
-        return "https://restpki.lacunasoftware.com/";
+    // ----------------------------------------------------------------------------------------------------------------
+    // PASTE YOUR API ACCESS TOKEN BELOW
+    // ----------------------------------------------------------------------------------------------------------------
+    //
+    private static final String restPkiAccessToken = "";
+    //                                               ^^----- API access token goes here
+    // ----------------------------------------------------------------------------------------------------------------
+
+    public static RestPkiClient getRestPkiClient() {
+        checkAccessToken();
+        return new RestPkiClient("https://restpki.lacunasoftware.com/", restPkiAccessToken);
     }
 
-    public static String getAuthToken() {
-		// -------------------------------------------------------------------------------------------
-        return "PASTE YOUR ACCESS TOKEN HERE";
-		// -------------------------------------------------------------------------------------------
+    public static void checkAccessToken() {
+        if (restPkiAccessToken == null || restPkiAccessToken.equals("")) {
+            throw new RuntimeException("The API access token was not set! Hint: to run this sample you must generate an API access token on the REST PKI website and paste it on the file src/main/java/sample/util/Util.java");
+        }
     }
 
     public static SecurityContext getSecurityContext() {

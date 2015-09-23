@@ -30,7 +30,7 @@ Steps to execute the sample:
    double-click the file `Run-Sample.bat`.
   
 5. Once you see the message "Started Application in x.xxx seconds" (the on-screen percentage
-   will *not* reach 100%), open a web browser and type in the URL http://localhost:8080/
+   will *not* reach 100%), open a web browser and go the URL [http://localhost:8080/](http://localhost:8080/)
    
 Opening the project on Eclipse or IDEA
 --------------------------------------
@@ -44,9 +44,8 @@ and then use the "Open" funcionality inside IDEA (works better than "Import").
 Java client lib
 ---------------
 
-A client lib in Java is available which encapsulates the REST calls to REST PKI.
-The lib should be referenced as a dependency, as can be seen in the file build.gradle of the
-Spring MVC sample:
+The samples use a client lib which encapsulates the API calls to REST PKI.
+The lib should be **referenced as a dependency**, as can be seen in the file [build.gradle](sample-spring-mvc/build.gradle):
 
 	repositories {
 		mavenCentral()
@@ -59,7 +58,7 @@ Spring MVC sample:
 		compile("com.lacunasoftware.restpki:restpki-client:1.0.0")
 	}
 
-And also on the file pom.xml in the same folder:
+If you project uses Maven, see the file [pom.xml](sample-spring-mvc/pom.xml):
 
 	<dependencies>
 		...
@@ -79,8 +78,9 @@ And also on the file pom.xml in the same folder:
 		</repository>
 	</repositories>
 
-If your project uses Ivy to resolve dependencies, please visit the [package page on BinTray](https://bintray.com/lacunasoftware/maven/restpki-client)
-and click on the link "SET ME UP!".
+If your project uses another tool for dependency resolution (for instance Ivy), please visit the
+[package page on BinTray](https://bintray.com/lacunasoftware/maven/restpki-client) and click on
+the link "SET ME UP!".
 
 See also:
 
