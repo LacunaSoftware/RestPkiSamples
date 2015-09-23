@@ -1,9 +1,16 @@
-<!--/*
-	This is the page for PAdES signatures. Actual logic can be found at:
-	- Client-side: src/main/resources/static/js/app/pades-signature.js
-	- Server-side: src/main/java/sample/models/PadesSignatureController.cs
-*/-->
-<!DOCTYPE html>
+<?php
+	
+	/*
+	  This is the page for PAdES signatures. Actual logic can be found at:
+	  - Client-side: content/js/app/pades-signature.js
+	  - Server-side: api/pades-signature.php
+	 */
+
+	// We'll call the function getRestPkiClient() just to make sure the access token was set. You can remove this in your application.
+	require_once 'api/util.php';
+	getRestPkiClient();
+	
+?><!DOCTYPE html>
 <html>
 <head>
     <?php include 'head.php' ?>
