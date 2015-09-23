@@ -18,59 +18,70 @@ namespace SampleSite.Api {
 	 * This controller contains the server-side logic for the PAdES signature example. The client-side is implemented at:
 	 * - HTML: Views/Home/PadesSignature.cshtml
 	 * - JS: Content/js/app/pades-signature.js
-	 * 
-	 * This controller implements the logic described at
-	 * http://pki.lacunasoftware.com/Help/html/c5494b89-d573-4a35-a911-721e32b08dd9.htm
-	 * 
-	 * Note on encodings: the models used in this controller declare byte arrays, but on the
-	 * javascript the values are Base64-encoded. ASP.NET's Web API framework is taking care of
-	 * the conversions for us. However, if another technology is to be used, such as MVC, the
-	 * conversion might have to be done manually on the server-side.
-	 * 
-	 * NOTE: there's an important piece of code regaring PAdES signatures on the website startup (see Global.asax)
 	 */
 	public class PadesSignatureController : ApiController {
 
-      /**
-		 * POST Api/PadesSignature/Start
+		/**
+		 * GET Api/PadesSignature
 		 * 
-		 * This action is called once the user's certificate encoding has been read, and contains the
-		 * logic to prepare the byte array that needs to be actually signed with the user's private key
-		 * (the "to-sign-bytes").
+		 * This action is called by the page to initiate the signature process.
 		 */
-      [HttpGet, Route("api/PadesSignature")]
-      public async Task<IHttpActionResult> Get() {
+		[HttpGet, Route("api/PadesSignature")]
+		public async Task<IHttpActionResult> Get() {
 
-         var signatureStarter = Util.GetRestPkiClient().GetPadesSignatureStarter();
+			// Get an instance of the PadesSignatureStarter class, responsible for receiving the signature elements and start the
+			// signature process
+			var signatureStarter = Util.GetRestPkiClient().GetPadesSignatureStarter();
+
+			// Set the PDF to be signed, which in the case of this example is a fixed sample document
 			signatureStarter.SetPdfToSign(Util.GetSampleDocContent());
-			signatureStarter.SetSignaturePolicy(StandardPadesSignaturePolicies.Basic);
-			signatureStarter.SetSecurityContext(Util.SecurityContextId);
 
+			// Set the signature policy
+			signatureStarter.SetSignaturePolicy(StandardPadesSignaturePolicies.Basic);
+
+			// Set a SecurityContext to be used to determine trust in the certificate chain
+			signatureStarter.SetSecurityContext(Util.SecurityContextId);
+			// Note: By changing the SecurityContext above you can accept only certificates from a certain PKI,
+			// for instance, ICP-Brasil (Lacuna.RestPki.Api.StandardSecurityContexts.PkiBrazil).
+
+			// Set a visual representation for the signature
 			var visualRep = new PadesVisualRepresentation() {
 				Text = new PadesVisualText("Assinado por {{signerName}} (CPF {{signerNationalId}})", true),
 				Image = new PadesVisualImage(Util.GetPdfStampContent(), "image/png"),
-            Position = await getVisualPositioning(4)
+				Position = await getVisualPositioning(4) // changing this number will result in different examples of signature positioning being used
 			};
 			signatureStarter.SetVisualRepresentation(visualRep);
 
-         var token = await signatureStarter.StartWithWebPkiAsync();
+			// Call the startWithWebPki, which initiates the signature. This yields the token,
+			// a 43-character case-sensitive URL-safe string, which we'll send to the page in order to pass on the
+			// signWithRestPki method of the Web PKI component.
+			var token = await signatureStarter.StartWithWebPkiAsync();
+
+			// Return the token to the page
 			return Ok(token);
 		}
 
+		// This function is called by the get() function. It contains examples of signature visual representation positionings.
 		private static async Task<PadesVisualPositioning> getVisualPositioning(int sampleNumber) {
 
 			switch (sampleNumber) {
 
 				case 1:
+					// Example #1: automatic positioning on footnote. This will insert the signature, and future signatures, 
+					// ordered as a footnote of the last page of the document
 					return await PadesVisualPositioning.GetFootnoteAsync(Util.GetRestPkiClient());
 
 				case 2:
+					// Example #2: get the footnote positioning preset and customize it
 					var footnotePosition = await PadesVisualPositioning.GetFootnoteAsync(Util.GetRestPkiClient());
 					footnotePosition.Container.Bottom = 3;
 					return footnotePosition;
 
 				case 3:
+					// Example #3: manual positioning
+					// The first parameter is the page number. Negative numbers represent counting from end of the document (-1 is last page)
 					return new PadesVisualManualPositioning(-1, PadesMeasurementUnits.Centimeters, new PadesVisualRectangle() {
+						// define a manual position of 5cm x 3cm, positioned at 1 inch from  the left and bottom margins
 						Left = 2.54,
 						Bottom = 2.54,
 						Width = 5,
@@ -78,6 +89,7 @@ namespace SampleSite.Api {
 					});
 
 				case 4:
+					// Example #4: auto positioning
 					return new PadesVisualAutoPositioning() {
 						PageNumber = -1,
 						MeasurementUnits = PadesMeasurementUnits.Centimeters,
@@ -97,29 +109,42 @@ namespace SampleSite.Api {
 		}
 
 		/**
-		 * POST Api/PadesSignature/Complete
+		 * POST Api/PadesSignature/{token}
 		 * 
-		 * This action is called once the "to-sign-bytes" are signed using the user's certificate. The
-		 * page sends back the SignatureProcess ID and the signature operation result.
+		 * This action is called once the signature is complete on the client-side. The page sends back on the URL the token
+		 * originally yielded by the get() method.
 		 */
 		[HttpPost, Route("api/PadesSignature/{token}")]
 		public async Task<IHttpActionResult> Post(string token) {
 
+			// Get an instance of the PadesSignatureFinisher class, responsible for completing the signature process
 			var signatureFinisher = Util.GetRestPkiClient().GetPadesSignatureFinisher();
+
+			// Set the token previously yielded by the startWithWebPki() method (which we sent to the page and the page
+			// sent us back on the URL)
 			signatureFinisher.SetToken(token);
 
 			byte[] signedPdf;
 			try {
-            signedPdf = await signatureFinisher.FinishAsync();
+
+				// Call the finish() method, which finalizes the signature process. Unlike the complete() method of the
+				// Authentication class, this method throws an exception if validation of the signature fails.
+				signedPdf = await signatureFinisher.FinishAsync();
+
 			} catch (ValidationException ex) {
+
+				// If validation of the signature failed, inform the page
 				return Ok(new SignatureCompleteResponse() {
 					Success = false,
 					Message = "A validation error has occurred",
 					ValidationResults = ex.ValidationResults.ToString()
 				});
+
 			}
 
-			// Store the signature for future download (see method SignatureController.Download in the Controllers folder)
+			// At this point, you'd typically store the signed PDF on your database. For demonstration purposes, we'll
+			// store the PDF on dummy database to the page an ID that can be used to open the signed PDF.
+
 			Signature signature;
 			using (var dbContext = new DbContext()) {
 				signature = Signature.Create();
@@ -129,8 +154,6 @@ namespace SampleSite.Api {
 				dbContext.SaveChanges();
 			}
 
-			// Inform the page of the success, along with the ID of the stored signature, so that the page
-			// can render the download link
 			return Ok(new SignatureCompleteResponse() {
 				Success = true,
 				SignatureId = signature.Id

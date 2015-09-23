@@ -56,8 +56,7 @@ public class AuthenticationController {
 
         // Call the completeWithWebPki() method, which finalizes the authentication process. It receives as input
         // only the token that was yielded previously (which we sent to the page and the page sent us back on the URL).
-        // The call yields:
-        // - A ValidationResults which denotes whether the authentication was successful or not
+        // The call yields a ValidationResults which denotes whether the authentication was successful or not.
 		ValidationResults vr = auth.completeWithWebPki(token);
 
         AuthenticationPostResponse response = new AuthenticationPostResponse();

@@ -46,7 +46,7 @@ function get() {
 	$token = $auth->startWithWebPki(\Lacuna\StandardSecurityContexts::PKI_BRAZIL);
 		
 	// Note: By changing the SecurityContext above you can accept only certificates from a certain PKI,
-	// for instance, ICP-Brasil (SecurityContext.pkiBrazil).
+	// for instance, ICP-Brasil (\Lacuna\StandardSecurityContexts::PKI_BRAZIL).
 		
 	// Return the token as response
 	return $token;

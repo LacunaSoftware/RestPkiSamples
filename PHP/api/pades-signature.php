@@ -54,7 +54,7 @@ function get() {
 	// Set a SecurityContext to be used to determine trust in the certificate chain
 	$signatureStarter->setSecurityContext(\Lacuna\StandardSecurityContexts::PKI_BRAZIL);
 	// Note: By changing the SecurityContext above you can accept only certificates from a certain PKI,
-	// for instance, ICP-Brasil (SecurityContext.pkiBrazil).
+	// for instance, ICP-Brasil (\Lacuna\StandardSecurityContexts::PKI_BRAZIL).
 
 	// Set the visual representation for the signature
 	$signatureStarter->setVisualRepresentation([

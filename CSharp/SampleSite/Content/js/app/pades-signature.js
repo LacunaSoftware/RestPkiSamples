@@ -99,42 +99,47 @@ function sign() {
 	// retrieving the thumbprint of the selected certificate.
 	selectedCertThumbprint = $('#certificateSelect').val();
 
-    // Reset global state
-    //token = null;
-
+	// Call the server to initiate the signature. The server will yield a token, which we'll store in a
+	// global variable. If the variable is already filled, it means we already started the process, so
+	// we'll skip to the next step.
 	if (token) {
-	    onSignatureStarted();
+		onSignatureStarted();
 	} else {
-	    $.ajax({
-	        method: 'GET',
-	        url: '/Api/PadesSignature',
-	        contentType: 'application/json',
-	        success: function (response) {
-	            token = response;
-	            onSignatureStarted();
-	        },
-	        error: onServerError // generic error callback on Content/js/app/site.js
-	    });
+		// Call the server to initiate the authentication (for more information see method Api/PadesSignatureController.Get())
+		$.ajax({
+			method: 'GET',
+			url: '/Api/PadesSignature',
+			contentType: 'application/json',
+			success: function (response) {
+				token = response;
+				onSignatureStarted();
+			},
+			error: onServerError // generic error callback on Content/js/app/site.js
+		});
 	}
 }
 
+// -------------------------------------------------------------------------------------------------
+// Function called when the server replies with a token
+// -------------------------------------------------------------------------------------------------
 function onSignatureStarted() {
-    pki.signWithRestPki({
-        thumbprint: selectedCertThumbprint,
-        token: token
-    }).success(onSignatureCompleted); // callback for when the operation completes
+	// Call signWithRestPki() on the Web PKI component passing the token received from the server and the certificate
+	// selected by the user.
+	pki.signWithRestPki({
+		thumbprint: selectedCertThumbprint,
+		token: token
+	}).success(onSignatureCompleted); // callback for when the operation completes
 }
 
 // -------------------------------------------------------------------------------------------------
-// Function called once the signature of the "to-sign-bytes" is completed
+// Function called once the signature is completed
 // -------------------------------------------------------------------------------------------------
 function onSignatureCompleted() {
-	// Send the signature output to the server to complete the process (for more information see method CadesSignatureController.Complete())
+	// Call the server to complete the signature (for more information see method PadesSignatureController.post())
 	$.ajax({
 		method: 'POST',
-		url: '/Api/PadesSignature/' + token,
-		contentType: 'application/json',
-		success: onSignatureCompleteCompleted,
+		url: '/Api/PadesSignature/' + token, // the token is guaranteed to be a URL-safe string
+		success: onProcessCompleted, // success callback
 		error: onServerError // generic error callback on Content/js/app/site.js
 	});
 	token = null;
@@ -144,9 +149,9 @@ function onSignatureCompleted() {
 }
 
 // -------------------------------------------------------------------------------------------------
-// Function called once the server replies with the signature completion result
+// Function called once the server replies with the result of the signature
 // -------------------------------------------------------------------------------------------------
-function onSignatureCompleteCompleted(data, textStatus, jqXHR) {
+function onProcessCompleted(data, textStatus, jqXHR) {
 
 	if (!data.success) {
 		// The signature could not be completed successfully, probably because there's something

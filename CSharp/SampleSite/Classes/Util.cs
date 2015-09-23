@@ -1,6 +1,7 @@
 ﻿using Lacuna.RestPki.Client;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -9,12 +10,14 @@ namespace SampleSite.Classes {
 
 	public class Util {
 
-		// -------------------------------------------------------------------------------------------
-		private const string restPkiAccessToken = "PASTE YOUR ACCESS TOKEN HERE";
-		// -------------------------------------------------------------------------------------------
-
 		public static RestPkiClient GetRestPkiClient() {
-			return new RestPkiClient("https://restpki.lacunasoftware.com/", restPkiAccessToken);
+			return new RestPkiClient("https://restpki.lacunasoftware.com/", ConfigurationManager.AppSettings["RestPkiAccessToken"]);
+		}
+
+		public static void CheckAccessToken() {
+			if (string.IsNullOrEmpty(ConfigurationManager.AppSettings["RestPkiAccessToken"])) {
+				throw new Exception("The API access token was not set! Hint: to run this sample you must generate an API access token on the REST PKI website and paste it on the web.config file");
+			}
 		}
 
 		public static Guid SecurityContextId {
@@ -43,8 +46,8 @@ namespace SampleSite.Classes {
 		}
 
 		public static byte[] GetSampleDocContent() {
-         return File.ReadAllBytes(Path.Combine(ContentPath, "SampleDocument.pdf"));
-      }
+			return File.ReadAllBytes(Path.Combine(ContentPath, "SampleDocument.pdf"));
+		}
 
 	}
 }
