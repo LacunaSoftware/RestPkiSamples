@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * REST PKI client lib for PHP
+ *
+ * This file contains classes that encapsulate the calls to the REST PKI API.
+ *
+ * This file depends on the GuzzleHttp package, which in turn requires PHP 5.5 or greater.
+ */
+
 namespace Lacuna;
 
 require_once __DIR__.'/../vendor/autoload.php';
