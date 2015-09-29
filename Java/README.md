@@ -41,12 +41,12 @@ you can also host it yourself, which is called an "on-premises installation".
 On-premises installations can be publicly accessible or not, depending on how you install the product on your
 environment. We recommend that you make the installation publicly accessible, because that simplifies your
 application's code, since that way the Web Pki component running in your users' browsers can communicate
-directly with your REST PKI installation, which simplifies your application code. In this case, you can write
+directly with your REST PKI installation, which simplifies your application code. In this case, you should write
 your code based on the default sample (see above).
 
 However, if your REST PKI installation must have restricted access, please write your code based on the
 sample contained in the folder [on-premises-restricted](on-premises-restricted/). The steps to execute the
-sample are the same as for the default sample (see above).
+sample are the same as for the default sample.
    
 Opening the samples on Eclipse or IDEA
 --------------------------------------
@@ -61,7 +61,8 @@ Java client lib
 ---------------
 
 The samples use a client lib which encapsulates the API calls to REST PKI.
-The lib should be **referenced as a dependency**, as can be seen in the file [build.gradle](sample-spring-mvc/build.gradle):
+The lib should be **referenced as a dependency**, as can be seen in the file [build.gradle](sample-spring-mvc/build.gradle)
+of each sample:
 
 	repositories {
 		mavenCentral()
@@ -74,7 +75,7 @@ The lib should be **referenced as a dependency**, as can be seen in the file [bu
 		compile("com.lacunasoftware.restpki:restpki-client:1.0.0")
 	}
 
-If you project uses Maven, see the file [pom.xml](sample-spring-mvc/pom.xml):
+If you project uses Maven, please refer to the file [pom.xml](sample-spring-mvc/pom.xml) instead:
 
 	<dependencies>
 		...
@@ -94,7 +95,7 @@ If you project uses Maven, see the file [pom.xml](sample-spring-mvc/pom.xml):
 		</repository>
 	</repositories>
 
-If your project uses another tool for dependency resolution (for instance Ivy), please visit the
+If your project uses another tool for dependency resolution (e.g. Ivy), please visit the
 [package page on BinTray](https://bintray.com/lacunasoftware/maven/restpki-client) and click on
 the link "SET ME UP!".
 
