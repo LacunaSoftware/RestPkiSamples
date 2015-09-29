@@ -32,13 +32,29 @@ Steps to execute the sample:
 5. Once you see the message "Started Application in x.xxx seconds" (the on-screen percentage
    will *not* reach 100%), open a web browser and go the URL [http://localhost:8080/](http://localhost:8080/)
    
-Opening the project on Eclipse or IDEA
+Java sample for "on-premises" installations with restricted access
+------------------------------------------------------------------
+
+If you want to use the functionality of REST PKI but are not comfortable or cannot use it as a cloud service,
+you can also host it yourself, which is called an "on-premises" installation.
+
+On-premises installations can be publicly accessible or not, depending on how you install the product on your
+environment. We recommend that you make the installation publicly accessible, because that simplifies your
+application's code, since the Web Pki component in your users' browsers can communicate directly with your
+REST PKI installation. In this case, you can write your code based on the default sample (Spring MVC sample,
+see above).
+
+However, if your installation must have restricted access, please write your code based on the sample contained
+in the folder [on-premises-restricted](on-premises-restricted/). The steps to execute the sample are the same
+as for the Spring MVC sample (see above).
+   
+Opening the samples on Eclipse or IDEA
 --------------------------------------
 
-To open the project on Eclipse, run `gradlew eclipse` on the folder `sample-spring-mvc` and
+To open one of the samples on Eclipse, run `gradlew eclipse` on the sample's folder and then
 then import the project from Eclipse.
 
-To open the project on IntelliJ IDEA, run `gradlew idea` on the folder `sample-spring-mvc`
+To open one of the samples on IntelliJ IDEA, run `gradlew idea` on the sample's folder
 and then use the "Open" funcionality inside IDEA (works better than "Import").
 
 Java client lib
