@@ -66,7 +66,7 @@ public class AuthenticationController {
 		ValidationResults vr = auth.complete(request.getNonce(), request.getCertificate(), request.getSignature(), SecurityContext.pkiBrazil);
 		// >>> NOTE: By changing the SecurityContext above you can accept only certificates from a certain PKI,
 		// for instance ICP-Brasil (SecurityContext.pkiBrazil). You can also define a custom security context on the
-		// REST PKI website accepting whatever root certification authorities you wish.
+		// REST PKI website accepting whatever root certification authorities you wish and reference it here by its ID.
 
 		AuthenticationPostResponse response = new AuthenticationPostResponse();
 

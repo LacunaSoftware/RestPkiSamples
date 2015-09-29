@@ -43,10 +43,10 @@ public class PadesSignatureController {
 		signatureStarter.setSignaturePolicy(SignaturePolicy.PadesBasic);
 
 		// Set a SecurityContext to be used to determine trust in the certificate chain
-		signatureStarter.setSecurityContext(new SecurityContext("d1299963-d8cb-46a0-930e-10e0fdcff7fb"));
+		signatureStarter.setSecurityContext(SecurityContext.pkiBrazil);
 		// >>> NOTE: By changing the SecurityContext above you can accept only certificates from a certain PKI,
 		// for instance ICP-Brasil (SecurityContext.pkiBrazil). You can also define a custom security context on the
-		// REST PKI website accepting whatever root certification authorities you wish.
+		// REST PKI website accepting whatever root certification authorities you wish and reference it here by its ID.
 
 		// Create a visual representation for the signature
 		PadesVisualRepresentation visualRepresentation = new PadesVisualRepresentation();
