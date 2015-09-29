@@ -9,8 +9,8 @@ For other languages, please visit the [project root](https://github.com/LacunaSo
 To run the samples, you will need an **API access token**. If you don't have one, register on the
 [REST PKI website](https://restpki.lacunasoftware.com/) and generate a token.
 
-Java sample using Spring MVC
-----------------------------
+Default sample
+--------------
 
 A sample for a Java web application using the Spring MVC framework can be found in the folder
 [sample-spring-mvc](sample-spring-mvc/). The sample uses spring boot to provide a self-contained web application,
@@ -32,21 +32,21 @@ Steps to execute the sample:
 5. Once you see the message "Started Application in x.xxx seconds" (the on-screen percentage
    will *not* reach 100%), open a web browser and go the URL [http://localhost:8080/](http://localhost:8080/)
    
-Java sample for "on-premises" installations with restricted access
-------------------------------------------------------------------
+On-premises installations with restricted access
+------------------------------------------------
 
 If you want to use the functionality of REST PKI but are not comfortable or cannot use it as a cloud service,
-you can also host it yourself, which is called an "on-premises" installation.
+you can also host it yourself, which is called an "on-premises installation".
 
 On-premises installations can be publicly accessible or not, depending on how you install the product on your
 environment. We recommend that you make the installation publicly accessible, because that simplifies your
-application's code, since the Web Pki component in your users' browsers can communicate directly with your
-REST PKI installation. In this case, you can write your code based on the default sample (Spring MVC sample,
-see above).
+application's code, since that way the Web Pki component running in your users' browsers can communicate
+directly with your REST PKI installation, which simplifies your application code. In this case, you can write
+your code based on the default sample (see above).
 
-However, if your installation must have restricted access, please write your code based on the sample contained
-in the folder [on-premises-restricted](on-premises-restricted/). The steps to execute the sample are the same
-as for the Spring MVC sample (see above).
+However, if your REST PKI installation must have restricted access, please write your code based on the
+sample contained in the folder [on-premises-restricted](on-premises-restricted/). The steps to execute the
+sample are the same as for the default sample (see above).
    
 Opening the samples on Eclipse or IDEA
 --------------------------------------
