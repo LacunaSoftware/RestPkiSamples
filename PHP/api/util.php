@@ -20,5 +20,5 @@ function getRestPkiClient() {
 		throw new \Exception('The API access token was not set! Hint: to run this sample you must generate an API access token on the REST PKI website and paste it on the file api/util.php');
 	}
 	
-	return new RestPkiClient('https://restpki.lacunasoftware.com/', $restPkiAccessToken);
+	return new RestPkiClient('https://pki.rest/', $restPkiAccessToken);
 }

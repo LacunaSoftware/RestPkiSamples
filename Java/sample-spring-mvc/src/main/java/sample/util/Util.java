@@ -21,7 +21,7 @@ public class Util {
 
     public static RestPkiClient getRestPkiClient() {
         checkAccessToken();
-        return new RestPkiClient("https://restpki.lacunasoftware.com/", restPkiAccessToken);
+        return new RestPkiClient("https://pki.rest/", restPkiAccessToken);
     }
 
     public static void checkAccessToken() {

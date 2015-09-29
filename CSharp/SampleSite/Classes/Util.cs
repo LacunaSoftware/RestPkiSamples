@@ -11,7 +11,7 @@ namespace SampleSite.Classes {
 	public class Util {
 
 		public static RestPkiClient GetRestPkiClient() {
-			return new RestPkiClient("https://restpki.lacunasoftware.com/", ConfigurationManager.AppSettings["RestPkiAccessToken"]);
+			return new RestPkiClient("https://pki.rest/", ConfigurationManager.AppSettings["RestPkiAccessToken"]);
 		}
 
 		public static void CheckAccessToken() {
