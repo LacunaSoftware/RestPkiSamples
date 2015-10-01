@@ -108,7 +108,7 @@ function sign() {
 		// Call the server to initiate the signature (for more information see function get() on file api/pades-signature.php)
 	    $.ajax({
 	        method: 'GET',
-	        url: '/api/pades-signature.php',
+	        url: 'api/pades-signature.php',
 	        contentType: 'application/json',
 	        success: function (response) {
 	            token = response;
@@ -138,7 +138,7 @@ function onSignatureCompleted() {
 	// Call the server to complete the signature (for more information see method post() on file api/pades-signature.php)
 	$.ajax({
 		method: 'POST',
-		url: '/api/pades-signature.php?token=' + token, // the token is guaranteed to be a URL-safe string
+		url: 'api/pades-signature.php?token=' + token, // the token is guaranteed to be a URL-safe string
 		success: onProcessCompleted, // success callback
 		error: onServerError // generic error callback on Content/js/app/site.js
 	});

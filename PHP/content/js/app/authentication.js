@@ -108,7 +108,7 @@ function signIn() {
 	    // Call the server to initiate the authentication (for more information see function get() on file api/authentication.php)
 	    $.ajax({
 	        method: 'GET',
-	        url: '/api/authentication.php',
+	        url: 'api/authentication.php',
 	        success: function (response) {
 	            token = response;
 	            onAuthStarted();
@@ -138,7 +138,7 @@ function onSignatureCompleted() {
 	// Call the server to complete the authentication (for more information see method post() on file api/authentication.php)
 	$.ajax({
 		method: 'POST',
-		url: '/api/authentication.php?token=' + token, // the token is guaranteed to be a URL-safe string
+		url: 'api/authentication.php?token=' + token, // the token is guaranteed to be a URL-safe string
 		success: onProcessCompleted, // success callback
 		error: onServerError // generic error callback on src/main/resources/static/js/app/site.js
 	});
