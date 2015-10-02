@@ -16,23 +16,34 @@ use Lacuna\PadesSignatureStarter;
 use Lacuna\PadesSignatureFinisher;
 use Lacuna\PadesVisualPositioningPresets;
 
-// Depending on the method of the HTTP request (GET or POST), we'll call the corresponding function
-// and output its result as JSON
-$method = $_SERVER['REQUEST_METHOD'];
-switch ($method) {
-	case 'GET':
-		$response = get();
-		break;
-	case 'POST':
-		$response = post();
-		break;
-	default:
-		die('method not allowed');
-		break;
-}
-header('Content-Type: application/json');
-echo json_encode($response);
+try {
 
+	// Depending on the method of the HTTP request (GET or POST), we'll call the corresponding function
+	// and output its result as JSON
+	$method = $_SERVER['REQUEST_METHOD'];
+	switch ($method) {
+		case 'GET':
+			$response = get();
+			break;
+		case 'POST':
+			$response = post();
+			break;
+		default:
+			die('method not allowed');
+			break;
+	}
+	header('Content-Type: application/json');
+	echo json_encode($response);
+
+} catch (Exception $e) {
+
+	header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
+	header('Content-Type: application/json');
+	echo json_encode([
+		'message' => $e->getMessage()
+	]);
+
+}
 
 /*
  * GET api/pades-signature.php (called via AJAX)

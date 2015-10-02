@@ -20,7 +20,13 @@ function onWebPkiError(message, error, origin) {
 
 function onServerError(jqXHR, textStatus, errorThrown) {
 	$.unblockUI();
-	log('An error has occurred on the server: ' + errorThrown);
-	addAlert('danger', 'An error has occurred on the server: ' + errorThrown);
+	var error;
+	if (jqXHR && jqXHR.responseJSON && jqXHR.responseJSON.message) {
+		error = jqXHR.responseJSON.message;
+	} else {
+		error = errorThrown;
+	}
+	log('An error has occurred on the server: ' + error);
+	addAlert('danger', 'An error has occurred on the server: ' + error);
 }
 

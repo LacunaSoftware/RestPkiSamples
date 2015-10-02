@@ -44,7 +44,7 @@ Troubleshooting
 
 If you get the following error when executing the sample:
 
-> Fatal error: Uncaught exception 'GuzzleHttp\Exception\RequestException' with message 'cURL error 60: SSL certificate problem: unable to get local issuer certificate
+> cURL error 60: SSL certificate problem: unable to get local issuer certificate
 
 It means you don't have the CURLOPT_CAINFO option configured in your php.ini file. This option tells PHP to look in a certain PEM file for a list
 of the trusted root certificates. One file commonly used can be found [here](http://curl.haxx.se/ca/cacert.pem).
