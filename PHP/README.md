@@ -57,7 +57,7 @@ establish a secure SSL connection with REST PKI. To fix this, follow these steps
 
 4. Add the following line (change the path accordingly):
 
-	curl.cainfo = "C:\Program Files (x86)\PHP\cacert.pem"
+		curl.cainfo = "C:\Program Files (x86)\PHP\cacert.pem"
 	
 You don't necessarily need to use the PEM file specified on step 1, there are other options such as
 [generating a PEM file yourself](http://www.swiftsoftwaregroup.com/configuring-phpcurl-root-certificates-windows-server/)
