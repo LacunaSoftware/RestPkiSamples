@@ -44,16 +44,25 @@ Troubleshooting
 
 If you get the following error when executing the sample:
 
-> cURL error 60: SSL certificate problem: unable to get local issuer certificate
+> An error has occurred on the server: cURL error 60: SSL certificate problem: unable to get local issuer certificate (see http://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
-It means you don't have the CURLOPT_CAINFO option configured in your php.ini file. This option tells PHP to look in a certain PEM file for a list
-of the trusted root certificates. One file commonly used can be found [here](http://curl.haxx.se/ca/cacert.pem).
+It means your PHP is not configured with a list of trusted root certification authorities, which is necessary to
+establish a secure SSL connection with REST PKI. To fix this, follow these steps:
 
-You can choose other files or, if you're using Windows Server, you can even
-[generate one yourself](http://www.swiftsoftwaregroup.com/configuring-phpcurl-root-certificates-windows-server/)
+1. Download the file [http://curl.haxx.se/ca/cacert.pem](http://curl.haxx.se/ca/cacert.pem) and save it somewhere in your PHP server (for instance `C:\Program Files (x86)\PHP\cacert.pem`)
+
+2. Edit the `php.ini` file
+
+3. Locate the `[curl]` section
+
+4. Add the following line (change the path accordingly):
+
+	curl.cainfo = "C:\Program Files (x86)\PHP\cacert.pem"
+	
+You don't necessarily need to use the PEM file specified on step 1, there are other options such as
+[generating a PEM file yourself](http://www.swiftsoftwaregroup.com/configuring-phpcurl-root-certificates-windows-server/)
 based on the OS's trusted certificate roots.
-	
-Whatever file you use, you must save on on the server and then update your `php.ini` file:
 
-	curl.cainfo=path-to-your-pem-file
-	
+**Workaround:** if you are having trouble fixing this issue, a workaround is to edit the file `PHP/api/util.php` and change the REST PKI
+url to `http://pki.rest/` (use http instead of https). This is not recommended, however, because in this case the communcation
+with REST PKI would be unencrypted.
