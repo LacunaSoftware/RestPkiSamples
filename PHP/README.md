@@ -1,7 +1,7 @@
-REST PKI PHP Sample
-===================
+REST PKI PHP Samples
+====================
 
-This is a sample web application in PHP that shows how to use the
+This folder contains web applications written in PHP that show how to use the
 [REST PKI service](https://restpki.lacunasoftware.com/).
 
 For other languages, please visit the [project root](https://github.com/LacunaSoftware/RestPkiSamples).
@@ -9,19 +9,35 @@ For other languages, please visit the [project root](https://github.com/LacunaSo
 To run the samples, you will need an **API access token**. If you don't have one, register on the
 [REST PKI website](https://restpki.lacunasoftware.com/) and generate a token.
 
-Running the sample
-------------------
+Standard sample
+---------------
+
+The standard PHP sample can be found in the folder [standard](standard/). To run the sample:
 
 1. [Download the project](https://github.com/LacunaSoftware/RestPkiSamples/archive/master.zip)
    or clone the repository
 
 2. Generate an API access token on the [REST PKI website](https://restpki.lacunasoftware.com/)
 
-3. Paste your access token on the file `PHP/api/util.php`
+3. Paste your access token on the file `api/util.php`
    
 4. Setup a website on your local HTTP server pointing to the PHP folder
   
 5. Open the index.php file on the browser on the corresponding URL (depending on the previous step)
+
+Barebones sample
+----------------
+
+The standard sample uses a number of components (jQuery, Bootstrap, BlockUI) to provide a better user
+experience, and also clearly separates the client-side code from server-side loosely following the MVC
+pattern, which might be unusual for some PHP developers.
+
+The [barebones](barebones/) folder contains a sample that aims to be as simple as possible, which should
+feel more natural for some PHP developers. The user experience, however, is diminished because of the
+simplifications.
+
+The steps to execute the sample are the same as for the standard sample (see above), with the exception
+that in step 3 the file `util.php` is located at the root of the sample folder.
 
 Dependencies
 ------------
