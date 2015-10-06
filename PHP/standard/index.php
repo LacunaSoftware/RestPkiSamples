@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <?php include 'head.php' ?>
+	<title>REST PKI Samples</title>
+	<?php include 'includes.php' ?>
 </head>
 <body>
 
-    <?php include 'top.php' ?>
+    <?php include 'menu.php' ?>
 
 	<div class="container">
 		
-		<h2>Lacuna PKI Samples</h2>
-		Choose one of the following samples:
+		<h2>REST PKI Samples</h2>
+		Choose one of the following:
 		<ul>
 			<li><a href="authentication.php">Authentication with digital certificate</a></li>
-			<li><a href="pades-signature.php">Create a PAdES signature</a></li>
+			<li><a href="pades-signature.php">Create a PAdES signature (file already on server)</a></li>
+			<li><a href="upload.php">Create a PAdES signature (file uploaded by user)</a></li>
 		</ul>
 
 	</div>

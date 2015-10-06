@@ -17,16 +17,3 @@ function onWebPkiError(message, error, origin) {
 	log('An error has occurred on the signature browser component: ' + message, error);
 	addAlert('danger', 'An error has occurred on the signature browser component: ' + message);
 }
-
-function onServerError(jqXHR, textStatus, errorThrown) {
-	$.unblockUI();
-	var error;
-	if (jqXHR && jqXHR.responseJSON && jqXHR.responseJSON.message) {
-		error = jqXHR.responseJSON.message;
-	} else {
-		error = errorThrown;
-	}
-	log('An error has occurred on the server: ' + error);
-	addAlert('danger', 'An error has occurred on the server: ' + error);
-}
-

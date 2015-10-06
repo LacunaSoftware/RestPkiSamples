@@ -11,7 +11,6 @@
 namespace Lacuna;
 
 require_once __DIR__.'/../vendor/autoload.php';
-use GuzzleHttp\Client;
 
 class RestPkiClient {
 
@@ -23,15 +22,23 @@ class RestPkiClient {
 		$this->accessToken = $accessToken;
 	}
 
-	public function getRestClient() {
-		$client = new Client([
-			'base_uri' => $this->endpointUrl,
-			'headers' => [
-				'Authorization' => 'Bearer ' . $this->accessToken,
-				'Accept' => 'application/json'
-			]
-		]);
-		return $client;
+	public function get($url) {
+		$request = \Httpful\Request::get($this->endpointUrl . $url)
+			->expectsJson()
+			->addHeader('Authorization', 'Bearer ' . $this->accessToken);
+		$httpResponse = $request->send();
+		return $httpResponse->body;
+	}
+
+	public function post($url, $data) {
+		$request = \Httpful\Request::post($this->endpointUrl . $url)
+			->expectsJson()
+			->addHeader('Authorization', 'Bearer ' . $this->accessToken);
+		if (!is_null($data)) {
+			$request->sendsJson()->body(json_encode($data));
+		}
+		$httpResponse = $request->send();
+		return $httpResponse->body;
 	}
 
 	public function getAuthentication() {
@@ -53,20 +60,14 @@ class Authentication {
 	}
 
 	public function startWithWebPki($securityContextId) {
-		$client = $this->restPkiClient->getRestClient();
-		$httpResponse = $client->post('Api/Authentications', [
-			'json' => [
-				'securityContextId' => $securityContextId
-			]
+		$response = $this->restPkiClient->post('Api/Authentications', [
+			'securityContextId' => $securityContextId
 		]);
-		$response = json_decode($httpResponse->getBody());
 		return $response->token;
 	}
 
 	public function completeWithWebPki($token) {
-		$client = $this->restPkiClient->getRestClient();
-		$httpResponse = $client->post("Api/Authentications/$token/Finalize");
-		$response = json_decode($httpResponse->getBody());
+		$response = $this->restPkiClient->post("Api/Authentications/$token/Finalize", NULL);
 		$this->certificate = $response->certificate;
 		$this->done = true;
 		return new ValidationResults($response->validationResults);
@@ -123,16 +124,12 @@ class PadesSignatureStarter {
 			throw new \Exception("The signature policy was not set");
 		}
 
-		$client = $this->restPkiClient->getRestClient();
-		$httpResponse = $client->post('Api/PadesSignatures', [
-			'json' => [
-				'pdfToSign' => base64_encode($this->pdfContent),
-				'signaturePolicyId' => $this->signaturePolicyId,
-				'securityContextId' => $this->securityContextId,
-				'visualRepresentation' => $this->visualRepresentation
-			]
+		$response = $this->restPkiClient->post('Api/PadesSignatures', [
+			'pdfToSign' => base64_encode($this->pdfContent),
+			'signaturePolicyId' => $this->signaturePolicyId,
+			'securityContextId' => $this->securityContextId,
+			'visualRepresentation' => $this->visualRepresentation
 		]);
-		$response = json_decode($httpResponse->getBody());
 		return $response->token;
 	}
 
@@ -162,9 +159,7 @@ class PadesSignatureFinisher {
 			throw new \Exception("The token was not set");
 		}
 
-		$client = $this->restPkiClient->getRestClient();
-		$httpResponse = $client->post("Api/PadesSignatures/{$this->token}/Finalize");
-		$response = json_decode($httpResponse->getBody());
+		$response =$this->restPkiClient->post("Api/PadesSignatures/{$this->token}/Finalize", NULL);
 
 		$this->signedPdf = base64_decode($response->signedPdf);
 		$this->certificate = $response->certificate;
@@ -221,8 +216,7 @@ class PadesVisualPositioningPresets {
 		if (array_key_exists($urlSegment, self::$cachedPresets)) {
 			return self::$cachedPresets[$urlSegment];
 		}
-		$httpResponse = $restPkiClient->getRestClient()->get("Api/PadesVisualPositioningPresets/$urlSegment");
-		$preset = json_decode($httpResponse->getBody());
+		$preset = $restPkiClient->get("Api/PadesVisualPositioningPresets/$urlSegment");
 		self::$cachedPresets[$urlSegment] = $preset;
 		return $preset;
 	}

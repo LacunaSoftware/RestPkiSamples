@@ -1,29 +1,28 @@
 <?php
-	
-	/*
-	  This is the page for authentication. Actual logic can be found at:
-	  - Client-side: content/js/app/authentication.js
-	  - Server-side: api/authentication.php
-	 */
 
-	// We'll call the function getRestPkiClient() just to make sure the API access token was set. You can remove this in your application.
-	require_once 'api/util.php';
-	getRestPkiClient();
-	
+require_once 'RestPki.php';
+require_once 'util.php';
+
+$auth = getRestPkiClient()->getAuthentication();
+$token = $auth->startWithWebPki(\Lacuna\StandardSecurityContexts::PKI_BRAZIL);
+setExpiredPage();
+
 ?><!DOCTYPE html>
 <html>
 <head>
-	<?php include 'head.php' ?>
+	<title>Authentication</title>
+	<?php include 'includes.php' ?>
 </head>
 <body>
 
-<?php include 'top.php' ?>
+<?php include 'menu.php' ?>
 
 <div class="container">
 
 	<h2>Authentication</h2>
 
-	<form>
+	<form id="authForm" action="authentication-action.php" method="POST">
+		<input type="hidden" name="token" value="<?= $token ?>">
 		<div class="form-group">
 			<label for="certificateSelect">Choose a certificate</label>
 			<select id="certificateSelect" class="form-control"></select>
@@ -32,14 +31,116 @@
 		<button id="refreshButton" type="button" class="btn btn-default">Refresh Certificates</button>
 	</form>
 
-	<fieldset id="validationResultsPanel" style="display: none;">
-		<legend>Validation Results</legend>
-		<textarea readonly="true" rows="25" style="width: 100%"></textarea>
-	</fieldset>
-
-	<script src="content/js/lacuna-web-pki-2.2.2.js"></script>
-	<script src="content/js/app/authentication.js"></script>
-
 </div>
+
+<script src="content/js/lacuna-web-pki-2.2.2.js"></script>
+<script>
+
+	var pki = new LacunaWebPKI();
+
+	// -------------------------------------------------------------------------------------------------
+	// Function called once the page is loaded
+	// -------------------------------------------------------------------------------------------------
+	function init() {
+
+		// Wireup of button clicks
+		$('#signInButton').click(signIn);
+		$('#refreshButton').click(refresh);
+
+		// Block the UI while we get things ready
+		$.blockUI();
+
+		// Call the init() method on the LacunaWebPKI object, passing a callback for when
+		// the component is ready to be used and another to be called when an error occurs
+		// on any of the subsequent operations. For more information, see:
+		// https://webpki.lacunasoftware.com/#/Documentation#coding-the-first-lines
+		// http://webpki.lacunasoftware.com/Help/classes/LacunaWebPKI.html#method_init
+		pki.init({
+			ready: loadCertificates,
+			defaultError: onWebPkiError
+		});
+	}
+
+	// -------------------------------------------------------------------------------------------------
+	// Function called when the user clicks the "Refresh" button
+	// -------------------------------------------------------------------------------------------------
+	function refresh() {
+		// Block the UI while we load the certificates
+		$.blockUI();
+		// Invoke the loading of the certificates
+		loadCertificates();
+	}
+
+	// -------------------------------------------------------------------------------------------------
+	// Function that loads the certificates, either on startup or when the user
+	// clicks the "Refresh" button. At this point, the UI is already blocked.
+	// -------------------------------------------------------------------------------------------------
+	function loadCertificates() {
+
+		var select = $('#certificateSelect');
+
+		// Clear the existing items on the dropdown
+		select.find('option').remove();
+
+		// Call listCertificates() on the LacunaWebPKI object. For more information see
+		// http://webpki.lacunasoftware.com/Help/classes/LacunaWebPKI.html#method_listCertificates
+		pki.listCertificates().success(function (certs) {
+
+			// This anonymous function is called asynchronously once the listCertificates operation completes.
+			// We'll populate the certificateSelect dropdown with the certificates, placing the
+			// "thumbprint" property of each certificate on the value attribute of each item (this will be important later on).
+			$.each(certs, function () {
+				select.append(
+					$('<option />')
+						.val(this.thumbprint) // Don't change what is used as the value attribute
+						.text(this.subjectName + ' (issued by ' + this.issuerName + ')') // You may customize here what is displayed for each item
+				);
+			});
+
+			// Unblock the UI
+			$.unblockUI();
+		});
+	}
+
+	// -------------------------------------------------------------------------------------------------
+	// Function called when the user clicks the "Sign In" button
+	// -------------------------------------------------------------------------------------------------
+	function signIn() {
+
+		// Block the UI while we process the authentication
+		$.blockUI();
+
+		// Get the value attribute of the option selected on the dropdown. Since we placed the "thumbprint"
+		// property on the value attribute of each item (see function loadCertificates above), we're actually
+		// retrieving the thumbprint of the selected certificate.
+		var selectedCertThumbprint = $('#certificateSelect').val();
+
+		// Call signWithRestPki() on the Web PKI component passing the token received from the server and the certificate
+		// selected by the user. Although we're making an authentication, at the lower level we're actually signing
+		// a cryptographic nonce (a random number generated by the REST PKI service), hence the name of the method.
+		pki.signWithRestPki({
+			token: '<?= $token ?>',
+			thumbprint: selectedCertThumbprint,
+		}).success(function () {
+			$('#authForm').submit();
+		});
+	}
+
+	// -------------------------------------------------------------------------------------------------
+	// Function called if an error occurs on the Web PKI component
+	// -------------------------------------------------------------------------------------------------
+	function onWebPkiError(message, error, origin) {
+		$.unblockUI();
+		if (console) {
+			console.log('An error has occurred on the signature browser component: ' + message, error);
+		}
+		alert(message);
+	}
+
+	// Schedule the init function to be called once the page is loaded
+	$(document).ready(init);
+
+</script>
+
 </body>
 </html>
