@@ -14,7 +14,7 @@
 	$signatureStarter->setSecurityContext(StandardSecurityContexts::PKI_BRAZIL);
 	$signatureStarter->setVisualRepresentation([
 		'text' => [
-			'text' => 'Signed by {{signerName}}',
+			'text' => 'Signed by {{signerName}} ({{signerNationalId}})',
 			'includeSigningTime' => true
 		],
 		'image' => [
