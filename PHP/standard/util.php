@@ -6,24 +6,25 @@ use Lacuna\RestPkiClient;
 
 function getRestPkiClient() {
 
-	// -------------------------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------------------------------
 	// PASTE YOUR ACCESS TOKEN BELOW
 	$restPkiAccessToken = 'PLACE YOUR API ACCESS TOKEN HERE';
 	//                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-	// -------------------------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------------------------------
 
-	// Throw exception if token is not set, this check is here just for the sake of newcomers, you 
-	// can remove it.
+	// Throw exception if token is not set (this check is here just for the sake of newcomers, you can remove it)
 	if (strpos($restPkiAccessToken, ' API ') !== false) {
 		throw new \Exception('The API access token was not set! Hint: to run this sample you must generate an API access token on the REST PKI website and paste it on the file api/util.php');
 	}
 
-	// -------------------------------------------------------------------------------------------
-	// IMPORTANT NOTICE: in production code, you should use HTTPS, otherwise your API access token,
-	// as well as the documents you sign, will be sent to REST PKI unencrypted.
-	// -------------------------------------------------------------------------------------------
-	return new RestPkiClient('http://pki.rest/', $restPkiAccessToken);
-	//return new RestPkiClient('https://pki.rest/', $restPkiAccessToken); // <--- USE THIS IN PRODUCTION!
+	// -----------------------------------------------------------------------------------------------------------
+	// IMPORTANT NOTICE: in production code, you should use HTTPS to communicate with REST PKI, otherwise your API
+	// access token, as well as the documents you sign, will be sent to REST PKI unencrypted.
+	// -----------------------------------------------------------------------------------------------------------
+	$restPkiUrl = 'http://pki.rest/';
+	//$restPkiUrl = 'https://pki.rest/'; // <--- USE THIS IN PRODUCTION!
+
+	return new RestPkiClient($restPkiUrl, $restPkiAccessToken);
 }
 
 function setExpiredPage() {
