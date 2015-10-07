@@ -472,13 +472,13 @@ LacunaWebPKI = function (license) {
 
 		var context = this._createContext(args);
 		$._requestHandler.sendCommand(context, 'listCertificates', null, function (result) {
-			return $._processCertificates(result, args.filter);
+			return $._processCertificates(result, args.filter, args.selectId, args.selectOptionFormatter);
 		});
 
 		return context.promise;
 	};
 
-	$._processCertificates = function (result, filter) {
+	$._processCertificates = function (result, filter, selectId, selectOptionFormatter) {
 		var toReturn = [];
 		for (var i = 0; i < result.length; i++) {
 			var cert = result[i];
@@ -494,6 +494,24 @@ LacunaWebPKI = function (license) {
 				}
 			} else {
 				toReturn.push(cert);
+			}
+		}
+		if (selectId) {
+			if (!selectOptionFormatter) {
+				selectOptionFormatter = function (c) {
+					return c.subjectName + ' (issued by ' + c.issuerName + ')';
+				};
+			}
+			var select = document.getElementById(selectId);
+			while (select.options.length > 0) {
+				select.remove(0);
+			}
+			for (var j = 0; j < toReturn.length; j++) {
+				var c = toReturn[j];
+				var option = document.createElement('option');
+				option.value = c.thumbprint;
+				option.text = selectOptionFormatter(c);
+				select.add(option);
 			}
 		}
 		return toReturn;

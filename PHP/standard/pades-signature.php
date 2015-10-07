@@ -1,6 +1,18 @@
 <?php
 
+/*
+ * This file initiates a PAdES signature using REST PKI and renders the signature page. The form is posted to
+ * another file, pades-signature-action.php, which calls REST PKI again to complete the signature.
+ *
+ * Both PAdES signature examples, with a server file and with a file uploaded by the user, use this file. The difference
+ * is that, when the file is uploaded by the user, the page is called with a URL argument named "userfile".
+ */
+
+// The file RestPki.php contains the helper classes to call the REST PKI API
 require_once 'RestPki.php';
+
+// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
+// initialized with the API access token
 require_once 'util.php';
 
 use Lacuna\PadesSignatureStarter;
@@ -8,6 +20,9 @@ use Lacuna\PadesVisualPositioningPresets;
 use Lacuna\StandardSecurityContexts;
 use Lacuna\StandardSignaturePolicies;
 
+// This function is called below. It contains examples of signature visual representation positionings. This code is
+// only in a separate function in order to organize the various examples, you can pick the one that best suits your
+// needs and use it below directly without an encapsulating function.
 function getVisualRepresentationPosition($sampleNumber) {
 
 	switch ($sampleNumber) {
@@ -85,62 +100,128 @@ function getVisualRepresentationPosition($sampleNumber) {
 	}
 }
 
-$pdfPath = array_key_exists('file', $_GET) ? 'uploads/' . $_GET['file'] . '.pdf' : 'content/SampleDocument.pdf';
+// If the user was redirected here by upload.php (signature with file uploaded by user), the "userfile" URL argument
+// will contain the filename under the uploads/ folder. Otherwise (signature with server file), we'll sign a sample
+// document.
+$pdfPath = isset($_GET['userfile']) ? 'uploads/' . $_GET['userfile'] . '.pdf' : 'content/SampleDocument.pdf';
 
+// Instantiate the PadesSignatureStarter class, responsible for receiving the signature elements and start the signature
+// process
 $signatureStarter = new PadesSignatureStarter(getRestPkiClient());
+
+// Set the path of PDF to be signed. The file will be read with the standard file_get_contents() function, so the same
+// path rules apply.
 $signatureStarter->setPdfToSignPath($pdfPath);
+
+// Set the signature policy
 $signatureStarter->setSignaturePolicy(StandardSignaturePolicies::PADES_BASIC);
+
+// Set a SecurityContext to be used to determine trust in the certificate chain
 $signatureStarter->setSecurityContext(StandardSecurityContexts::PKI_BRAZIL);
+// Note: By changing the SecurityContext above you can accept only certificates from a certain PKI, for instance,
+// ICP-Brasil (\Lacuna\StandardSecurityContexts::PKI_BRAZIL).
+
+// Set the visual representation for the signature
 $signatureStarter->setVisualRepresentation([
+
 	'text' => [
+
+		// The tags {{signerName}} and {{signerNationalId}} will be substituted according to the user's certificate
+		// signerName -> full name of the signer
+		// signerNationalId -> if the certificate is ICP-Brasil, contains the signer's CPF
 		'text' => 'Signed by {{signerName}} ({{signerNationalId}})',
+
+		// Specify that the signing time should also be rendered
 		'includeSigningTime' => true
+
 	],
+
 	'image' => [
+
+		// We'll use as background the image content/PdfStamp.png
 		'resource' => [
 			'content' => base64_encode(file_get_contents('content/PdfStamp.png')),
 			'mimeType' => 'image/png'
 		],
+
+		// Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is completely opaque).
 		'opacity' => 50,
+
+		// Align the image to the right
 		'horizontalAlign' => 'Right'
+
 	],
+
+	// Position of the visual representation. We have encapsulated this code in a function to include several
+	// possibilities depending on the argument passed to the function. Experiment changing the argument to see
+	// different examples of signature positioning. Once you decide which is best for your case, you can place the
+	// code directly here.
 	'position' => getVisualRepresentationPosition(3)
+
 ]);
 
+// Call the startWithWebPki() method, which initiates the signature. This yields the token, a 43-character
+// case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
+// signWithRestPki() method on the Web PKI component (see javascript below) and also to complete the signature after
+// the form is submitted (see file pades-signature-action.php). This should not be mistaken with the API access token.
 $token = $signatureStarter->startWithWebPki();
+
+// The token acquired above can only be used for a single signature attempt. In order to retry the signature it is
+// necessary to get a new token. This can be a problem if the user uses the back button of the browser, since the
+// browser might show a cached page that we rendered previously, with a now stale token. To prevent this from happening,
+// we call the function setExpiredPage(), located in util.php, which sets HTTP headers to prevent caching of the page.
 setExpiredPage();
 
 ?><!DOCTYPE html>
 <html>
 <head>
 	<title>PAdES Signature</title>
-	<?php include 'includes.php' ?>
+	<?php include 'includes.php' // jQuery and other libs (for a sample without jQuery, see https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP) ?>
 </head>
 <body>
 
-<?php include 'menu.php' ?>
+<?php include 'menu.php' // The top menu, this can be removed entirely ?>
 
 <div class="container">
 
 	<h2>PAdES Signature</h2>
 
+	<?php // notice that we'll post to a different PHP file ?>
 	<form id="signForm" action="pades-signature-action.php" method="POST">
+
+		<?php // render the $token in a hidden input field ?>
 		<input type="hidden" name="token" value="<?= $token ?>">
+
 		<div class="form-group">
 			<label>File to sign</label>
-			<p>You'll be signing <a href='<?= $pdfPath ?>'>this document</a>.</p>
+			<p>You'll are signing <a href='<?= $pdfPath ?>'>this document</a>.</p>
 		</div>
+
+		<?php
+			// Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it
+			// later on (see javascript below).
+		?>
 		<div class="form-group">
 			<label for="certificateSelect">Choose a certificate</label>
 			<select id="certificateSelect" class="form-control"></select>
 		</div>
+
+		<?php
+			// Action buttons. Notice that the "Sign File" button is NOT a submit button. When the user clicks the button,
+			// we must first use the Web PKI component to perform the client-side computation necessary and only when
+			// that computation is finished we'll submit the form programmatically (see javascript below).
+		?>
 		<button id="signButton" type="button" class="btn btn-primary">Sign File</button>
 		<button id="refreshButton" type="button" class="btn btn-default">Refresh Certificates</button>
 	</form>
 
 </div>
 
-<script src="content/js/lacuna-web-pki-2.2.2.js"></script>
+<?php
+// The file below contains the JS lib for accessing the Web PKI component. For more information, see:
+// https://webpki.lacunasoftware.com/#/Documentation
+?>
+<script src="content/js/lacuna-web-pki-2.3.0.js"></script>
 <script>
 
 	var pki = new LacunaWebPKI();
@@ -163,7 +244,7 @@ setExpiredPage();
 		// https://webpki.lacunasoftware.com/#/Documentation#coding-the-first-lines
 		// http://webpki.lacunasoftware.com/Help/classes/LacunaWebPKI.html#method_init
 		pki.init({
-			ready: loadCertificates,
+			ready: loadCertificates, // as soon as the component is ready we'll load the certificates
 			defaultError: onWebPkiError
 		});
 	}
@@ -184,28 +265,28 @@ setExpiredPage();
 	// -------------------------------------------------------------------------------------------------
 	function loadCertificates() {
 
-		var select = $('#certificateSelect');
+		// Call the listCertificates() method to list the user's certificates
+		pki.listCertificates({
 
-		// Clear the existing items on the dropdown
-		select.find('option').remove();
+			// specify that expired certificates should be ignored
+			filter: pki.filters.isWithinValidity,
 
-		// Call listCertificates() on the LacunaWebPKI object. For more information see
-		// http://webpki.lacunasoftware.com/Help/classes/LacunaWebPKI.html#method_listCertificates
-		pki.listCertificates().success(function (certs) {
+			// in order to list only certificates within validity period and having a CPF (ICP-Brasil), use this instead:
+			//filter: pki.filters.all(pki.filters.hasPkiBrazilCpf, pki.filters.isWithinValidity),
 
-			// This anonymous function is called asynchronously once the listCertificates operation completes.
-			// We'll populate the certificateSelect dropdown with the certificates, placing the
-			// "thumbprint" property of each certificate on the value attribute of each item (this will be important later on).
-			$.each(certs, function () {
-				select.append(
-					$('<option />')
-						.val(this.thumbprint) // Don't change what is used as the value attribute
-						.text(this.subjectName + ' (issued by ' + this.issuerName + ')') // You may customize here what is displayed for each item
-				);
-			});
+			// id of the select to be populated with the certificates
+			selectId: 'certificateSelect',
 
-			// Unblock the UI
+			// function that will be called to get the text that should be displayed for each option
+			selectOptionFormatter: function (cert) {
+				return cert.subjectName + ' (issued by ' + cert.issuerName + ')';
+			}
+
+		}).success(function () {
+
+			// once the certificates have been listed, unblock the UI
 			$.unblockUI();
+
 		});
 	}
 
@@ -217,15 +298,16 @@ setExpiredPage();
 		// Block the UI while we perform the signature
 		$.blockUI();
 
-		// Get the value attribute of the option selected on the dropdown. Since we placed the "thumbprint"
-		// property on the value attribute of each item (see function loadCertificates above), we're actually
-		// retrieving the thumbprint of the selected certificate.
+		// Get the thumbprint of the selected certificate
 		var selectedCertThumbprint = $('#certificateSelect').val();
 
+		// Call signWithRestPki() on the Web PKI component passing the token received from REST PKI and the certificate
+		// selected by the user.
 		pki.signWithRestPki({
-			thumbprint: selectedCertThumbprint,
-			token: '<?= $token ?>'
+			token: '<?= $token ?>',
+			thumbprint: selectedCertThumbprint
 		}).success(function() {
+			// Once the operation is completed, we submit the form
 			$('#signForm').submit();
 		});
 	}
@@ -234,10 +316,14 @@ setExpiredPage();
 	// Function called if an error occurs on the Web PKI component
 	// -------------------------------------------------------------------------------------------------
 	function onWebPkiError(message, error, origin) {
+		// Unblock the UI
 		$.unblockUI();
+		// Log the error to the browser console (for debugging purposes)
 		if (console) {
 			console.log('An error has occurred on the signature browser component: ' + message, error);
 		}
+		// Show the message to the user. You might want to substitute the alert below with a more user-friendly UI
+		// component to show the error.
 		alert(message);
 	}
 

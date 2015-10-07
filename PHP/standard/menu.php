@@ -12,7 +12,8 @@
 		<div id="navbar" class="collapse navbar-collapse">
 			<ul class="nav navbar-nav">
 				<li><a href="authentication.php">Authentication</a></li>
-				<li><a href="pades-signature.php">PAdES Signature</a></li>
+				<li><a href="pades-signature.php">PAdES Signature (server file)</a></li>
+				<li><a href="upload.php">PAdES Signature (user file)</a></li>
 			</ul>
 		</div><!--/.nav-collapse -->
 	</div>

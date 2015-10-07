@@ -1,3 +1,6 @@
+<?php
+	// For a sample without javascript libraries, see https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP
+?>
 <link href="content/css/bootstrap.css" rel="stylesheet" />
 <link href="content/css/bootstrap-theme.css" rel="stylesheet" />
 <link href="content/css/site.css" rel="stylesheet" />
