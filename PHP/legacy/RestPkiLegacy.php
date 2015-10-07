@@ -5,7 +5,11 @@
  *
  * This file contains classes that encapsulate the calls to the REST PKI API.
  *
- * This file depends on the GuzzleHttp package, which in turn requires PHP 5.5 or greater.
+ * This file depends on the Httpful package, which in turn requires PHP 5.3 or greater.
+ *
+ * Notice: if you're using PHP version 5.5 or greater, please use one of the other samples, which make better use of
+ * the extended capabilities of the newer versions of PHP:
+ * https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP
  */
 
 namespace Lacuna;
