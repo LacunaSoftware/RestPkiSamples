@@ -10,7 +10,7 @@
 
 namespace Lacuna;
 
-require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__.'/vendor/autoload.php';
 
 class RestPkiClient {
 
@@ -60,9 +60,9 @@ class Authentication {
 	}
 
 	public function startWithWebPki($securityContextId) {
-		$response = $this->restPkiClient->post('Api/Authentications', [
+		$response = $this->restPkiClient->post('Api/Authentications', array(
 			'securityContextId' => $securityContextId
-		]);
+		));
 		return $response->token;
 	}
 
@@ -124,12 +124,12 @@ class PadesSignatureStarter {
 			throw new \Exception("The signature policy was not set");
 		}
 
-		$response = $this->restPkiClient->post('Api/PadesSignatures', [
+		$response = $this->restPkiClient->post('Api/PadesSignatures', array(
 			'pdfToSign' => base64_encode($this->pdfContent),
 			'signaturePolicyId' => $this->signaturePolicyId,
 			'securityContextId' => $this->securityContextId,
 			'visualRepresentation' => $this->visualRepresentation
-		]);
+		));
 		return $response->token;
 	}
 
@@ -195,7 +195,7 @@ class StandardSignaturePolicies {
 
 class PadesVisualPositioningPresets {
 
-	private static $cachedPresets = [];
+	private static $cachedPresets = array();
 
 	public static function getFootnote(RestPkiClient $restPkiClient, $pageNumber = null, $rows = null) {
 		$urlSegment = 'Footnote';
@@ -298,7 +298,7 @@ class ValidationResults {
 	}
 
 	private static function convertItems($items) {
-		$converted = [];
+		$converted = array();
 		foreach ($items as $item) {
 			$converted[] = new ValidationItem($item);
 		}

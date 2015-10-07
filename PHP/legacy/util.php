@@ -1,6 +1,6 @@
 <?php
 
-require_once 'RestPki.php';
+require_once 'RestPkiLegacy.php';
 
 use Lacuna\RestPkiClient;
 
