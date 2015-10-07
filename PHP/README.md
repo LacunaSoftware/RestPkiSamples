@@ -19,7 +19,7 @@ The standard PHP sample can be found in the folder [standard](standard/). To run
 
 2. Generate an API access token on the [REST PKI website](https://restpki.lacunasoftware.com/)
 
-3. Paste your access token on the file `api/util.php`
+3. Paste your access token on the file `util.php`
    
 4. Setup a website on your local HTTP server pointing to the PHP folder
   
