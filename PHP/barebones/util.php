@@ -6,19 +6,26 @@ use Lacuna\RestPkiClient;
 
 function getRestPkiClient() {
 
-	// -------------------------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------------------------------
 	// PASTE YOUR ACCESS TOKEN BELOW
-	$restPkiAccessToken = 'JWNYwIKpG81L1V4tfWQLnbVBAk2BkUe_gwJhLS7ADUbKrjaJ82MvPlL9IJfL0knheP0WDi8Yp6G6pq_cNKhnVL-Pb0Bo1UlEi9O6-V466Y3EsdF3bTBGkKfhq1HMqXU6Kio48rLrMDHEM0ezF3wzR21gpfMtZX8cjvKsJqimRWOY71dR2UFaZfNu9YwXEUU4kFSxvVQy1aA1GnDZwY-qrhfzPoi1-ReIu4pegcUtallr5CQoZ8BNpIBSbk-4vQ3IWEGfm5dhgjnLTga0g8-FmuPwFv2TZglXYHfrJHXp-B8v0Ijr-qh6sf4FtwK-28Ek1VEhcZDfL9cH4fOP4odOneI4hI-vVzx2sKqcm94oPIX8cRxfmgiX6eP80bvczGG0rZm2PJHR_y6v2X1Fr-6u_1ibBioeHFgm17Tb9y5KMkYgvkx3cqMqi51OxXSS0aCUcvl6K3vQQPeqoiVx-ZpImTzWHllOtvMSqqR0-4bWJg4sroqNkfcyFIK7uyjqJyEoSg8Txw';
+	//$restPkiAccessToken = 'PLACE YOUR API ACCESS TOKEN HERE';
 	//                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-	// -------------------------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------------------------------
+	$restPkiAccessToken = 'prP404HtikMCNPhsemUkAcLQnQH1aSl9mbDX53DEWoAje5DL5-lmYOKEUCVou8LcQ-i6g5MG9R96XAxVDTeUzapnq6wtxFb5bpYwFARAT4If6vpp-7iftgTFfhifyBjYgxK5dWmM79jFKSFSfg0lkHqJqpyrxPln1z3dh2WhZGZZO66jV1bD1DzeMNXzYorvgQ2LHy_7JeZFHhoDzDjoxT_ZJizBJ47yUH397sHNrTeLsvurqtV10dIcy3PF1XHfnhGtE-AjnVMJ8dOZvnaiXDr-pJcVY1xdOcTNZqiUTjXgLWDYg8WORazc0AQxtvWFj-MfucW1IHd7hd-vYjp_LMMe4ghCuAPsPSabElAi4l5lUkk5_4rLQ95VKtCM7M51KtXUrxExLxFyQEYqfWrCOvn06qByKnkOgM9yQ28twlCzf9f0dzVpf1BSlktPpO97oUXL72fUKEXEoXgHoof4reFRnXThfvkPVsKkn_ILh3XQQ_UIz_-2NbigWI_9G9hTi1fy2A';
 
-	// Throw exception if token is not set, this check is here just for the sake of newcomers, you 
-	// can remove it.
+	// Throw exception if token is not set (this check is here just for the sake of newcomers, you can remove it)
 	if (strpos($restPkiAccessToken, ' API ') !== false) {
-		throw new \Exception('The API access token was not set! Hint: to run this sample you must generate an API access token on the REST PKI website and paste it on the file util.php');
+		throw new \Exception('The API access token was not set! Hint: to run this sample you must generate an API access token on the REST PKI website and paste it on the file api/util.php');
 	}
-	
-	return new RestPkiClient('http://pki.rest/', $restPkiAccessToken);
+
+	// -----------------------------------------------------------------------------------------------------------
+	// IMPORTANT NOTICE: in production code, you should use HTTPS to communicate with REST PKI, otherwise your API
+	// access token, as well as the documents you sign, will be sent to REST PKI unencrypted.
+	// -----------------------------------------------------------------------------------------------------------
+	$restPkiUrl = 'http://pki.rest/';
+	//$restPkiUrl = 'https://pki.rest/'; // <--- USE THIS IN PRODUCTION!
+
+	return new RestPkiClient($restPkiUrl, $restPkiAccessToken);
 }
 
 function setExpiredPage() {

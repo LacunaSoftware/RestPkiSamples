@@ -5,12 +5,13 @@
  *
  * This file contains classes that encapsulate the calls to the REST PKI API.
  *
- * This file depends on the GuzzleHttp package, which in turn requires PHP 5.5 or greater.
+ * This file depends on the GuzzleHttp package, which in turn requires PHP 5.5 or greater. For a sample using PHP 5.3
+ * or 5.4, see https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP
  */
 
 namespace Lacuna;
 
-require_once 'vendor/autoload.php';
+require_once __DIR__.'/vendor/autoload.php';
 
 class RestPkiClient {
 
@@ -22,7 +23,7 @@ class RestPkiClient {
 		$this->accessToken = $accessToken;
 	}
 
-	private function getRestClient() {
+	public function getRestClient() {
 		$client = new \GuzzleHttp\Client([
 			'base_uri' => $this->endpointUrl,
 			'headers' => [
@@ -34,18 +35,17 @@ class RestPkiClient {
 	}
 
 	public function get($url) {
-		$client = $this->getRestClient();
-		$httpResponse = $client->get($url);
+		$httpResponse = $this->getRestClient()->get($url);
 		$response = json_decode($httpResponse->getBody());
 		return $response;
 	}
 
 	public function post($url, $data) {
 		$client = $this->getRestClient();
-		if (is_null($data)) {
+		if (empty($data)) {
 			$httpResponse = $client->post($url);
 		} else {
-			$httpResponse = $client->post($url, [ 'json' => $data ]);
+			$httpResponse = $client->post($url, array( 'json' => $data ));
 		}
 		$response = json_decode($httpResponse->getBody());
 		return $response;
@@ -70,9 +70,9 @@ class Authentication {
 	}
 
 	public function startWithWebPki($securityContextId) {
-		$response = $this->restPkiClient->post('Api/Authentications', [
+		$response = $this->restPkiClient->post('Api/Authentications', array(
 			'securityContextId' => $securityContextId
-		]);
+		));
 		return $response->token;
 	}
 
@@ -134,12 +134,12 @@ class PadesSignatureStarter {
 			throw new \Exception("The signature policy was not set");
 		}
 
-		$response = $this->restPkiClient->post('Api/PadesSignatures', [
+		$response = $this->restPkiClient->post('Api/PadesSignatures', array(
 			'pdfToSign' => base64_encode($this->pdfContent),
 			'signaturePolicyId' => $this->signaturePolicyId,
 			'securityContextId' => $this->securityContextId,
 			'visualRepresentation' => $this->visualRepresentation
-		]);
+		));
 		return $response->token;
 	}
 
@@ -205,7 +205,7 @@ class StandardSignaturePolicies {
 
 class PadesVisualPositioningPresets {
 
-	private static $cachedPresets = [];
+	private static $cachedPresets = array();
 
 	public static function getFootnote(RestPkiClient $restPkiClient, $pageNumber = null, $rows = null) {
 		$urlSegment = 'Footnote';
@@ -308,7 +308,7 @@ class ValidationResults {
 	}
 
 	private static function convertItems($items) {
-		$converted = [];
+		$converted = array();
 		foreach ($items as $item) {
 			$converted[] = new ValidationItem($item);
 		}
