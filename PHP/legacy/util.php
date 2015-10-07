@@ -8,10 +8,9 @@ function getRestPkiClient() {
 
 	// -----------------------------------------------------------------------------------------------------------
 	// PASTE YOUR ACCESS TOKEN BELOW
-	//$restPkiAccessToken = 'PLACE YOUR API ACCESS TOKEN HERE';
+	$restPkiAccessToken = 'PLACE YOUR API ACCESS TOKEN HERE';
 	//                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 	// -----------------------------------------------------------------------------------------------------------
-	$restPkiAccessToken = 'prP404HtikMCNPhsemUkAcLQnQH1aSl9mbDX53DEWoAje5DL5-lmYOKEUCVou8LcQ-i6g5MG9R96XAxVDTeUzapnq6wtxFb5bpYwFARAT4If6vpp-7iftgTFfhifyBjYgxK5dWmM79jFKSFSfg0lkHqJqpyrxPln1z3dh2WhZGZZO66jV1bD1DzeMNXzYorvgQ2LHy_7JeZFHhoDzDjoxT_ZJizBJ47yUH397sHNrTeLsvurqtV10dIcy3PF1XHfnhGtE-AjnVMJ8dOZvnaiXDr-pJcVY1xdOcTNZqiUTjXgLWDYg8WORazc0AQxtvWFj-MfucW1IHd7hd-vYjp_LMMe4ghCuAPsPSabElAi4l5lUkk5_4rLQ95VKtCM7M51KtXUrxExLxFyQEYqfWrCOvn06qByKnkOgM9yQ28twlCzf9f0dzVpf1BSlktPpO97oUXL72fUKEXEoXgHoof4reFRnXThfvkPVsKkn_ILh3XQQ_UIz_-2NbigWI_9G9hTi1fy2A';
 
 	// Throw exception if token is not set (this check is here just for the sake of newcomers, you can remove it)
 	if (strpos($restPkiAccessToken, ' API ') !== false) {
