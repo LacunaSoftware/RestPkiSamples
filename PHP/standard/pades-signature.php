@@ -176,7 +176,7 @@ setExpiredPage();
 <html>
 <head>
 	<title>PAdES Signature</title>
-	<?php include 'includes.php' // jQuery and other libs (for a sample without jQuery, see https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP) ?>
+	<?php include 'includes.php' // jQuery and other libs (for a sample without jQuery, see https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP#barebones-sample) ?>
 </head>
 <body>
 

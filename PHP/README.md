@@ -26,7 +26,7 @@ The standard PHP sample can be found in the folder [standard](standard/). To run
 5. Open the index.php file on the browser on the corresponding URL (depending on the previous step)
 
 Notice: the standard sample requires **PHP 5.5+**. If you're using PHP 5.3 or 5.4, please see the
-Legacy sample instead.
+[Legacy sample](#legacy-sample) instead.
 
 Legacy sample
 -------------
@@ -48,7 +48,7 @@ The steps to execute the sample are the same as with the standard sample.
 Dependencies
 ------------
 
-The sample projects depend on the GuzzleHttp library, which in turn requires **PHP 5.5** or
+The sample projects depend on the [Guzzle](http://guzzlephp.org/) library, which in turn requires **PHP 5.5** or
 greater (with the exception of the Legacy sample, which depends on the Httpful library, which requires
 only PHP 5.3+).
 
@@ -82,7 +82,7 @@ Once you've done this, you might start seeing the following error when executing
 
 > An error has occurred on the server: cURL error 60: SSL certificate problem: unable to get local issuer certificate (see http://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
-It means your PHP is not configured with a list of trusted root certification authorities, which is necessary to
+That means your PHP is not configured with a list of trusted root certification authorities, which is necessary to
 establish a secure SSL connection with REST PKI. To fix this, follow these steps:
 
 1. Download the file [http://curl.haxx.se/ca/cacert.pem](http://curl.haxx.se/ca/cacert.pem) and save it somewhere in your PHP server (for instance `C:\Program Files (x86)\PHP\cacert.pem`)
