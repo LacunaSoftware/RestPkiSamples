@@ -1,7 +1,7 @@
 <?php
 
 /*
- * REST PKI client lib for PHP
+ * REST PKI client lib for PHP (legacy version for PHP 5.3 and 5.4)
  *
  * This file contains classes that encapsulate the calls to the REST PKI API.
  *
