@@ -46,7 +46,15 @@ namespace SampleSite.Api {
 
 			// Set a visual representation for the signature
 			var visualRep = new PadesVisualRepresentation() {
-				Text = new PadesVisualText("Assinado por {{signerName}} (CPF {{signerNationalId}})", true),
+            // The tags {{signerName}} and {{signerNationalId}} will be substituted according to the user's certificate
+            // signerName -> full name of the signer
+            // signerNationalId -> if the certificate is ICP-Brasil, contains the signer's CPF
+            Text = new PadesVisualText("Assinado por {{signerName}} (CPF {{signerNationalId}})") {
+               // Specify that the signing time should also be rendered
+               IncludeSigningTime = true,
+               // Optionally set the horizontal alignment of the text ('Left' or 'Right'), if not set the default is Left
+               HorizontalAlign = PadesTextHorizontalAlign.Left
+            },
 				Image = new PadesVisualImage(Util.GetPdfStampContent(), "image/png"),
 				Position = await getVisualPositioning(4) // changing this number will result in different examples of signature positioning being used
 			};
