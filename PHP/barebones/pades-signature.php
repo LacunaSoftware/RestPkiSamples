@@ -132,7 +132,10 @@ $signatureStarter->setVisualRepresentation([
 		'text' => 'Signed by {{signerName}} ({{signerNationalId}})',
 
 		// Specify that the signing time should also be rendered
-		'includeSigningTime' => true
+		'includeSigningTime' => true,
+
+		// Optionally set the horizontal alignment of the text ('Left' or 'Right'), if not set the default is Left
+		'horizontalAlign' => 'Left'
 
 	],
 
