@@ -5,10 +5,12 @@ using SampleSite.Classes;
 using SampleSite.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web.Hosting;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -151,20 +153,18 @@ namespace SampleSite.Api {
 			}
 
 			// At this point, you'd typically store the signed PDF on your database. For demonstration purposes, we'll
-			// store the PDF on dummy database to the page an ID that can be used to open the signed PDF.
+			// store the PDF on the App_Data folder and send to the page an ID that can be used to open the signed PDF.
 
-			Signature signature;
-			using (var dbContext = new DbContext()) {
-				signature = Signature.Create();
-				signature.Type = SignatureTypes.Pades;
-				signature.Content = signedPdf;
-				dbContext.Signatures.Add(signature);
-				dbContext.SaveChanges();
+			var id = Guid.NewGuid();
+			var appDataPath = HostingEnvironment.MapPath("~/App_Data");
+			if (!Directory.Exists(appDataPath)) {
+				Directory.CreateDirectory(appDataPath);
 			}
+			File.WriteAllBytes(Path.Combine(appDataPath, id + ".pdf"), signedPdf);
 
 			return Ok(new SignatureCompleteResponse() {
 				Success = true,
-				SignatureId = signature.Id
+				SignatureId = id
 			});
 		}
 

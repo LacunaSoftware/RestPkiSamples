@@ -1,9 +1,11 @@
 ﻿using SampleSite.Classes;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
+using System.Web.Hosting;
 using System.Web.Mvc;
 
 namespace SampleSite.Controllers {
@@ -29,17 +31,12 @@ namespace SampleSite.Controllers {
 		// GET Signature/Download/{id}
 		[HttpGet]
 		public ActionResult Download(Guid id) {
-			using (var dbContext = new DbContext()) {
-				var signature = dbContext.Signatures.FirstOrDefault(s => s.Id == id);
-				if (signature == null) {
-					return HttpNotFound();
-				}
-				if (signature.Type == SignatureTypes.Cades) {
-					return File(signature.Content, "application/pkcs7-signature", String.Format("{0}.p7s", id));
-				} else {
-					return File(signature.Content, "application/pdf", String.Format("{0}.pdf", id));
-				}
+			var path = HostingEnvironment.MapPath(string.Format("~/App_Data/{0}.pdf", id));
+			if (!System.IO.File.Exists(path)) {
+				return HttpNotFound();
 			}
+			var content = System.IO.File.ReadAllBytes(path);
+			return File(content, "application/pdf", string.Format("{0}.pdf", id));
 		}
 	}
 }
