@@ -8,10 +8,9 @@ from werkzeug import secure_filename
 from lacunarestpki import *
 
 #--------------------------------------------------------
-#restPkiAccessToken = 'PLACE YOUR API ACCESS TOKEN HERE'
+restPkiAccessToken = 'PLACE YOUR API ACCESS TOKEN HERE'
 #                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 #--------------------------------------------------------
-restPkiAccessToken = 'dvYi2GqzU7YQX-xPx6zESqW6Itw4XvfYoR9iRQOd4_0gDweow0vhzREeZwIlCYabNMs5hgXkXfTJFAr4thUo695sFiO05JOxEZdovwkGJwI2cQBAfUS-qJxjLIOw4Rv4palUy0VdmnIpnw9VtR_bm4gfaRaOFk3GsAQc2c2DjMTzRzG4qFLWTpsbC_Aun99pmEfhUwrpHwtbnSJrEo-StNhl96r-JKz5vJbPUtsYdwc2smtU87TvI5evUasuYhir3DKDP1M0Iq6UAZxf4RuJkPW--qcJfHRGNMBQWys5LXAPwTZTcqxbfPxCVwL1LDX8E9kzrPKONSWmcN8qWNzZKkiqJAtoDPDTvHArpzZNGXgTkfWG4INOtBRxQ8s-lePlr6_lRmTwZDIAHAR0LEdGzkpt06iSUJQ8RQJnM68HuvdgCDF_9Mt7DSQIxGc0wuyT1LOgSeevm_4EdQh4NRG-QGJt_cV735Ck2K8nnod-PuJRh8qRf8deUyOZwEasMsQhy0Ayzg'
 
 # Throw exception if token is not set (this check is here just for the sake of newcomers, you can remove it)
 if restPkiAccessToken == 'PLACE YOUR API ACCESS TOKEN HERE':

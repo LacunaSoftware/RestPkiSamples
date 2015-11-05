@@ -40,5 +40,7 @@ $ pip install -r requirements.txt
 $ python demo.py
 ```
 
+7. Access application on http://localhost:5000
+
 Notice: the sample is written for Python 2.7, but it should work on Python 3.x.
 
