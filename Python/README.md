@@ -19,9 +19,26 @@ To run the sample:
 
 2. Generate an API access token on the [REST PKI website](https://restpki.lacunasoftware.com/)
 
-3. Paste your access token on the file `XXX`
+3. Paste your access token on the file `demo.py`
    
-4. TODO
+4. Optional: create and activate a virtualenv
+
+```
+$ virtualenv env
+$ . ./env/bin/activate
+```
+
+5. Install dependencies
+
+```
+$ pip install -r requirements.txt
+```
+
+6. Run application
+
+```
+$ python demo.py
+```
 
 Notice: the sample is written for Python 2.7, but it should work on Python 3.x.
 
