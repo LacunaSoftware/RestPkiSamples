@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+	{% if valid %}
+		<!-- We'll render different contents depending on whether the authentication succeeded or not -->
+		<h2>Authentication successful</h2>
+
+		<p>
+			User certificate information:
+			<ul>
+				<li>Subject: {{ userCert.subjectName.commonName }}</li>
+				<li>Email: {{ userCert.emailAddress }}</li>
+				<li>
+					ICP-Brasil fields
+					<ul>
+						<li>Tipo de certificado: {{ userCert.pkiBrazil.certificateType }}</li>
+						<li>CPF: {{ userCert.pkiBrazil.cpf }}</li>
+						<li>Responsavel: {{ userCert.pkiBrazil.responsavel }}</li>
+						<li>Empresa: {{ userCert.pkiBrazil.companyName }}</li>
+						<li>CNPJ: {{ userCert.pkiBrazil.cnpj }} </li>
+					</ul>
+				</li>
+			</ul>
+		</p>
+	{% else %}
+<!-- 		The $vr object can be used as a string, but the string contains tabs and new line characters for formatting,
+		which we'll convert to <br>'s and &nbsp;'s.
+ -->	
+		<h2>Authentication Failed</h2>
+		<p>
+			{{ vrHtml|safe }}
+		</p>
+		<p><a href="/authentication" class="btn btn-primary">Try again</a></p>
+	{% endif %}
+</div>
+{% endblock %}
