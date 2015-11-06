@@ -178,9 +178,9 @@ def pades_signature(userfile=None):
 
             # Position of the visual representation. We have encapsulated this code in a function to include several
             # possibilities depending on the argument passed to the function. Experiment changing the argument to see
-            # different examples of signature positioning. Once you decide which is best for your case, you can place
-            # the code directly here.
-            'position': get_visual_representation_position(3)
+            # different examples of signature positioning (valid values are 1-6). Once you decide which is best for
+            # your case, you can place the code directly here.
+            'position': get_visual_representation_position(1)
         })
 
         # Call the start_with_webpki() method, which initiates the signature. This yields the token, a 43-character

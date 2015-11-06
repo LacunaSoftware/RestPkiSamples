@@ -123,7 +123,7 @@ class PadesSignatureFinisher:
 
         response = self._client.post('Api/PadesSignatures/%s/Finalize' % self.token)
         self._signed_pdf_content = base64.b64decode(response.json().get('signedPdf', None))
-        self.certificate = response.json().get('certificate', None)
+        self._certificate = response.json().get('certificate', None)
         self._done = True
 
     @property
@@ -138,7 +138,7 @@ class PadesSignatureFinisher:
         if not self._done:
             raise Exception('The property "certificate" can only be called after calling the finish() method')
 
-        return self.certificate
+        return self._certificate
 
     def write_signed_pdf(self, local_pdf_path):
         if not self._done:
