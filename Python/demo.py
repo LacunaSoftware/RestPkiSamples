@@ -57,22 +57,24 @@ def auth():
 
     # Call the start_with_webpki() method, which initiates the authentication. This yields the "token", a 22-character
     # case-sensitive URL-safe string, which represents this authentication process. We'll use this value to call the
-    # sign_with_rest_pki() method on the Web PKI component (see lacuna-web-pki-client.js) and also to call the complete
-    # with_webpki() method on the route /authentication-action. This should not be mistaken with the API access token.
+    # signWithRestPki() method on the Web PKI component (see lacuna-web-pki-client.js) and also to call the
+    # complete_with_webpki() method on the route /authentication-action. This should not be mistaken with the API
+    # access token.
     try:
         token = authentication.start_with_webpki(StandardSecurityContexts.PKI_BRAZIL)
+        # Note: By changing the SecurityContext above you can accept only certificates from a certain PKI,
+        # for instance, ICP-Brasil (StandardSecurityContexts.PKI_BRAZIL).
     except Exception as e:
         return render_template('error.html', msg=e)
 
-    # Note: By changing the SecurityContext above you can accept only certificates from a certain PKI,
-    # for instance, ICP-Brasil (StandardSecurityContexts.PKI_BRAZIL).
+    response = make_response(render_template('authentication.html', token=token))
 
     # The token acquired above can only be used for a single authentication. In order to retry authenticating it is
     # necessary to get a new token. This can be a problem if the user uses the back button of the browser, since the
     # browser might show a cached page that we rendered previously, with a now stale token. To prevent this from
     # happening, we force page expiration through HTTP headers to prevent caching of the page.
-    response = make_response(render_template('authentication.html', token=token))
     response.headers = get_expired_page_headers()
+
     return response
 
 
@@ -100,11 +102,11 @@ def auth_action():
         if vr.is_valid:
             user_cert = authentication.certificate
             # At this point, you have assurance that the certificate is valid according to the SecurityContext specified
-            # on the method auth() and that the user is indeed the certificate's subject. Now, you'd typically query
-            # your database for a user that matches one of the certificate's fields, such as user_cert.emailAddress or
-            # user_cert.pkiBrazil.cpf (the actual field to be used as key depends on your application's business logic)
-            # and set the user as authenticated with whatever web security framework your application uses. For
-            # demonstration purposes, we'll just render the user's certificate information.
+            # on the method start_with_webpki() and that the user is indeed the certificate's subject. Now, you'd
+            # typically query your database for a user that matches one of the certificate's fields, such as
+            # user_cert.emailAddress or user_cert.pkiBrazil.cpf (the actual field to be used as key depends on your
+            # application's business logic) and set the user as authenticated with whatever web security framework your
+            # application uses. For demonstration purposes, we'll just render the user's certificate information.
     except Exception as e:
         return render_template('error.html', msg=e)
 
@@ -123,6 +125,7 @@ def pades_signature(userfile=None):
     else:
         pdf_path = '%s/%s' % (UPLOAD_FOLDER, userfile)
 
+    # Read the PDF stamp image
     f = open('static/PdfStamp.png', 'rb')
     pdf_stamp = f.read()
     f.close()
@@ -146,10 +149,12 @@ def pades_signature(userfile=None):
 
         # Set the visual representation for the signature
         signature_starter.visual_representation = ({
+
             'text': {
                 # The tags {{signerName}} and {{signerNationalId}} will be substituted according to the user's
-                # certificate signerName.full name of the signer
-                # signerNationalId> if the certificate is ICP-Brasil, contains the signer's CPF
+                # certificate
+                # signerName -> full name of the signer
+                # signerNationalId -> if the certificate is ICP-Brasil, contains the signer's CPF
                 'text': 'Signed by {{signerName}} ({{signerNationalId}})',
                 # Specify that the signing time should also be rendered
                 'includeSigningTime': True,
@@ -157,8 +162,9 @@ def pades_signature(userfile=None):
                 # Left
                 'horizontalAlign': 'Left'
             },
+
             'image': {
-                # We'll use as background the image static/PdfStamp.png
+                # We'll use as background the image that we've read above
                 'resource': {
                     'content': base64.b64encode(pdf_stamp),
                     'mimeType': 'image/png'
@@ -169,6 +175,7 @@ def pades_signature(userfile=None):
                 # Align the image to the right
                 'horizontalAlign': 'Right'
             },
+
             # Position of the visual representation. We have encapsulated this code in a function to include several
             # possibilities depending on the argument passed to the function. Experiment changing the argument to see
             # different examples of signature positioning. Once you decide which is best for your case, you can place
@@ -186,12 +193,14 @@ def pades_signature(userfile=None):
     except Exception as e:
         return render_template('error.html', msg=e)
 
+    response = make_response(render_template('pades-signature.html', token=token, pdf_path=pdf_path))
+
     # The token acquired above can only be used for a single signature attempt. In order to retry the signature it is
     # necessary to get a new token. This can be a problem if the user uses the back button of the browser, since the
     # browser might show a cached page that we rendered previously, with a now stale token. # we force page expiration
     # through HTTP headers to prevent caching of the page.
-    response = make_response(render_template('pades-signature.html', token=token, pdf_path=pdf_path))
     response.headers = get_expired_page_headers()
+
     return response
 
 
@@ -277,9 +286,9 @@ def get_visual_representation_position(sample_number):
     elif sample_number == 2:
         # Example #2: get the footnote positioning preset and customize it
         visual_position = PadesVisualPositioningPresets.get_footnote(restpki_client)
-        visual_position.auto.container.left = 2.54
-        visual_position.auto.container.bottom = 2.54
-        visual_position.auto.container.right = 2.54
+        visual_position['auto']['container']['left'] = 2.54
+        visual_position['auto']['container']['bottom'] = 2.54
+        visual_position['auto']['container']['right'] = 2.54
         return visual_position
     elif sample_number == 3:
         # Example #3: automatic positioning on new page. This will insert the signature, and future signatures,
@@ -288,11 +297,11 @@ def get_visual_representation_position(sample_number):
     elif sample_number == 4:
         # Example #4: get the "new page" positioning preset and customize it
         visual_position = PadesVisualPositioningPresets.get_new_page(restpki_client)
-        visual_position.auto.container.left = 2.54
-        visual_position.auto.container.top = 2.54
-        visual_position.auto.container.right = 2.54
-        visual_position.auto.signatureRectangleSize.width = 5
-        visual_position.auto.signatureRectangleSize.height = 3
+        visual_position['auto']['container']['left'] = 2.54
+        visual_position['auto']['container']['top'] = 2.54
+        visual_position['auto']['container']['right'] = 2.54
+        visual_position['auto']['signatureRectangleSize']['width'] = 5
+        visual_position['auto']['signatureRectangleSize']['height'] = 3
         return visual_position
     elif sample_number == 5:
         # Example #5: manual positioning

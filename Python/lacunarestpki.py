@@ -146,7 +146,7 @@ class PadesSignatureFinisher:
                 'The method write_signed_pdf() can only be called after calling the finish() method')
 
         f = open(local_pdf_path, 'wb')
-        f.write(self._signed_pdf)
+        f.write(self._signed_pdf_content)
         f.close()
 
 
