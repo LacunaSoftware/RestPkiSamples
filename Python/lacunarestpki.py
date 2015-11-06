@@ -24,71 +24,68 @@ class StandardSignaturePolicies:
 
 
 class RestPkiClient:
-    endpointUrl = ''
-    access = ''
-    headers = dict()
+    _endpointUrl = ''
+    _headers = dict()
 
     def __init__(self, endpoint_url, access_token):
-        self.endpointUrl = endpoint_url
+        self._endpointUrl = endpoint_url
         self.accessToken = access_token
-        self.headers['Authorization'] = 'Bearer %s' % self.accessToken
-        self.headers['Accept'] = 'application/json'
-        self.headers['Content-Type'] = 'application/json'
+        self._headers['Authorization'] = 'Bearer %s' % self.accessToken
+        self._headers['Accept'] = 'application/json'
+        self._headers['Content-Type'] = 'application/json'
 
-    def get_creds(self):
-        return self.headers
-
-    def post(self, url, data=None, headers=None):
-        response = requests.post('%s%s' % (self.endpointUrl, url), data=json.dumps(data), headers=self.headers)
+    def post(self, url, data=None):
+        response = requests.post('%s%s' % (self._endpointUrl, url), data=json.dumps(data), headers=self._headers)
         response.raise_for_status()
         return response
 
-    def get(self, url, params=None, headers=None):
-        response = requests.get('%s%s' % (self.endpointUrl, url), params=params, headers=self.headers)
+    def get(self, url, params=None):
+        response = requests.get('%s%s' % (self._endpointUrl, url), params=params, headers=self._headers)
         response.raise_for_status()
         return response
 
-    def get_authenticator(self):
-        return Authenticator(self)
+    def get_authentication(self):
+        return Authentication(self)
 
 
-class Authenticator:
-    rest = None
-    certificate = None
-    done = False
+class Authentication:
+    _client = None
+    _certificate = None
+    _done = False
 
-    def __init__(self, rest_client):
-        self.rest = rest_client
+    def __init__(self, restpki_client):
+        self._client = restpki_client
 
     def start_with_webpki(self, security_context_id):
-        response = self.rest.post('Api/Authentications', data={'securityContextId': security_context_id})
+        response = self._client.post('Api/Authentications', data={'securityContextId': security_context_id})
         return response.json().get('token', None)
 
     def complete_with_webpki(self, token):
-        response = self.rest.post('Api/Authentications/%s/Finalize' % token)
-        self.certificate = response.json().get('certificate', None)
-        self.done = True
+        response = self._client.post('Api/Authentications/%s/Finalize' % token)
+        self._certificate = response.json().get('certificate', None)
+        self._done = True
         return ValidationResults(response.json().get('validationResults', None))
 
-    def get_certificate(self):
-        if not self.done:
+    @property
+    def certificate(self):
+        if not self._done:
             raise Exception(
-                'The method get_certificate() can only be called after calling the complete_with_webpki() method')
+                'The property "certificate" can only be called after calling the complete_with_webpki() method')
 
-        return self.certificate
+        return self._certificate
 
 
 class PadesSignatureStarter:
-    rest = None
     pdf_content = None
-    securityContextId = None
-    signaturePolicyId = None
-    visualRepresentation = None
+    security_context_id = None
+    signature_policy_id = None
+    visual_representation = None
+    _client = None
 
-    def __init__(self, rest_client):
-        self.rest = rest_client
+    def __init__(self, client):
+        self._client = client
 
-    def set_pdf_to_sign(self, local_pdf_path):
+    def set_pdf_path(self, local_pdf_path):
         f = open(local_pdf_path, 'rb')
         self.pdf_content = f.read()
         f.close()
@@ -97,51 +94,59 @@ class PadesSignatureStarter:
         if self.pdf_content is None:
             raise Exception('The PDF to sign was not set')
 
-        if self.signaturePolicyId is None:
+        if self.signature_policy_id is None:
             raise Exception('The signature policy was not set')
 
         data = dict()
         data['pdfToSign'] = base64.b64encode(self.pdf_content)
-        data['signaturePolicyId'] = self.signaturePolicyId
-        data['securityContextId'] = self.securityContextId
-        data['visualRepresentation'] = self.visualRepresentation
+        data['signaturePolicyId'] = self.signature_policy_id
+        data['securityContextId'] = self.security_context_id
+        data['visualRepresentation'] = self.visual_representation
 
-        response = self.rest.post('Api/PadesSignatures', data=data)
+        response = self._client.post('Api/PadesSignatures', data=data)
         return response.json().get('token', None)
 
 
 class PadesSignatureFinisher:
-    rest = None
     token = ''
-    done = False
-    signedPdf = None
-    certificate = None
+    _client = None
+    _done = False
+    _signed_pdf_content = None
+    _certificate = None
 
-    def __init__(self, rest_client):
-        self.rest = rest_client
+    def __init__(self, restpki_client):
+        self._client = restpki_client
 
     def finish(self):
-        if self.token == '':
+        if not self.token:
             raise Exception('The token was not set')
 
-        response = self.rest.post('Api/PadesSignatures/%s/Finalize' % self.token)
-        self.signedPdf = base64.b64decode(response.json().get('signedPdf', None))
+        response = self._client.post('Api/PadesSignatures/%s/Finalize' % self.token)
+        self._signed_pdf_content = base64.b64decode(response.json().get('signedPdf', None))
         self.certificate = response.json().get('certificate', None)
-        self.done = True
+        self._done = True
 
-    def get_certificate(self):
-        if not self.done:
-            raise Exception('The method get_certificate() can only be called after calling the finish() method')
+    @property
+    def signed_pdf_content(self):
+        if not self._done:
+            raise Exception('The property "signed_pdf_content" can only be called after calling the finish() method')
+
+        return self._signed_pdf_content
+
+    @property
+    def certificate(self):
+        if not self._done:
+            raise Exception('The property "certificate" can only be called after calling the finish() method')
 
         return self.certificate
 
-    def write_signed_pdf_to_path(self, local_pdf_path):
-        if not self.done:
+    def write_signed_pdf(self, local_pdf_path):
+        if not self._done:
             raise Exception(
-                'The method write_signed_pdf_to_path() can only be called after calling the finish() method')
+                'The method write_signed_pdf() can only be called after calling the finish() method')
 
         f = open(local_pdf_path, 'wb')
-        f.write(self.signedPdf)
+        f.write(self._signed_pdf)
         f.close()
 
 
@@ -178,13 +183,13 @@ class ValidationItem:
 
 
 class PadesVisualPositioningPresets:
-    cachedPresets = dict()
+    _cached_presets = dict()
 
     def __init__(self):
         return
 
     @staticmethod
-    def get_footnote(rest_client, page_number=None, rows=None):
+    def get_footnote(restpki_client, page_number=None, rows=None):
         url_segment = 'Footnote'
 
         if page_number is not None:
@@ -193,118 +198,51 @@ class PadesVisualPositioningPresets:
         if rows is not None:
             url_segment += '?rows=%s' % rows
 
-        return PadesVisualPositioningPresets.get_preset(rest_client, url_segment)
+        return PadesVisualPositioningPresets._get_preset(restpki_client, url_segment)
 
     @staticmethod
-    def get_new_page(rest_client):
-        return PadesVisualPositioningPresets.get_preset(rest_client, 'NewPage')
+    def get_new_page(restpki_client):
+        return PadesVisualPositioningPresets._get_preset(restpki_client, 'NewPage')
 
     @staticmethod
-    def get_preset(rest_client, url_segment):
-        if url_segment in PadesVisualPositioningPresets.cachedPresets:
-            return PadesVisualPositioningPresets.cachedPresets[url_segment]
+    def _get_preset(restpki_client, url_segment):
+        if url_segment in PadesVisualPositioningPresets._cached_presets:
+            return PadesVisualPositioningPresets._cached_presets[url_segment]
 
-        preset = rest_client.get('Api/PadesVisualPositioningPresets/%s' % url_segment)
-        PadesVisualPositioningPresets.cachedPresets[url_segment] = preset.json()
+        preset = restpki_client.get('Api/PadesVisualPositioningPresets/%s' % url_segment)
+        PadesVisualPositioningPresets._cached_presets[url_segment] = preset.json()
         return preset.json()
-
-    @staticmethod
-    def get_visual_representation_position(rest_client, sample_number):
-        if sample_number == 1:
-            # Example #1: automatic positioning on footnote. This will insert the signature, and future signatures,
-            # ordered as a footnote of the last page of the document
-            return PadesVisualPositioningPresets.get_footnote(rest_client)
-        elif sample_number == 2:
-            # Example #2: get the footnote positioning preset and customize it
-            visual_position = PadesVisualPositioningPresets.get_footnote(rest_client)
-            visual_position.auto.container.left = 2.54
-            visual_position.auto.container.bottom = 2.54
-            visual_position.auto.container.right = 2.54
-            return visual_position
-        elif sample_number == 3:
-            # Example #3: automatic positioning on new page. This will insert the signature, and future signatures,
-            # in a new page appended to the end of the document.
-            return PadesVisualPositioningPresets.get_new_page(rest_client)
-        elif sample_number == 4:
-            # Example #4: get the "new page" positioning preset and customize it
-            visual_position = PadesVisualPositioningPresets.get_new_page(rest_client)
-            visual_position.auto.container.left = 2.54
-            visual_position.auto.container.top = 2.54
-            visual_position.auto.container.right = 2.54
-            visual_position.auto.signatureRectangleSize.width = 5
-            visual_position.auto.signatureRectangleSize.height = 3
-            return visual_position
-        elif sample_number == 5:
-            # Example #5: manual positioning
-            return {
-                'pageNumber': 0,
-                # zero means the signature will be placed on a new page appended to the end of the document
-                'measurementUnits': 'Centimeters',
-                # define a manual position of 5cm x 3cm, positioned at 1 inch from the left and bottom margins
-                'manual': {
-                    'left': 2.54,
-                    'bottom': 2.54,
-                    'width': 5,
-                    'height': 3
-                }
-            }
-        elif sample_number == 6:
-            # Example #6: custom auto positioning
-            return {
-                'pageNumber': -1,
-                # negative values represent pages counted from the end of the document (-1 is last page)
-                'measurementUnits': 'Centimeters',
-                'auto': {
-                    # Specification of the container where the signatures will be placed, one after the other
-                    'container': {
-                        # Specifying left and right (but no width) results in a variable-width container with the given
-                        # margins
-                        'left': 2.54,
-                        'right': 2.54,
-                        # Specifying bottom and height (but no top) results in a bottom-aligned fixed-height container
-                        'bottom': 2.54,
-                        'height': 12.31
-                    },
-                    # Specification of the size of each signature rectangle
-                    'signatureRectangleSize': {
-                        'width': 5,
-                        'height': 3
-                    },
-                    # The signatures will be placed in the container side by side. If there's no room left, the
-                    # signatures will "wrap" to the next row. The value below specifies the vertical distance between
-                    # rows
-                    'rowSpacing': 1
-                }
-            }
-        else:
-            return None
 
 
 @six.python_2_unicode_compatible
 class ValidationResults:
     errors = None
     warnings = None
-    passedChecks = None
+    passed_checks = None
 
     def __init__(self, model):
-        self.errors = self.convert_items(model['errors'])
-        self.warnings = self.convert_items(model['warnings'])
-        self.passedChecks = self.convert_items(model['passedChecks'])
+        self.errors = self._convert_items(model['errors'])
+        self.warnings = self._convert_items(model['warnings'])
+        self.passed_checks = self._convert_items(model['passedChecks'])
 
+    @property
     def is_valid(self):
         return len(self.errors) == 0
 
-    def get_checks_performed(self):
-        return len(self.errors) + len(self.warnings) + len(self.passedChecks)
+    @property
+    def checks_performed(self):
+        return len(self.errors) + len(self.warnings) + len(self.passed_checks)
 
+    @property
     def has_errors(self):
         return not len(self.errors) == 0
 
+    @property
     def has_warnings(self):
         return not len(self.warnings) == 0
 
     @staticmethod
-    def convert_items(items):
+    def _convert_items(items):
         converted = list()
         for item in items:
             converted.append(ValidationItem(item))
@@ -312,40 +250,44 @@ class ValidationResults:
         return converted
 
     @staticmethod
-    def join_items(items, indentation_level):
+    def _join_items(items, indentation_level):
         text = ''
-        isFirst = True
+        is_first = True
         tab = '\t' * indentation_level
 
         for item in items:
-            if isFirst:
-                isFirst = False
+            if is_first:
+                is_first = False
             else:
                 text += '\n'
 
-            text += '%s-' % tab
+            text += '%s- ' % tab
             text += item.to_string(indentation_level)
 
         return text
+
+    @property
+    def summary(self):
+        return self.get_summary(0)
 
     def get_summary(self, indentation_level=0):
         tab = '\t' * indentation_level
         text = '%sValidation results: ' % tab
 
-        if self.get_checks_performed() == 0:
+        if self.checks_performed == 0:
             text += 'no checks performed'
         else:
-            text += '%s checks performed' % self.get_checks_performed()
+            text += '%s checks performed' % self.checks_performed
 
-            if self.has_errors():
+            if self.has_errors:
                 text += ', %s errors' % len(self.errors)
-            if self.has_warnings():
+            if self.has_warnings:
                 text += ', %s warnings' % len(self.warnings)
-            if len(self.passedChecks) > 0:
-                if not self.has_errors() and not self.has_warnings():
+            if len(self.passed_checks) > 0:
+                if not self.has_errors and not self.has_warnings:
                     text += ', all passed'
                 else:
-                    text += ', %s passed' % len(self.passedChecks)
+                    text += ', %s passed' % len(self.passed_checks)
 
         return text
 
@@ -357,16 +299,16 @@ class ValidationResults:
         text = ''
         text += self.get_summary(indentation_level)
 
-        if self.has_errors():
+        if self.has_errors:
             text += '\n%sErrors:\n' % tab
-            text += self.join_items(self.errors, indentation_level)
+            text += self._join_items(self.errors, indentation_level)
 
-        if self.has_warnings():
+        if self.has_warnings:
             text += '\n%sWarnings:\n' % tab
-            text += self.join_items(self.warnings, indentation_level)
+            text += self._join_items(self.warnings, indentation_level)
 
-        if self.passedChecks is not None:
+        if self.passed_checks is not None:
             text += '\n%sPassed checks:\n' % tab
-            text += self.join_items(self.passedChecks, indentation_level)
+            text += self._join_items(self.passed_checks, indentation_level)
 
         return text

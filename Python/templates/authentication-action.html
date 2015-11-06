@@ -9,16 +9,16 @@
 		<p>
 			User certificate information:
 			<ul>
-				<li>Subject: {{ userCert.subjectName.commonName }}</li>
-				<li>Email: {{ userCert.emailAddress }}</li>
+				<li>Subject: {{ user_cert.subjectName.commonName }}</li>
+				<li>Email: {{ user_cert.emailAddress }}</li>
 				<li>
 					ICP-Brasil fields
 					<ul>
-						<li>Tipo de certificado: {{ userCert.pkiBrazil.certificateType }}</li>
-						<li>CPF: {{ userCert.pkiBrazil.cpf }}</li>
-						<li>Responsavel: {{ userCert.pkiBrazil.responsavel }}</li>
-						<li>Empresa: {{ userCert.pkiBrazil.companyName }}</li>
-						<li>CNPJ: {{ userCert.pkiBrazil.cnpj }} </li>
+						<li>Tipo de certificado: {{ user_cert.pkiBrazil.certificateType }}</li>
+						<li>CPF: {{ user_cert.pkiBrazil.cpf }}</li>
+						<li>Responsavel: {{ user_cert.pkiBrazil.responsavel }}</li>
+						<li>Empresa: {{ user_cert.pkiBrazil.companyName }}</li>
+						<li>CNPJ: {{ user_cert.pkiBrazil.cnpj }} </li>
 					</ul>
 				</li>
 			</ul>
@@ -29,7 +29,7 @@
  -->	
 		<h2>Authentication Failed</h2>
 		<p>
-			{{ vrHtml|safe }}
+			{{ vr_html|safe }}
 		</p>
 		<p><a href="/authentication" class="btn btn-primary">Try again</a></p>
 	{% endif %}
