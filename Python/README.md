@@ -1,5 +1,5 @@
-REST PKI Python Samples
-=======================
+REST PKI Python Sample
+======================
 
 This folder contains a web application written in Python using the Flask framework, that shows how to use the
 [REST PKI service](https://restpki.lacunasoftware.com/). The sample application should work on Python versions 2.7 and 3.5.
@@ -25,14 +25,12 @@ To run the sample:
 
 5. Run application: `python demo.py`
 
-6. Access the [sample app](http://localhost:5000)
+6. Access the URL [http://localhost:5000](http://localhost:5000)
 
-Optionally, one can create and activate a virtualenv to avoid mixing library versions:
+Optionally, you can create and activate a "virtualenv" to avoid mixing library versions:
 
-```
-$ virtualenv env
-$ . ./env/bin/activate
-$ pip install -r requirements.txt
-$ python demo.py
-$ deactivate
-```
+    virtualenv env
+    . ./env/bin/activate
+    pip install -r requirements.txt
+    python demo.py
+    deactivate
