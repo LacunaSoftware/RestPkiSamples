@@ -2,12 +2,12 @@ REST PKI Java Samples
 =====================
 
 This folder contains web applications written in Java that show how to use the
-[REST PKI service](https://restpki.lacunasoftware.com/).
+[REST PKI service](https://pki.rest/).
 
 For other languages, please visit the [project root](https://github.com/LacunaSoftware/RestPkiSamples).
 
 To run the samples, you will need an **API access token**. If you don't have one, register on the
-[REST PKI website](https://restpki.lacunasoftware.com/) and generate a token.
+[REST PKI website](https://pki.rest/) and generate a token.
 
 Default sample
 --------------
@@ -21,7 +21,7 @@ Steps to execute the sample:
 1. [Download the project](https://github.com/LacunaSoftware/RestPkiSamples/archive/master.zip)
    or clone the repository
 
-2. Generate an API access token on the [REST PKI website](https://restpki.lacunasoftware.com/)
+2. Generate an API access token on the [REST PKI website](https://pki.rest/)
 
 3. Paste your access token on the file `Java/sample-spring-mvc/src/main/java/sample/util/Util.java`
    
@@ -101,4 +101,4 @@ the link "SET ME UP!".
 
 See also:
 
-* [Javadoc for the Java client lib](https://restpki.lacunasoftware.com/Content/docs/java-client/)
+* [Javadoc for the Java client lib](https://pki.rest/Content/docs/java-client/)

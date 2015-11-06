@@ -13,7 +13,7 @@ Running the sample
 
 2. Open the solution file `RestPkiCSharpSample.sln` on Visual Studio
    
-3. Generate an API access token on the [REST PKI website](https://restpki.lacunasoftware.com/)
+3. Generate an API access token on the [REST PKI website](https://pki.rest/)
 
 4. Paste your access token on the file `SampleSite\web.config`
    

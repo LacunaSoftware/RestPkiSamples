@@ -2,12 +2,12 @@ REST PKI PHP Samples
 ====================
 
 This folder contains web applications written in PHP that show how to use the
-[REST PKI service](https://restpki.lacunasoftware.com/).
+[REST PKI service](https://pki.rest/).
 
 For other languages, please visit the [project root](https://github.com/LacunaSoftware/RestPkiSamples).
 
 To run the samples, you will need an **API access token**. If you don't have one, register on the
-[REST PKI website](https://restpki.lacunasoftware.com/) and generate a token.
+[REST PKI website](https://pki.rest/) and generate a token.
 
 Standard sample
 ---------------
@@ -17,7 +17,7 @@ The standard PHP sample can be found in the folder [standard](standard/). To run
 1. [Download the project](https://github.com/LacunaSoftware/RestPkiSamples/archive/master.zip)
    or clone the repository
 
-2. Generate an API access token on the [REST PKI website](https://restpki.lacunasoftware.com/)
+2. Generate an API access token on the [REST PKI website](https://pki.rest/)
 
 3. Paste your access token on the file `util.php`
    
