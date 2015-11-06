@@ -1,17 +1,21 @@
 # REST PKI client lib for Python
 # This file contains classes that encapsulate the calls to the REST PKI API.
-
+import sys
+import six
 import requests
 import base64
-import json
+import simplejson as json
+
 
 class StandardSecurityContexts:
 	PKI_BRAZIL = '201856ce-273c-4058-a872-8937bd547d36'
 	PKI_ITALY = 'c438b17e-4862-446b-86ad-6f85734f0bfe'
 	WINDOWS_SERVER = '3881384c-a54d-45c5-bbe9-976b674f5ec7'
 
+
 class StandardSignaturePolicies:
 	PADES_BASIC = '78d20b33-014d-440e-ad07-929f05d00cdf'
+
 
 class RestPkiClient:
 	endpointUrl = ''
@@ -41,6 +45,7 @@ class RestPkiClient:
 	def get_authenticator(self):
 		return Authenticator(self)
 
+
 class Authenticator:
 	rest = None
 	certificate = None
@@ -64,6 +69,7 @@ class Authenticator:
 			raise Exception('The method get_certificate() can only be called after calling the complete_with_webpki() method')
 
 		return self.certificate
+
 
 class PadesSignatureStarter:
 	rest = None
@@ -95,6 +101,7 @@ class PadesSignatureStarter:
 
 		response = self.rest.post('Api/PadesSignatures', data = data)
 		return response.json().get('token', None)
+
 
 class PadesSignatureFinisher:
 	rest = None
@@ -144,7 +151,7 @@ class ValidationItem:
 		if (model['innerValidationResults'] != None):
 			self.innerValidationResults = ValidationResults(model['innerValidationResults'])
 
-	def __str__(self):
+	def __unicode__(self):
 		return self.to_string(0)
 
 	def to_string(self, indentationLevel):
@@ -193,22 +200,22 @@ class PadesVisualPositioningPresets:
 	@staticmethod
 	def get_visual_representation_position(restClient, sampleNumber):
 		if sampleNumber == 1:
-			# // Example #1: automatic positioning on footnote. This will insert the signature, and future signatures,
-			# // ordered as a footnote of the last page of the document
+			# Example #1: automatic positioning on footnote. This will insert the signature, and future signatures,
+			# ordered as a footnote of the last page of the document
 			return PadesVisualPositioningPresets.get_footnote(restClient)
 		elif sampleNumber == 2:
-			# // Example #2: get the footnote positioning preset and customize it
+			# Example #2: get the footnote positioning preset and customize it
 			visualPosition = PadesVisualPositioningPresets.get_footnote(restClient)
 			visualPosition.auto.container.left = 2.54
 			visualPosition.auto.container.bottom = 2.54
 			visualPosition.auto.container.right = 2.54
 			return visualPosition;
 		elif sampleNumber == 3:
-			# // Example #3: automatic positioning on new page. This will insert the signature, and future signatures,
-			# // in a new page appended to the end of the document.
+			# Example #3: automatic positioning on new page. This will insert the signature, and future signatures,
+			# in a new page appended to the end of the document.
 			return PadesVisualPositioningPresets.get_new_page(restClient)
 		elif sampleNumber == 4:
-			# // Example #4: get the "new page" positioning preset and customize it
+			# Example #4: get the "new page" positioning preset and customize it
 			visualPosition = PadesVisualPositioningPresets.get_new_page(restClient)
 			visualPosition.auto.container.left = 2.54
 			visualPosition.auto.container.top = 2.54
@@ -217,11 +224,11 @@ class PadesVisualPositioningPresets:
 			visualPosition.auto.signatureRectangleSize.height = 3
 			return visualPosition
 		elif sampleNumber == 5:
-			# // Example #5: manual positioning
+			# Example #5: manual positioning
 			return {
-				'pageNumber': 0, #// zero means the signature will be placed on a new page appended to the end of the document
+				'pageNumber': 0, # zero means the signature will be placed on a new page appended to the end of the document
 				'measurementUnits': 'Centimeters',
-				#// define a manual position of 5cm x 3cm, positioned at 1 inch from the left and bottom margins
+				# define a manual position of 5cm x 3cm, positioned at 1 inch from the left and bottom margins
 				'manual': {
 					'left': 2.54,
 					'bottom': 2.54,
@@ -230,27 +237,27 @@ class PadesVisualPositioningPresets:
 				}
 			}
 		elif sampleNumber == 6:
-			# // Example #6: custom auto positioning
+			# Example #6: custom auto positioning
 			return {
-				'pageNumber': -1, #// negative values represent pages counted from the end of the document (-1 is last page)
+				'pageNumber': -1, # negative values represent pages counted from the end of the document (-1 is last page)
 				'measurementUnits': 'Centimeters',
 				'auto': {
-					#// Specification of the container where the signatures will be placed, one after the other
+					# Specification of the container where the signatures will be placed, one after the other
 					'container': {
-						# // Specifying left and right (but no width) results in a variable-width container with the given margins
+						# Specifying left and right (but no width) results in a variable-width container with the given margins
 						'left': 2.54,
 						'right': 2.54,
-						# // Specifying bottom and height (but no top) results in a bottom-aligned fixed-height container
+						# Specifying bottom and height (but no top) results in a bottom-aligned fixed-height container
 						'bottom': 2.54,
 						'height': 12.31
 					},
-					# // Specification of the size of each signature rectangle
+					# Specification of the size of each signature rectangle
 					'signatureRectangleSize': {
 						'width': 5,
 						'height': 3
 					},
-					# // The signatures will be placed in the container side by side. If there's no room left, the signatures
-					# // will "wrap" to the next row. The value below specifies the vertical distance between rows
+					# The signatures will be placed in the container side by side. If there's no room left, the signatures
+					# will "wrap" to the next row. The value below specifies the vertical distance between rows
 					'rowSpacing': 1
 				}
 			};
@@ -258,7 +265,7 @@ class PadesVisualPositioningPresets:
 			return None
 
 
-
+@six.python_2_unicode_compatible
 class ValidationResults:
 	errors = None
 	warnings = None
@@ -325,7 +332,7 @@ class ValidationResults:
 
 		return text
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.to_string(0)
 
 	def to_string(self, indentationLevel):
