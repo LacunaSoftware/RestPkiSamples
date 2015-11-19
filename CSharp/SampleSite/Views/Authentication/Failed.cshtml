@@ -1,0 +1,11 @@
+﻿@using Lacuna.RestPki.Client
+@model ValidationResults
+<h2>Authentication Failed</h2>
+@{ 
+	// We can call the ToString() method on the Model, which is a ValidationResults, to obtain a string containing
+	// the validations performed on the user's certificate. However, this string contains tabs and new line
+	// characters. Therefore, we'll convert these characters to <br>'s and &nbsp;'s and render as raw html
+	var vrHtml = Model.ToString().Replace("\n", "<br>").Replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
+}
+<p>@Html.Raw(vrHtml)</p>
+<p><a href="/Authentication" class="btn btn-primary">Try again</a></p>

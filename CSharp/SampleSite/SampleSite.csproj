@@ -50,11 +50,11 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Lacuna.RestPki.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5705bce581cd1847, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lacuna.RestPki.Client.1.1.0\lib\net45\Lacuna.RestPki.Api.dll</HintPath>
+      <HintPath>..\packages\Lacuna.RestPki.Client.1.2.0\lib\net45\Lacuna.RestPki.Api.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Lacuna.RestPki.Client, Version=1.1.0.0, Culture=neutral, PublicKeyToken=5705bce581cd1847, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lacuna.RestPki.Client.1.1.0\lib\net45\Lacuna.RestPki.Client.dll</HintPath>
+    <Reference Include="Lacuna.RestPki.Client, Version=1.2.0.0, Culture=neutral, PublicKeyToken=5705bce581cd1847, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lacuna.RestPki.Client.1.2.0\lib\net45\Lacuna.RestPki.Client.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -109,25 +109,17 @@
     <Reference Include="System.Net.Http.Formatting">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
-    <Reference Include="System.Web.Http">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Http.WebHost">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.3\lib\net45\System.Web.Http.WebHost.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\css\bootstrap-theme.css" />
     <Content Include="Content\css\bootstrap.css" />
     <Content Include="Content\css\site.css" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="Content\js\app\authentication.js" />
-    <Content Include="Content\js\app\pades-signature.js" />
-    <Content Include="Content\js\app\site.js" />
+    <Content Include="Content\js\site.js" />
     <Content Include="Content\js\bootstrap.js" />
     <Content Include="Content\js\jquery-1.11.3.js" />
     <Content Include="Content\js\jquery.blockUI.js" />
-    <Content Include="Content\js\lacuna-web-pki-2.2.2.js" />
+    <Content Include="Content\js\lacuna-web-pki-2.3.1.js" />
     <Content Include="Content\PdfStamp.png" />
     <Content Include="Content\SampleDocument.pdf" />
     <Content Include="Global.asax" />
@@ -136,19 +128,23 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Api\AuthenticationController.cs" />
-    <Compile Include="Api\PadesSignatureController.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Attributes\HandleAndLogErrorAttribute.cs" />
     <Compile Include="Classes\Util.cs" />
+    <Compile Include="Controllers\AuthenticationController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\CadesSignatureController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\SignatureController.cs" />
+    <Compile Include="Controllers\PadesSignatureController.cs" />
+    <Compile Include="Controllers\DownloadController.cs" />
+    <Compile Include="Controllers\UploadController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\AuthenticationPostResponse.cs" />
-    <Compile Include="Models\SignatureCompleteResponse.cs" />
+    <Compile Include="Models\AuthenticationModel.cs" />
+    <Compile Include="Models\PadesSignatureModel.cs" />
+    <Compile Include="Models\CadesSignatureModel.cs" />
+    <Compile Include="Models\SignatureInfoModel.cs" />
+    <Compile Include="Models\UploadModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -158,11 +154,16 @@
     <Content Include="Content\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.woff2" />
-    <Content Include="Views\Home\Authentication.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Home\PadesSignature.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\CadesSignature\Index.cshtml" />
+    <Content Include="Views\CadesSignature\SignatureInfo.cshtml" />
+    <Content Include="Views\Upload\Index.cshtml" />
+    <Content Include="Views\PadesSignature\Index.cshtml" />
+    <Content Include="Views\PadesSignature\SignatureInfo.cshtml" />
+    <Content Include="Views\Authentication\Index.cshtml" />
+    <Content Include="Views\Authentication\Failed.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
