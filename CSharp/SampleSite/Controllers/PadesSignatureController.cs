@@ -35,7 +35,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 				signatureStarter.SetPdfToSign(Util.GetSampleDocContent());
 			} else {
 				// Set the path of the file to be signed
-				signatureStarter.SetPdfToSign(Server.MapPath("~/App_Data/" + userfile));
+				signatureStarter.SetPdfToSign(Server.MapPath("~/App_Data/" + userfile.Replace("_", "."))); // Note: we're passing the filename argument with "." as "_" because of limitations of ASP.NET MVC
 			}
 
 			// Set the signature policy
@@ -87,7 +87,8 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 
 			// Render the signature page with the token obtained from REST PKI
 			return View(new PadesSignatureModel() {
-				Token = token
+				Token = token,
+				UserFile = userfile
 			});
 		}
 
@@ -118,11 +119,12 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 			if (!Directory.Exists(appDataPath)) {
 				Directory.CreateDirectory(appDataPath);
 			}
-			var id = Guid.NewGuid().ToString();
-			System.IO.File.WriteAllBytes(Path.Combine(appDataPath, id + ".pdf"), signedPdf);
+			var id = Guid.NewGuid();
+			var filename = id + ".pdf";
+			System.IO.File.WriteAllBytes(Path.Combine(appDataPath, filename), signedPdf);
 
 			return View("SignatureInfo", new SignatureInfoModel() {
-				//File = id,
+				File = filename.Replace(".", "_"), // Note: we're passing the filename argument with "." as "_" because of limitations of ASP.NET MVC
 				SignerCertificate = signerCert
 			});
 		}

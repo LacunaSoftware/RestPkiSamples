@@ -15,8 +15,11 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 		/*
 		 * This action initiates a CAdES signature using REST PKI and renders the signature page.
 		 *
-		 * Both CAdES signature examples, with a server file and with a file uploaded by the user, converge to this action.
-		 * The difference is that, when the file is uploaded by the user, the action is called with a URL argument named "userfile".
+		 * All CAdES signature examples converge to this action, but with different URL arguments:
+		 *
+		 * 1. Signature with a server file               : no arguments filled
+		 * 2. Signature with a file uploaded by the user : "userfile" filled
+		 * 3. Co-signature of a previously signed CMS    : "cmsfile" filled
 		 */
 		[HttpGet]
 		public ActionResult Index(string userfile, string cmsfile) {
@@ -25,17 +28,30 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 			// signature process
 			var signatureStarter = Util.GetRestPkiClient().GetCadesSignatureStarter();
 
-			// If the user was redirected here by UploadController (signature with file uploaded by user), the "userfile" URL argument
-			// will contain the filename under the "App_Data" folder. Otherwise (signature with server file), we'll sign a sample
-			// document.
 			if (!string.IsNullOrEmpty(userfile)) {
-				// Set the path of the file to be signed
+				
+				// If the URL argument "userfile" is filled, it means the user was redirected here by UploadController (signature with file uploaded by user).
+				// We'll set the path of the file to be signed, which was saved in the App_Data folder by UploadController
 				signatureStarter.SetFileToSign(Server.MapPath("~/App_Data/" + userfile.Replace("_", "."))); // Note: we're passing the filename argument with "." as "_" because of limitations of ASP.NET MVC
+
 			} else if (!string.IsNullOrEmpty(cmsfile)) {
+
+				/*
+				 * If the URL argument "cmsfile" is filled, the user has asked to co-sign a previously signed CMS. We'll set the path to the CMS
+				 * to be co-signed, which was perviously saved in the App_Data folder by the POST action on this controller. Note two important things:
+				 * 
+				 * 1. The CMS to be co-signed must be set using the method "SetCmsToCoSign", not the method "SetContentToSign" nor "SetFileToSign"
+				 *
+				 * 2. Since we're creating CMSs with encapsulated content (see call to SetEncapsulateContent below), we don't need to set the content
+				 *    to be signed, REST PKI will get the content from the CMS being co-signed.
+				 */
 				signatureStarter.SetCmsToCoSign(Server.MapPath("~/App_Data/" + cmsfile.Replace("_", "."))); // Note: we're passing the filename argument with "." as "_" because of limitations of ASP.NET MVC
+
 			} else {
-				// Set the file to be signed as a byte array
+
+				// If both userfile and cmsfile are null, this is the "signature with server file" case. We'll set the file to be signed as a byte array
 				signatureStarter.SetContentToSign(Util.GetSampleDocContent());
+
 			}
 
 			// Set the signature policy

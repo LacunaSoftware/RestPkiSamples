@@ -12,12 +12,9 @@ namespace SampleSite.Controllers {
 
 	/**
 	 * This controller's purpose is to download the sample file that is signed during the
-	 * signature examples and download a previously performed signature. The actual work for
-	 * performing signatures is done in the controllers on the Api folder (CadesSignatureController
-	 * and PadesSignatureController).
-	 * 
-	 * These actions could be on a ApiController, but, since they return files, they are simpler
-	 * to implement in a MVC controller.
+	 * signature examples or download a upload file for signature or download a previously performed
+	 * signature. The actual work for performing signatures is done in the controllers CadesSignatureController
+	 * and PadesSignatureController.
 	 */
 	public class DownloadController : Controller {
 
