@@ -108,11 +108,11 @@ setExpiredPage();
 		<div class="form-group">
 			<label>File to sign</label>
 			<?php if (!empty($userfile)) { ?>
-				<p>You'll are signing <a href='app-data/<?= $userfile ?>'>this document</a>.</p>
+				<p>You are signing <a href='app-data/<?= $userfile ?>'>this document</a>.</p>
 			<?php } elseif (!empty($cmsfile)) { ?>
-				<p>You'll are co-signing <a href='app-data/<?= $cmsfile ?>'>this CMS</a>.</p>
+				<p>You are co-signing <a href='app-data/<?= $cmsfile ?>'>this CMS</a>.</p>
 			<?php } else { ?>
-				<p>You'll are signing <a href='content/SampleDocument.pdf'>this sample document</a>.</p>
+				<p>You are signing <a href='content/SampleDocument.pdf'>this sample document</a>.</p>
 			<?php } ?>
 		</div>
 
