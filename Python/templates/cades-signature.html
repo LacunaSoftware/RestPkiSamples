@@ -3,9 +3,9 @@
 {% block content %}
 <div class="container">
 
-	<h2>PAdES Signature</h2>
+	<h2>CAdES Signature</h2>
 
-	<form id="signForm" action="/pades-signature-action" method="post">
+	<form id="signForm" action="/cades-signature-action" method="post">
 		<!-- render the $token in a hidden input field -->
 		<input type="hidden" id="token" name="token" value="{{token}}">
 
@@ -13,7 +13,9 @@
 			<label>File to sign</label>
 			{% if userfile is not none %}
 				<p>You are signing <a href='/files/{{userfile}}'>this document</a>.</p>
-			{% else %}
+			{% elif cmsfile is not none %}
+				<p>You are co-signing <a href='/files/{{cmsfile}}'>this CMS</a>.</p>
+            {% else %}
 				<p>You are signing <a href='/static/SampleDocument.pdf'>this sample document</a>.</p>
 			{% endif %}
 		</div>

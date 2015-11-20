@@ -2,9 +2,9 @@
 
 {% block content %}
 <div class="container">
-	<h2>PAdES Signature</h2>
+	<h2>CAdES Signature</h2>
 
-	<p>File signed successfully! <a href="{{ signed_file }}">Click here to download the signed file</a></p>
+	<p>File signed successfully! <a href="/files/{{ filename }}">Click here to download the signed file</a></p>
 
 	<p>
 		Signer information:
@@ -23,5 +23,6 @@
 		</li>
 	</ul>
 	</p>
+	<p><a href="/cades-signature-cosign/{{ filename }}">Click here</a> to co-sign with another certificate</p>
 </div>
 {% endblock %}
