@@ -12,8 +12,20 @@
 		<div id="navbar" class="collapse navbar-collapse">
 			<ul class="nav navbar-nav">
 				<li><a href="authentication.php">Authentication</a></li>
-				<li><a href="pades-signature.php">PAdES Signature (server file)</a></li>
-				<li><a href="upload.php">PAdES Signature (user file)</a></li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">PAdES signature <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="pades-signature.php">With file already on server</a></li>
+						<li><a href="upload.php?goto=pades-signature">With file uploaded by user</a></li>
+					</ul>
+				</li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">CAdES signature <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="cades-signature.php">With file already on server</a></li>
+						<li><a href="upload.php?goto=cades-signature">With file uploaded by user</a></li>
+					</ul>
+				</li>
 			</ul>
 		</div><!--/.nav-collapse -->
 	</div>

@@ -1,11 +1,14 @@
 <?php
 
 /*
- * This file initiates a PAdES signature using REST PKI and renders the signature page. The form is posted to
- * another file, pades-signature-action.php, which calls REST PKI again to complete the signature.
+ * This file initiates a CAdES signature using REST PKI and renders the signature page. The form is posted to
+ * another file, cades-signature-action.php, which calls REST PKI again to complete the signature.
  *
- * Both PAdES signature examples, with a server file and with a file uploaded by the user, use this file. The difference
- * is that, when the file is uploaded by the user, the page is called with a URL argument named "userfile".
+ * All CAdES signature examples converge to this action, but with different URL arguments:
+ *
+ * 1. Signature with a server file               : no arguments filled
+ * 2. Signature with a file uploaded by the user : "userfile" filled
+ * 3. Co-signature of a previously signed CMS    : "cmsfile" filled
  */
 
 // The file RestPki.php contains the helper classes to call the REST PKI API
@@ -15,154 +18,60 @@ require_once 'RestPki.php';
 // initialized with the API access token
 require_once 'util.php';
 
-use Lacuna\PadesSignatureStarter;
-use Lacuna\PadesVisualPositioningPresets;
-use Lacuna\StandardSecurityContexts;
+use Lacuna\CadesSignatureStarter;
 use Lacuna\StandardSignaturePolicies;
 
-// This function is called below. It contains examples of signature visual representation positionings. This code is
-// only in a separate function in order to organize the various examples, you can pick the one that best suits your
-// needs and use it below directly without an encapsulating function.
-function getVisualRepresentationPosition($sampleNumber) {
-
-	switch ($sampleNumber) {
-
-		case 1:
-			// Example #1: automatic positioning on footnote. This will insert the signature, and future signatures,
-			// ordered as a footnote of the last page of the document
-			return PadesVisualPositioningPresets::getFootnote(getRestPkiClient());
-
-		case 2:
-			// Example #2: get the footnote positioning preset and customize it
-			$visualPosition = PadesVisualPositioningPresets::getFootnote(getRestPkiClient());
-			$visualPosition->auto->container->left = 2.54;
-			$visualPosition->auto->container->bottom = 2.54;
-			$visualPosition->auto->container->right = 2.54;
-			return $visualPosition;
-
-		case 3:
-			// Example #3: automatic positioning on new page. This will insert the signature, and future signatures,
-			// in a new page appended to the end of the document.
-			return PadesVisualPositioningPresets::getNewPage(getRestPkiClient());
-
-		case 4:
-			// Example #4: get the "new page" positioning preset and customize it
-			$visualPosition = PadesVisualPositioningPresets::getNewPage(getRestPkiClient());
-			$visualPosition->auto->container->left = 2.54;
-			$visualPosition->auto->container->top = 2.54;
-			$visualPosition->auto->container->right = 2.54;
-			$visualPosition->auto->signatureRectangleSize->width = 5;
-			$visualPosition->auto->signatureRectangleSize->height = 3;
-			return $visualPosition;
-
-		case 5:
-			// Example #5: manual positioning
-			return [
-				'pageNumber' => 0, // zero means the signature will be placed on a new page appended to the end of the document
-				'measurementUnits' => 'Centimeters',
-				// define a manual position of 5cm x 3cm, positioned at 1 inch from the left and bottom margins
-				'manual' => [
-					'left' => 2.54,
-					'bottom' => 2.54,
-					'width' => 5,
-					'height' => 3
-				]
-			];
-
-		case 6:
-			// Example #6: custom auto positioning
-			return [
-				'pageNumber' => -1, // negative values represent pages counted from the end of the document (-1 is last page)
-				'measurementUnits' => 'Centimeters',
-				'auto' => [
-					// Specification of the container where the signatures will be placed, one after the other
-					'container' => [
-						// Specifying left and right (but no width) results in a variable-width container with the given margins
-						'left' => 2.54,
-						'right' => 2.54,
-						// Specifying bottom and height (but no top) results in a bottom-aligned fixed-height container
-						'bottom' => 2.54,
-						'height' => 12.31
-					],
-					// Specification of the size of each signature rectangle
-					'signatureRectangleSize' => [
-						'width' => 5,
-						'height' => 3
-					],
-					// The signatures will be placed in the container side by side. If there's no room left, the signatures
-					// will "wrap" to the next row. The value below specifies the vertical distance between rows
-					'rowSpacing' => 1
-				]
-			];
-
-		default:
-			return null;
-	}
-}
-
-// Instantiate the PadesSignatureStarter class, responsible for receiving the signature elements and start the signature
-// process
-$signatureStarter = new PadesSignatureStarter(getRestPkiClient());
-
-// If the user was redirected here by upload.php (signature with file uploaded by user), the "userfile" URL argument
-// will contain the filename under the "app-data" folder. Otherwise (signature with server file), we'll sign a sample
-// document.
 $userfile = isset($_GET['userfile']) ? $_GET['userfile'] : null;
+$cmsfile = isset($_GET['cmsfile']) ? $_GET['cmsfile'] : null;
+
+// Instantiate the CadesSignatureStarter class, responsible for receiving the signature elements and start the signature
+// process
+$signatureStarter = new CadesSignatureStarter(getRestPkiClient());
+
 if (!empty($userfile)) {
-	$signatureStarter->setPdfToSignPath("app-data/{$userfile}");
+
+	// If the URL argument "userfile" is filled, it means the user was redirected here by the file upload.php (signature
+	// with file uploaded by user). We'll set the path of the file to be signed, which was saved in the "app-data" folder
+	// by upload.php
+	$signatureStarter->setFileToSign("app-data/{$userfile}");
+
+} else if (!empty($cmsfile)) {
+
+	/*
+	 * If the URL argument "cmsfile" is filled, the user has asked to co-sign a previously signed CMS. We'll set the
+	 * path to the CMS to be co-signed, which was previously saved in the "app-data" folder by the file
+	 * cades-signature-action.php. Note two important things:
+	 *
+	 * 1. The CMS to be co-signed must be set using the method "setCmsToSign" or "setCmsFileToSign", not the method
+	 *    "setContentToSign" nor "setFileToSign".
+	 *
+	 * 2. Since we're creating CMSs with encapsulated content (see call to setEncapsulateContent below), we don't need
+	 *    to set the content to be signed, REST PKI will get the content from the CMS being co-signed.
+	 */
+	$signatureStarter->setCmsFileToSign("app-data/{$cmsfile}");
+
 } else {
-	$signatureStarter->setPdfToSignPath('content/SampleDocument.pdf');
+
+	// If both userfile and cmsfile are null, this is the "signature with server file" case. We'll set the path to
+	// the sample document.
+	$signatureStarter->setFileToSign('content/SampleDocument.pdf');
+
 }
 
 // Set the signature policy
-$signatureStarter->setSignaturePolicy(StandardSignaturePolicies::PADES_BASIC);
+$signatureStarter->setSignaturePolicy(StandardSignaturePolicies::CADES_ICPBR_ADR_BASICA);
 
-// Set a SecurityContext to be used to determine trust in the certificate chain
-$signatureStarter->setSecurityContext(StandardSecurityContexts::PKI_BRAZIL);
-// Note: By changing the SecurityContext above you can accept only certificates from a certain PKI, for instance,
-// ICP-Brasil (\Lacuna\StandardSecurityContexts::PKI_BRAZIL).
+// Optionally, set a SecurityContext to be used to determine trust in the certificate chain
+//$signatureStarter->setSecurityContext(\Lacuna\StandardSecurityContexts::PKI_BRAZIL);
+// Note: Depending on the signature policy chosen above, setting the security context may be mandatory (this is not
+// the case for ICP-Brasil policies, which will automatically use the PKI_BRAZIL security context if none is passed)
 
-// Set the visual representation for the signature
-$signatureStarter->setVisualRepresentation([
-
-	'text' => [
-
-		// The tags {{signerName}} and {{signerNationalId}} will be substituted according to the user's certificate
-		// signerName -> full name of the signer
-		// signerNationalId -> if the certificate is ICP-Brasil, contains the signer's CPF
-		'text' => 'Signed by {{signerName}} ({{signerNationalId}})',
-
-		// Specify that the signing time should also be rendered
-		'includeSigningTime' => true,
-
-		// Optionally set the horizontal alignment of the text ('Left' or 'Right'), if not set the default is Left
-		'horizontalAlign' => 'Left'
-
-	],
-
-	'image' => [
-
-		// We'll use as background the image content/PdfStamp.png
-		'resource' => [
-			'content' => base64_encode(file_get_contents('content/PdfStamp.png')),
-			'mimeType' => 'image/png'
-		],
-
-		// Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is completely opaque).
-		'opacity' => 50,
-
-		// Align the image to the right
-		'horizontalAlign' => 'Right'
-
-	],
-
-	// Position of the visual representation. We have encapsulated this code in a function to include several
-	// possibilities depending on the argument passed to the function. Experiment changing the argument to see
-	// different examples of signature positioning. Once you decide which is best for your case, you can place the
-	// code directly here.
-	'position' => getVisualRepresentationPosition(3)
-
-]);
+// Optionally, set whether the content should be encapsulated in the resulting CMS. If this parameter is omitted,
+// the following rules apply:
+// - If no CmsToSign is given, the resulting CMS will include the content
+// - If a CmsToCoSign is given, the resulting CMS will include the content if and only if the CmsToCoSign also includes
+//   the content
+$signatureStarter->setEncapsulateContent(true);
 
 // Call the startWithWebPki() method, which initiates the signature. This yields the token, a 43-character
 // case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
@@ -179,7 +88,7 @@ setExpiredPage();
 ?><!DOCTYPE html>
 <html>
 <head>
-	<title>PAdES Signature</title>
+	<title>CAdES Signature</title>
 	<?php include 'includes.php' // jQuery and other libs (for a sample without jQuery, see https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP#barebones-sample) ?>
 </head>
 <body>
@@ -188,10 +97,10 @@ setExpiredPage();
 
 <div class="container">
 
-	<h2>PAdES Signature</h2>
+	<h2>CAdES Signature</h2>
 
 	<?php // notice that we'll post to a different PHP file ?>
-	<form id="signForm" action="pades-signature-action.php" method="POST">
+	<form id="signForm" action="cades-signature-action.php" method="POST">
 
 		<?php // render the $token in a hidden input field ?>
 		<input type="hidden" name="token" value="<?= $token ?>">
@@ -200,14 +109,16 @@ setExpiredPage();
 			<label>File to sign</label>
 			<?php if (!empty($userfile)) { ?>
 				<p>You'll are signing <a href='app-data/<?= $userfile ?>'>this document</a>.</p>
+			<?php } elseif (!empty($cmsfile)) { ?>
+				<p>You'll are co-signing <a href='app-data/<?= $cmsfile ?>'>this CMS</a>.</p>
 			<?php } else { ?>
 				<p>You'll are signing <a href='content/SampleDocument.pdf'>this sample document</a>.</p>
 			<?php } ?>
 		</div>
 
 		<?php
-			// Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it
-			// later on (see javascript below).
+		// Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it
+		// later on (see javascript below).
 		?>
 		<div class="form-group">
 			<label for="certificateSelect">Choose a certificate</label>
@@ -215,9 +126,9 @@ setExpiredPage();
 		</div>
 
 		<?php
-			// Action buttons. Notice that the "Sign File" button is NOT a submit button. When the user clicks the button,
-			// we must first use the Web PKI component to perform the client-side computation necessary and only when
-			// that computation is finished we'll submit the form programmatically (see javascript below).
+		// Action buttons. Notice that the "Sign File" button is NOT a submit button. When the user clicks the button,
+		// we must first use the Web PKI component to perform the client-side computation necessary and only when
+		// that computation is finished we'll submit the form programmatically (see javascript below).
 		?>
 		<button id="signButton" type="button" class="btn btn-primary">Sign File</button>
 		<button id="refreshButton" type="button" class="btn btn-default">Refresh Certificates</button>
