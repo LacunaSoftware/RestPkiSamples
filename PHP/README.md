@@ -36,15 +36,6 @@ if you cannot use PHP 5.5+.
 
 The steps to execute the sample are the same as with the standard sample.
 
-Barebones sample
-----------------
-
-The standard sample uses a number of components (jQuery, Bootstrap, BlockUI) to provide a better user
-experience. If you're not familiar with jQuery, you can instead use the [barebones](barebones/) sample.
-The user experience, however, is significantly impaired in this sample.
-
-The steps to execute the sample are the same as with the standard sample.
-
 Dependencies
 ------------
 
