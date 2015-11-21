@@ -102,18 +102,19 @@ function getVisualRepresentationPosition($sampleNumber) {
 	}
 }
 
-// If the user was redirected here by upload.php (signature with file uploaded by user), the "userfile" URL argument
-// will contain the filename under the uploads/ folder. Otherwise (signature with server file), we'll sign a sample
-// document.
-$pdfPath = isset($_GET['userfile']) ? 'uploads/' . $_GET['userfile'] . '.pdf' : 'content/SampleDocument.pdf';
-
 // Instantiate the PadesSignatureStarter class, responsible for receiving the signature elements and start the signature
 // process
 $signatureStarter = new PadesSignatureStarter(getRestPkiClient());
 
-// Set the path of PDF to be signed. The file will be read with the standard file_get_contents() function, so the same
-// path rules apply.
-$signatureStarter->setPdfToSignPath($pdfPath);
+// If the user was redirected here by upload.php (signature with file uploaded by user), the "userfile" URL argument
+// will contain the filename under the "app-data" folder. Otherwise (signature with server file), we'll sign a sample
+// document.
+$userfile = isset($_GET['userfile']) ? $_GET['userfile'] : null;
+if (!empty($userfile)) {
+	$signatureStarter->setPdfToSignPath("app-data/{$userfile}");
+} else {
+	$signatureStarter->setPdfToSignPath('content/SampleDocument.pdf');
+}
 
 // Set the signature policy
 $signatureStarter->setSignaturePolicy(StandardSignaturePolicies::PADES_BASIC);
@@ -173,8 +174,8 @@ $token = $signatureStarter->startWithWebPki();
 // The token acquired above can only be used for a single signature attempt. In order to retry the signature it is
 // necessary to get a new token. This can be a problem if the user uses the back button of the browser, since the
 // browser might show a cached page that we rendered previously, with a now stale token. To prevent this from happening,
-// we call the function setExpiredPage(), located in util.php, which sets HTTP headers to prevent caching of the page.
-setExpiredPage();
+// we call the function setNoCacheHeaders() (util.php), which sets HTTP headers to prevent caching of the page.
+setNoCacheHeaders();
 
 ?><!DOCTYPE html>
 <html>
@@ -198,7 +199,11 @@ setExpiredPage();
 
 		<div class="form-group">
 			<label>File to sign</label>
-			<p>You'll are signing <a href='<?php echo $pdfPath; ?>'>this document</a>.</p>
+			<?php if (!empty($userfile)) { ?>
+				<p>You'll are signing <a href='app-data/<?php echo $userfile; ?>'>this document</a>.</p>
+			<?php } else { ?>
+				<p>You'll are signing <a href='content/SampleDocument.pdf'>this sample document</a>.</p>
+			<?php } ?>
 		</div>
 
 		<?php
@@ -225,7 +230,7 @@ setExpiredPage();
 // The file below contains the JS lib for accessing the Web PKI component. For more information, see:
 // https://webpki.lacunasoftware.com/#/Documentation
 ?>
-<script src="content/js/lacuna-web-pki-2.3.0.js"></script>
+<script src="content/js/lacuna-web-pki-2.3.1.js"></script>
 <script>
 
 	var pki = new LacunaWebPKI();

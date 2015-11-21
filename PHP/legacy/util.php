@@ -27,9 +27,16 @@ function getRestPkiClient() {
 	return new RestPkiClient($restPkiUrl, $restPkiAccessToken);
 }
 
-function setExpiredPage() {
+function setNoCacheHeaders() {
 	header('Expires: ' . gmdate('D, d M Y H:i:s', time() - 3600) . ' GMT');
 	header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 	header('Cache-Control: private, no-store, max-age=0, no-cache, must-revalidate, post-check=0, pre-check=0');
 	header('Pragma: no-cache');
+}
+
+function createAppData() {
+	$appDataPath = "app-data";
+	if (!file_exists($appDataPath)) {
+		mkdir($appDataPath);
+	}
 }

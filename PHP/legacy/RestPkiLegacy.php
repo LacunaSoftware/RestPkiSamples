@@ -187,6 +187,138 @@ class PadesSignatureFinisher {
 	}
 }
 
+class CadesSignatureStarter {
+
+	/** @var RestPkiClient */
+	private $restPkiClient;
+	private $contentToSign;
+	private $securityContextId;
+	private $signaturePolicyId;
+	private $cmsToCoSign;
+	private $callbackArgument;
+	private $encapsulateContent;
+
+	public function __construct($restPkiClient) {
+		$this->restPkiClient = $restPkiClient;
+	}
+
+	public function setFileToSign($filePath) {
+		$this->contentToSign = file_get_contents($filePath);
+	}
+
+	public function setContentToSign($content) {
+		$this->contentToSign = $content;
+	}
+
+	public function setCmsFileToSign($cmsPath) {
+		$this->cmsToCoSign = file_get_contents($cmsPath);
+	}
+
+	public function setCmsToSign($cmsBytes) {
+		$this->cmsToCoSign = $cmsBytes;
+	}
+
+	public function setSecurityContext($securityContextId) {
+		$this->securityContextId = $securityContextId;
+	}
+
+	public function setSignaturePolicy($signaturePolicyId) {
+		$this->signaturePolicyId = $signaturePolicyId;
+	}
+
+	public function setCallbackArgument($callbackArgument) {
+		$this->callbackArgument = $callbackArgument;
+	}
+
+	public function setEncapsulateContent($encapsulateContent) {
+		$this->encapsulateContent = $encapsulateContent;
+	}
+
+	public function startWithWebPki() {
+
+		if (empty($this->contentToSign) && empty($this->cmsToCoSign)) {
+			throw new \Exception("The content to sign was not set and no CMS to be co-signed was given");
+		}
+		if (empty($this->signaturePolicyId)) {
+			throw new \Exception("The signature policy was not set");
+		}
+
+		$request = array(
+			'signaturePolicyId' => $this->signaturePolicyId,
+			'securityContextId' => $this->securityContextId,
+			'callbackArgument' => $this->callbackArgument,
+			'encapsulateContent' => $this->encapsulateContent
+		);
+		if (!empty($this->contentToSign)) {
+			$request['contentToSign'] = base64_encode($this->contentToSign);
+		}
+		if (!empty($this->cmsToCoSign)) {
+			$request['cmsToCoSign'] = base64_encode($this->cmsToCoSign);
+		}
+
+		$response = $this->restPkiClient->post('Api/CadesSignatures', $request);
+		return $response->token;
+	}
+
+}
+
+class CadesSignatureFinisher {
+
+	/** @var RestPkiClient */
+	private $restPkiClient;
+	private $token;
+
+	private $done;
+	private $cms;
+	private $certificate;
+	private $callbackArgument;
+
+	public function __construct($restPkiClient) {
+		$this->restPkiClient = $restPkiClient;
+	}
+
+	public function setToken($token) {
+		$this->token = $token;
+	}
+
+	public function finish() {
+
+		if (empty($this->token)) {
+			throw new \Exception("The token was not set");
+		}
+
+		$response =$this->restPkiClient->post("Api/CadesSignatures/{$this->token}/Finalize", NULL);
+
+		$this->cms = base64_decode($response->cms);
+		$this->certificate = $response->certificate;
+		$this->callbackArgument = $response->callbackArgument;
+		$this->done = true;
+
+		return $this->cms;
+	}
+
+	public function getCertificate() {
+		if (!$this->done) {
+			throw new \Exception('The method getCertificate() can only be called after calling the finish() method');
+		}
+		return $this->certificate;
+	}
+
+	public function getCallbackArgument() {
+		if (!$this->done) {
+			throw new \Exception('The method getCallbackArgument() can only be called after calling the finish() method');
+		}
+		return $this->callbackArgument;
+	}
+
+	public function writeCmsfToPath($path) {
+		if (!$this->done) {
+			throw new \Exception('The method writeCmsfToPath() can only be called after calling the finish() method');
+		}
+		file_put_contents($path, $this->cms);
+	}
+}
+
 class StandardSecurityContexts {
 	const PKI_BRAZIL = '201856ce-273c-4058-a872-8937bd547d36';
 	const PKI_ITALY = 'c438b17e-4862-446b-86ad-6f85734f0bfe';
@@ -195,6 +327,11 @@ class StandardSecurityContexts {
 
 class StandardSignaturePolicies {
 	const PADES_BASIC = '78d20b33-014d-440e-ad07-929f05d00cdf';
+	const CADES_BES = 'a4522485-c9e5-46c3-950b-0d6e951e17d1';
+	const CADES_ICPBR_ADR_BASICA = '3ddd8001-1672-4eb5-a4a2-6e32b17ddc46';
+	const CADES_ICPBR_ADR_TEMPO = 'a5332ad1-d105-447c-a4bb-b5d02177e439';
+	const CADES_ICPBR_ADR_VALIDACAO = '92378630-dddf-45eb-8296-8fee0b73d5bb';
+	const CADES_ICPBR_ADR_COMPLETA = '30d881e7-924a-4a14-b5cc-d5a1717d92f6';
 }
 
 class PadesVisualPositioningPresets {

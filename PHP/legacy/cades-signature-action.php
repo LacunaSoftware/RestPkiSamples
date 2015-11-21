@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file receives the form submission from pades-signature.php. We'll call REST PKI to complete the signature.
+ * This file receives the form submission from cades-signature.php. We'll call REST PKI to complete the signature.
  */
 
 // The file RestPkiLegacy.php contains the helper classes to call the REST PKI API for PHP 5.3+. Notice: if you're using
@@ -13,36 +13,36 @@ require_once 'RestPkiLegacy.php';
 // initialized with the API access token
 require_once 'util.php';
 
-use Lacuna\PadesSignatureFinisher;
+use Lacuna\CadesSignatureFinisher;
 
-// Get the token for this signature (rendered in a hidden input field, see pades-signature.php)
+// Get the token for this signature (rendered in a hidden input field, see cades-signature.php)
 $token = $_POST['token'];
 
-// Instantiate the PadesSignatureFinisher class, responsible for completing the signature process
-$signatureFinisher = new PadesSignatureFinisher(getRestPkiClient());
+// Instantiate the CadesSignatureFinisher class, responsible for completing the signature process
+$signatureFinisher = new CadesSignatureFinisher(getRestPkiClient());
 
 // Set the token
 $signatureFinisher->setToken($token);
 
-// Call the finish() method, which finalizes the signature process and returns the signed PDF
-$signedPdf = $signatureFinisher->finish();
+// Call the finish() method, which finalizes the signature process and returns the CMS (p7s file) bytes
+$cms = $signatureFinisher->finish();
 
 // Get information about the certificate used by the user to sign the file. This method must only be called after
 // calling the finish() method.
 $signerCert = $signatureFinisher->getCertificate();
 
-// At this point, you'd typically store the signed PDF on your database. For demonstration purposes, we'll
-// store the PDF on a temporary folder publicly accessible and render a link to it.
+// At this point, you'd typically store the CMS on your database. For demonstration purposes, we'll
+// store the CMS on a temporary folder publicly accessible and render a link to it.
 
-$filename = uniqid() . ".pdf";
 createAppData(); // make sure the "app-data" folder exists (util.php)
-file_put_contents("app-data/{$filename}", $signedPdf);
+$filename = uniqid() . ".p7s";
+file_put_contents("app-data/{$filename}", $cms);
 
 ?><!DOCTYPE html>
 <html>
 <head>
 	<title>PAdES Signature</title>
-	<?php include 'includes.php' // jQuery and other libs (for a sample without jQuery, see https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP) ?>
+	<?php include 'includes.php' // jQuery and other libs (for a sample without jQuery, see https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP#barebones-sample) ?>
 </head>
 <body>
 
@@ -50,7 +50,7 @@ file_put_contents("app-data/{$filename}", $signedPdf);
 
 <div class="container">
 
-	<h2>PAdES Signature</h2>
+	<h2>CAdES Signature</h2>
 
 	<p>File signed successfully! <a href="app-data/<?php echo $filename; ?>">Click here to download the signed file</a></p>
 
@@ -72,7 +72,7 @@ file_put_contents("app-data/{$filename}", $signedPdf);
 	</ul>
 	</p>
 
-	<p><a href="pades-signature.php?userfile=<?php echo $filename; ?>">Click here</a> to co-sign with another certificate</p>
+	<p><a href="cades-signature.php?cmsfile=<?php echo $filename; ?>">Click here</a> to co-sign with another certificate</p>
 
 </div>
 

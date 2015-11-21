@@ -1,8 +1,14 @@
 <?php
 
 /*
- * This file initiates an authentication with REST PKI and renders the authentication page. The form is posted to
- * another file, authentication-action.php, which calls REST PKI again to validate the data received.
+ * This file initiates a CAdES signature using REST PKI and renders the signature page. The form is posted to
+ * another file, cades-signature-action.php, which calls REST PKI again to complete the signature.
+ *
+ * All CAdES signature examples converge to this action, but with different URL arguments:
+ *
+ * 1. Signature with a server file               : no arguments filled
+ * 2. Signature with a file uploaded by the user : "userfile" filled
+ * 3. Co-signature of a previously signed CMS    : "cmsfile" filled
  */
 
 // The file RestPkiLegacy.php contains the helper classes to call the REST PKI API for PHP 5.3+. Notice: if you're using
@@ -14,19 +20,68 @@ require_once 'RestPkiLegacy.php';
 // initialized with the API access token
 require_once 'util.php';
 
-// Get an instance of the Authentication class
-$auth = getRestPkiClient()->getAuthentication();
+use Lacuna\CadesSignatureStarter;
+use Lacuna\StandardSignaturePolicies;
 
-// Call the startWithWebPki() method, which initiates the authentication. This yields the "token", a 22-character
-// case-sensitive URL-safe string, which represents this authentication process. We'll use this value to call the
-// signWithRestPki() method on the Web PKI component (see javascript below) and also to call the completeWithWebPki()
-// method on the file authentication-action.php. This should not be mistaken with the API access token.
-$token = $auth->startWithWebPki(\Lacuna\StandardSecurityContexts::PKI_BRAZIL);
+$userfile = isset($_GET['userfile']) ? $_GET['userfile'] : null;
+$cmsfile = isset($_GET['cmsfile']) ? $_GET['cmsfile'] : null;
 
-// Note: By changing the SecurityContext above you can accept only certificates from a certain PKI,
-// for instance, ICP-Brasil (\Lacuna\StandardSecurityContexts::PKI_BRAZIL).
+// Instantiate the CadesSignatureStarter class, responsible for receiving the signature elements and start the signature
+// process
+$signatureStarter = new CadesSignatureStarter(getRestPkiClient());
 
-// The token acquired above can only be used for a single authentication. In order to retry authenticating it is
+if (!empty($userfile)) {
+
+	// If the URL argument "userfile" is filled, it means the user was redirected here by the file upload.php (signature
+	// with file uploaded by user). We'll set the path of the file to be signed, which was saved in the "app-data" folder
+	// by upload.php
+	$signatureStarter->setFileToSign("app-data/{$userfile}");
+
+} else if (!empty($cmsfile)) {
+
+	/*
+	 * If the URL argument "cmsfile" is filled, the user has asked to co-sign a previously signed CMS. We'll set the
+	 * path to the CMS to be co-signed, which was previously saved in the "app-data" folder by the file
+	 * cades-signature-action.php. Note two important things:
+	 *
+	 * 1. The CMS to be co-signed must be set using the method "setCmsToSign" or "setCmsFileToSign", not the method
+	 *    "setContentToSign" nor "setFileToSign".
+	 *
+	 * 2. Since we're creating CMSs with encapsulated content (see call to setEncapsulateContent below), we don't need
+	 *    to set the content to be signed, REST PKI will get the content from the CMS being co-signed.
+	 */
+	$signatureStarter->setCmsFileToSign("app-data/{$cmsfile}");
+
+} else {
+
+	// If both userfile and cmsfile are null, this is the "signature with server file" case. We'll set the path to
+	// the sample document.
+	$signatureStarter->setFileToSign('content/SampleDocument.pdf');
+
+}
+
+// Set the signature policy
+$signatureStarter->setSignaturePolicy(StandardSignaturePolicies::CADES_ICPBR_ADR_BASICA);
+
+// Optionally, set a SecurityContext to be used to determine trust in the certificate chain
+//$signatureStarter->setSecurityContext(\Lacuna\StandardSecurityContexts::PKI_BRAZIL);
+// Note: Depending on the signature policy chosen above, setting the security context may be mandatory (this is not
+// the case for ICP-Brasil policies, which will automatically use the PKI_BRAZIL security context if none is passed)
+
+// Optionally, set whether the content should be encapsulated in the resulting CMS. If this parameter is omitted,
+// the following rules apply:
+// - If no CmsToSign is given, the resulting CMS will include the content
+// - If a CmsToCoSign is given, the resulting CMS will include the content if and only if the CmsToCoSign also includes
+//   the content
+$signatureStarter->setEncapsulateContent(true);
+
+// Call the startWithWebPki() method, which initiates the signature. This yields the token, a 43-character
+// case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
+// signWithRestPki() method on the Web PKI component (see javascript below) and also to complete the signature after
+// the form is submitted (see file pades-signature-action.php). This should not be mistaken with the API access token.
+$token = $signatureStarter->startWithWebPki();
+
+// The token acquired above can only be used for a single signature attempt. In order to retry the signature it is
 // necessary to get a new token. This can be a problem if the user uses the back button of the browser, since the
 // browser might show a cached page that we rendered previously, with a now stale token. To prevent this from happening,
 // we call the function setNoCacheHeaders() (util.php), which sets HTTP headers to prevent caching of the page.
@@ -35,8 +90,8 @@ setNoCacheHeaders();
 ?><!DOCTYPE html>
 <html>
 <head>
-	<title>Authentication</title>
-	<?php include 'includes.php' // jQuery and other libs (for a sample without jQuery, see https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP) ?>
+	<title>CAdES Signature</title>
+	<?php include 'includes.php' // jQuery and other libs (for a sample without jQuery, see https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP#barebones-sample) ?>
 </head>
 <body>
 
@@ -44,17 +99,28 @@ setNoCacheHeaders();
 
 <div class="container">
 
-	<h2>Authentication</h2>
+	<h2>CAdES Signature</h2>
 
 	<?php // notice that we'll post to a different PHP file ?>
-	<form id="authForm" action="authentication-action.php" method="POST">
+	<form id="signForm" action="cades-signature-action.php" method="POST">
 
 		<?php // render the $token in a hidden input field ?>
 		<input type="hidden" name="token" value="<?php echo $token; ?>">
 
+		<div class="form-group">
+			<label>File to sign</label>
+			<?php if (!empty($userfile)) { ?>
+				<p>You are signing <a href='app-data/<?php echo $userfile; ?>'>this document</a>.</p>
+			<?php } elseif (!empty($cmsfile)) { ?>
+				<p>You are co-signing <a href='app-data/<?php echo $cmsfile; ?>'>this CMS</a>.</p>
+			<?php } else { ?>
+				<p>You are signing <a href='content/SampleDocument.pdf'>this sample document</a>.</p>
+			<?php } ?>
+		</div>
+
 		<?php
-			// Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it
-			// later on (see javascript below).
+		// Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it
+		// later on (see javascript below).
 		?>
 		<div class="form-group">
 			<label for="certificateSelect">Choose a certificate</label>
@@ -62,22 +128,21 @@ setNoCacheHeaders();
 		</div>
 
 		<?php
-			// Action buttons. Notice that the "Sign In" button is NOT a submit button. When the user clicks the button,
-			// we must first use the Web PKI component to perform the client-side computation necessary and only when
-			// that computation is finished we'll submit the form programmatically (see javascript below).
+		// Action buttons. Notice that the "Sign File" button is NOT a submit button. When the user clicks the button,
+		// we must first use the Web PKI component to perform the client-side computation necessary and only when
+		// that computation is finished we'll submit the form programmatically (see javascript below).
 		?>
-		<button id="signInButton" type="button" class="btn btn-primary">Sign In</button>
+		<button id="signButton" type="button" class="btn btn-primary">Sign File</button>
 		<button id="refreshButton" type="button" class="btn btn-default">Refresh Certificates</button>
 	</form>
 
 </div>
 
 <?php
-	// The file below contains the JS lib for accessing the Web PKI component. For more information, see:
-	// https://webpki.lacunasoftware.com/#/Documentation
+// The file below contains the JS lib for accessing the Web PKI component. For more information, see:
+// https://webpki.lacunasoftware.com/#/Documentation
 ?>
 <script src="content/js/lacuna-web-pki-2.3.1.js"></script>
-
 <script>
 
 	var pki = new LacunaWebPKI();
@@ -88,7 +153,7 @@ setNoCacheHeaders();
 	function init() {
 
 		// Wireup of button clicks
-		$('#signInButton').click(signIn);
+		$('#signButton').click(sign);
 		$('#refreshButton').click(refresh);
 
 		// Block the UI while we get things ready
@@ -142,30 +207,29 @@ setNoCacheHeaders();
 
 			// once the certificates have been listed, unblock the UI
 			$.unblockUI();
-
 		});
+
 	}
 
 	// -------------------------------------------------------------------------------------------------
-	// Function called when the user clicks the "Sign In" button
+	// Function called when the user clicks the "Sign" button
 	// -------------------------------------------------------------------------------------------------
-	function signIn() {
+	function sign() {
 
-		// Block the UI while we process the authentication
+		// Block the UI while we perform the signature
 		$.blockUI();
 
 		// Get the thumbprint of the selected certificate
 		var selectedCertThumbprint = $('#certificateSelect').val();
 
 		// Call signWithRestPki() on the Web PKI component passing the token received from REST PKI and the certificate
-		// selected by the user. Although we're making an authentication, at the lower level we're actually signing
-		// a cryptographic nonce (a random number generated by the REST PKI service), hence the name of the method.
+		// selected by the user.
 		pki.signWithRestPki({
 			token: '<?php echo $token; ?>',
-			thumbprint: selectedCertThumbprint,
-		}).success(function () {
+			thumbprint: selectedCertThumbprint
+		}).success(function() {
 			// Once the operation is completed, we submit the form
-			$('#authForm').submit();
+			$('#signForm').submit();
 		});
 	}
 
