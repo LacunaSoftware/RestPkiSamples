@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.w3.org/1999/xhtml">
 <head th:include="head"></head>
@@ -8,29 +7,32 @@
 
 <div class="container">
 
-    <h2>Authentication</h2>
+    <h2>CAdES Signature</h2>
 
     <form id="signForm" method="POST">
 
-        <!--/* render the nonce in a hidden input field (it will be looked up by the javascript code and we must also send it back to the server) */-->
-        <input type="hidden" id="nonceInput" name="nonce" th:value="${nonce}" />
-
-        <!--/* hidden fields for the certificate and signature that must be sent to the server (we'll fill these later on programmatically) */-->
+        <!--/* hidden field for the certificate content (we'll fill this later on programmatically) */-->
         <input type="hidden" id="certificateInput" name="certificate" />
-        <input type="hidden" id="signatureInput" name="signature" />
+
+        <div class="form-group">
+            <label>File to sign</label>
+            <p th:if="${userfile} != null">You are signing <a th:href="'/files/' + ${userfile}">this document</a>.</p>
+            <p th:if="${cmsfile} != null">You are co-signing <a th:href="'/files/' + ${cmsfile}">this CMS</a>.</p>
+            <p th:if="${userfile} == null and ${cmsfile} == null">You are signing <a href="/SampleDocument.pdf">this sample document</a>.</p>
+        </div>
 
         <!--/* Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it later on programmatically */-->
         <div class="form-group">
             <label for="certificateSelect">Choose a certificate</label>
-            <select id="certificateSelect" class="form-control"></select>
+            <select id="certificateSelect" name="selectedCertThumb" class="form-control"></select>
         </div>
 
         <!--/*
-            Action buttons. Notice that the "Sign In" button is NOT a submit button. When the user clicks the button,
+            Action buttons. Notice that the "Sign File" button is NOT a submit button. When the user clicks the button,
             we must first use the Web PKI component to perform the client-side computation necessary and only when
-            that computation is finished we'll submit the form programmatically.
+            that computation is finished we'll submit the form programmatically (see js/signature-form.js).
         */-->
-        <button id="signInButton" type="button" class="btn btn-primary">Sign In</button>
+        <button id="signButton" type="button" class="btn btn-primary">Sign File</button>
         <button id="refreshButton" type="button" class="btn btn-default">Refresh Certificates</button>
 
     </form>
@@ -43,9 +45,9 @@
 
     <!--/*
         The file below contains the necessary calls to the Web PKI component. Once the necessary computations have been
-        done, the javascript code will submit our form above.
+        done, the javascript code will fill the hidden input field "certificateInput" and submit the form.
     */-->
-    <script src="/js/authentication.js"></script>
+    <script src="/js/signature-step1.js"></script>
 
 </div>
 </body>

@@ -20,12 +20,12 @@ repositories {
 }
 
 jar {
-	baseName = 'restpki-sample-spring-mvc'
+	baseName = 'restpki-sample-on-premises-restricted'
 	version =  '1.0.0'
 }
 
 dependencies {
-	compile("com.lacunasoftware.restpki:restpki-client:1.1.1")
+	compile("com.lacunasoftware.restpki:restpki-client:1.3.1")
 	compile("org.springframework.boot:spring-boot-starter-thymeleaf")
 	compile("commons-io:commons-io:2.4")
 }

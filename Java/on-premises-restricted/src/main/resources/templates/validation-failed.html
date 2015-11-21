@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:include="head"></head>
+<body>
+
+<div th:replace="menu"></div>
+
+<div class="container">
+    <h2 th:text="${title}" />
+    <p th:utext="${vrHtml}"></p>
+    <p th:if="${retryUrl} != null"><a th:href="${retryUrl}" class="btn btn-primary">Try again</a></p>
+</div>
+</body>
+</html>
