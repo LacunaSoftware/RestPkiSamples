@@ -97,7 +97,7 @@ public class CadesSignatureController {
 		signatureStarter.setSignaturePolicy(SignaturePolicy.PkiBrazilAdrBasica);
 
 		// Optionally, set a SecurityContext to be used to determine trust in the certificate chain
-		signatureStarter.setSecurityContext(new SecurityContext("c2d7fb0b-4f09-4eb1-867a-ff280425f48d"));
+		//signatureStarter.setSecurityContext(SecurityContext.pkiBrazil);
 		// Note: Depending on the signature policy chosen above, setting the security context may be mandatory (this is
 		// not the case for ICP-Brasil policies, which will automatically use the ICP-Brasil security context
 		// ("pkiBrazil") if none is passed)
