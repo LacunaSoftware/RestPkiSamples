@@ -10,7 +10,7 @@ using System.Web.Mvc;
 
 namespace Lacuna.RestPki.SampleSite.Controllers {
 
-	public class CadesSignatureController : Controller {
+	public class CadesSignatureController : BaseController {
 
 		/*
 		 * This action initiates a CAdES signature using REST PKI and renders the signature page.
@@ -73,6 +73,12 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 			// signWithRestPki() method on the Web PKI component (see javascript on the view) and also to complete the signature
 			// on the POST action below (this should not be mistaken with the API access token).
 			var token = signatureStarter.StartWithWebPki();
+
+			// The token acquired above can only be used for a single signature attempt. In order to retry the signature it is
+			// necessary to get a new token. This can be a problem if the user uses the back button of the browser, since the
+			// browser might show a cached page that we rendered previously, with a now stale token. To prevent this from happening,
+			// we call the method SetNoCacheHeaders() (in BaseController) which sets HTTP headers to prevent caching of the page.
+			base.SetNoCacheHeaders();
 
 			// Render the signature page with the token obtained from REST PKI
 			return View(new CadesSignatureModel() {

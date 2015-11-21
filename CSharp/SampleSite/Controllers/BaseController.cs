@@ -7,7 +7,7 @@ using System.Web.Mvc;
 namespace Lacuna.RestPki.SampleSite.Controllers {
 	public class BaseController : Controller {
 
-		protected void SetExpiredPage() {
+		protected void SetNoCacheHeaders() {
 			Response.Cache.SetCacheability(HttpCacheability.NoCache);
 			Response.Cache.SetNoStore();
 			Response.Expires = -1;

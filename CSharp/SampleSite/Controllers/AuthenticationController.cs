@@ -33,8 +33,8 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 			// The token acquired above can only be used for a single authentication. In order to retry authenticating it is
 			// necessary to get a new token. This can be a problem if the user uses the back button of the browser, since the
 			// browser might show a cached page that we rendered previously, with a now stale token. To prevent this from happening,
-			// we call the method SetExpiredPage(), located in BaseController.cs, which sets HTTP headers to prevent caching of the page.
-			base.SetExpiredPage();
+			// we call the method SetNoCacheHeaders() (in BaseController) which sets HTTP headers to prevent caching of the page.
+			base.SetNoCacheHeaders();
 
 			// Render the authentication page with the token obtained from REST PKI
 			return View(new AuthenticationModel() {
