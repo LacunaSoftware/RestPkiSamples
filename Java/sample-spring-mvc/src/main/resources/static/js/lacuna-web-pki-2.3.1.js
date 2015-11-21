@@ -188,10 +188,10 @@ LacunaWebPKI = function (license) {
 
 	$._installUrl = 'https://get.webpkiplugin.com/';
 	$._chromeExtensionId = 'dcngeagmmhegagicpcmpinaoklddcgon';
-	$._chromeExtensionRequiredVersion = '2.2.8';
+	$._chromeExtensionRequiredVersion = '2.2.9';
 	$._chromeNativeWinRequiredVersion = '2.1.0';
 	$._chromeNativeLinuxRequiredVersion = '2.1.0';
-	$._ieLatestAddonVersion = '1.6.1';
+	$._ieAddonRequiredVersion = '2.0.1';
 	$._chromeExtensionFirstVersionWithSelfUpdate = '2.0.20';
 
 	$._chromeInstallationStates = {
@@ -375,6 +375,7 @@ LacunaWebPKI = function (license) {
 		    this.restPkiUrl = args.restPkiUrl;
 		}
 
+		var self = this;
 		var onCheckInstalledSuccess = function (result) {
 			if (result.isInstalled) {
 				if (args.ready) {
@@ -386,7 +387,7 @@ LacunaWebPKI = function (license) {
 				if (args.notInstalled) {
 					args.notInstalled(result.status, result.message, result.browserSpecificStatus);
 				} else {
-					$.redirectToInstallPage();
+					self.redirectToInstallPage();
 				}
 			}
 		};
@@ -472,13 +473,13 @@ LacunaWebPKI = function (license) {
 
 		var context = this._createContext(args);
 		$._requestHandler.sendCommand(context, 'listCertificates', null, function (result) {
-			return $._processCertificates(result, args.filter);
+			return $._processCertificates(result, args.filter, args.selectId, args.selectOptionFormatter);
 		});
 
 		return context.promise;
 	};
 
-	$._processCertificates = function (result, filter) {
+	$._processCertificates = function (result, filter, selectId, selectOptionFormatter) {
 		var toReturn = [];
 		for (var i = 0; i < result.length; i++) {
 			var cert = result[i];
@@ -494,6 +495,24 @@ LacunaWebPKI = function (license) {
 				}
 			} else {
 				toReturn.push(cert);
+			}
+		}
+		if (selectId) {
+			if (!selectOptionFormatter) {
+				selectOptionFormatter = function (c) {
+					return c.subjectName + ' (issued by ' + c.issuerName + ')';
+				};
+			}
+			var select = document.getElementById(selectId);
+			while (select.options.length > 0) {
+				select.remove(0);
+			}
+			for (var j = 0; j < toReturn.length; j++) {
+				var c = toReturn[j];
+				var option = document.createElement('option');
+				option.value = c.thumbprint;
+				option.text = selectOptionFormatter(c);
+				select.add(option);
 			}
 		}
 		return toReturn;
@@ -1134,11 +1153,11 @@ LacunaWebPKI = function (license) {
 					}
 					var subPromise = new $.Promise(null);
 					subPromise.success(function (version) {
-						if ($._compareVersions(version, $._ieLatestAddonVersion) < 0) {
+						if ($._compareVersions(version, $._ieAddonRequiredVersion) < 0) {
 							context.promise._invokeSuccess({
 								isInstalled: false,
 								status: $.installationStates.OUTDATED,
-								message: 'The Web PKI add-on is outdated (installed version: ' + version + ', latest version: ' + $._ieLatestAddonVersion + ')'
+								message: 'The Web PKI add-on is outdated (installed version: ' + version + ', latest version: ' + $._ieAddonRequiredVersion + ')'
 							});
 						} else {
 							context.promise._invokeSuccess({

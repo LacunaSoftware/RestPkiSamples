@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:include="head"></head>
+<body>
+
+<div th:replace="menu"></div>
+
+<div class="container">
+
+    <h2>Authentication successful</h2>
+
+    <p>
+        User certificate information:
+    <ul>
+        <li>Subject: <span th:text="${userCert.getSubjectName().getCommonName()}"/></li>
+        <li>Email: <span th:text="${userCert.getEmailAddress()}"/></li>
+        <li>
+            ICP-Brasil fields
+            <ul>
+                <li>Tipo de certificado: <span th:text="${userCert.getPkiBrazil().getCertificateType()}"/></li>
+                <li>CPF: <span th:text="${userCert.getPkiBrazil().getCpf()}"/></li>
+                <li>Responsavel: <span th:text="${userCert.getPkiBrazil().getResponsavel()}"/></li>
+                <li>Empresa: <span th:text="${userCert.getPkiBrazil().getCompanyName()}"/></li>
+                <li>CNPJ: <span th:text="${userCert.getPkiBrazil().getCnpj()}"/></li>
+            </ul>
+        </li>
+    </ul>
+    </p>
+
+</div>
+</body>
+</html>

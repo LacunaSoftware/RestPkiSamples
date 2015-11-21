@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:include="head"></head>
+<body>
+
+<div th:replace="menu"></div>
+
+<div class="container">
+
+    <h2>CAdES Signature</h2>
+
+    <p>File signed successfully! <a th:href="'/files/' + ${filename}">Click here to download the signed file</a></p>
+
+    <p>
+        Signer information:
+    <ul>
+        <li>Subject: <span th:text="${signerCert.getSubjectName().getCommonName()}" /></li>
+        <li>Email: <span th:text="${signerCert.getEmailAddress()}" /></li>
+        <li>
+            ICP-Brasil fields
+            <ul>
+                <li>Tipo de certificado: <span th:text="${signerCert.getPkiBrazil().getCertificateType()}" /></li>
+                <li>CPF: <span th:text="${signerCert.getPkiBrazil().getCpf()}" /></li>
+                <li>Responsavel: <span th:text="${signerCert.getPkiBrazil().getResponsavel()}" /></li>
+                <li>Empresa: <span th:text="${signerCert.getPkiBrazil().getCompanyName()}" /></li>
+                <li>CNPJ: <span th:text="${signerCert.getPkiBrazil().getCnpj()}" /></li>
+            </ul>
+        </li>
+    </ul>
+    </p>
+    <p><a th:href="'/cades-signature?cmsfile=' + ${filename}">Click here</a> to co-sign with another certificate</p>
+</div>
+</body>
+</html>
