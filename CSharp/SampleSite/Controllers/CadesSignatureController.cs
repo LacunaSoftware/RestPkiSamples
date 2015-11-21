@@ -94,7 +94,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 			// Set the token for this signature (rendered in a hidden input field, see the view)
 			signatureFinisher.SetToken(model.Token);
 
-			// Call the Finish() method, which finalizes the signature process and returns the signed PDF
+			// Call the Finish() method, which finalizes the signature process and returns the CMS
 			var cms = signatureFinisher.Finish();
 
 			// Get information about the certificate used by the user to sign the file. This method must only be called after
