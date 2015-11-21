@@ -113,24 +113,51 @@ public class PadesSignatureController {
 			case 2:
 				// Example #2: get the footnote positioning preset and customize it
 				PadesVisualAutoPositioning footnotePosition = PadesVisualPositioning.getFootnote(Util.getRestPkiClient());
-				footnotePosition.getContainer().setBottom(3.0);
+				footnotePosition.getContainer().setLeft(2.54);
+				footnotePosition.getContainer().setBottom(2.54);
+				footnotePosition.getContainer().setRight(2.54);
 				return footnotePosition;
 
 			case 3:
-				// Example #3: manual positioning
-				PadesVisualRectangle pos = new PadesVisualRectangle();
-				pos.setWidthLeftAnchored(5.0, 2.54);
-				pos.setHeightBottomAnchored(3.0, 2.54);
-				// The first parameter is the page number. Negative numbers represent counting from end of the document
-				// (-1 is last page)
-				return new PadesVisualManualPositioning(-1, PadesMeasurementUnits.Centimeters, pos);
+				// Example #3: automatic positioning on new page. This will insert the signature, and future signatures,
+				// in a new page appended to the end of the document.
+				return PadesVisualPositioning.getNewPage(Util.getRestPkiClient());
 
 			case 4:
-				// Example #4: auto positioning
+				// Example #4: get the "new page" positioning preset and customize it
+				PadesVisualAutoPositioning newPagePos = PadesVisualPositioning.getNewPage(Util.getRestPkiClient());
+				newPagePos.getContainer().setLeft(2.54);
+				newPagePos.getContainer().setTop(2.54);
+				newPagePos.getContainer().setRight(2.54);
+				newPagePos.setSignatureRectangleSize(new PadesSize(5, 3));
+				return newPagePos;
+
+			case 5:
+				// Example #5: manual positioning
+				PadesVisualRectangle pos = new PadesVisualRectangle();
+				// define a manual position of 5cm x 3cm, positioned at 1 inch from the left and bottom margins
+				pos.setWidthLeftAnchored(5.0, 2.54);
+				pos.setHeightBottomAnchored(3.0, 2.54);
+				return new PadesVisualManualPositioning(
+					0, // Page number. Zero means the signature will be placed on a new page appended to the end of the document
+					PadesMeasurementUnits.Centimeters,
+					pos // reference to the manual position defined above
+				);
+
+			case 6:
+				// Example #6: custom auto positioning
 				PadesVisualRectangle container = new PadesVisualRectangle();
-				container.setHorizontalStretch(2.54, 2.54);
-				container.setHeightBottomAnchored(12.31, 2.54);
-				return new PadesVisualAutoPositioning(-1, PadesMeasurementUnits.Centimeters, container, new PadesSize(5.0, 3.0), 1.0);
+				// Specification of the container where the signatures will be placed, one after the other
+				container.setHorizontalStretch(2.54, 2.54); // variable-width container with the given margins
+				container.setHeightBottomAnchored(12.31, 2.54); // bottom-aligned fixed-height container
+				return new PadesVisualAutoPositioning(
+					-1, // Page number. Negative values represent pages counted from the end of the document (-1 is last page)
+					PadesMeasurementUnits.Centimeters,
+					container, // Reference to the container defined above
+					new PadesSize(5.0, 3.0), // Specification of the size of each signature rectangle
+					1.0 // The signatures will be placed in the container side by side. If there's no room left, the signatures
+					    // will "wrap" to the next row. This value specifies the vertical distance between rows
+				);
 
 			default:
 				return null;
