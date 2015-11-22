@@ -12,7 +12,7 @@
     <form id="signForm" method="POST">
 
         <!--/* render the token in a hidden input field */-->
-        <input type="hidden" id="tokenInput" name="token" th:value="${token}"></input>
+        <input type="hidden" id="tokenInput" name="token" th:value="${token}" />
 
         <div class="form-group">
             <label>File to sign</label>
@@ -44,12 +44,8 @@
     <script src="/js/lacuna-web-pki-2.3.1.js"></script>
 
     <!--/*
-        The file below contains the necessary calls to the Web PKI component. It is shared between the PAdES and
-        CAdES signature pages, as well as with the authentication page. It assumes the presence of certain HTML
-        elements, such as the "signForm" form, the "tokenInput" input, the "certificateSelect" combo box and the
-        buttons "signButton" and "refreshButton".
-
-        Once the necessary computations have been done, the javascript in the file below will submit our form above.
+        The file below contains the necessary calls to the Web PKI component. Once the necessary computations have been
+        done, the javascript code will submit our form.
     */-->
     <script src="/js/signature-form.js"></script>
 
