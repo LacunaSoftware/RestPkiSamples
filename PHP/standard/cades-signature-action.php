@@ -39,8 +39,8 @@ file_put_contents("app-data/{$filename}", $cms);
 ?><!DOCTYPE html>
 <html>
 <head>
-	<title>PAdES Signature</title>
-	<?php include 'includes.php' // jQuery and other libs (for a sample without jQuery, see https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP#barebones-sample) ?>
+	<title>CAdES Signature</title>
+	<?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component) ?>
 </head>
 <body>
 

@@ -1,5 +1,5 @@
 <?php
-	// For a sample without javascript libraries, see https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP#barebones-sample
+	// jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component)
 ?>
 <link href="content/css/bootstrap.css" rel="stylesheet" />
 <link href="content/css/bootstrap-theme.css" rel="stylesheet" />
