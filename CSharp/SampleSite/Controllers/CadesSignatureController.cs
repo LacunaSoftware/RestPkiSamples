@@ -57,10 +57,10 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 			// Set the signature policy
 			signatureStarter.SetSignaturePolicy(StandardCadesSignaturePolicies.PkiBrazil.AdrBasica);
 
-			// Set a SecurityContext to be used to determine trust in the certificate chain
-			signatureStarter.SetSecurityContext(new Guid("c2d7fb0b-4f09-4eb1-867a-ff280425f48d")/*StandardSecurityContexts.PkiBrazil*/);
-			// Note: By changing the SecurityContext above you can accept only certificates from a certain PKI,
-			// for instance, ICP-Brasil (Lacuna.RestPki.Api.StandardSecurityContexts.PkiBrazil).
+			// Optionally, set a SecurityContext to be used to determine trust in the certificate chain
+			//signatureStarter.SetSecurityContext(StandardSecurityContexts.PkiBrazil);
+			// Note: Depending on the signature policy chosen above, setting the security context may be mandatory (this is not
+			// the case for ICP-Brasil policies, which will automatically use the PkiBrazil security context if none is passed)
 
 			// Optionally, set whether the content should be encapsulated in the resulting CMS. If this parameter is ommitted,
 			// the following rules apply:
