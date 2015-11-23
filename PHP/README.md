@@ -57,7 +57,7 @@ Secure communication with REST PKI (HTTPS)
 ------------------------------------------
 
 For simplification purposes, the sample projects communicate with REST PKI using plain HTTP (unencrypted communcation).
-However, in production code it is essential to use HTTPS to communcate with REST PKI, otherwise your API access token
+However, in production code it is essential to use HTTPS to communicate with REST PKI, otherwise your API access token
 and your documents will be sent in the open.
 
 To do that, you should edit the file `util.php`, commenting the line with the HTTP url and uncommenting the line with the HTTPS url:
