@@ -29,30 +29,153 @@ class RestPkiClient {
 			'headers' => [
 				'Authorization' => 'Bearer ' . $this->accessToken,
 				'Accept' => 'application/json'
-			]
+			],
+			'http_errors' => false
 		]);
 		return $client;
 	}
 
 	public function get($url) {
-		$httpResponse = $this->getRestClient()->get($url);
-		$response = json_decode($httpResponse->getBody());
-		return $response;
+		$verb = 'GET';
+		$client = $this->getRestClient();
+		$httpResponse = null;
+		try {
+			$httpResponse = $client->get($url);
+		} catch (\GuzzleHttp\Exception\TransferException $ex) {
+			throw new RestUnreachableException($verb, $url, $ex);
+		}
+		$this->checkResponse($verb, $url, $httpResponse);
+		return json_decode($httpResponse->getBody());
 	}
 
 	public function post($url, $data) {
+		$verb = 'POST';
 		$client = $this->getRestClient();
-		if (empty($data)) {
-			$httpResponse = $client->post($url);
-		} else {
-			$httpResponse = $client->post($url, array( 'json' => $data ));
+		$httpResponse = null;
+		try {
+			if (empty($data)) {
+				$httpResponse = $client->post($url);
+			} else {
+				$httpResponse = $client->post($url, array('json' => $data));
+			}
+		} catch (\GuzzleHttp\Exception\TransferException $ex) {
+			throw new RestUnreachableException($verb, $url, $ex);
 		}
-		$response = json_decode($httpResponse->getBody());
-		return $response;
+		$this->checkResponse($verb, $url, $httpResponse);
+		return json_decode($httpResponse->getBody());
+	}
+
+	private function checkResponse($verb, $url, \Psr\Http\Message\ResponseInterface $httpResponse) {
+		$statusCode = $httpResponse->getStatusCode();
+		if ($statusCode < 200 || $statusCode > 299) {
+			$ex = null;
+			try {
+				$response = json_decode($httpResponse->getBody());
+				if ($statusCode == 422 && !empty($response->code)) {
+					if ($response->code == "ValidationError") {
+						$vr = new ValidationResults($response->validationResults);
+						$ex = new ValidationException($verb, $url, $vr);
+					} else {
+						$ex = new RestPkiException($verb, $url, $response->code, $response->detail);
+					}
+				} else {
+					$ex = new RestErrorException($verb, $url, $statusCode, $response->message);
+				}
+			} catch (\Exception $e) {
+				$ex = new RestErrorException($verb, $url, $statusCode);
+			}
+			throw $ex;
+		}
 	}
 
 	public function getAuthentication() {
 		return new Authentication($this);
+	}
+}
+
+class RestException extends \Exception {
+
+	private $verb;
+	private $url;
+
+	public function __construct($message, $verb, $url, \Exception $previous = null) {
+		parent::__construct($message, 0, $previous);
+		$this->verb = $verb;
+		$this->url = $url;
+	}
+
+	public function getVerb() {
+		return $this->verb;
+	}
+
+	public function getUrl() {
+		return $this->url;
+	}
+
+}
+
+class RestUnreachableException extends RestException {
+	public function __construct($verb, $url, \Exception $previous) {
+		parent::__construct("REST action {$verb} {$url} unreachable", $verb, $url, $previous);
+	}
+}
+
+class RestErrorException extends RestException {
+
+	private $statusCode;
+	private $errorMessage;
+
+	public function __construct($verb, $url, $statusCode, $errorMessage = null) {
+		$message = "REST action {$verb} {$url} returned HTTP error {$statusCode}";
+		if (!empty($errorMessage)) {
+			$message .= ": {$errorMessage}";
+		}
+		parent::__construct($message, $verb, $url);
+		$this->statusCode = $statusCode;
+		$this->errorMessage = $errorMessage;
+	}
+
+	public function getStatusCode() {
+		return $this->statusCode;
+	}
+
+	public function getErrorMessage() {
+		return $this->errorMessage;
+	}
+}
+
+class RestPkiException extends RestException {
+
+	private $errorCode;
+	private $detail;
+
+	public function __construct($verb, $url, $errorCode, $detail) {
+		$message = "REST PKI action {$verb} {$url} error: {$errorCode}";
+		if (!empty($detail)) {
+			$message .= " ({$detail})";
+		}
+		parent::__construct($message, $verb, $url);
+		$this->errorCode = $errorCode;
+		$this->detail = $detail;
+	}
+
+	public function getErrorCode() {
+		return $this->errorCode;
+	}
+
+	public function getDetail() {
+		return $this->detail;
+	}
+}
+
+class ValidationException extends RestException {
+
+	/** @var ValidationResults */
+	private $validationResults;
+
+	public function __construct($verb, $url, ValidationResults $validationResults) {
+		parent::__construct($validationResults->__toString(), $verb, $url);
+		$this->validationResults = $validationResults;
 	}
 }
 
