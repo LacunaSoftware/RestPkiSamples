@@ -38,7 +38,7 @@ if (isset($_FILES['userfile'])) {
 <html>
 <head>
 	<title>PAdES Signature (user file)</title>
-	<?php include 'includes.php' // jQuery and other libs (for a sample without jQuery, see https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP#barebones-sample) ?>
+	<?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component) ?>
 </head>
 <body>
 

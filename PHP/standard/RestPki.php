@@ -177,6 +177,10 @@ class ValidationException extends RestException {
 		parent::__construct($validationResults->__toString(), $verb, $url);
 		$this->validationResults = $validationResults;
 	}
+
+	public function getValidationResults() {
+		return $this->validationResults;
+	}
 }
 
 class Authentication {
@@ -440,9 +444,9 @@ class CadesSignatureFinisher {
 		return $this->callbackArgument;
 	}
 
-	public function writeCmsfToPath($path) {
+	public function writeCmsToPath($path) {
 		if (!$this->done) {
-			throw new \Exception('The method writeCmsfToPath() can only be called after calling the finish() method');
+			throw new \Exception('The method writeCmsToPath() can only be called after calling the finish() method');
 		}
 		file_put_contents($path, $this->cms);
 	}
