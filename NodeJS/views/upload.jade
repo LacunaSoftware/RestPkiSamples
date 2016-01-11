@@ -1,0 +1,12 @@
+extends layout
+
+block content
+
+	h2 Upload a file
+	
+	form(method='post', enctype='multipart/form-data')
+		p
+			| Select file:
+			input(type='file', name='userfile')
+		p
+			input(type='submit', value='Upload', name='submit')
