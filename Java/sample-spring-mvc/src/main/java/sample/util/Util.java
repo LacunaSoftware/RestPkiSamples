@@ -10,6 +10,10 @@ import javax.servlet.http.HttpSession;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.Authenticator;
+import java.net.InetSocketAddress;
+import java.net.PasswordAuthentication;
+import java.net.Proxy;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,11 +28,31 @@ public class Util {
 	// ----------------------------------------------------------------------------------------------------------------
 
 	public static RestPkiClient getRestPkiClient() {
+
 		// Throw exception if token is not set (this check is here just for the sake of newcomers, you can remove it)
 		if (restPkiAccessToken == null || restPkiAccessToken.equals("") || restPkiAccessToken.contains(" API ")) {
 			throw new RuntimeException("The API access token was not set! Hint: to run this sample you must generate an API access token on the REST PKI website and paste it on the file src/main/java/sample/util/Util.java");
 		}
-		return new RestPkiClient("https://pki.rest/", restPkiAccessToken);
+
+		Proxy proxy = null;
+
+		// --------------------------------------------------------------------------------------------------------------
+		// If you need to set a proxy for outgoing connections, uncomment the line below and set the appropriate values
+		// --------------------------------------------------------------------------------------------------------------
+//		proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("10.1.1.10", 80));
+
+		// --------------------------------------------------------------------------------------------------------------
+		// If your proxy requires authentication, uncomment the lines below and set the appropriate values
+		// --------------------------------------------------------------------------------------------------------------
+//		Authenticator.setDefault(
+//			new Authenticator() {
+//				public PasswordAuthentication getPasswordAuthentication() {
+//					return new PasswordAuthentication("username", "password".toCharArray());
+//				}
+//			}
+//		);
+
+		return new RestPkiClient("https://pki.rest/", restPkiAccessToken, proxy);
 	}
 
 	public static void setNoCacheHeaders(HttpServletResponse response) {
