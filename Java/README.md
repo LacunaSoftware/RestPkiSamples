@@ -113,7 +113,6 @@ follow these steps:
 1. Create a file named gradle.properties on the project's folder (same folder as the gradle.build file)
 2. Paste the following code on the file, setting the appropriate values (remove the lines regarding username
    and password if your proxy server does not require authentication):
-
 	systemProp.http.proxyHost=www.somehost.org
 	systemProp.https.proxyHost=www.somehost.org
 	systemProp.http.proxyPort=80
@@ -124,7 +123,6 @@ follow these steps:
 	systemProp.https.proxyPassword=password
 	systemProp.http.nonProxyHosts=localhost
 	systemProp.https.nonProxyHosts=localhost
-
 3. Edit the file `Java/sample-spring-mvc/src/main/java/sample/util/Util.java` and uncomment the lines
    regarding proxy authentication.
 
