@@ -114,6 +114,7 @@ follow these steps:
 2. Paste the following code on the file, setting the appropriate values (remove the lines regarding username
    and password if your proxy server does not require authentication):
 
+
 	systemProp.http.proxyHost=www.somehost.org
 	systemProp.https.proxyHost=www.somehost.org
 	systemProp.http.proxyPort=80
@@ -128,7 +129,7 @@ follow these steps:
 3. Edit the file `Java/sample-spring-mvc/src/main/java/sample/util/Util.java` and uncomment the lines
    regarding proxy authentication.
 
-Known issue: if your proxy server requires authentication AND if it supports NTLM authentication AND
-if you're trying to authenticate with basic (non-NTLM) credentials, you may receive the error message
-"Received status code 407 from server: Proxy authorization required" when trying to build the project.
-In this case, either use NTLM credentials or disable NTLM authentication on your proxy server.
+Known issue: Gradle may fail to build the project returning error message "Received status code 407 from
+server: Proxy authorization required" if your proxy server requires authentication AND if it supports NTLM
+authentication AND if you're trying to authenticate with basic (non-NTLM) credentials. In this case, either
+use NTLM credentials or disable NTLM authentication on your proxy server.
