@@ -50,11 +50,11 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Lacuna.RestPki.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5705bce581cd1847, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lacuna.RestPki.Client.1.2.1\lib\net45\Lacuna.RestPki.Api.dll</HintPath>
+      <HintPath>..\packages\Lacuna.RestPki.Client.1.3.0\lib\net45\Lacuna.RestPki.Api.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Lacuna.RestPki.Client, Version=1.2.1.0, Culture=neutral, PublicKeyToken=5705bce581cd1847, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lacuna.RestPki.Client.1.2.1\lib\net45\Lacuna.RestPki.Client.dll</HintPath>
+    <Reference Include="Lacuna.RestPki.Client, Version=1.3.0.0, Culture=neutral, PublicKeyToken=5705bce581cd1847, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lacuna.RestPki.Client.1.3.0\lib\net45\Lacuna.RestPki.Client.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -122,6 +122,7 @@
     <Content Include="Content\js\lacuna-web-pki-2.3.1.js" />
     <Content Include="Content\PdfStamp.png" />
     <Content Include="Content\SampleDocument.pdf" />
+    <Content Include="Content\SampleNFe.xml" />
     <Content Include="Global.asax" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -137,6 +138,7 @@
     <Compile Include="Controllers\PadesSignatureController.cs" />
     <Compile Include="Controllers\DownloadController.cs" />
     <Compile Include="Controllers\UploadController.cs" />
+    <Compile Include="Controllers\XmlSignatureController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -145,6 +147,7 @@
     <Compile Include="Models\CadesSignatureModel.cs" />
     <Compile Include="Models\SignatureInfoModel.cs" />
     <Compile Include="Models\UploadModel.cs" />
+    <Compile Include="Models\XmlSignatureModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -164,6 +167,8 @@
     <Content Include="Views\PadesSignature\SignatureInfo.cshtml" />
     <Content Include="Views\Authentication\Index.cshtml" />
     <Content Include="Views\Authentication\Failed.cshtml" />
+    <Content Include="Views\XmlSignature\Index.cshtml" />
+    <Content Include="Views\XmlSignature\SignatureInfo.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

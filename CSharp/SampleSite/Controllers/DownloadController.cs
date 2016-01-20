@@ -39,5 +39,12 @@ namespace SampleSite.Controllers {
 			var fileContent = Util.GetSampleDocContent();
 			return File(fileContent, "application/pdf", "Sample.pdf");
 		}
+
+		// GET Download/Sample
+		[HttpGet]
+		public ActionResult SampleNFe() {
+			var fileContent = Util.GetSampleNFeContent();
+			return File(fileContent, "text/xml", "SampleNFe.xml");
+		}
 	}
 }
