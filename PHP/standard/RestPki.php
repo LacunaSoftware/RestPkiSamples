@@ -452,6 +452,192 @@ class CadesSignatureFinisher {
 	}
 }
 
+abstract class XmlSignatureStarter {
+
+	/** @var RestPkiClient */
+	protected $restPkiClient;
+	protected $xmlContent;
+	protected $securityContextId;
+	protected $signaturePolicyId;
+	protected $signatureElementId;
+	protected $signatureElementLocationXPath;
+	protected $signatureElementLocationNsm;
+	protected $signatureElementLocationInsertionOption;
+
+	protected function __construct($restPkiClient) {
+		$this->restPkiClient = $restPkiClient;
+	}
+
+	public function setXmlToSignPath($xmlPath) {
+		$this->xmlContent = file_get_contents($xmlPath);
+	}
+
+	public function setXmlToSignContent($content) {
+		$this->xmlContent = $content;
+	}
+
+	public function setSecurityContext($securityContextId) {
+		$this->securityContextId = $securityContextId;
+	}
+
+	public function setSignaturePolicy($signaturePolicyId) {
+		$this->signaturePolicyId = $signaturePolicyId;
+	}
+
+	public function setSignatureElementLocation($xpath, $insertionOption, $namespaceManager = null) {
+		$this->signatureElementLocationXPath = $xpath;
+		$this->signatureElementLocationInsertionOption = $insertionOption;
+		$this->signatureElementLocationNsm = $namespaceManager;
+	}
+
+	public function setSignatureElementId($signatureElementId) {
+		$this->signatureElementId = $signatureElementId;
+	}
+
+	protected function verifyCommonParameters() {
+		if (empty($this->signaturePolicyId)) {
+			throw new \Exception('The signature policy was not set');
+		}
+	}
+
+	protected function getRequest() {
+		$request = array(
+			'signaturePolicyId' => $this->signaturePolicyId,
+			'securityContextId' => $this->securityContextId,
+			'signatureElementId' =>  $this->signatureElementId
+		);
+		if ($this->xmlContent != null) {
+			$request['xml'] = base64_encode($this->xmlContent);
+		}
+		if ($this->signatureElementLocationXPath != null && $this->signatureElementLocationInsertionOption != null) {
+			$request['signatureElementLocation'] = array(
+				'xPath' => $this->signatureElementLocationXPath,
+				'insertionOption' => $this->signatureElementLocationInsertionOption
+			);
+			if ($this->signatureElementLocationNsm != null) {
+				$namespaces = array();
+				foreach ($this->signatureElementLocationNsm as $key => $value) {
+					$namespaces[] = array(
+						'prefix' => $key,
+						'uri' => $value
+					);
+					$request['signatureElementLocation']['namespaces'] = $namespaces;
+				}
+			}
+		}
+		return $request;
+	}
+
+	public abstract function startWithWebPki();
+}
+
+class XmlElementSignatureStarter extends XmlSignatureStarter {
+
+	private $toSignElementId;
+	/** @var XmlIdResolutionTable */
+	private $idResolutionTable;
+
+	public function __construct($restPkiClient) {
+		parent::__construct($restPkiClient);
+	}
+
+	public function setToSignElementId($toSignElementId) {
+		$this->toSignElementId = $toSignElementId;
+	}
+
+	public function setIdResolutionTable(XmlIdResolutionTable $idResolutionTable) {
+		$this->idResolutionTable = $idResolutionTable;
+	}
+
+	public function startWithWebPki() {
+
+		parent::verifyCommonParameters();
+		if (empty($this->xmlContent)) {
+			throw new \Exception('The XML was not set');
+		}
+		if (empty($this->toSignElementId)) {
+			throw new \Exception('The XML element Id to sign was not set');
+		}
+
+		$request = parent::getRequest();
+		$request['elementToSignId'] = $this->toSignElementId;
+		if ($this->idResolutionTable != null) {
+			$request['idResolutionTable'] = $this->idResolutionTable->toModel();
+		}
+
+		$response = $this->restPkiClient->post('Api/XmlSignatures/XmlElementSignature', $request);
+		return $response->token;
+	}
+}
+
+class FullXmlSignatureStarter extends XmlSignatureStarter {
+
+	public function __construct($restPkiClient) {
+		parent::__construct($restPkiClient);
+	}
+
+	public function startWithWebPki() {
+
+		parent::verifyCommonParameters();
+		if (empty($this->xmlContent)) {
+			throw new \Exception('The XML was not set');
+		}
+
+		$request = parent::getRequest();
+
+		$response = $this->restPkiClient->post('Api/XmlSignatures/FullXmlSignature', $request);
+		return $response->token;
+	}
+}
+
+class XmlSignatureFinisher {
+
+	/** @var RestPkiClient */
+	private $restPkiClient;
+	private $token;
+
+	private $done;
+	private $signedXml;
+	private $certificate;
+
+	public function __construct($restPkiClient) {
+		$this->restPkiClient = $restPkiClient;
+	}
+
+	public function setToken($token) {
+		$this->token = $token;
+	}
+
+	public function finish() {
+
+		if (empty($this->token)) {
+			throw new \Exception("The token was not set");
+		}
+
+		$response =$this->restPkiClient->post("Api/XmlSignatures/{$this->token}/Finalize", NULL);
+
+		$this->signedXml = base64_decode($response->signedXml);
+		$this->certificate = $response->certificate;
+		$this->done = true;
+
+		return $this->signedXml;
+	}
+
+	public function getCertificate() {
+		if (!$this->done) {
+			throw new \Exception('The method getCertificate() can only be called after calling the finish() method');
+		}
+		return $this->certificate;
+	}
+
+	public function writeSignedXmlToPath($xmlPath) {
+		if (!$this->done) {
+			throw new \Exception('The method writeSignedXmlToPath() can only be called after calling the finish() method');
+		}
+		file_put_contents($xmlPath, $this->signedXml);
+	}
+}
+
 class StandardSecurityContexts {
 	const PKI_BRAZIL = '201856ce-273c-4058-a872-8937bd547d36';
 	const PKI_ITALY = 'c438b17e-4862-446b-86ad-6f85734f0bfe';
@@ -465,6 +651,18 @@ class StandardSignaturePolicies {
 	const CADES_ICPBR_ADR_TEMPO = 'a5332ad1-d105-447c-a4bb-b5d02177e439';
 	const CADES_ICPBR_ADR_VALIDACAO = '92378630-dddf-45eb-8296-8fee0b73d5bb';
 	const CADES_ICPBR_ADR_COMPLETA = '30d881e7-924a-4a14-b5cc-d5a1717d92f6';
+	const XML_XADES_BES = '1beba282-d1b6-4458-8e46-bd8ad6800b54';
+	const XML_DSIG_BASIC = '2bb5d8c9-49ba-4c62-8104-8141f6459d08';
+	const XML_ICPBR_NFE_PADRAO_NACIONAL = 'a3c24251-d43a-4ba4-b25d-ee8e2ab24f06';
+	const XML_ICPBR_ADR_BASICA = '1cf5db62-58b6-40ba-88a3-d41bada9b621';
+	const XML_ICPBR_ADR_TEMPO = '5aa2e0af-5269-43b0-8d45-f4ef52921f04';
+}
+
+class XmlInsertionOptions {
+	const APPEND_CHILD = 'AppendChild';
+	const PREPEND_CHILD = 'PrependChild';
+	const APPEND_SIBLING = 'AppendSibling';
+	const PREPEND_SIBLING = 'PrependSibling';
 }
 
 class PadesVisualPositioningPresets {
@@ -493,6 +691,43 @@ class PadesVisualPositioningPresets {
 		$preset = $restPkiClient->get("Api/PadesVisualPositioningPresets/$urlSegment");
 		self::$cachedPresets[$urlSegment] = $preset;
 		return $preset;
+	}
+}
+
+class XmlIdResolutionTable {
+
+	private $model;
+
+	public function __construct($includeXmlIdGlobalAttribute = null) {
+		$this->model = array(
+			'elementIdAttributes' => array(),
+			'globalIdAttributes' => array(),
+			'includeXmlIdAttribute' => $includeXmlIdGlobalAttribute
+		);
+	}
+
+	public function addGlobalIdAttribute($idAttributeLocalName, $idAttributeNamespace = null) {
+		$this->model['globalIdAttributes'][] = array(
+			'localName' => $idAttributeLocalName,
+			'namespace' => $idAttributeNamespace
+		);
+	}
+
+	public function setElementIdAttribute($elementLocalName, $elementNamespace, $idAttributeLocalName, $idAttributeNamespace = null) {
+		$this->model['elementIdAttributes'][] = array(
+			'element' => array(
+				'localName' => $elementLocalName,
+				'namespace' => $elementNamespace
+			),
+			'attribute' => array(
+				'localName' => $idAttributeLocalName,
+				'namespace' => $idAttributeNamespace
+			)
+		);
+	}
+
+	public function toModel() {
+		return $this->model;
 	}
 }
 

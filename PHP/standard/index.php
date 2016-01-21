@@ -28,6 +28,13 @@
 					<li><a href="upload.php?goto=cades-signature">With a file uploaded by user</a></li>
 				</ul>
 			</li>
+			<li>
+				Create a XML signature
+				<ul>
+					<li><a href="xml-full-signature.php">Sign an entire XML (enveloped signature)</a></li>
+					<li><a href="xml-element-signature.php">Sign an element inside of a XML</a></li>
+				</ul>
+			</li>
 		</ul>
 
 	</div>

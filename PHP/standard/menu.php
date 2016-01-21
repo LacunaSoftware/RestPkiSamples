@@ -26,6 +26,13 @@
 						<li><a href="upload.php?goto=cades-signature">With file uploaded by user</a></li>
 					</ul>
 				</li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">XML signature <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="xml-full-signature.php">Full XML signature (enveloped signature)</a></li>
+						<li><a href="xml-element-signature.php">XML element signature</a></li>
+					</ul>
+				</li>
 			</ul>
 		</div><!--/.nav-collapse -->
 	</div>
