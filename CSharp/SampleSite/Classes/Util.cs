@@ -37,5 +37,9 @@ namespace SampleSite.Classes {
 			return File.ReadAllBytes(Path.Combine(ContentPath, "Sample.xml"));
 		}
 
+		public static byte[] GetSampleXmlDocument() {
+			return File.ReadAllBytes(Path.Combine(ContentPath, "SampleDocument.xml"));
+		}
+
 	}
 }

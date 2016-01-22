@@ -122,6 +122,9 @@
     <Content Include="Content\js\lacuna-web-pki-2.3.1.js" />
     <Content Include="Content\PdfStamp.png" />
     <Content Include="Content\SampleDocument.pdf" />
+    <Content Include="Content\SampleDocument.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\SampleNFe.xml" />
     <Content Include="Global.asax" />
     <Content Include="Web.config">
@@ -134,11 +137,12 @@
     <Compile Include="Controllers\AuthenticationController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\CadesSignatureController.cs" />
+    <Compile Include="Controllers\XmlFullSignatureController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PadesSignatureController.cs" />
     <Compile Include="Controllers\DownloadController.cs" />
     <Compile Include="Controllers\UploadController.cs" />
-    <Compile Include="Controllers\XmlSignatureController.cs" />
+    <Compile Include="Controllers\XmlElementSignatureController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -167,8 +171,10 @@
     <Content Include="Views\PadesSignature\SignatureInfo.cshtml" />
     <Content Include="Views\Authentication\Index.cshtml" />
     <Content Include="Views\Authentication\Failed.cshtml" />
-    <Content Include="Views\XmlSignature\Index.cshtml" />
-    <Content Include="Views\XmlSignature\SignatureInfo.cshtml" />
+    <Content Include="Views\XmlElementSignature\Index.cshtml" />
+    <Content Include="Views\XmlElementSignature\SignatureInfo.cshtml" />
+    <Content Include="Views\XmlFullSignature\Index.cshtml" />
+    <Content Include="Views\XmlFullSignature\SignatureInfo.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

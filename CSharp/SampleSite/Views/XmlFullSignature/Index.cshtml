@@ -1,7 +1,7 @@
 ﻿@using Lacuna.RestPki.SampleSite.Models
 @model XmlSignatureModel
 
-<h2>Xml Signature</h2>
+<h2>Full XML Signature</h2>
 
 <form id="signForm" method="POST">
 
@@ -10,7 +10,7 @@
 
 	<div class="form-group">
 		<label>File to sign</label>
-		<p>You'll be signing <a href='/Download/SampleNFe'>this sample XML</a>.</p>
+		<p>You are signing this <b>entire</b> <a href='~/Content/SampleDocument.xml'>sample XML</a>.</p>
 	</div>
 
 	@* Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it later on (see javascript below). *@
@@ -63,7 +63,6 @@
 			// https://webpki.lacunasoftware.com/#/Documentation#coding-the-first-lines
 			// http://webpki.lacunasoftware.com/Help/classes/LacunaWebPKI.html#method_init
 			pki.init({
-				restPkiUrl: 'http://localhost:53358/',
 				ready: loadCertificates, // as soon as the component is ready we'll load the certificates
 				defaultError: onWebPkiError // generic error callback on Content/js/app/site.js
 			});
