@@ -39,7 +39,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 			signatureStarter.SetSignaturePolicy(StandardXmlSignaturePolicies.PkiBrazil.NFePadraoNacional);
 
 			// Optionally, set a SecurityContext to be used to determine trust in the certificate chain. Since we're using the
-			// XML_ICPBR_NFE_PADRAO_NACIONAL policy, the security context will default to PKI Brazil (ICP-Brasil)
+			// StandardXmlSignaturePolicies.PkiBrazil.NFePadraoNacional policy, the security context will default to PKI Brazil (ICP-Brasil)
 			// signatureStarter.SetSecurityContext(StandardSecurityContexts.PkiBrazil);
 			// Note: By changing the SecurityContext above you can accept only certificates from a certain PKI
 
