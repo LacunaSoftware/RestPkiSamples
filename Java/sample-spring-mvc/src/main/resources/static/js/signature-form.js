@@ -8,7 +8,7 @@
 // Get an instance of the LacunaWebPKI object
 var pki = new LacunaWebPKI();
 
-// Get the token for the current PAdES/CAdES signature or authentication
+// Get the token for the current PAdES/CAdES/XML signature or authentication
 var token = $('#tokenInput').val();
 
 // -------------------------------------------------------------------------------------------------

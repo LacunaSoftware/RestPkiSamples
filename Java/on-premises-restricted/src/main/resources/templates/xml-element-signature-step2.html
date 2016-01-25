@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:include="head"></head>
+<body>
+
+<div th:replace="menu"></div>
+
+<div class="container">
+
+    <h2>XML Element Signature</h2>
+
+    <form id="signForm" method="POST" action="/xml-signature-complete">
+
+        <!--/* hidden field for the token, which we must send back to the server */-->
+        <input type="hidden" name="token" th:value="${token}" />
+
+        <!--/* hidden fields containing the parameters to perform the signature (looked up by the javascript code) */-->
+        <input type="hidden" id="selectedCertThumbInput" th:value="${selectedCertThumb}" />
+        <input type="hidden" id="toSignHashInput" th:value="${toSignHash}" />
+        <input type="hidden" id="digestAlgInput" th:value="${digestAlg}" />
+
+        <!--/* hidden fields for the signature result which we must send to the server (filled programmatically) */-->
+        <input type="hidden" id="signatureInput" name="signature" />
+
+        <!--/*
+            Note that there are no visible fields or buttons on the form. That's because we already have everything
+            we need from the user, and as soon as the page is loaded we'll start the signature.
+        */-->
+    </form>
+
+    <!--/*
+        The file below contains the JS lib for accessing the Web PKI component. For more information, see:
+        https://webpki.lacunasoftware.com/#/Documentation
+    */-->
+    <script src="/js/lacuna-web-pki-2.3.1.js"></script>
+
+    <!--/*
+        The file below contains the necessary calls to the Web PKI component. Once the necessary computations have been
+        done, the javascript code will fill the hidden input field "signatureInput" and submit the form.
+    */-->
+    <script src="/js/signature-step2.js"></script>
+
+</div>
+</body>
+</html>

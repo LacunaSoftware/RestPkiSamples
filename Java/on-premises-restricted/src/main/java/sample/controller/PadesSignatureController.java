@@ -133,7 +133,7 @@ public class PadesSignatureController {
 		Util.setNoCacheHeaders(response);
 
 		// Render the page for the final step of the signature process, on which the actual signature will be performed
-		// (templates/cades-signature-step2.html)
+		// (templates/pades-signature-step2.html)
 		model.addAttribute("selectedCertThumb", selectedCertThumb);
 		model.addAttribute("token", signatureInstructions.getToken());
 		model.addAttribute("toSignHash", signatureInstructions.getToSignHash());

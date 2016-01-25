@@ -94,7 +94,7 @@ public class PadesSignatureController {
 		// happening, we call the method Util.setNoCacheHeaders(), which sets HTTP headers to prevent caching of the page.
 		Util.setNoCacheHeaders(response);
 
-		// Render the signature page (templates/cades-signature.html)
+		// Render the signature page (templates/pades-signature.html)
 		model.addAttribute("token", token);
 		model.addAttribute("userfile", userfile);
 		return "pades-signature";

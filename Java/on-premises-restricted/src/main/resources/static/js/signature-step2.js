@@ -4,7 +4,7 @@
  *
  * Once the signature is done, we'll place it in a hidden input field on the page's form and submit the form.
  *
- * This logic is shared by the PAdES and CAdES signatures.
+ * This logic is shared by the PAdES, CAdES and XML signatures.
  */
 
 // Get an instance of the LacunaWebPKI object

@@ -71,6 +71,26 @@ public class Util {
 		return buffer.toByteArray();
 	}
 
+    public static byte[] getSampleXml() throws IOException {
+        Resource resource = new ClassPathResource("/static/SampleDocument.xml");
+        InputStream fileStream = resource.getInputStream();
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        org.apache.commons.io.IOUtils.copy(fileStream, buffer);
+        fileStream.close();
+        buffer.flush();
+        return buffer.toByteArray();
+    }
+
+    public static byte[] getSampleNFe() throws IOException {
+        Resource resource = new ClassPathResource("/static/SampleNFe.xml");
+        InputStream fileStream = resource.getInputStream();
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        org.apache.commons.io.IOUtils.copy(fileStream, buffer);
+        fileStream.close();
+        buffer.flush();
+        return buffer.toByteArray();
+    }
+
 	public static byte[] getPdfStampContent() throws IOException {
 		Resource resource = new ClassPathResource("/static/PdfStamp.png");
 		InputStream fileStream = resource.getInputStream();

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.Proxy;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -56,7 +57,7 @@ public class Util {
 //			}
 //		);
 
-		return new RestPkiClient("https://pki.rest/", restPkiAccessToken, proxy);
+		return new RestPkiClient(restPkiUrl, restPkiAccessToken, proxy);
 	}
 
 	public static void setNoCacheHeaders(HttpServletResponse response) {
@@ -84,6 +85,26 @@ public class Util {
 		buffer.flush();
 		return buffer.toByteArray();
 	}
+
+    public static byte[] getSampleXml() throws IOException {
+        Resource resource = new ClassPathResource("/static/SampleDocument.xml");
+        InputStream fileStream = resource.getInputStream();
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        org.apache.commons.io.IOUtils.copy(fileStream, buffer);
+        fileStream.close();
+        buffer.flush();
+        return buffer.toByteArray();
+    }
+
+    public static byte[] getSampleNFe() throws IOException {
+        Resource resource = new ClassPathResource("/static/SampleNFe.xml");
+        InputStream fileStream = resource.getInputStream();
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        org.apache.commons.io.IOUtils.copy(fileStream, buffer);
+        fileStream.close();
+        buffer.flush();
+        return buffer.toByteArray();
+    }
 
 	public static String getValidationResultsHtml(ValidationResults vr) {
 		return vr.toString().replaceAll("\n", "<br>").replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
