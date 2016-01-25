@@ -136,12 +136,14 @@ use NTLM credentials or disable NTLM authentication on your proxy server.
 Troubleshooting
 ---------------
 
-If you're using Java with version less than 7u75 or 8u31, you may get an error saying:
+If you are using a Java version prior to 7u75 or 8u31, you may get an error saying:
 
 	REST action POST: https://pki.rest/Api/xxxxx unreachable
 	
-This happens because the root CA certificate of our SSL certificate chain was only added to the Java root
-certificates on the aforementioned versions. To fix this, either update your Java or alter the file
-`Java/sample-spring-mvc/src/main/java/sample/util/Util.java` and switch the REST PKI address to
-"http://pki.rest/" (with "http" instead of "https"). However, this fix should only be used while on development,
-since your API access token, as well as the documents you sign, will be sent to REST PKI unencrypted.
+This happens because the root CA certificate of our SSL certificate chain was only added to the Java
+trusted root certificates on the aforementioned versions. To fix this, update your Java to a current version.
+
+If you don't wish to update your Java, you may alter the file `Java/sample-spring-mvc/src/main/java/sample/util/Util.java`
+and switch the REST PKI address to "http://pki.rest/" (with "http" instead of "https"). However, this fix
+should only be used while on development, since your API access token, as well as the documents you sign,
+will be sent to REST PKI unencrypted.
