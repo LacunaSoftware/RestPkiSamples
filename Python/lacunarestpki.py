@@ -5,6 +5,8 @@ import six
 import requests
 import base64
 import simplejson as json
+from enum import Enum
+from abc import ABCMeta, abstractmethod
 
 
 class StandardSecurityContexts:
@@ -18,11 +20,19 @@ class StandardSecurityContexts:
 
 class StandardSignaturePolicies:
     PADES_BASIC = '78d20b33-014d-440e-ad07-929f05d00cdf'
+
     CADES_BES = 'a4522485-c9e5-46c3-950b-0d6e951e17d1'
     CADES_ICPBR_ADR_BASICA = '3ddd8001-1672-4eb5-a4a2-6e32b17ddc46'
     CADES_ICPBR_ADR_TEMPO = 'a5332ad1-d105-447c-a4bb-b5d02177e439'
     CADES_ICPBR_ADR_VALIDACAO = '92378630-dddf-45eb-8296-8fee0b73d5bb'
     CADES_ICPBR_ADR_COMPLETA = '30d881e7-924a-4a14-b5cc-d5a1717d92f6'
+
+    XMLDSIG_BASIC = "2bb5d8c9-49ba-4c62-8104-8141f6459d08"
+    XADES_BES = "1beba282-d1b6-4458-8e46-bd8ad6800b54"
+    XADES_ICPBR_ADR_BASICA = "1cf5db62-58b6-40ba-88a3-d41bada9b621"
+    XADES_ICPBR_ADR_TEMPO = "5aa2e0af-5269-43b0-8d45-f4ef52921f04"
+    NFE_PADRAO_NACIONAL = "a3c24251-d43a-4ba4-b25d-ee8e2ab24f06"
+
 
     def __init__(self):
         return
@@ -84,6 +94,7 @@ class PadesSignatureStarter:
     pdf_content = None
     security_context_id = None
     signature_policy_id = None
+    callback_argument = None
     visual_representation = None
     _client = None
 
@@ -106,6 +117,7 @@ class PadesSignatureStarter:
         data['pdfToSign'] = base64.b64encode(self.pdf_content)
         data['signaturePolicyId'] = self.signature_policy_id
         data['securityContextId'] = self.security_context_id
+        data['callbackArgument'] = self.callback_argument
         data['visualRepresentation'] = self.visual_representation
 
         response = self._client.post('Api/PadesSignatures', data=data)
@@ -118,6 +130,7 @@ class PadesSignatureFinisher:
     _done = False
     _signed_pdf_content = None
     _certificate = None
+    _callback_argument = None
 
     def __init__(self, restpki_client):
         self._client = restpki_client
@@ -129,6 +142,7 @@ class PadesSignatureFinisher:
         response = self._client.post('Api/PadesSignatures/%s/Finalize' % self.token)
         self._signed_pdf_content = base64.b64decode(response.json().get('signedPdf', None))
         self._certificate = response.json().get('certificate', None)
+        self._callback_argument = response.get('callbackArgument', None)
         self._done = True
 
     @property
@@ -137,6 +151,13 @@ class PadesSignatureFinisher:
             raise Exception('The property "signed_pdf_content" can only be called after calling the finish() method')
 
         return self._signed_pdf_content
+
+    @property
+    def callback_argument(self):
+        if not self._done:
+            raise Exception('The property "callback_argument" can only be called after calling the finish() method')
+
+        return self._callback_argument
 
     @property
     def certificate(self):
@@ -313,6 +334,214 @@ class PadesVisualPositioningPresets:
         PadesVisualPositioningPresets._cached_presets[url_segment] = preset.json()
         return preset.json()
 
+
+# XML
+# ----------------------------------------------------------------------------------------------------------------------
+
+class XmlInsertionOptions(Enum):
+    appendChild = 1
+    prependChild = 2
+    appendSibling = 3
+    prependSibling = 4
+
+class NamespaceManager:
+    namespaces = None
+
+    def __init__(self):
+        self.namespaces = []
+
+    def add_namespace(self, prefix, uri):
+        ns = {'prefix': prefix, 'uri': uri}
+        self.namespaces.append(ns)
+
+class XmlIdResolutionTable:
+    _include_xml_id_attribute = None
+    _element_id_attributes = None
+    _global_id_attributes = None
+
+    def __init__(self, include_xml_id_attribute = True):
+        self._include_xml_id_attribute = include_xml_id_attribute
+        self._element_id_attributes = []
+        self._global_id_attributes = []
+
+    def add_global_id_attribute(self, id_attribute_local_name, id_attribute_namespace = None):
+        self._global_id_attributes.append({'localName': id_attribute_local_name, 'namespace': id_attribute_namespace})
+
+    def set_element_id_attribute(self, element_local_name, element_namespace, id_attribute_local_name, id_attribute_namespace = None):
+        self._element_id_attributes.append({'element': {'localName': element_local_name, 'namespace': element_namespace}, 'attribute': {'localName': id_attribute_local_name, 'namespace': id_attribute_namespace}})
+
+    def to_model(self):
+        return {'includeXmlIdAttribute': self._include_xml_id_attribute, 'elementIdAttributes': self._element_id_attributes, 'globalIdAttributes': self._global_id_attributes}
+
+class XmlSignatureStarter:
+    __metaclass__ = ABCMeta
+    _client = None
+    xml_content = None
+    _xpath = None
+    _insertion_option = None
+    _namespace_manager = None
+    signature_element_id = None
+    security_context_id = None
+    signature_policy_id = None
+    callback_argument = None
+
+    @abstractmethod
+    def start_with_webpki(self):
+        pass
+
+    def __init__(self, client):
+        self._client = client
+
+    def set_xml_path(self, local_pdf_path):
+        f = open(local_pdf_path, 'rb')
+        self.xml_content = f.read()
+        f.close()
+
+    def set_signature_element_location(self, xpath, insertion_options, namespace_manager):
+        self._xpath = xpath
+        self._insertion_option = insertion_options
+        self._namespace_manager = namespace_manager
+
+    def get_common_request_data(self):
+        if self.signature_policy_id is None:
+            raise Exception('The signature policy was not set')
+        data = dict()
+        if self.xml_content is not None:
+            data['xml'] = base64.b64encode(self.xml_content)
+
+        if self._xpath is not None:
+            data['signatureElementLocation'] = {'xpath': self._xpath, 'InsertionOption': None if self._insertion_option is None else self._insertion_option.name, 'namespaces': None if self._namespace_manager is None else self._namespace_manager.namespaces}
+        data['signatureElementId'] = self.signature_element_id
+        data['signaturePolicyId'] = self.signature_policy_id
+        data['securityContextId'] = self.security_context_id
+        data['callbackArgument'] = self.callback_argument
+        return data
+
+class XmlElementSignatureStarter(XmlSignatureStarter):
+    element_tosign_id = None
+    id_resolution_table = None
+
+    def __init__(self, client):
+        super(XmlElementSignatureStarter, self).__init__(client)
+
+    def start_with_webpki(self):
+        if self.xml_content is None:
+            raise Exception('The XML to sign was not set')
+
+        if self.element_tosign_id is None or self.element_tosign_id == '':
+            raise Exception('The XML element Id to sign was not set')
+
+        data = super(XmlElementSignatureStarter, self).get_common_request_data()
+        data['elementToSignId'] = self.element_tosign_id
+        if self.id_resolution_table is not None:
+            data['idResolutionTable'] = self.id_resolution_table.to_model()
+
+        response = self._client.post('Api/XmlSignatures/XmlElementSignature', data=data)
+        return response.json().get('token', None)
+
+class FullXmlSignatureStarter(XmlSignatureStarter):
+
+    def __init__(self, client):
+        super(FullXmlSignatureStarter, self).__init__(client)
+
+    def start_with_webpki(self):
+        if self.xml_content is None:
+            raise Exception('The XML to sign was not set')
+
+        data = super(FullXmlSignatureStarter, self).get_common_request_data()
+        response = self._client.post('Api/XmlSignatures/FullXmlSignature', data=data)
+        return response.json().get('token', None)
+
+class DetachedResourceXmlSignatureStarter(XmlSignatureStarter):
+    resource_content = None
+    resource_uri = None
+
+    def __init__(self, client):
+        super(DetachedResourceXmlSignatureStarter, self).__init__(client)
+
+    def set_tosign_detached_resource(self, resource_path, resource_uri = None):
+        self.resource_uri = resource_uri
+        f = open(resource_path, 'rb')
+        self.resource_content = f.read()
+        f.close()
+
+    def start_with_webpki(self):
+        if self.resource_content is None or len(resource_content) == 0:
+            raise Exception('The detached resource to sign was not set')
+
+        data = super(DetachedResourceXmlSignatureStarter, self).get_common_request_data()
+        data['detachedResourceToSignContent'] = self.resource_content
+        data['detachedResourceReferenceUri'] = self.resource_uri
+        response = self._client.post('Api/XmlSignatures/DetachedResourceXmlSignature', data=data)
+        return response.json().get('token', None)
+
+class OnlineResourceXmlSignatureStarter(XmlSignatureStarter):
+    resource_uri = None
+
+    def __init__(self, client):
+        super(OnlineResourceXmlSignatureStarter, self).__init__(client)
+
+    def start_with_webpki(self):
+        if self.resource_uri is None or resource_uri == '':
+            raise Exception('The online resource URI to sign was not set')
+
+        data = super(OnlineResourceXmlSignatureStarter, self).get_common_request_data()
+        data['resourceToSignUri'] = self.resource_uri
+        response = self._client.post('Api/XmlSignatures/OnlineResourceXmlSignature', data=data)
+        return response.json().get('token', None)
+
+class XmlSignatureFinisher:
+    token = ''
+    _client = None
+    _done = False
+    _signed_xml_content = None
+    _certificate = None
+    _callback_argument = None
+
+    def __init__(self, restpki_client):
+        self._client = restpki_client
+
+    def finish(self):
+        if not self.token:
+            raise Exception('The token was not set')
+
+        response = self._client.post('Api/XmlSignatures/%s/Finalize' % self.token)
+        self._signed_xml_content = base64.b64decode(response.json().get('signedXml', None))
+        self._certificate = response.json().get('certificate', None)
+        self._callback_argument = response.json().get('callbackArgument', None)
+        self._done = True
+
+    @property
+    def signed_xml_content(self):
+        if not self._done:
+            raise Exception('The property "signed_xml_content" can only be called after calling the finish() method')
+
+        return self._signed_xml_content
+
+    @property
+    def callback_argument(self):
+        if not self._done:
+            raise Exception('The property "callback_argument" can only be called after calling the finish() method')
+
+        return self._callback_argument
+
+    @property
+    def certificate(self):
+        if not self._done:
+            raise Exception('The property "certificate" can only be called after calling the finish() method')
+
+        return self._certificate
+
+    def write_signed_xml(self, local_xml_path):
+        if not self._done:
+            raise Exception(
+                'The method write_signed_xml() can only be called after calling the finish() method')
+
+        f = open(local_xml_path, 'wb')
+        f.write(self._signed_xml_content)
+        f.close()
+
+#-----------------------------------------------------------------------------------------------------------------------
 
 @six.python_2_unicode_compatible
 class ValidationResults:
