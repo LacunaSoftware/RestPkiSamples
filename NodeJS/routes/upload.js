@@ -30,7 +30,7 @@ router.post('/', upload.single('userfile'), function(req, res, next) {
 		fs.mkdirSync(appDataPath);
 	}
 	
-	// Redirect the user to the PAdES signature route, passing the name of the file as a URL argument
+	// Redirect the user to the signature route, passing the name of the file as a URL argument
 	fs.writeFileSync(appDataPath + filename, req.file.buffer);
 	res.redirect(req.query.goto + '?userfile=' + filename);
 });

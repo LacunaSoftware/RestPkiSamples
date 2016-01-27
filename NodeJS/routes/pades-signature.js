@@ -2,20 +2,12 @@ var express = require('express');
 var request = require('request');
 var fs = require('fs');
 var uuid = require('node-uuid');
+var restPki = require('../lacuna-restpki');
+var client = require('../restpki-client');
 
 var router = express.Router();
 var appRoot = process.cwd();
 
-// ------------------------------------------------------------------------------------------------
-// PLACE YOUR API ACCESS TOKEN BELOW
-var restPkiAccessToken = 'PASTE YOUR API ACCESS TOKEN HERE';
-//                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-// ------------------------------------------------------------------------------------------------
-
-// Throw exception if token is not set (this check is here just for the sake of newcomers, you can remove it)
-if (!restPkiAccessToken || restPkiAccessToken.indexOf(' API ') >= 0) {
-	throw 'The API access token was not set! Hint: to run this sample you must generate an API access token on the REST PKI website and paste it on the file routes/pades-signature.js';
-}
 
 /*
  * GET /pades-signature
@@ -48,10 +40,10 @@ router.get('/', function(req, res, next) {
 		pdfToSign: new Buffer(pdfToSignContent).toString('base64'),
 		
 		// Signature policy (the ID below corresponds to the PAdES basic policy)
-		signaturePolicyId: '78d20b33-014d-440e-ad07-929f05d00cdf',
+		signaturePolicyId: restPki.standardSignaturePolicies.padesBes,
 		
 		// Set a SecurityContext to be used to determine trust in the certificate chain
-		securityContextId: '201856ce-273c-4058-a872-8937bd547d36', // ICP-Brasil
+		securityContextId: restPki.standardSecurityContexts.pkiBrazil,
 		// Note: By changing the value above you can accept only certificates from a certain PKI, or
 		// from a custom PKI configured on the REST PKI website.
 
@@ -129,45 +121,37 @@ router.get('/', function(req, res, next) {
 	};
 	
 	// Call the action POST Api/PadesSignatures on REST PKI, which initiates the signature. 
-	request.post('https://pki.rest/Api/PadesSignatures', {
+	request.post(client.endpoint + 'Api/PadesSignatures', {
 
 		json: true,
-		headers: { 'Authorization': 'Bearer ' + restPkiAccessToken },
+		headers: { 'Authorization': 'Bearer ' + client.accessToken },
 		body: restRequest
 		
-	}, function(err, restRes, body) {
+	}, function (err, restRes, body) {
 
-		// Status codes 200-299 indicate success
-		if (!err && restRes.statusCode >= 200 && restRes.statusCode <= 299) {
-			
-			// This operation yields the token, a 43-character case-sensitive URL-safe string, which identifies this signature process.
-			// We'll use this value to call the signWithRestPki() method on the Web PKI component (see view 'pades-signature') and also
-			// to complete the signature after the form is submitted. This should not be mistaken with the API access token.
-			var token = restRes.body.token;
-			
-			// The token acquired can only be used for a single signature attempt. In order to retry the signature it is
-			// necessary to get a new token. This can be a problem if the user uses the back button of the browser, since the
-			// browser might show a cached page that we rendered previously, with a now stale token. To prevent this from happening,
-			// we set some response headers specifying that the page should not be cached.
-			res.set({
-				'Cache-Control': 'private, no-store, max-age=0, no-cache, must-revalidate, post-check=0, pre-check=0',
-				'Pragma': 'no-cache'
-			});
-			
-			// Render the signature page
-			res.render('pades-signature', {
-				token: token,
-				userfile: req.query.userfile
-			});
-			
-		} else {
-			
-			if (!err) {
-				err = new Error('REST PKI returned status code ' + restRes.statusCode + ' (' + restRes.statusMessage + ')');
-			}
-			next(err);
-			
-		}
+	    if (restPki.checkResponse(err, restRes, body, next)) {
+
+	        // This operation yields the token, a 43-character case-sensitive URL-safe string, which identifies this signature process.
+	        // We'll use this value to call the signWithRestPki() method on the Web PKI component (see view 'pades-signature') and also
+	        // to complete the signature after the form is submitted. This should not be mistaken with the API access token.
+	        var token = restRes.body.token;
+
+	        // The token acquired can only be used for a single signature attempt. In order to retry the signature it is
+	        // necessary to get a new token. This can be a problem if the user uses the back button of the browser, since the
+	        // browser might show a cached page that we rendered previously, with a now stale token. To prevent this from happening,
+	        // we set some response headers specifying that the page should not be cached.
+	        res.set({
+	            'Cache-Control': 'private, no-store, max-age=0, no-cache, must-revalidate, post-check=0, pre-check=0',
+	            'Pragma': 'no-cache'
+	        });
+
+	        // Render the signature page
+	        res.render('pades-signature', {
+	            token: token,
+	            userfile: req.query.userfile
+	        });
+	    }
+
 	});
 });
 
@@ -182,14 +166,14 @@ router.post('/', function(req, res, next) {
 	var token = req.body.token;
 	
 	// Call the action POST Api/PadesSignatures/{token}/Finalize on REST PKI, which finalizes the signature process and returns the signed PDF
-	request.post('https://pki.rest/Api/PadesSignatures/' + token + '/Finalize', {
+	request.post(client.endpoint + 'Api/PadesSignatures/' + token + '/Finalize', {
 		
 		json: true,
-		headers: { 'Authorization': 'Bearer ' + restPkiAccessToken }
+		headers: { 'Authorization': 'Bearer ' + client.accessToken}
 		
 	}, function(err, restRes, body) {
 		
-		if (!err && restRes.statusCode >= 200 && restRes.statusCode <= 299) {
+	    if (restPki.checkResponse(err, restRes, body, next)) {
 			
 			var signedPdfContent = new Buffer(restRes.body.signedPdf, 'base64');
 
@@ -205,13 +189,6 @@ router.post('/', function(req, res, next) {
 				signedFileName: filename,
 				signerCert: restRes.body.certificate
 			});
-			
-		} else {
-			
-			if (!err) {
-				err = new Error('REST PKI returned status code ' + restRes.statusCode + ' (' + restRes.statusMessage + ')');
-			}
-			next(err);
 			
 		}
 	});

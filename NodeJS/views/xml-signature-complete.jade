@@ -1,0 +1,22 @@
+extends layout
+
+block content
+
+	h2 XML Signature
+	
+	p
+		| File signed successfully!&nbsp;
+		a(href='app-data/' + signedFileName, target='_blank') Click here to download the signed file
+	
+	p
+		| Signer information:
+		ul
+			li Subject: #{signerCert.subjectName.commonName}
+			li Email: #{signerCert.emailAddress}
+			li ICP-Brasil fields
+				ul
+					li Tipo de certificado: #{signerCert.pkiBrazil.certificateType}
+					li CPF: #{signerCert.pkiBrazil.cpf}
+					li Responsavel: #{signerCert.pkiBrazil.responsavel}
+					li Empresa: #{signerCert.pkiBrazil.companyName}
+					li CNPJ: #{signerCert.pkiBrazil.cnpj}

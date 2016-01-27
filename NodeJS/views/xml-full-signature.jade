@@ -2,7 +2,7 @@ extends layout
 
 block content
 
-	h2 PAdES Signature
+	h2 Full XML Signature
 	
 	form(id='signForm', method='POST')
 		
@@ -13,12 +13,8 @@ block content
 		.form-group
 			label File to sign
 			p
-				| You are signing&nbsp;
-				- if (userfile) {
-					a(href='/app-data/' + userfile, target='_blank') this document
-				- } else {
-					a(href='/SampleDocument.pdf', target='_blank') this sample document
-				- }
+				| You are signing this entire&nbsp;
+				a(href='/SampleDocument.xml', target='_blank') this sample XML
 				| .
 		
 		//- Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it
