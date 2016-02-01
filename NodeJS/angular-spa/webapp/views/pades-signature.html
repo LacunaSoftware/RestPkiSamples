@@ -1,0 +1,20 @@
+<h2>PAdES Signature</h2>
+
+<form>
+
+	<div class="form-group">
+		<label>File to sign</label>
+		<p>You'll are signing <a href='content/SampleDocument.pdf'>this sample document</a>.</p>
+	</div>
+
+	<div class="form-group">
+		<label for="certificateSelect">Choose a certificate</label>
+		<select id="certificateSelect" class="form-control" ng-options="(cert.subjectName + ' (issued by ' + cert.issuerName + ')') for cert in certificates" ng-model="selectedCertificate">
+			<option value="">Select ...</option>
+		</select>
+	</div>
+
+	<button id="signButton" type="button" class="btn btn-primary" ng-click="sign()">Sign File</button>
+	<button id="refreshButton" type="button" class="btn btn-default" ng-click="refresh()">Refresh Certificates</button>
+	
+</form>
