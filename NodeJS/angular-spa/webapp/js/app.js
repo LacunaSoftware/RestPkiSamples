@@ -11,6 +11,11 @@ app.config(['$routeProvider', function ($routeProvider) {
 		templateUrl: 'views/pades-signature.html',
 		controller: 'padesSignatureController'
 	});
+	
+	$routeProvider.when('/authentication', {
+		templateUrl: 'views/authentication.html',
+		controller: 'authenticationController'
+	});
 
 	$routeProvider.otherwise({ redirectTo: "/" });
 }]);

@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+﻿<!DOCTYPE HTML>
 <html lang="en" ng-app="RestPkiSamples">
 
 <head>
@@ -21,7 +21,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="index.php">REST PKI Samples</a>
+				<a class="navbar-brand" href="#/home">REST PKI Samples</a>
 			</div>
 			<div id="navbar" class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
@@ -30,10 +30,10 @@
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">PAdES signature <span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<li><a href="#/pades-signature">With file already on server</a></li>
-							<li><a href="#/upload/pades-signature">With file uploaded by user</a></li>
+							<!--<li><a href="#/upload/pades-signature">With file uploaded by user</a></li>-->
 						</ul>
 					</li>
-					<li class="dropdown">
+					<!--<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">CAdES signature <span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<li><a href="#/cades-signature">With file already on server</a></li>
@@ -46,7 +46,7 @@
 							<li><a href="#/xml-full-signature">Full XML signature (enveloped signature)</a></li>
 							<li><a href="#/xml-element-signature">XML element signature</a></li>
 						</ul>
-					</li>
+					</li>-->
 				</ul>
 			</div><!--/.nav-collapse -->
 		</div>
@@ -66,6 +66,8 @@
 	
 	<script src="js/controllers/home.js"></script>
 	<script src="js/controllers/pades-signature.js"></script>
+    <script src="js/controllers/authentication.js"></script>
+	<script src="js/lacuna-web-pki-2.3.1.js"></script>
 
 </body>
 

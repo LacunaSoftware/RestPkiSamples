@@ -1,12 +1,7 @@
-<h2>PAdES Signature</h2>
+<h2>Authentication</h2>
 
 <div class="container">
 	<div class="row" ng-show="view == 'input'">
-		<div class="form-group">
-			<label>File to sign</label>
-			<p>You'll are signing <a href='/SampleDocument.pdf' target="blank">this sample document</a>.</p>
-		</div>
-
 		<div class="form-group">
 			<label for="certificateSelect">Choose a certificate</label>
 			<select id="certificateSelect" class="form-control" ng-options="getCertificateDisplayName(cert) for cert in certificates" ng-model="selectedCertificate">
@@ -14,16 +9,16 @@
 			</select>
 		</div>
 
-		<button id="signButton" type="button" class="btn btn-primary" ng-click="sign()">Sign File</button>
+		<button id="signButton" type="button" class="btn btn-primary" ng-click="signIn()">Sign In</button>
 		<button id="refreshButton" type="button" class="btn btn-default" ng-click="reloadCertificates()">Refresh Certificates</button>
 	</div>
 	
 	<div class="row" ng-show="view == 'success'">
 
-		<p>File signed successfully! <a href="app-data/{{signedPdf}}" target="blank">Click here to download the signed PDF</a></p>
+		<h3>User authenticated</h3>
 
 		<p>
-			Signer information:
+			User information:
 		<ul>
 			<li>Subject: {{ certInfo.subjectName.commonName }}</li>
 			<li>Email: {{ certInfo.emailAddress }}</li>
@@ -40,5 +35,16 @@
 		</ul>
 		</p>
 	</div>
+	
+	<div class="row" ng-show="view == 'fail'">
+        <h3>User not authenticated</h3>
+        
+		<p> Validation results: </p>
+		
+        <br>
+        <textarea ng-model="validationResultsString" cols="100" rows="25" id="validationResults"></textarea>
+        <br>
+        <button type="button" class="btn btn-primary btn-lg" ng-click="back()">Back</button>
+    </div>
 
 </div>

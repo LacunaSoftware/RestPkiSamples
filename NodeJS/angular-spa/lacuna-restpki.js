@@ -25,10 +25,16 @@ module.exports = {
         // Status codes 200-299 indicate success
         if (err || restRes.statusCode < 200 || restRes.statusCode >= 300) {
             if (!err) {
-                err = new Error('REST PKI returned status code ' + restRes.statusCode + ' (' + restRes.statusMessage + ')');
+				var msg = 'REST PKI returned status code ' + restRes.statusCode + ' (' + restRes.statusMessage + ')';
+				if (body.message != null) {
+					msg += ': ' + body.message;
+				}
+                err = new Error(msg);
             }
-            next(err);
-            return false;
+			if (next) {
+				next(err);
+			}
+			return false;
         } else {
             return true;
         }

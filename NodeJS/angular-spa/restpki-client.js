@@ -1,6 +1,6 @@
 // ------------------------------------------------------------------------------------------------
 // PLACE YOUR API ACCESS TOKEN BELOW
-var accessToken = 'shi-CRLdC63300f9AGK2Qy6moO0JE7lXbNFNUDCqytplK2eN82uVcDsEPLr282eU-fxBEcVBF-lk77h5lrVosft0t-4vRnv0F2vcTexDKGxierLMPF4aeDLLntLJeSsdxtQRU7AdBwHLH3vgTA0CHFsNOZl6FDxx4y7_bqHm2SjhD5sLJE1riHDJy0QJUJ34RMxDHNo0GbRn7WFvUgvWfOLG_pJXGvf20wyFucZdDy282Vrqqfki0tnyBZbaaHUfAiJXsRdw8S-dx9Ooi5TnoxnUh08yQUMgXYVwwRYLCsv7mTCKK7fKuvD7xz0KkidqzAX8juL_a80tUFatVIcsIAkkbJteqULGquF1LXBFAk4aIjKy3HtExuXDSTLSEx1EY-n8wnI_P9ci-Lgrn_4TDP4MifADhJpSIDGyChA8zs6euDiOyjtzXymt8PdjgCslOMdwWUXe1HFAkfXgqJkp1KM5XIpYHbZrwNLTKx4AvJvP3Sr9dRfYciJq-93U_TP8HHLvhw';
+var accessToken = 'PASTE YOUR API ACCESS TOKEN HERE';
 //                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 // ------------------------------------------------------------------------------------------------
 
