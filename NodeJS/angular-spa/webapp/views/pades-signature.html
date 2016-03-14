@@ -1,0 +1,44 @@
+<h2>PAdES Signature</h2>
+
+<div class="container">
+	<div class="row" ng-show="view == 'input'">
+		<div class="form-group">
+			<label>File to sign</label>
+			<p>You'll are signing <a href='/SampleDocument.pdf' target="blank">this sample document</a>.</p>
+		</div>
+
+		<div class="form-group">
+			<label for="certificateSelect">Choose a certificate</label>
+			<select id="certificateSelect" class="form-control" ng-options="getCertificateDisplayName(cert) for cert in certificates" ng-model="selectedCertificate">
+				<option value="">Select ...</option>
+			</select>
+		</div>
+
+		<button id="signButton" type="button" class="btn btn-primary" ng-click="sign()">Sign File</button>
+		<button id="refreshButton" type="button" class="btn btn-default" ng-click="reloadCertificates()">Refresh Certificates</button>
+	</div>
+	
+	<div class="row" ng-show="view == 'success'">
+
+		<p>File signed successfully! <a href="app-data/{{signedPdf}}" target="blank">Click here to download the signed PDF</a></p>
+
+		<p>
+			Signer information:
+		<ul>
+			<li>Subject: {{ certInfo.subjectName.commonName }}</li>
+			<li>Email: {{ certInfo.emailAddress }}</li>
+			<li>
+				ICP-Brasil fields
+				<ul>
+					<li>Tipo de certificado: {{ certInfo.pkiBrazil.certificateType }}</li>
+					<li>CPF: {{ certInfo.pkiBrazil.cpf }}</li>
+					<li>Responsavel: {{ certInfo.pkiBrazil.responsavel }}</li>
+					<li>Empresa: {{ certInfo.pkiBrazil.companyName }}</li>
+					<li>CNPJ: {{ certInfo.pkiBrazil.cnpj }}</li>
+				</ul>
+			</li>
+		</ul>
+		</p>
+	</div>
+
+</div>
