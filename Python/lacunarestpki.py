@@ -5,7 +5,6 @@ import six
 import requests
 import base64
 import simplejson as json
-from enum import Enum
 from abc import ABCMeta, abstractmethod
 
 
@@ -338,11 +337,11 @@ class PadesVisualPositioningPresets:
 # XML
 # ----------------------------------------------------------------------------------------------------------------------
 
-class XmlInsertionOptions(Enum):
-    appendChild = 1
-    prependChild = 2
-    appendSibling = 3
-    prependSibling = 4
+class XmlInsertionOptions:
+    appendChild = 'appendChild'
+    prependChild = 'prependChild'
+    appendSibling = 'appendSibling'
+    prependSibling = 'prependSibling'
 
 class NamespaceManager:
     namespaces = None
@@ -410,7 +409,7 @@ class XmlSignatureStarter:
             data['xml'] = base64.b64encode(self.xml_content)
 
         if self._xpath is not None:
-            data['signatureElementLocation'] = {'xpath': self._xpath, 'InsertionOption': None if self._insertion_option is None else self._insertion_option.name, 'namespaces': None if self._namespace_manager is None else self._namespace_manager.namespaces}
+            data['signatureElementLocation'] = {'xpath': self._xpath, 'InsertionOption': None if self._insertion_option is None else self._insertion_option, 'namespaces': None if self._namespace_manager is None else self._namespace_manager.namespaces}
         data['signatureElementId'] = self.signature_element_id
         data['signaturePolicyId'] = self.signature_policy_id
         data['securityContextId'] = self.security_context_id
