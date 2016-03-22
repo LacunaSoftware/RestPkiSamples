@@ -19,7 +19,7 @@ To run the sample:
 
 2. Generate an API access token on the [REST PKI website](https://pki.rest/)
 
-3. Paste your access token on the file `routes/pades-signature.js`
+3. Paste your access token on the file `restpki-client.js`
    
 4. Install dependencies: `npm install`
 
