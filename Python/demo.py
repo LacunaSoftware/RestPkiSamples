@@ -291,7 +291,7 @@ def cades_signature_action():
     # Get the token for this signature (rendered in a hidden input field, see pades-signature.html template)
     token = request.form['token']
 
-    # Instantiate the PadesSignatureFinisher class, responsible for completing the signature process
+    # Instantiate the CadesSignatureFinisher class, responsible for completing the signature process
     signature_finisher = CadesSignatureFinisher(restpki_client)
 
     # Set the token

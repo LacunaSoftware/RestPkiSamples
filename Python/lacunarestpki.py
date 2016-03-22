@@ -141,7 +141,7 @@ class PadesSignatureFinisher:
         response = self._client.post('Api/PadesSignatures/%s/Finalize' % self.token)
         self._signed_pdf_content = base64.b64decode(response.json().get('signedPdf', None))
         self._certificate = response.json().get('certificate', None)
-        self._callback_argument = response.get('callbackArgument', None)
+        self._callback_argument = response.json().get('callbackArgument', None)
         self._done = True
 
     @property
