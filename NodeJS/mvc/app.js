@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var upload = require('./routes/upload');
+var authentication = require('./routes/authentication');
 var padesSignature = require('./routes/pades-signature');
 var cadesSignature = require('./routes/cades-signature');
 var fullXmlSignature = require('./routes/xml-full-signature');
@@ -23,6 +24,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/upload', upload);
+app.use('/authentication', authentication);
 app.use('/pades-signature', padesSignature);
 app.use('/cades-signature', cadesSignature);
 app.use('/xml-full-signature', fullXmlSignature);
