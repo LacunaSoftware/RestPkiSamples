@@ -177,6 +177,17 @@
     <Content Include="Views\XmlElementSignature\SignatureInfo.cshtml" />
     <Content Include="Views\XmlFullSignature\Index.cshtml" />
     <Content Include="Views\XmlFullSignature\SignatureInfo.cshtml" />
+    <Content Include="Views\BatchSignature\Index.cshtml" />
+    <Content Include="Content\01.pdf" />
+    <Content Include="Content\02.pdf" />
+    <Content Include="Content\03.pdf" />
+    <Content Include="Content\04.pdf" />
+    <Content Include="Content\05.pdf" />
+    <Content Include="Content\06.pdf" />
+    <Content Include="Content\07.pdf" />
+    <Content Include="Content\08.pdf" />
+    <Content Include="Content\09.pdf" />
+    <Content Include="Content\10.pdf" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
