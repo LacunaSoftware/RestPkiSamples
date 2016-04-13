@@ -137,6 +137,7 @@
     <Compile Include="Controllers\AuthenticationController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\CadesSignatureController.cs" />
+    <Compile Include="Controllers\BatchSignatureController.cs" />
     <Compile Include="Controllers\XmlFullSignatureController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PadesSignatureController.cs" />
@@ -147,6 +148,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AuthenticationModel.cs" />
+    <Compile Include="Models\BatchSignatureModel.cs" />
     <Compile Include="Models\PadesSignatureModel.cs" />
     <Compile Include="Models\CadesSignatureModel.cs" />
     <Compile Include="Models\SignatureInfoModel.cs" />

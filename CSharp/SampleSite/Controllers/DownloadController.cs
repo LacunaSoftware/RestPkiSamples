@@ -40,6 +40,13 @@ namespace SampleSite.Controllers {
 			return File(fileContent, "application/pdf", "Sample.pdf");
 		}
 
+		// GET Download/Doc/{id}
+		[HttpGet]
+		public ActionResult Doc(int id) {
+			var fileContent = Util.GetBatchDocContent(id);
+			return File(fileContent, "application/pdf", string.Format("Doc{0:D2}.pdf", id));
+		}
+
 		// GET Download/Sample
 		[HttpGet]
 		public ActionResult SampleNFe() {
