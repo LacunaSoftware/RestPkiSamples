@@ -199,7 +199,7 @@
 		function onSignaturePerformed(token) {
 			// Call the server asynchronously to notify that the signature has been performed
 			$.ajax({
-				url: '/BatchSignature/Complete/' + token,
+				url: '/BatchSignature/Complete/' + token, // The signature process token is guaranteed to be URL-safe
 				method: 'POST',
 				dataType: 'json',
 				success: onSignatureCompleted, // callback if the operation suceeds

@@ -100,6 +100,9 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 
 		/*
 		 * This action receives the form submission from the view. We'll call REST PKI to complete the signature.
+		 *
+		 * Notice that the "id" is actually the signature process token. We're naming it "id" so that the action
+		 * can be called as /BatchSignature/Complete/{token}
 		 */
 		[HttpPost]
 		public ActionResult Complete(string id) {
