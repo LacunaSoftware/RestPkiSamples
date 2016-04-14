@@ -1,0 +1,356 @@
+﻿@using Lacuna.RestPki.SampleSite.Models
+@model BatchSignatureModel
+<h2>Batch Signature</h2>
+
+<form id="signForm" method="POST">
+
+	<div class="form-group">
+		<label>File to sign</label>
+		<p>
+			You'll be signing the following files:
+			@* UL element to hold the batch's documents (we'll render these programatically, see javascript below) *@
+			<ul id="docList" />
+		</p>
+	</div>
+
+	@* Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it later on (see javascript below). *@
+	<div class="form-group">
+		<label for="certificateSelect">Choose a certificate</label>
+		<select id="certificateSelect" class="form-control"></select>
+	</div>
+
+	@*
+		Action buttons. Notice that the "Sign File" button is NOT a submit button. When the user clicks the button,
+		we must first use the Web PKI component to perform the client-side computation necessary and only when
+		that computation is finished we'll submit the form programmatically (see javascript below).
+	*@
+	<button id="signButton" type="button" class="btn btn-primary">Sign Batch</button>
+	<button id="refreshButton" type="button" class="btn btn-default">Refresh Certificates</button>
+
+</form>
+
+@* Panel to hold the BlockUI message so that we can change the message during processing *@
+<div id="blockPanel" style="display: none">
+	<h2 id="blockMessage"></h2>
+</div>
+
+@section Scripts {
+
+	@*
+		The file below contains the JS lib for accessing the Web PKI component. For more information, see:
+		https://webpki.lacunasoftware.com/#/Documentation
+	*@
+	<script src="@Url.Content("~/Content/js/lacuna-web-pki-2.3.1.js")"></script>
+
+	<script>
+
+		Queue = function (name) {
+			this.name = name;
+			this.queue = [];
+			this.processing = 0;
+			this.aborted = false;
+			this.closed = false;
+			this.finalized = false;
+		};
+		(function ($) {
+			$.enqueue = function (obj) {
+				this.queue.push(obj);
+				console.log('Object enqueued to queue: ' + this.name, obj);
+			};
+			$.abort = function (obj) {
+				this.aborted = true;
+			};
+			$.close = function (obj) {
+				this.closed = true;
+				console.log('Queue closed: ' + this.name);
+			};
+			$.consume = function (consumer, outQueue, endCallback) {
+				var self = this;
+				if (self.aborted) {
+					return;
+				}
+				if (self.queue.length > 0) {
+					++self.processing;
+					var obj = self.queue.shift();
+					consumer(obj, function (result) {
+						if (outQueue != null && result != null) {
+							outQueue.enqueue(obj);
+						}
+						--self.processing;
+						self.consume(consumer, outQueue, endCallback);
+					});
+				} else if (!self.closed) {
+					console.log('Queue empty: ' + self.name);
+					setTimeout(function () {
+						self.consume(consumer, outQueue, endCallback);
+					}, 200);
+				} else if (self.processing == 0) {
+					console.log('Queue consumed: ' + self.name);
+					if (outQueue != null) {
+						outQueue.close();
+					}
+					if (endCallback != null) {
+						endCallback();
+					}
+				}
+			};
+		})(Queue.prototype);
+
+		// We'll use the Model.DocumentIds filled by the server to render a Javascript array. This will render something like this:
+		// var batchDocIds = [ 1,2,3,4,5,6,7,8,9,10 ];
+		var batchDocIds = [ @string.Join("," , Model.DocumentIds)];
+
+		// Auxiliary global variables
+		var selectedCertThumbprint = null;
+		var batchId = null;
+		var startQueue = null;
+		var performQueue = null;
+		var completeQueue = null;
+		var endOfQueue = 'EOQ';
+		var aborted = false;
+
+		// Create an instance of the LacunaWebPKI object
+		var pki = new LacunaWebPKI();
+
+		// -------------------------------------------------------------------------------------------------
+		// Function called once the page is loaded
+		// -------------------------------------------------------------------------------------------------
+		function init() {
+
+			// Block the UI while we get things ready
+			$.blockUI();
+
+			// Render documents to be signed
+			var docList = $('#docList');
+			for (var i = 0; i < batchDocIds.length; i++) {
+				var docId = batchDocIds[i];
+				docList.append(
+					$('<li />').append(
+						$('<a />').text('Document ' + docId).attr('href', '/Download/Doc/' + docId)
+					)
+				);
+			}
+
+			// Wireup of button clicks
+			$('#signButton').click(sign);
+			$('#refreshButton').click(refresh);
+
+			// Call the init() method on the LacunaWebPKI object, passing a callback for when
+			// the component is ready to be used and another to be called when an error occurrs
+			// on any of the subsequent operations. For more information, see:
+			// https://webpki.lacunasoftware.com/#/Documentation#coding-the-first-lines
+			// http://webpki.lacunasoftware.com/Help/classes/LacunaWebPKI.html#method_init
+			pki.init({
+				ready: loadCertificates, // as soon as the component is ready we'll load the certificates
+				defaultError: onWebPkiError // generic error callback on Content/js/app/site.js
+			});
+		}
+
+		// -------------------------------------------------------------------------------------------------
+		// Function called when the user clicks the "Refresh" button
+		// -------------------------------------------------------------------------------------------------
+		function refresh() {
+			// Block the UI while we load the certificates
+			$.blockUI();
+			// Invoke the loading of the certificates
+			loadCertificates();
+		}
+
+		// -------------------------------------------------------------------------------------------------
+		// Function that loads the certificates, either on startup or when the user
+		// clicks the "Refresh" button. At this point, the UI is already blocked.
+		// -------------------------------------------------------------------------------------------------
+		function loadCertificates() {
+
+			// Call the listCertificates() method to list the user's certificates. For more information see
+			// http://webpki.lacunasoftware.com/Help/classes/LacunaWebPKI.html#method_listCertificates
+			pki.listCertificates({
+
+				// specify that expired certificates should be ignored
+				filter: pki.filters.isWithinValidity,
+
+				// in order to list only certificates within validity period and having a CPF (ICP-Brasil), use this instead:
+				//filter: pki.filters.all(pki.filters.hasPkiBrazilCpf, pki.filters.isWithinValidity),
+
+				// id of the select to be populated with the certificates
+				selectId: 'certificateSelect',
+
+				// function that will be called to get the text that should be displayed for each option
+				selectOptionFormatter: function (cert) {
+					return cert.subjectName + ' (issued by ' + cert.issuerName + ')';
+				}
+
+			}).success(function () {
+
+				// once the certificates have been listed, unblock the UI
+				$.unblockUI();
+
+			});
+		}
+
+		// -------------------------------------------------------------------------------------------------
+		// Function called when the user clicks the "Sign Batch" button
+		// -------------------------------------------------------------------------------------------------
+		function sign() {
+
+			// Block the UI while we perform the signature
+			$.blockUI({ message: $('#blockPanel') });
+			$('#blockMessage').text('Please wait ...');
+
+			// Get the thumbprint of the selected certificate
+			selectedCertThumbprint = $('#certificateSelect').val();
+
+			startQueue = new Queue('startQueue');
+			performQueue = new Queue('performQueue');
+			completeQueue = new Queue('completeQueue');
+			for (var i = 0; i < batchDocIds.length; i++) {
+				startQueue.enqueue({
+					index: i,
+					docId: batchDocIds[i],
+					startResponse: null,
+					signature: null,
+					signedFileId: null
+				});
+			}
+			startQueue.close();
+
+			pki.readCertificate(selectedCertThumbprint).success(function (certContent) {
+				authorizeBatch();
+				startBatch(certContent);
+			});
+		}
+
+		function authorizeBatch() {
+			pki.preauthorizeSignatures({
+				certificateThumbprint: selectedCertThumbprint,
+				signatureCount: batchDocIds.length
+			}).success(function () {
+				performQueue.consume(performSignature, completeQueue);
+			}).error(function (error) {
+				abortBatch('Error while starting batch: ' + error);
+			});
+		}
+
+		function startBatch(certContent) {
+			$.ajax({
+				url: '/BatchSignatureMaxOptimized/StartBatch/',
+				method: 'POST',
+				contentType: 'application/json',
+				data: JSON.stringify({
+					Certificate: certContent
+				}),
+				dataType: 'json',
+				success: function (bid) {
+					batchId = bid;
+					for (var i = 0; i < 3; i++) {
+						startQueue.consume(startSignature, performQueue);
+						completeQueue.consume(completeSignature, null, onBatchCompleted);
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					abortBatch('Error while starting batch: ' + errorThrown);
+				}
+			});
+		}
+
+		function startSignature(step, done) {
+			$.ajax({
+				url: '/BatchSignatureMaxOptimized/StartStep',
+				contentType: 'application/json',
+				data: JSON.stringify({
+					BatchId: batchId,
+					DocumentId: step.docId
+				}),
+				method: 'POST',
+				dataType: 'json',
+				success: function (response) {
+					step.startResponse = response;
+					done(step);
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					renderFail(step, errorThrown || textStatus);
+					done();
+				}
+			});
+		}
+
+		function performSignature(step, done) {
+			pki.signHash({
+				thumbprint: selectedCertThumbprint,
+				hash: step.startResponse.ToSignHash,
+				digestAlgorithm: step.startResponse.DigestAlgorithmOid
+			}).success(function (signature) {
+				step.signature = signature;
+				done(step);
+			}).error(function (error) {
+				renderFail(step, error);
+				done();
+			});
+		}
+
+		function completeSignature(step, done) {
+			// Call the server asynchronously to notify that the signature has been performed
+			$.ajax({
+				url: '/BatchSignatureMaxOptimized/CompleteStep',
+				contentType: 'application/json',
+				data: JSON.stringify({
+					Token: step.startResponse.Token,
+					Signature: step.signature
+				}),
+				method: 'POST',
+				dataType: 'json',
+				success: function (signedFileId) {
+					step.signedFileId = signedFileId;
+					renderSuccess(step);
+					done(step);
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					renderFail(render, errorThrown || textStatus);
+					done();
+				}
+			});
+		}
+
+		function onBatchCompleted() {
+			// If the batch is completed, we'll notify the user and unblock the UI
+			addAlert('info', 'Batch processing completed');
+			// Prevent user from clicking "sign batch" again (our logic isn't prepared for that)
+			$('#signButton').prop('disabled', true);
+			// Unblock the UI
+			$.unblockUI();
+		}
+
+		function renderSuccess(step) {
+			var docLi = $('#docList li').eq(step.index);
+			docLi.append(
+				document.createTextNode(' ')
+			).append(
+				$('<span />').addClass('glyphicon glyphicon-arrow-right')
+			).append(
+				document.createTextNode(' ')
+			).append(
+				$('<a />').text(step.signedFileId.replace('_', '.')).attr('href', '/Download/File/' + step.signedFileId)
+			);
+		}
+
+		function renderFail(step, error) {
+			addAlert('danger', 'An error has occurred while signing Document ' + step.docId + ': ' + error);
+			var docLi = $('#docList li').eq(step.index);
+			docLi.append(
+				document.createTextNode(' ')
+			).append(
+				$('<span />').addClass('glyphicon glyphicon-remove')
+			);
+		}
+
+		function abortBatch(error) {
+			addAlert('danger', error);
+			aborted = true;
+			$.unblockUI();
+		}
+
+		// Schedule the init function to be called once the page is loaded
+		$(document).ready(init);
+
+	</script>
+}

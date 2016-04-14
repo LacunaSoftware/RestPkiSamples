@@ -188,6 +188,7 @@
     <Content Include="Content\08.pdf" />
     <Content Include="Content\09.pdf" />
     <Content Include="Content\10.pdf" />
+    <Content Include="Views\BatchSignature\Optimized.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

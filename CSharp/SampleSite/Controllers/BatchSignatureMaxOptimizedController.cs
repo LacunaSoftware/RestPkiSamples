@@ -2,9 +2,11 @@
 using Lacuna.RestPki.Api.PadesSignature;
 using Lacuna.RestPki.Client;
 using Lacuna.RestPki.SampleSite.Models;
+using NLog;
 using SampleSite.Classes;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -12,10 +14,13 @@ using System.Web.Mvc;
 
 namespace Lacuna.RestPki.SampleSite.Controllers {
 
-	public class BatchSignatureController : BaseController {
+	public class BatchSignatureMaxOptimizedController : BaseController {
+
+		private static Logger logger = LogManager.GetCurrentClassLogger();
 
 		/*
-		 * This action renders the batch signature page.
+		 * This action renders the optimized batch signature page. The view logic for this page is more complex than
+		 * the "BatchSignature/Index" action, but the performance is significantly improved.
 		 *
 		 * Notice that the only thing we'll do on the server-side at this point is determine the IDs of the documents
 		 * to be signed. The page will handle each document one by one and will call the server asynchronously to
@@ -30,21 +35,11 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 			return View(model);
 		}
 
-		/*
-		 * This action renders the optimized batch signature page. The view logic for this page is more complex than
-		 * the "Index" action, but the performance is significantly improved.
-		 *
-		 * Notice that the only thing we'll do on the server-side at this point is determine the IDs of the documents
-		 * to be signed. The page will handle each document one by one and will call the server asynchronously to
-		 * start and complete each signature.
-		 */
-		public ActionResult Optimized() {
-			// It is up to your application's business logic to determine which documents will compose the batch
-			var model = new BatchSignatureModel() {
-				DocumentIds = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }
-			};
-			// Render the optimized batch signature page
-			return View(model);
+		[HttpPost]
+		public ActionResult StartBatch(BatchSignatureMaxOptimizedStartBatchRequest request) {
+			var batchId = Guid.NewGuid().ToString();
+			Session[batchId] = request.Certificate;
+			return Json(batchId);
 		}
 
 		/*
@@ -52,22 +47,33 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 		 * being currently signed (the page signs one document at a time).
 		 */
 		[HttpPost]
-		public ActionResult Start(int id) {
+		public ActionResult StartStep(BatchSignatureMaxOptimizedStartStepRequest request) {
+
+			logger.Info("Starting {0}", request.DocumentId);
+
+			var certificateContent = Session[request.BatchId] as byte[];
+			if (certificateContent == null) {
+				throw new Exception("Batch not found: " + request.BatchId);
+			}
 
 			// Get an instance of the PadesSignatureStarter class, responsible for receiving the signature elements and start the
 			// signature process
 			var signatureStarter = Util.GetRestPkiClient().GetPadesSignatureStarter();
 
+			signatureStarter.SetSignerCertificate(certificateContent);
+
 			// Set the document to be signed based on its ID (passed to us from the page)
-			signatureStarter.SetPdfToSign(Util.GetBatchDocContent(id));
+			signatureStarter.SetPdfToSign(Util.GetBatchDocContent(request.DocumentId));
 
 			// Set the signature policy
 			signatureStarter.SetSignaturePolicy(StandardPadesSignaturePolicies.Basic);
 
 			// Set a SecurityContext to be used to determine trust in the certificate chain
-			signatureStarter.SetSecurityContext(StandardSecurityContexts.PkiBrazil);
+			signatureStarter.SetSecurityContext(new Guid("85bc483d-b4bc-4680-a148-6fadef72936d")/*StandardSecurityContexts.PkiBrazil*/);
 			// Note: By changing the SecurityContext above you can accept only certificates from a certain PKI,
 			// for instance, ICP-Brasil (Lacuna.RestPki.Api.StandardSecurityContexts.PkiBrazil).
+
+			var sw2 = Stopwatch.StartNew();
 
 			// Set a visual representation for the signature
 			signatureStarter.SetVisualRepresentation(new PadesVisualRepresentation() {
@@ -102,17 +108,23 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 				Position = getVisualPositioning(1)
 			});
 
+			logger.Info("Prep {0}: {1}", request.DocumentId, sw2.Elapsed);
+
 			// Call the StartWithWebPki() method, which initiates the signature. This yields the token, a 43-character
 			// case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
 			// signWithRestPki() method on the Web PKI component (see javascript on the view) and also to complete the signature
 			// on the POST action below (this should not be mistaken with the API access token).
-			var token = signatureStarter.StartWithWebPki();
+			var sw = Stopwatch.StartNew();
+			var signatureInstructions = signatureStarter.Start();
+			logger.Info("Start {0}: {1}", request.DocumentId, sw.Elapsed);
 
-			// Notice: it is not necessary to call SetNoCacheHeaders() because this action is a POST action, therefore no caching
-			// of the response will be made by browsers.
+			var response = new BatchSignatureMaxOptimizedStartStepResponse() {
+				Token = signatureInstructions.Token,
+				ToSignHash = signatureInstructions.ToSignHash,
+				DigestAlgorithmOid = signatureInstructions.DigestAlgorithmOid
+			};
 
-			// Return a JSON with the token obtained from REST PKI (the page will use jQuery to decode this value)
-			return Json(token);
+			return Json(response);
 		}
 
 		/*
@@ -122,16 +134,20 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 		 * can be called as /BatchSignature/Complete/{token}
 		 */
 		[HttpPost]
-		public ActionResult Complete(string id) {
+		public ActionResult CompleteStep(BatchSignatureMaxOptimizedCompleteStepRequest request) {
 
 			// Get an instance of the PadesSignatureFinisher class, responsible for completing the signature process
 			var signatureFinisher = Util.GetRestPkiClient().GetPadesSignatureFinisher();
 
 			// Set the token for this signature (rendered in a hidden input field, see the view)
-			signatureFinisher.SetToken(id);
+			signatureFinisher.SetToken(request.Token);
+
+			signatureFinisher.SetSignature(request.Signature);
 
 			// Call the Finish() method, which finalizes the signature process and returns the signed PDF
+			var sw = Stopwatch.StartNew();
 			var signedPdf = signatureFinisher.Finish();
+			logger.Info("Finish {0}: {1}", request.Token, sw.Elapsed);
 
 			// Get information about the certificate used by the user to sign the file. This method must only be called after
 			// calling the Finish() method.

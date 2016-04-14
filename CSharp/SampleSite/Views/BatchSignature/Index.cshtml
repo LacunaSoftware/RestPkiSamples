@@ -1,6 +1,6 @@
 ﻿@using Lacuna.RestPki.SampleSite.Models
 @model BatchSignatureModel
-<h2>Batch Signature</h2>
+<h2>Simple Batch Signature</h2>
 
 <form id="signForm" method="POST">
 
@@ -45,7 +45,8 @@
 	<script>
 
 		// We'll use the Model.DocumentIds filled by the server to render a Javascript array. This will render something like this:
-		// var batchDocIds = [ 1,2,3,4,5,6,7,8,9,10 ];		var batchDocIds = [ @string.Join("," , Model.DocumentIds) ];
+		// var batchDocIds = [ 1,2,3,4,5,6,7,8,9,10 ];
+		var batchDocIds = [ @string.Join("," , Model.DocumentIds) ];
 
 		// Auxiliary global variables
 		var docIndex = -1;
