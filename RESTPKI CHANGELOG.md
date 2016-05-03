@@ -1,0 +1,103 @@
+Lacuna Rest PKI change log
+==========================
+
+1.6.3 (2016-05-02)
+------------------
+
+- Add support for customization of culture, format and time zone of the signing time in PAdES visual representation
+- Update Lacuna PKI SDK to 1.12.0, thus:
+    - Fix bug on encoding of ASN.1 structure AlgorithmIdentifier which caused the field "parameters" to be omitted instead
+      of being filled with the NULL value
+	- No longer using the iTextSharp AGPL-licensed library
+	- Fix bug on certificate revocation status validation which caused a stack overflow on rare OCSP validation scenarios
+	- Fix bug on CRL decoding when the ReasonCode is present
+	- Improve messages for certificate revocation status validation
+	- Fix issue affecting validation of XML signatures having namespace declarations on the Signature element
+	- Fix issue affecting positioning of PAdES visual representations in specific several-signers scenarios
+	- Add ICP-Brasil trusted root "v5"
+
+
+1.6.2 (2016-04-18)
+------------------
+
+- Add support on PAdES visual representation for specifying a container inside the signature rectangle on which to place the text
+
+
+1.6.1 (2016-02-22)
+------------------
+
+- Fix bug causing delay on database access when running on Microsoft Azure
+
+
+1.6.0 (2016-01-21)
+------------------
+
+- Add support for XML signatures (XmlDSig/XAdES)
+- Update Lacuna PKI SDK to 1.9.0, thus:
+	- Improve certificate validation to check the PathLenConstraint extension
+
+
+1.5.1 (2015-11-24)
+------------------
+
+- Aesthetic changes only
+
+
+1.5.0 (2015-11-23)
+------------------
+
+- Add support for CAdES signatures
+- Add transaction register (for future billing)
+- Add support for Lacuna PKI SDK licenses with use restricted to REST PKI
+- Improve removal of expired signature processes
+- Update Lacuna PKI SDK to 1.8.0, thus:
+	- Modify behavior of decoding of ICP-Brasil certificate fields to decode fields regardless of whether the
+	  certificate appears to be an ICP-Brasil certificate or not
+	- Modify behavior of decoding of CompanyName ICP-Brasil certificate field to return the company name when the certificate is
+	  a ICP-Brasil company (PJ) certificate (previously the property only worked for ICP-Brasil application certificates)
+	- Add support for ICP-Brasil CPF field on "OU" field of subject name having a space after the colon ("OU=CPF: xxxxxxxxxxx")
+
+	
+1.4.3 (2015-11-06)
+------------------
+
+- Aesthetic changes only
+
+
+1.4.2 (2015-11-06)
+------------------
+
+- Aesthetic changes only
+
+
+1.4.1 (2015-10-21)
+------------------
+
+- Aesthetic changes only
+
+
+1.4.0 (2015-10-21)
+------------------
+
+- Add support on PAdES visual representation for horizontal text alignment to the right
+- Set site culture to pt-BR (affects PAdES visual representation)
+- Fix bug on PAdES signatures
+
+
+1.3.1 (2015-10-14)
+------------------
+
+- Improve logging to file so as to prevent indefinite file growth
+- Add information about the Lacuna PKI SDK license on the system status screen
+- Fix minor issue on javascript when Google Analytics is not being used
+- Fix minor issue on log test dialog
+- Update Lacuna PKI SDK to 1.6.0, thus:
+	- Fix bug on logging which caused the "source" argument to have an incorrect value
+
+1.3.0 (2015-10-13)
+------------------
+
+- First version released publicly
+- Main features on this version:
+	- Certificate authentication
+	- PAdES signatures
