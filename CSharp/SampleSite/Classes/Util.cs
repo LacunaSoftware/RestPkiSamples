@@ -30,15 +30,15 @@ namespace SampleSite.Classes {
 		}
 
 		public static byte[] GetSampleDocContent() {
-			return File.ReadAllBytes(Path.Combine(ContentPath, "SampleDocument.pdf"));
+			return File.ReadAllBytes(Path.Combine(ContentPath, "01.pdf"));
 		}
 
 		public static byte[] GetBatchDocContent(int id) {
-			return File.ReadAllBytes(Path.Combine(ContentPath, string.Format("{0:D2}.pdf", id)));
+			return File.ReadAllBytes(Path.Combine(ContentPath, string.Format("{0:D2}.pdf", ((id - 1) % 10) + 1)));
 		}
 
 		public static byte[] GetSampleNFeContent() {
-			return File.ReadAllBytes(Path.Combine(ContentPath, "Sample.xml"));
+			return File.ReadAllBytes(Path.Combine(ContentPath, "SampleNFe.xml"));
 		}
 
 		public static byte[] GetSampleXmlDocument() {

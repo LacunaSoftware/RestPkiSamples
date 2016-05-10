@@ -1,6 +1,6 @@
 ﻿@using Lacuna.RestPki.SampleSite.Models
 @model BatchSignatureModel
-<h2>Simple Batch Signature</h2>
+<h2>Batch Signature</h2>
 
 <form id="signForm" method="POST">
 
@@ -29,11 +29,6 @@
 
 </form>
 
-@* Panel to hold the BlockUI message so that we can change the message during processing *@
-<div id="blockPanel" style="display: none">
-	<h2 id="blockMessage"></h2>
-</div>
-
 @section Scripts {
 
 	@*
@@ -44,13 +39,68 @@
 
 	<script>
 
+		@*
+			The Javascript class "Queue" defined here helps to process the documents in the batch. You don't necessarily need to
+			understand this code, only how to use it (see the usage below on the function startBatch)
+		*@
+		(function () {
+			window.Queue = function () {
+				this.items = [];
+				this.writerCount = 0;
+				this.readerCount = 0;
+			};
+			window.Queue.prototype.add = function (e) {
+				this.items.push(e);
+			};
+			window.Queue.prototype.addRange = function (array) {
+				for (var i = 0; i < array.length; i++) {
+					this.add(array[i]);
+				}
+			};
+			var _process = function (inQueue, processor, outQueue, endCallback) {
+				var obj = inQueue.items.shift();
+				if (obj !== undefined) {
+					processor(obj, function (result) {
+						if (result != null && outQueue != null) {
+							outQueue.add(result);
+						}
+						_process(inQueue, processor, outQueue, endCallback);
+					});
+				} else if (inQueue.writerCount > 0) {
+					setTimeout(function () {
+						_process(inQueue, processor, outQueue, endCallback);
+					}, 200);
+				} else {
+					--inQueue.readerCount;
+					if (outQueue != null) {
+						--outQueue.writerCount;
+					}
+					if (inQueue.readerCount == 0 && endCallback) {
+						endCallback();
+					}
+				}
+			};
+			window.Queue.prototype.process = function (processor, options) {
+				var threads = options.threads || 1;
+				this.readerCount = threads;
+				if (options.output) {
+					options.output.writerCount = threads;
+				}
+				for (var i = 0; i < threads; i++) {
+					_process(this, processor, options.output, options.completed);
+				}
+			};
+		})();
+
 		// We'll use the Model.DocumentIds filled by the server to render a Javascript array. This will render something like this:
 		// var batchDocIds = [ 1,2,3,4,5,6,7,8,9,10 ];
-		var batchDocIds = [ @string.Join("," , Model.DocumentIds) ];
+		var batchDocIds = [ @string.Join("," , Model.DocumentIds)];
 
 		// Auxiliary global variables
-		var docIndex = -1;
 		var selectedCertThumbprint = null;
+		var startQueue = null;
+		var performQueue = null;
+		var completeQueue = null;
 
 		// Create an instance of the LacunaWebPKI object
 		var pki = new LacunaWebPKI();
@@ -137,85 +187,160 @@
 		function sign() {
 
 			// Block the UI while we perform the signature
-			$.blockUI({ message: $('#blockPanel') });
-			$('#blockMessage').text('Please wait ...');
+			$.blockUI();
 
-			// Get the thumbprint of the selected certificate
+			// Get the thumbprint of the selected certificate and store it in a global variable (we'll need it later)
 			selectedCertThumbprint = $('#certificateSelect').val();
 
-			// Call the preauthorizeSignatures() to request authorization to perform the N signatures
+			// Call Web PKI to preauthorize the signatures, so that the user only sees one confirmation dialog
 			pki.preauthorizeSignatures({
 				certificateThumbprint: selectedCertThumbprint,
-				signatureCount: batchDocIds.length
-			}).success(signNextDoc); // If the user authorizes the operation, call signNextDoc() to sign the first document
+				signatureCount: batchDocIds.length // number of signatures to be authorized by the user
+			}).success(startBatch); // callback to be called if the user authorizes the signatures
 		}
 
 		// -------------------------------------------------------------------------------------------------
-		// Function that signs the next document in the batch or finishes the operation if the batch is
-		// completed.
+		// Function called when the user authorizes the signatures
 		// -------------------------------------------------------------------------------------------------
-		function signNextDoc() {
-			// Increment the docIndex
-			docIndex += 1;
-			// Check if the batch is completed
-			if (docIndex < batchDocIds.length) {
-				// If the batch is not completed, get the next document ID
-				var docId = batchDocIds[docIndex];
-				// Change the block message
-				$('#blockMessage').text('Signing Document ' + docId + ' ...');
-				// Call the server asynchronously to start the signature (the server will call REST PKI and will return the signature operation token)
-				$.ajax({
-					url: '/BatchSignature/Start/' + docId,
-					method: 'POST',
-					dataType: 'json',
-					success: onSignatureStarted, // callback if the operation suceeds
-					error: onStepServerError
-				});
-			} else {
-				// If the batch is completed, we'll notify the user and unblock the UI
-				addAlert('info', 'Batch processing completed');
-				// Prevent user from clicking "sign batch" again (our logic isn't prepared for that)
-				$('#signButton').prop('disabled', true);
-				// Unblock the UI
-				$.unblockUI();
+		function startBatch() {
+
+			/*
+				For each document, we must perform 3 actions in sequence:
+
+				1. Start the signature    : call the action /BatchSignature/Start to start the signature and get the signature process token
+				2. Perform the signature  : call Web PKI's method signWithRestPki with the token
+				3. Complete the signature : call the action /BatchSignature/Complete to notify that the signature is complete
+
+				We'll use the Queue Javascript class defined above in order to perform these steps simultaneously.
+			 */
+
+			// Create the queues
+			startQueue = new Queue();
+			performQueue = new Queue();
+			completeQueue = new Queue();
+
+			// Add all documents to the first ("start") queue
+			for (var i = 0; i < batchDocIds.length; i++) {
+				startQueue.add({ index: i, docId: batchDocIds[i] });
 			}
+
+			/*
+				Process each queue placing the result on the next queue, forming a sort of "assembly line":
+
+					 startQueue                              performQueue                               completeQueue
+					-------------                            -------------                              -------------
+					      XXXXXXX  ->  (startSignature)  ->             XX  ->  (performSignature)  ->            XXX  ->  (completeSignature)
+					-------------         2 threads          -------------          2 threads           -------------           2 threads
+			 */
+			startQueue.process(startSignature, { threads: 2, output: performQueue });
+			performQueue.process(performSignature, { threads: 2, output: completeQueue });
+			completeQueue.process(completeSignature, { threads: 2, completed: onBatchCompleted }); // onBatchCompleted is a callback for when the last queue is completely processed
+
+			// Notice: the thread count on each call above is already optimized, increasing the number of threads will
+			// not enhance the performance significatively
 		}
 
 		// -------------------------------------------------------------------------------------------------
-		// Function that is called once the server has called REST PKI to start the signature on the current
-		// document being signed and has returned the operation token (in "response").
+		// Function that performs the first step described above for each document, which is the call to the
+		// action BatchSignature/Start in order to start the signature and get the token associated with the
+		// signature process.
+		//
+		// This function is called by the Queue.process function, taking documents from the "start" queue.
+		// Once we're done, we'll call the "done" callback passing the document, and the Queue.process
+		// function will place the document on the "perform" queue to await processing.
 		// -------------------------------------------------------------------------------------------------
-		function onSignatureStarted(response) {
-			// Call signWithRestPki() on the Web PKI component passing the token received from REST PKI and the certificate
-			// selected by the user.
-			pki.signWithRestPki({
-				token: response,
-				thumbprint: selectedCertThumbprint
-			}).success(onSignaturePerformed).error(onStepError);
-		}
-
-		// -------------------------------------------------------------------------------------------------
-		// Function that is called once the signature operation is performed
-		// -------------------------------------------------------------------------------------------------
-		function onSignaturePerformed(token) {
-			// Call the server asynchronously to notify that the signature has been performed
+		function startSignature(step, done) {
+			// Call the server asynchronously to start the signature (the server will call REST PKI and will return the signature operation token)
 			$.ajax({
-				url: '/BatchSignature/Complete/' + token, // The signature process token is guaranteed to be URL-safe
+				url: '/BatchSignature/Start/' + step.docId,
 				method: 'POST',
 				dataType: 'json',
-				success: onSignatureCompleted, // callback if the operation suceeds
-				error: onStepServerError
+				success: function (token) {
+					// Add the token to the document information (we'll need it in the second step)
+					step.token = token;
+					// Call the "done" callback signalling we're done with the document
+					done(step);
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					// Render error
+					renderFail(step, errorThrown || textStatus);
+					// Call the "done" callback with no argument, signalling the document should not go to the next queue
+					done();
+				}
 			});
 		}
 
 		// -------------------------------------------------------------------------------------------------
-		// Function that is called once the server acknowledges that the current document's signature was
-		// saved sucessfully
+		// Function that performs the second step described above for each document, which is the call to
+		// Web PKI's signWithRestPki function using the token acquired on the first step.
+		//
+		// This function is called by the Queue.process function, taking documents from the "perform" queue.
+		// Once we're done, we'll call the "done" callback passing the document, and the Queue.process
+		// function will place the document on the "complete" queue to await processing.
 		// -------------------------------------------------------------------------------------------------
-		function onSignatureCompleted(signedFileId) {
+		function performSignature(step, done) {
+			// Call signWithRestPki() on the Web PKI component passing the token received from REST PKI and the certificate selected by the user.
+			pki.signWithRestPki({
+				token: step.token,
+				thumbprint: selectedCertThumbprint
+			}).success(function () {
+				// Call the "done" callback signalling we're done with the document
+				done(step);
+			}).error(function (error) {
+				// Render error
+				renderFail(step, error);
+				// Call the "done" callback with no argument, signalling the document should not go to the next queue
+				done();
+			});
+		}
 
-			// Render a "->" and a link to the signed document
-			var docLi = $('#docList li').eq(docIndex);
+		// -------------------------------------------------------------------------------------------------
+		// Function that performs the third step described above for each document, which is the call to the
+		// action BatchSignature/Complete in order to complete the signature.
+		//
+		// This function is called by the Queue.process function, taking documents from the "complete" queue.
+		// Once we're done, we'll call the "done" callback passing the document. Once all documents are
+		// processed, the Queue.process will call the "onBatchCompleted" function.
+		// -------------------------------------------------------------------------------------------------
+		function completeSignature(step, done) {
+			// Call the server asynchronously to notify that the signature has been performed
+			$.ajax({
+				url: '/BatchSignature/Complete/' + step.token, // The signature process token is guaranteed to be URL-safe
+				method: 'POST',
+				dataType: 'json',
+				success: function (signedFileId) {
+					step.signedFileId = signedFileId;
+					// Render success
+					renderSuccess(step);
+					// Call the "done" callback signalling we're done with the document
+					done(step);
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					// Render error
+					renderFail(step, errorThrown || textStatus);
+					// Call the "done" callback with no argument, signalling the document should not go to the next queue
+					done();
+				}
+			});
+		}
+
+		// -------------------------------------------------------------------------------------------------
+		// Function called once the batch is completed.
+		// -------------------------------------------------------------------------------------------------
+		function onBatchCompleted() {
+			// Notify the user and unblock the UI
+			addAlert('info', 'Batch processing completed');
+			// Prevent user from clicking "sign batch" again (our logic isn't prepared for that)
+			$('#signButton').prop('disabled', true);
+			// Unblock the UI
+			$.unblockUI();
+		}
+
+		// -------------------------------------------------------------------------------------------------
+		// Function that renders a documument as completed successfully
+		// -------------------------------------------------------------------------------------------------
+		function renderSuccess(step) {
+			var docLi = $('#docList li').eq(step.index);
 			docLi.append(
 				document.createTextNode(' ')
 			).append(
@@ -223,42 +348,21 @@
 			).append(
 				document.createTextNode(' ')
 			).append(
-				$('<a />').text(signedFileId.replace('_', '.')).attr('href', '/Download/File/' + signedFileId)
+				$('<a />').text(step.signedFileId.replace('_', '.')).attr('href', '/Download/File/' + step.signedFileId)
 			);
-
-			// Sign the next document (or stop, if the batch is done)
-			signNextDoc();
 		}
 
 		// -------------------------------------------------------------------------------------------------
-		// Function if an error occurrs while calling the server to start or complete a signature
+		// Function that renders a documument as failed
 		// -------------------------------------------------------------------------------------------------
-		function onStepServerError(jqXHR, textStatus, errorThrown) {
-			if (errorThrown) {
-				onStepError('Server responded with an error: ' + errorThrown);
-			} else {
-				onStepError('Error calling server: ' + textStatus);
-			}
-		}
-
-		// -------------------------------------------------------------------------------------------------
-		// Function if an error occurrs while signing the current document
-		// -------------------------------------------------------------------------------------------------
-		function onStepError(error) {
-
-			// Alert the user with the error message
-			addAlert('danger', 'An error has occurred while signing Document ' + batchDocIds[docIndex] + ': ' + error);
-
-			// Render a "x" on the document list
-			var docLi = $('#docList li').eq(docIndex);
+		function renderFail(step, error) {
+			addAlert('danger', 'An error has occurred while signing Document ' + step.docId + ': ' + error);
+			var docLi = $('#docList li').eq(step.index);
 			docLi.append(
 				document.createTextNode(' ')
 			).append(
 				$('<span />').addClass('glyphicon glyphicon-remove')
 			);
-
-			// Sign the next document (or stop, if the batch is done)
-			signNextDoc();
 		}
 
 		// Schedule the init function to be called once the page is loaded

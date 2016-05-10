@@ -12,17 +12,30 @@ using System.Web.Mvc;
 
 namespace Lacuna.RestPki.SampleSite.Controllers {
 
-	/**
-	 * This controller contains the server-side logic for the batch signature example.
+	/*
+		This controller contains the server-side logic for the optimized batch signature example.
+	 
+		The logic for the example is more complex than the "regular" batch signature example (controller BatchSignatureController),
+		but the performance is significantly improved (roughly 50% faster).
 	 */
-	public class BatchSignatureController : BaseController {
+	public class BatchSignatureOptimizedController : BaseController {
 
-		/**
-		 * This action renders the batch signature page.
-		 *
-		 * Notice that the only thing we'll do on the server-side at this point is determine the IDs of the documents
-		 * to be signed. The page will handle each document one by one and will call the server asynchronously to
-		 * start and complete each signature.
+		/*
+			We need to persist information about each batch in progress. For simplificy purposes, we'll store the information
+			about each batch on a static dictionary (server-side memory). If your application is stateless, you should persist
+			this information on your database instead.
+		 */
+		private class BatchInfo {
+			public byte[] Certificate { get; set; }
+		}
+		private static Dictionary<Guid, BatchInfo> batches = new Dictionary<Guid, BatchInfo>();
+
+		/*
+			This action renders the batch signature page.
+
+			Notice that the only thing we'll do on the server-side at this point is determine the IDs of the documents
+			to be signed. The page will handle each document one by one and will call the server asynchronously to
+			start and complete each signature.
 		 */
 		public ActionResult Index() {
 			// It is up to your application's business logic to determine which documents will compose the batch
@@ -33,19 +46,49 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 			return View(model);
 		}
 
-		/**
-		 * This action is called asynchronously from the batch signature page in order to initiate the signature of each document
-		 * in the batch.
+		/*
+			This action is called asynchronously to initialize a batch. We'll receive the user's certificate and store it
+			(we'll need this information on each signature, but we'll avoid sending this repeatedly from the view in order to
+			increase performance).
 		 */
 		[HttpPost]
-		public ActionResult Start(int id) {
+		public ActionResult Init(BatchSignatureInitRequest request) {
+			// Generate a unique ID identifying the batch
+			var batchId = Guid.NewGuid();
+			// Store the user's certificate based on the generated ID
+			var batchInfo = new BatchInfo() {
+				Certificate = request.Certificate
+			};
+			lock (batches) {
+				batches[batchId] = batchInfo;
+			}
+			// Return a JSON with the batch ID (the page will use jQuery to decode this value)
+			var response = new BatchSignatureInitResponse() {
+				BatchId = batchId
+			};
+			return Json(response);
+		}
+
+		/*
+			This action is called asynchronously in order to initiate the signature of each document in the batch. We'll receive
+			the batch ID and the ID of the current document.
+		 */
+		[HttpPost]
+		public ActionResult Start(BatchSignatureStartRequest request) {
+
+			// Recover the batch information based on its ID, which contains the user's certificate
+			var batchInfo = batches[request.BatchId];
 
 			// Get an instance of the PadesSignatureStarter class, responsible for receiving the signature elements and start the
 			// signature process
 			var signatureStarter = Util.GetRestPkiClient().GetPadesSignatureStarter();
 
 			// Set the document to be signed based on its ID (passed to us from the page)
-			signatureStarter.SetPdfToSign(Util.GetBatchDocContent(id));
+			signatureStarter.SetPdfToSign(Util.GetBatchDocContent(request.DocumentId));
+
+			// Set the user's certificate. Notice that this step is not necessary on the regular batch signature example. This
+			// enhances the performance of the batch processing
+			signatureStarter.SetSignerCertificate(batchInfo.Certificate);
 
 			// Set the signature policy
 			signatureStarter.SetSignaturePolicy(StandardPadesSignaturePolicies.Basic);
@@ -88,33 +131,41 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 				Position = getVisualPositioning(1)
 			});
 
-			// Call the StartWithWebPki() method, which initiates the signature. This yields the token, a 43-character
-			// case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
-			// signWithRestPki() method on the Web PKI component (see javascript on the view) and also to complete the signature
-			// on the POST action below (this should not be mistaken with the API access token).
-			var token = signatureStarter.StartWithWebPki();
+			// Call the Start() method, which initiates the signature. Notice that, on the regular signature example, we call the
+			// StartWithRestPki() method, which is simpler but with worse performance. The Start() method will yield not only the
+			// token, a 43-character case-sensitive URL-safe string which identifies this signature process, but also the data
+			// that should be used to call the signHash() function on the Web PKI component (instead of the signWithRestPki()
+			// function, which is also simpler but far slower).
+			var signatureParams = signatureStarter.Start();
 
 			// Notice: it is not necessary to call SetNoCacheHeaders() because this action is a POST action, therefore no caching
 			// of the response will be made by browsers.
 
-			// Return a JSON with the token obtained from REST PKI (the page will use jQuery to decode this value)
-			return Json(token);
+			// Return a JSON with the token obtained from REST PKI, along with the parameters for the signHash() call
+			// (the page will use jQuery to decode this value)
+			var response = new BatchSignatureStartResponse() {
+				Token = signatureParams.Token,
+				ToSignHash = signatureParams.ToSignHash,
+				DigestAlgorithmOid = signatureParams.DigestAlgorithmOid
+			};
+			return Json(response);
 		}
 
-		/**
-		 * This action receives the form submission from the view. We'll call REST PKI to complete the signature.
-		 *
-		 * Notice that the "id" is actually the signature process token. We're naming it "id" so that the action
-		 * can be called as /BatchSignature/Complete/{token}
+		/*
+			This action is called asynchronously in order to complete each document's signature. We'll receive the signature
+			process token previously yielded by REST PKI and the result of the RSA signature performed with Web PKI
 		 */
 		[HttpPost]
-		public ActionResult Complete(string id) {
+		public ActionResult Complete(BatchSignatureCompleteRequest request) {
 
 			// Get an instance of the PadesSignatureFinisher class, responsible for completing the signature process
 			var signatureFinisher = Util.GetRestPkiClient().GetPadesSignatureFinisher();
 
 			// Set the token for this signature (rendered in a hidden input field, see the view)
-			signatureFinisher.SetToken(id);
+			signatureFinisher.SetToken(request.Token);
+
+			// Set the result of the RSA signature. Notice that this call is not necessary on the "regular" batch signature example
+			signatureFinisher.SetSignature(request.Signature);
 
 			// Call the Finish() method, which finalizes the signature process and returns the signed PDF
 			var signedPdf = signatureFinisher.Finish();

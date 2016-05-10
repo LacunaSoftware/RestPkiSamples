@@ -121,7 +121,6 @@
     <Content Include="Content\js\jquery.blockUI.js" />
     <Content Include="Content\js\lacuna-web-pki-2.3.1.js" />
     <Content Include="Content\PdfStamp.png" />
-    <Content Include="Content\SampleDocument.pdf" />
     <Content Include="Content\SampleDocument.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -136,6 +135,7 @@
     <Compile Include="Classes\Util.cs" />
     <Compile Include="Controllers\AuthenticationController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\BatchSignatureOptimizedController.cs" />
     <Compile Include="Controllers\CadesSignatureController.cs" />
     <Compile Include="Controllers\BatchSignatureController.cs" />
     <Compile Include="Controllers\XmlFullSignatureController.cs" />
@@ -149,6 +149,7 @@
     </Compile>
     <Compile Include="Models\AuthenticationModel.cs" />
     <Compile Include="Models\BatchSignatureModel.cs" />
+    <Compile Include="Models\BatchSignatureOptimizedModels.cs" />
     <Compile Include="Models\PadesSignatureModel.cs" />
     <Compile Include="Models\CadesSignatureModel.cs" />
     <Compile Include="Models\SignatureInfoModel.cs" />
@@ -188,7 +189,8 @@
     <Content Include="Content\08.pdf" />
     <Content Include="Content\09.pdf" />
     <Content Include="Content\10.pdf" />
-    <Content Include="Views\BatchSignature\Optimized.cshtml" />
+    <None Include="Properties\PublishProfiles\Filesystem.pubxml" />
+    <Content Include="Views\BatchSignatureOptimized\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
