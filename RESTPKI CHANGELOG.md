@@ -1,13 +1,34 @@
 Lacuna Rest PKI change log
 ==========================
 
+1.7.0 (2016-06-03)
+------------------
+
+- Add support for timestamping
+- Add support for system-wide security contexts
+- Add support for system-wide customized signature policies
+- Add support for additional storage options for encrypted temporary files (storing on local filesystem is still supported):
+	- Microsoft Azure Blob Storage
+	- Amazon S3
+- Add support for admins to generate access tokens for other users
+- Add support for ICP-Brasil certificate fields "RG" and "OAB"
+- Update Lacuna PKI SDK to 1.12.1, thus:
+	- Add support for certificates with rare alternative SHA-1 with RSA signature algorithm OID (1.3.14.3.2.29)
+
+
+1.6.4 (2016-05-05)
+------------------
+
+- Store temporary encrypted files on local temp directory instead of storing on binary columns in the database
+	- This change was done due to performance issues. The next release will add support for other storage options.
+
 1.6.3 (2016-05-02)
 ------------------
 
 - Add support for customization of culture, format and time zone of the signing time in PAdES visual representation
 - Update Lacuna PKI SDK to 1.12.0, thus:
-    - Fix bug on encoding of ASN.1 structure AlgorithmIdentifier which caused the field "parameters" to be omitted instead
-      of being filled with the NULL value
+	- Fix bug on encoding of ASN.1 structure AlgorithmIdentifier which caused the field "parameters" to be omitted instead
+	  of being filled with the NULL value
 	- No longer using the iTextSharp AGPL-licensed library
 	- Fix bug on certificate revocation status validation which caused a stack overflow on rare OCSP validation scenarios
 	- Fix bug on CRL decoding when the ReasonCode is present
