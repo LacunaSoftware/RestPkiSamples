@@ -1,6 +1,22 @@
 Lacuna Rest PKI change log
 ==========================
 
+1.7.2 (2016-06-10)
+------------------
+
+- Add detection of bad data passed by client applications:
+	- Invalid/corrupt PDFs
+	- Invalid PAdES visual representation parameters
+- Fix bug on security context removal
+- Fix bug causing unused ClientSideSignature records to be left behind in the database
+- Fix bug that prevented admin users from viewing details of other users' events
+- Update Lacuna PKI SDK to 1.12.2 (no bug fixes)
+
+1.7.1 (2016-06-03)
+------------------
+
+- Fix bug on download of a security context's trusted root certificate
+
 1.7.0 (2016-06-03)
 ------------------
 
