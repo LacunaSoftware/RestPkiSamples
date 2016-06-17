@@ -9,7 +9,7 @@
  */
 
 // It is up to your application's business logic to determine which documents will compose the batch
-$documentsIds = array_map("strval", range(1,30));
+$documentsIds = array_map( function($id) { return sprintf("%02d", $id); }, range(1,30) );
 
 ?>
 <!DOCTYPE html>
