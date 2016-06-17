@@ -24,10 +24,12 @@ $documentsIds = array_map( function($id) { return sprintf("%02d", $id); }, range
 <?php include 'menu.php' // The top menu, this can be removed entirely ?>
 
 <div class="container">
+
+    <?php // Messages about the signature process will be rendered in here ?>
     <div id="messagesPanel"></div>
+
     <h2>Batch Signature</h2>
 
-    <?php // notice that we'll post to different PHP files ?>
     <form id="signForm" method="POST">
 
 
@@ -55,7 +57,7 @@ $documentsIds = array_map( function($id) { return sprintf("%02d", $id); }, range
         <?php
         // Action buttons. Notice that the "Sign File" button is NOT a submit button. When the user clicks the button,
         // we must first use the Web PKI component to perform the client-side computation necessary and only when
-        // that computation is finished we'll submit the form programmatically (see javascript below).
+        // that computation is finished we'll submit the form programmatically (see batch-signature-form.js).
         ?>
         <button id="signButton" type="button" class="btn btn-primary">Sign Batch</button>
         <button id="refreshButton" type="button" class="btn btn-default">Refresh Certificates</button>
@@ -79,8 +81,8 @@ $documentsIds = array_map( function($id) { return sprintf("%02d", $id); }, range
 <script>
     $(document).ready(function () {
         // Once the page is ready, we call the init() function on the javascript code (see batch-signature-form.js)
-        batchSignatureForm.init({                    // token acquired from REST PKI
-            documentsIds: <?= json_encode($documentsIds); ?>, // documents' ids
+        batchSignatureForm.init({                       // token acquired from REST PKI
+            documentsIds: <?= json_encode($documentsIds); ?>, // ids of documents
             certificateSelect: $('#certificateSelect'), // the select element (combo box) to list the certificates
             refreshButton: $('#refreshButton'),         // the "refresh" button
             signButton: $('#signButton'),               // the button that initiates the operation

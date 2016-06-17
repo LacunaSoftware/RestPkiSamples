@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file receives the token, that identifies this signature process. We'll call REST PKI to 
+ * This file receives the token, that identifies the signature process. We'll call REST PKI to
  * complete this signature.
  */
 
@@ -14,7 +14,7 @@ require_once 'util.php';
 
 use Lacuna\PadesSignatureFinisher;
 
-// Get the token for this signature (rendered in a hidden input field, see pades-signature.php)
+// Get the token for this signature (received from the post call, see batch-signature-form.php)
 $token = $_POST['token'];
 
 // Instantiate the PadesSignatureFinisher class, responsible for completing the signature process
@@ -32,6 +32,7 @@ $signerCert = $signatureFinisher->getCertificate();
 
 // At this point, you'd typically store the signed PDF on your database. For demonstration purposes, we'll
 // store the PDF on a temporary folder publicly accessible and render a link to it (see batch-signature-form.js).
+
 $filename = uniqid() . ".pdf";
 createAppData(); // make sure the "app-data" folder exists (util.php)
 file_put_contents("app-data/{$filename}", $signedPdf);
