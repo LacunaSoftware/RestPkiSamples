@@ -66,14 +66,6 @@ var batchSignatureForm = (function() {
     var batchDocIds = null;
 
     // -------------------------------------------------------------------------------------------------
-    // Function that converts an id to a name of a sample file
-    // -------------------------------------------------------------------------------------------------
-    function convertIdToSampleName(id) {
-        var id_under_ten = (((parseInt(id) - 1) % 10) + 1);
-        return id_under_ten < 10 ? '0' + id_under_ten.toString() : id_under_ten.toString();
-    }
-
-    // -------------------------------------------------------------------------------------------------
     // Function called once the page is loaded
     // -------------------------------------------------------------------------------------------------
     function init(args) {
@@ -93,10 +85,9 @@ var batchSignatureForm = (function() {
         var docList = $('#docList');
         for (var i = 0; i < batchDocIds.length; i++) {
             var docId = batchDocIds[i];
-            var docId_num = convertIdToSampleName(batchDocIds[i]);
             docList.append(
                 $('<li />').append(
-                    $('<a />').text('Document ' + docId).attr('href', "content/" + docId_num + ".pdf")
+                    $('<a />').text('Document ' + docId).attr('href', "content/" + docId + ".pdf")
                 )
             );
         }
