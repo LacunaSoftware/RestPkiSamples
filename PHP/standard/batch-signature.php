@@ -81,7 +81,7 @@ $documentsIds = array_map( function($id) { return sprintf("%02d", $id); }, range
 <script>
     $(document).ready(function () {
         // Once the page is ready, we call the init() function on the javascript code (see batch-signature-form.js)
-        batchSignatureForm.init({                       // token acquired from REST PKI
+        batchSignatureForm.init({
             documentsIds: <?= json_encode($documentsIds); ?>, // ids of documents
             certificateSelect: $('#certificateSelect'), // the select element (combo box) to list the certificates
             refreshButton: $('#refreshButton'),         // the "refresh" button

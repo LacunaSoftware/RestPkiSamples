@@ -3,8 +3,9 @@
 // an example, feel free to alter it to meet your application's needs.
 // -----------------------------------------------------------------------------------------------------
 var batchSignatureForm = (function() {
-    // The Javascript class "Queue" defined here helps to process the documents in the batch. You don't necessarily need to
-    // understand this code, only how to use it (see the usage below on the function startBatch)
+
+    // The Javascript class "Queue" defined here helps to process the documents in the batch. You don't necessarily need
+    // to understand this code, only how to use it (see the usage below on the function startBatch)
     (function () {
         window.Queue = function () {
             this.items = [];
@@ -191,7 +192,7 @@ var batchSignatureForm = (function() {
 
          startQueue                              performQueue                               completeQueue
          -------------                            -------------                              -------------
-         XXXXXXX  ->  (startSignature)  ->             XX  ->  (performSignature)  ->            XXX  ->  (completeSignature)
+         XXXXXXX        ->  (startSignature)  ->             XX  ->  (performSignature)  ->            XXX  ->  (completeSignature)
          -------------         2 threads          -------------          2 threads           -------------           2 threads
          */
         startQueue.process(startSignature, { threads: 2, output: performQueue });

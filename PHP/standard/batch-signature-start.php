@@ -1,8 +1,9 @@
 <?php
 
 /*
- * This file initiates a PAdES signature using REST PKI and returns a token, that identifies this
- * signature process, to be used in the next signature steps (see batch-signature-form.js).
+ * This file is called asynchronously via AJAX by the batch signature page for each document being signed. It receives
+ * the ID of the document and initiates a PAdES signature using REST PKI and returns a JSON with the token, which
+ * identifies this signature process, to be used in the next signature steps (see batch-signature-form.js).
  */
 
 // The file RestPki.php contains the helper classes to call the REST PKI API
@@ -97,7 +98,7 @@ function getVisualRepresentationPosition($sampleNumber) {
     }
 }
 
-// Get the document id for this signature (received from the post call, see batch-signature-form.js)
+// Get the document id for this signature (received from the POST call, see batch-signature-form.js)
 $id = $_POST['id'];
 
 // Instantiate the PadesSignatureStarter class, responsible for receiving the signature elements and start the
