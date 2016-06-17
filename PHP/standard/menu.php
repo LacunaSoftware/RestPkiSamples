@@ -33,6 +33,12 @@
 						<li><a href="xml-element-signature.php">XML element signature</a></li>
 					</ul>
 				</li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Batch signature <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="batch-signature.php">Simple batch signature</a></li>
+					</ul>
+				</li>
 			</ul>
 		</div><!--/.nav-collapse -->
 	</div>
