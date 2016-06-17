@@ -99,10 +99,10 @@ function getVisualRepresentationPosition($sampleNumber) {
     }
 }
 
-// Get the document id for this signature (received by a post call, see batch-signature-form.js)
+// Get the document id for this signature (received from the post call, see batch-signature-form.js)
 $id = $_POST['id'];
 
-// Get an instance of the PadesSignatureStarter class, responsible for receiving the signature elements and start the
+// Instantiate the PadesSignatureStarter class, responsible for receiving the signature elements and start the
 // signature process
 $signatureStarter = new PadesSignatureStarter(getRestPkiClient());
 

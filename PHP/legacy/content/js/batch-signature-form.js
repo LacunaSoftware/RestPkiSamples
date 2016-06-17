@@ -59,17 +59,15 @@ var batchSignatureForm = (function() {
     var startQueue = null;
     var performQueue = null;
     var completeQueue = null;
+    var batchDocIds = null;
 
     // Create an instance of the LacunaWebPKI object
     var pki = new LacunaWebPKI();
-    var selectElement = null;
-    var batchDocIds = null;
 
     // -------------------------------------------------------------------------------------------------
     // Function called once the page is loaded
     // -------------------------------------------------------------------------------------------------
     function init(args) {
-        selectElement = args.form;
 
         // Receive the documents ids
         batchDocIds = args.documentsIds;
@@ -303,7 +301,7 @@ var batchSignatureForm = (function() {
     }
 
     // -------------------------------------------------------------------------------------------------
-    // Function that renders a documument as completed successfully
+    // Function that renders a document as completed successfully
     // -------------------------------------------------------------------------------------------------
     function renderSuccess(step) {
         var docLi = $('#docList li').eq(step.index);
@@ -319,7 +317,7 @@ var batchSignatureForm = (function() {
     }
 
     // -------------------------------------------------------------------------------------------------
-    // Function that renders a documument as failed
+    // Function that renders a document as failed
     // -------------------------------------------------------------------------------------------------
     function renderFail(step, error) {
         addAlert('danger', 'An error has occurred while signing Document ' + step.docId + ': ' + error);
