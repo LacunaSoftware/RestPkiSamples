@@ -1,8 +1,9 @@
 <?php
 
 /*
- * This file receives the token, that identifies the signature process. We'll call REST PKI to 
- * complete this signature.
+ * This file is called asynchronously via AJAX by the batch signature page for each document being signed. It receives
+ * the token, that identifies the signature process. We'll call REST PKI to complete this signature and return a JSON
+ * with the saved filename so that the page can render a link to it.
  */
 
 // The file RestPkiLegacy.php contains the helper classes to call the REST PKI API for PHP 5.3+. Notice: if you're using
