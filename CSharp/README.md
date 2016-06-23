@@ -1,7 +1,7 @@
 REST PKI C# Samples
 ===================
 
-This folder contains web applications written in Java that show how to use the
+This folder contains web applications written in C# that show how to use the
 [REST PKI service](https://pki.rest/).
 
 For other languages, please visit the [project root](https://github.com/LacunaSoftware/RestPkiSamples).
