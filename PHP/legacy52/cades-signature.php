@@ -11,24 +11,23 @@
  * 3. Co-signature of a previously signed CMS    : "cmsfile" filled
  */
 
-// The file RestPkiLegacy.php contains the helper classes to call the REST PKI API for PHP 5.3+. Notice: if you're using
-// PHP version 5.5 or greater, please use one of the other samples, which make better use of the extended capabilities
-// of the newer versions of PHP - https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP
-require_once 'RestPkiLegacy.php';
+// The file RestPkiLegacy52.php contains the helper classes to call the REST PKI API for PHP 5.2+. Notice: if you're
+// using PHP version 5.3 or greater, please use one of the other samples, which make better use of the extended
+// capabilities of the newer versions of PHP - https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP
+require_once 'RestPkiLegacy52.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
-// initialized with the API access token
+// The file util.php contains the function getRestPkiClient(), which gives us an instance of the LacunaRestPkiClient
+// class initialized with the API access token
 require_once 'util.php';
 
-use Lacuna\CadesSignatureStarter;
-use Lacuna\StandardSignaturePolicies;
 
 $userfile = isset($_GET['userfile']) ? $_GET['userfile'] : null;
 $cmsfile = isset($_GET['cmsfile']) ? $_GET['cmsfile'] : null;
 
-// Instantiate the CadesSignatureStarter class, responsible for receiving the signature elements and start the signature
-// process
-$signatureStarter = new CadesSignatureStarter(getRestPkiClient());
+// Instantiate the LacunaCadesSignatureStarter class, responsible for receiving the signature elements and start the
+// signature process
+$signatureStarter = new LacunaCadesSignatureStarter(getRestPkiClient());
+
 
 if (!empty($userfile)) {
 
@@ -61,10 +60,10 @@ if (!empty($userfile)) {
 }
 
 // Set the signature policy
-$signatureStarter->setSignaturePolicy(StandardSignaturePolicies::CADES_ICPBR_ADR_BASICA);
-
+$signatureStarter->setSignaturePolicy(LacunaStandardSignaturePolicies::CADES_ICPBR_ADR_BASICA);
 // Optionally, set a SecurityContext to be used to determine trust in the certificate chain
-//$signatureStarter->setSecurityContext(\Lacuna\StandardSecurityContexts::PKI_BRAZIL);
+//$signatureStarter->setSecurityContext(LacunaStandardSecurityContexts::PKI_BRAZIL);
+
 // Note: Depending on the signature policy chosen above, setting the security context may be mandatory (this is not
 // the case for ICP-Brasil policies, which will automatically use the PKI_BRAZIL security context if none is passed)
 
@@ -80,6 +79,7 @@ $signatureStarter->setEncapsulateContent(true);
 // signWithRestPki() method on the Web PKI component (see javascript below) and also to complete the signature after
 // the form is submitted (see file pades-signature-action.php). This should not be mistaken with the API access token.
 $token = $signatureStarter->startWithWebPki();
+
 
 // The token acquired above can only be used for a single signature attempt. In order to retry the signature it is
 // necessary to get a new token. This can be a problem if the user uses the back button of the browser, since the

@@ -92,7 +92,7 @@ var batchSignatureForm = (function() {
         }
 
         // Call the init() method on the LacunaWebPKI object, passing a callback for when
-        // the component is ready to be used and another to be called when an error occurrs
+        // the component is ready to be used and another to be called when an error occurs
         // on any of the subsequent operations. For more information, see:
         // https://webpki.lacunasoftware.com/#/Documentation#coding-the-first-lines
         // http://webpki.lacunasoftware.com/Help/classes/LacunaWebPKI.html#method_init
@@ -269,9 +269,9 @@ var batchSignatureForm = (function() {
     function completeSignature(step, done) {
         // Call the server asynchronously to notify that the signature has been performed
         $.ajax({
-            url: 'batch-signature-complete.php',
+            url: 'batch-signature-complete.php', // The signature process token is guaranteed to be URL-safe
             method: 'POST',
-            data:  "token=" + step.token, // The signature process token is guaranteed to be URL-safe
+            data: 'token=' + step.token,
             dataType: 'json',
             success: function (filename) {
                 step.filename = filename;

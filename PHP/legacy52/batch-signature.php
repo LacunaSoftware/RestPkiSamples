@@ -9,7 +9,10 @@
  */
 
 // It is up to your application's business logic to determine which documents will compose the batch
-$documentsIds = array_map( function($id) { return sprintf("%02d", $id); }, range(1,30) );
+function int2digitsString($id) {
+    return sprintf("%02d", $id);
+}
+$documentsIds = array_map('int2digitsString', range(1,30) );
 
 ?>
 <!DOCTYPE html>
@@ -85,7 +88,7 @@ $documentsIds = array_map( function($id) { return sprintf("%02d", $id); }, range
             documentsIds: <?php echo json_encode($documentsIds); ?>, // ids of documents
             certificateSelect: $('#certificateSelect'), // the select element (combo box) to list the certificates
             refreshButton: $('#refreshButton'),         // the "refresh" button
-            signButton: $('#signButton'),               // the button that initiates the operation
+            signButton: $('#signButton')               // the button that initiates the operation
         });
     });
 </script>

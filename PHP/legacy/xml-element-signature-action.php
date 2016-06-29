@@ -4,7 +4,7 @@
  * This file receives the form submission from xml-element-signature.php. We'll call REST PKI to complete the signature.
  */
 
-// The file RestPkiLegacy.php contains the helper classes to call the REST PKI API
+// The file RestPkiLegacy52.php contains the helper classes to call the REST PKI API
 require_once 'RestPkiLegacy.php';
 
 // The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class

@@ -4,35 +4,32 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "23a8e36f68296772060beb439f615853",
-    "content-hash": "c644e8e0b6b35a5ed33a5a3f1cfe5b8d",
+    "hash": "f338ce0fd190652adf75c4484a8123ba",
+    "content-hash": "14327c1b442848a7293e3c72b9eab694",
     "packages": [
         {
-            "name": "nategood/httpful",
-            "version": "0.2.19",
+            "name": "educoder/pest",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/nategood/httpful.git",
-                "reference": "bd73f89d34d8f879c54ac46eb94b0f7be1d00820"
+                "url": "https://github.com/educoder/pest.git",
+                "reference": "7c4d24d6aafc4ebac711c73cc8797d9b1779525b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nategood/httpful/zipball/bd73f89d34d8f879c54ac46eb94b0f7be1d00820",
-                "reference": "bd73f89d34d8f879c54ac46eb94b0f7be1d00820",
+                "url": "https://api.github.com/repos/educoder/pest/zipball/7c4d24d6aafc4ebac711c73cc8797d9b1779525b",
+                "reference": "7c4d24d6aafc4ebac711c73cc8797d9b1779525b",
                 "shasum": ""
             },
             "require": {
-                "ext-curl": "*",
-                "php": ">=5.3"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "*"
+                "lib-curl": "*",
+                "php": ">=5.2"
             },
             "type": "library",
             "autoload": {
-                "psr-0": {
-                    "Httpful": "src/"
-                }
+                "classmap": [
+                    ""
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -40,22 +37,17 @@
             ],
             "authors": [
                 {
-                    "name": "Nate Good",
-                    "email": "me@nategood.com",
-                    "homepage": "http://nategood.com"
+                    "name": "Matt Zukowski",
+                    "email": "matt@zukowski.ca"
+                },
+                {
+                    "name": "Donald Sipe",
+                    "email": "donald.sipe@gmail.com"
                 }
             ],
-            "description": "A Readable, Chainable, REST friendly, PHP HTTP Client",
-            "homepage": "http://github.com/nategood/httpful",
-            "keywords": [
-                "api",
-                "curl",
-                "http",
-                "requests",
-                "rest",
-                "restful"
-            ],
-            "time": "2015-03-08 15:22:23"
+            "description": "A proper REST client for PHP.",
+            "homepage": "https://github.com/educoder/pest",
+            "time": "2013-11-17 12:58:01"
         }
     ],
     "packages-dev": [],

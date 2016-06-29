@@ -8,19 +8,14 @@
  * is that, when the file is uploaded by the user, the page is called with a URL argument named "userfile".
  */
 
-// The file RestPkiLegacy.php contains the helper classes to call the REST PKI API for PHP 5.3+. Notice: if you're using
-// PHP version 5.5 or greater, please use one of the other samples, which make better use of the extended capabilities
-// of the newer versions of PHP - https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP
-require_once 'RestPkiLegacy.php';
+// The file RestPkiLegacy52.php contains the helper classes to call the REST PKI API for PHP 5.2+. Notice: if you're
+// using PHP version 5.3 or greater, please use one of the other samples, which make better use of the extended
+// capabilities of the newer versions of PHP - https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP
+require_once 'RestPkiLegacy52.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
-// initialized with the API access token
+// The file util.php contains the function getRestPkiClient(), which gives us an instance of the LacunaRestPkiClient
+// class initialized with the API access token
 require_once 'util.php';
-
-use Lacuna\PadesSignatureStarter;
-use Lacuna\PadesVisualPositioningPresets;
-use Lacuna\StandardSecurityContexts;
-use Lacuna\StandardSignaturePolicies;
 
 // This function is called below. It contains examples of signature visual representation positionings. This code is
 // only in a separate function in order to organize the various examples, you can pick the one that best suits your
@@ -32,11 +27,11 @@ function getVisualRepresentationPosition($sampleNumber) {
 		case 1:
 			// Example #1: automatic positioning on footnote. This will insert the signature, and future signatures,
 			// ordered as a footnote of the last page of the document
-			return PadesVisualPositioningPresets::getFootnote(getRestPkiClient());
+			return LacunaPadesVisualPositioningPresets::getFootnote(getRestPkiClient());
 
 		case 2:
 			// Example #2: get the footnote positioning preset and customize it
-			$visualPosition = PadesVisualPositioningPresets::getFootnote(getRestPkiClient());
+			$visualPosition = LacunaPadesVisualPositioningPresets::getFootnote(getRestPkiClient());
 			$visualPosition->auto->container->left = 2.54;
 			$visualPosition->auto->container->bottom = 2.54;
 			$visualPosition->auto->container->right = 2.54;
@@ -45,11 +40,11 @@ function getVisualRepresentationPosition($sampleNumber) {
 		case 3:
 			// Example #3: automatic positioning on new page. This will insert the signature, and future signatures,
 			// in a new page appended to the end of the document.
-			return PadesVisualPositioningPresets::getNewPage(getRestPkiClient());
+			return LacunaPadesVisualPositioningPresets::getNewPage(getRestPkiClient());
 
 		case 4:
 			// Example #4: get the "new page" positioning preset and customize it
-			$visualPosition = PadesVisualPositioningPresets::getNewPage(getRestPkiClient());
+			$visualPosition = LacunaPadesVisualPositioningPresets::getNewPage(getRestPkiClient());
 			$visualPosition->auto->container->left = 2.54;
 			$visualPosition->auto->container->top = 2.54;
 			$visualPosition->auto->container->right = 2.54;
@@ -102,10 +97,9 @@ function getVisualRepresentationPosition($sampleNumber) {
 	}
 }
 
-// Instantiate the PadesSignatureStarter class, responsible for receiving the signature elements and start the signature
-// process
-$signatureStarter = new PadesSignatureStarter(getRestPkiClient());
-
+// Instantiate the LacunaPadesSignatureStarter class, responsible for receiving the signature elements and start the
+// signature process
+$signatureStarter = new LacunaPadesSignatureStarter(getRestPkiClient());
 // If the user was redirected here by upload.php (signature with file uploaded by user), the "userfile" URL argument
 // will contain the filename under the "app-data" folder. Otherwise (signature with server file), we'll sign a sample
 // document.
@@ -115,14 +109,13 @@ if (!empty($userfile)) {
 } else {
 	$signatureStarter->setPdfToSignPath('content/SampleDocument.pdf');
 }
-
 // Set the signature policy
-$signatureStarter->setSignaturePolicy(StandardSignaturePolicies::PADES_BASIC);
+$signatureStarter->setSignaturePolicy(LacunaStandardSignaturePolicies::PADES_BASIC);
 
 // Set a SecurityContext to be used to determine trust in the certificate chain
-$signatureStarter->setSecurityContext(StandardSecurityContexts::PKI_BRAZIL);
+$signatureStarter->setSecurityContext(LacunaStandardSecurityContexts::PKI_BRAZIL);
 // Note: By changing the SecurityContext above you can accept only certificates from a certain PKI, for instance,
-// ICP-Brasil (\Lacuna\StandardSecurityContexts::PKI_BRAZIL).
+// ICP-Brasil (LacunaStandardSecurityContexts::PKI_BRAZIL).
 
 // Set the visual representation for the signature
 $signatureStarter->setVisualRepresentation(array(
@@ -170,6 +163,7 @@ $signatureStarter->setVisualRepresentation(array(
 // signWithRestPki() method on the Web PKI component (see javascript below) and also to complete the signature after
 // the form is submitted (see file pades-signature-action.php). This should not be mistaken with the API access token.
 $token = $signatureStarter->startWithWebPki();
+
 
 // The token acquired above can only be used for a single signature attempt. In order to retry the signature it is
 // necessary to get a new token. This can be a problem if the user uses the back button of the browser, since the
