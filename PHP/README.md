@@ -9,6 +9,12 @@ For other languages, please visit the [project root](https://github.com/LacunaSo
 To run the samples, you will need an **API access token**. If you don't have one, register on the
 [REST PKI website](https://pki.rest/) and generate a token.
 
+You should choose between one of the sample projects in this folder based on your PHP version:
+
+* PHP 5.5+: [Standard sample](#standard-sample)
+* PHP 5.3 and 5.4: [Legacy sample for PHP 5.3 and 5.4](#legacy-sample-for-php-53-and-54)
+* PHP 5.2: [Legacy sample for PHP 5.2](#legacy-sample-for-php-52)
+
 Standard sample
 ---------------
 
@@ -25,14 +31,22 @@ The standard PHP sample can be found in the folder [standard](standard/). To run
   
 5. Open the index.php file on the browser on the corresponding URL (depending on the previous step)
 
-Notice: the standard sample requires **PHP 5.5+**. If you're using PHP 5.3 or 5.4, please see the
-[Legacy sample](#legacy-sample) instead.
+Notice: the standard sample requires **PHP 5.5+**. If you're using another version of PHP, please see
+below.
 
-Legacy sample
--------------
+Legacy sample for PHP 5.3 and 5.4
+---------------------------------
 
 The folder [legacy](legacy/) contains a sample which will run in PHP 5.3+. This should only be used
-if you cannot use PHP 5.5+.
+if you're using PHP version 5.3 or 5.4.
+
+The steps to execute the sample are the same as with the standard sample.
+
+Legacy sample for PHP 5.2
+---------------------------------
+
+The folder [legacy52](legacy52/) contains a sample which will run in PHP 5.2. This should only be used
+if you're using PHP version 5.2.
 
 The steps to execute the sample are the same as with the standard sample.
 
@@ -40,8 +54,8 @@ Dependencies
 ------------
 
 The sample projects depend on the [Guzzle](http://guzzlephp.org/) library, which in turn requires **PHP 5.5** or
-greater (with the exception of the Legacy sample, which depends on the Httpful library, which requires
-only PHP 5.3+).
+greater (with the exception of the legacy samples, which depends on other older libraries that still support
+older versions of PHP).
 
 This dependency is specified in the file `composer.json`:
 
