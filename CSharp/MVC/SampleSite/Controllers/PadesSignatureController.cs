@@ -92,7 +92,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 			base.SetNoCacheHeaders();
 
 			// Render the signature page with the token obtained from REST PKI
-			return View(new PadesSignatureModel() {
+			return View(new Models.PadesSignatureModel() {
 				Token = token,
 				UserFile = userfile
 			});
@@ -102,7 +102,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 		 * This action receives the form submission from the view. We'll call REST PKI to complete the signature.
 		 */
 		[HttpPost]
-		public ActionResult Index(PadesSignatureModel model) {
+		public ActionResult Index(Models.PadesSignatureModel model) {
 
 			// Get an instance of the PadesSignatureFinisher class, responsible for completing the signature process
 			var signatureFinisher = Util.GetRestPkiClient().GetPadesSignatureFinisher();
