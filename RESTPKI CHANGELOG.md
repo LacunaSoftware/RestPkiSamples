@@ -27,6 +27,7 @@ Lacuna Rest PKI change log
 	- Microsoft Azure Blob Storage
 	- Amazon S3
 - Add support for admins to generate access tokens for other users
+- Add support for admins to view other users' events ("history")
 - Add support for ICP-Brasil certificate fields "RG" and "OAB"
 - Update Lacuna PKI SDK to 1.12.1, thus:
 	- Add support for certificates with rare alternative SHA-1 with RSA signature algorithm OID (1.3.14.3.2.29)
