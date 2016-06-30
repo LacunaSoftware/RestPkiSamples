@@ -9,11 +9,11 @@ For other languages, please visit the [project root](https://github.com/LacunaSo
 To run the samples, you will need an **API access token**. If you don't have one, register on the
 [REST PKI website](https://pki.rest/) and generate a token.
 
-You should between one of the sample projects in this folder based on your PHP version:
+You should choose between one of the sample projects in this folder based on your PHP version:
 
-* PHP 5.5+: Standard sample
-* PHP 5.3 and 5.4: Legacy sample for PHP 5.3 and 5.4
-* PHP 5.2: Legacy sample for PHP 5.2
+* PHP 5.5+: [Standard sample](#standard-sample)
+* PHP 5.3 and 5.4: [Legacy sample for PHP 5.3 and 5.4](#legacy-sample-for-php-53-and-54)
+* PHP 5.2: [Legacy sample for PHP 5.2](#legacy-sample-for-php-52)
 
 Standard sample
 ---------------
@@ -54,8 +54,8 @@ Dependencies
 ------------
 
 The sample projects depend on the [Guzzle](http://guzzlephp.org/) library, which in turn requires **PHP 5.5** or
-greater (with the exception of the Legacy sample, which depends on the Httpful library, which requires
-only PHP 5.3+).
+greater (with the exception of the legacy samples, which depends on other older libraries that still support
+older versions of PHP).
 
 This dependency is specified in the file `composer.json`:
 
