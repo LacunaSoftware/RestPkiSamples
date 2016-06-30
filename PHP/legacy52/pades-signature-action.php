@@ -9,15 +9,15 @@
 // capabilities of the newer versions of PHP - https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP
 require_once 'RestPkiLegacy52.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the LacunaRestPkiClient
+// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient
 // class initialized with the API access token
 require_once 'util.php';
 
 // Get the token for this signature (rendered in a hidden input field, see pades-signature.php)
 $token = $_POST['token'];
 
-// Instantiate the LacunaPadesSignatureFinisher class, responsible for completing the signature process
-$signatureFinisher = new LacunaPadesSignatureFinisher(getRestPkiClient());
+// Instantiate the RestPkiPadesSignatureFinisher class, responsible for completing the signature process
+$signatureFinisher = new RestPkiPadesSignatureFinisher(getRestPkiClient());
 
 // Set the token
 $signatureFinisher->setToken($token);

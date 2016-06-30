@@ -20,7 +20,7 @@ include 'vendor/educoder/pest/PestJSON.php';
 include 'vendor/educoder/pest/PestXML.php';
 
 
-class LacunaRestPkiClient {
+class RestPkiClient {
 
 	private $endpointUrl;
 	private $accessToken;
@@ -72,10 +72,10 @@ class LacunaRestPkiClient {
 				$response = $httpResponse->body;
 				if ($statusCode == 422 && !empty($response->code)) {
 					if ($response->code == "ValidationError") {
-						$vr = new LacunaValidationResults($response->validationResults);
-						$ex = new LacunaValidationException($verb, $url, $vr);
+						$vr = new RestPkiValidationResults($response->validationResults);
+						$ex = new RestPkiValidationException($verb, $url, $vr);
 					} else {
-						$ex = new LacunaRestPkiException($verb, $url, $response->code, $response->detail);
+						$ex = new RestPkiException($verb, $url, $response->code, $response->detail);
 					}
 				} else {
 					$ex = new LacunaRestErrorException($verb, $url, $statusCode, $response->message);
@@ -88,7 +88,7 @@ class LacunaRestPkiClient {
 	}
 
 	public function getAuthentication() {
-		return new LacunaAuthentication($this);
+		return new RestPkiAuthentication($this);
 	}
 }
 
@@ -157,7 +157,7 @@ class LacunaRestErrorException extends LacunaRestException {
 	}
 }
 
-class LacunaRestPkiException extends LacunaRestException {
+class RestPkiException extends LacunaRestException {
 
 	private $errorCode;
 	private $detail;
@@ -181,12 +181,12 @@ class LacunaRestPkiException extends LacunaRestException {
 	}
 }
 
-class LacunaValidationException extends LacunaRestException {
+class RestPkiValidationException extends LacunaRestException {
 
-	/** @var LacunaValidationResults */
+	/** @var RestPkiValidationResults */
 	private $validationResults;
 
-	public function __construct($verb, $url, LacunaValidationResults $validationResults) {
+	public function __construct($verb, $url, RestPkiValidationResults $validationResults) {
 		parent::__construct($validationResults->__toString(), $verb, $url);
 		$this->validationResults = $validationResults;
 	}
@@ -196,9 +196,9 @@ class LacunaValidationException extends LacunaRestException {
 	}
 }
 
-class LacunaAuthentication {
+class RestPkiAuthentication {
 
-	/** @var LacunaRestPkiClient */
+	/** @var RestPkiClient */
 	private $restPkiClient;
 
 	private $certificate;
@@ -220,7 +220,7 @@ class LacunaAuthentication {
 		$response = $this->restPkiClient->post("Api/Authentications/$token/Finalize", NULL);
 		$this->certificate = $response->certificate;
 		$this->done = true;
-		return new LacunaValidationResults($response->validationResults);
+		return new RestPkiValidationResults($response->validationResults);
 	}
 
 	public function getCertificate() {
@@ -232,9 +232,9 @@ class LacunaAuthentication {
 
 }
 
-class LacunaPadesSignatureStarter {
+class RestPkiPadesSignatureStarter {
 
-	/** @var LacunaRestPkiClient */
+	/** @var RestPkiClient */
 	private $restPkiClient;
 	private $pdfContent;
 	private $securityContextId;
@@ -285,9 +285,9 @@ class LacunaPadesSignatureStarter {
 
 }
 
-class LacunaPadesSignatureFinisher {
+class RestPkiPadesSignatureFinisher {
 
-	/** @var LacunaRestPkiClient */
+	/** @var RestPkiClient */
 	private $restPkiClient;
 	private $token;
 
@@ -333,9 +333,9 @@ class LacunaPadesSignatureFinisher {
 	}
 }
 
-class LacunaCadesSignatureStarter {
+class RestPkiCadesSignatureStarter {
 
-	/** @var LacunaRestPkiClient */
+	/** @var RestPkiClient */
 	private $restPkiClient;
 	private $contentToSign;
 	private $securityContextId;
@@ -405,9 +405,9 @@ class LacunaCadesSignatureStarter {
 
 }
 
-class LacunaCadesSignatureFinisher {
+class RestPkiCadesSignatureFinisher {
 
-	/** @var LacunaRestPkiClient */
+	/** @var RestPkiClient */
 	private $restPkiClient;
 	private $token;
 
@@ -462,9 +462,9 @@ class LacunaCadesSignatureFinisher {
 	}
 }
 
-abstract class LacunaXmlSignatureStarter {
+abstract class RestPkiXmlSignatureStarter {
 
-	/** @var LacunaRestPkiClient */
+	/** @var RestPkiClient */
 	protected $restPkiClient;
 	protected $xmlContent;
 	protected $securityContextId;
@@ -541,10 +541,10 @@ abstract class LacunaXmlSignatureStarter {
 	public abstract function startWithWebPki();
 }
 
-class LacunaXmlElementSignatureStarter extends LacunaXmlSignatureStarter {
+class RestPkiXmlElementSignatureStarter extends RestPkiXmlSignatureStarter {
 
 	private $toSignElementId;
-	/** @var LacunaXmlIdResolutionTable */
+	/** @var RestPkiXmlIdResolutionTable */
 	private $idResolutionTable;
 
 	public function __construct($restPkiClient) {
@@ -555,7 +555,7 @@ class LacunaXmlElementSignatureStarter extends LacunaXmlSignatureStarter {
 		$this->toSignElementId = $toSignElementId;
 	}
 
-	public function setIdResolutionTable(LacunaXmlIdResolutionTable $idResolutionTable) {
+	public function setIdResolutionTable(RestPkiXmlIdResolutionTable $idResolutionTable) {
 		$this->idResolutionTable = $idResolutionTable;
 	}
 
@@ -580,7 +580,7 @@ class LacunaXmlElementSignatureStarter extends LacunaXmlSignatureStarter {
 	}
 }
 
-class LacunaFullXmlSignatureStarter extends LacunaXmlSignatureStarter {
+class RestPkiFullXmlSignatureStarter extends RestPkiXmlSignatureStarter {
 
 	public function __construct($restPkiClient) {
 		parent::__construct($restPkiClient);
@@ -600,9 +600,9 @@ class LacunaFullXmlSignatureStarter extends LacunaXmlSignatureStarter {
 	}
 }
 
-class LacunaXmlSignatureFinisher {
+class RestPkiXmlSignatureFinisher {
 
-	/** @var LacunaRestPkiClient */
+	/** @var RestPkiClient */
 	private $restPkiClient;
 	private $token;
 
@@ -648,13 +648,13 @@ class LacunaXmlSignatureFinisher {
 	}
 }
 
-class LacunaStandardSecurityContexts {
+class RestPkiStandardSecurityContexts {
 	const PKI_BRAZIL = '201856ce-273c-4058-a872-8937bd547d36';
 	const PKI_ITALY = 'c438b17e-4862-446b-86ad-6f85734f0bfe';
 	const WINDOWS_SERVER = '3881384c-a54d-45c5-bbe9-976b674f5ec7';
 }
 
-class LacunaStandardSignaturePolicies {
+class RestPkiStandardSignaturePolicies {
 	const PADES_BASIC = '78d20b33-014d-440e-ad07-929f05d00cdf';
 	const CADES_BES = 'a4522485-c9e5-46c3-950b-0d6e951e17d1';
 	const CADES_ICPBR_ADR_BASICA = '3ddd8001-1672-4eb5-a4a2-6e32b17ddc46';
@@ -668,18 +668,18 @@ class LacunaStandardSignaturePolicies {
 	const XML_ICPBR_ADR_TEMPO = '5aa2e0af-5269-43b0-8d45-f4ef52921f04';
 }
 
-class LacunaXmlInsertionOptions {
+class RestPkiXmlInsertionOptions {
 	const APPEND_CHILD = 'AppendChild';
 	const PREPEND_CHILD = 'PrependChild';
 	const APPEND_SIBLING = 'AppendSibling';
 	const PREPEND_SIBLING = 'PrependSibling';
 }
 
-class LacunaPadesVisualPositioningPresets {
+class RestPkiPadesVisualPositioningPresets {
 
 	private static $cachedPresets = array();
 
-	public static function getFootnote(LacunaRestPkiClient $restPkiClient, $pageNumber = null, $rows = null) {
+	public static function getFootnote(RestPkiClient $restPkiClient, $pageNumber = null, $rows = null) {
 		$urlSegment = 'Footnote';
 		if (!empty($pageNumber)) {
 			$urlSegment .= "?pageNumber=" . $pageNumber;
@@ -690,11 +690,11 @@ class LacunaPadesVisualPositioningPresets {
 		return self::getPreset($restPkiClient, $urlSegment);
 	}
 
-	public static function getNewPage(LacunaRestPkiClient $restPkiClient) {
+	public static function getNewPage(RestPkiClient $restPkiClient) {
 		return self::getPreset($restPkiClient, 'NewPage');
 	}
 
-	private static function getPreset(LacunaRestPkiClient $restPkiClient, $urlSegment) {
+	private static function getPreset(RestPkiClient $restPkiClient, $urlSegment) {
 		if (array_key_exists($urlSegment, self::$cachedPresets)) {
 			return self::$cachedPresets[$urlSegment];
 		}
@@ -704,7 +704,7 @@ class LacunaPadesVisualPositioningPresets {
 	}
 }
 
-class LacunaXmlIdResolutionTable {
+class RestPkiXmlIdResolutionTable {
 
 	private $model;
 
@@ -741,7 +741,7 @@ class LacunaXmlIdResolutionTable {
 	}
 }
 
-class LacunaValidationResults {
+class RestPkiValidationResults {
 
 	private $errors;
 	private $warnings;
@@ -819,7 +819,7 @@ class LacunaValidationResults {
 	private static function convertItems($items) {
 		$converted = array();
 		foreach ($items as $item) {
-			$converted[] = new LacunaValidationItem($item);
+			$converted[] = new RestPkiValidationItem($item);
 		}
 		return $converted;
 	}
@@ -829,7 +829,7 @@ class LacunaValidationResults {
 		$isFirst = true;
 		$tab = str_repeat("\t", $indentationLevel);
 		foreach ($items as $item) {
-			/** @var LacunaValidationItem $item */
+			/** @var RestPkiValidationItem $item */
 			if ($isFirst) {
 				$isFirst = false;
 			} else {
@@ -843,12 +843,12 @@ class LacunaValidationResults {
 
 }
 
-class LacunaValidationItem {
+class RestPkiValidationItem {
 
 	private $type;
 	private $message;
 	private $detail;
-	/** @var LacunaValidationResults */
+	/** @var RestPkiValidationResults */
 	private $innerValidationResults;
 
 	public function __construct($model) {
@@ -856,7 +856,7 @@ class LacunaValidationItem {
 		$this->message = $model->message;
 		$this->detail = $model->detail;
 		if ($model->innerValidationResults !== null) {
-			$this->innerValidationResults = new LacunaValidationResults($model->innerValidationResults);
+			$this->innerValidationResults = new RestPkiValidationResults($model->innerValidationResults);
 		}
 	}
 

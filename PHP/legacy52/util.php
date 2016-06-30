@@ -22,7 +22,7 @@ function getRestPkiClient() {
 	$restPkiUrl = 'http://pki.rest/';
 	//$restPkiUrl = 'https://pki.rest/'; // <--- USE THIS IN PRODUCTION!
 
-	return new LacunaRestPkiClient($restPkiUrl, $restPkiAccessToken);
+	return new RestPkiClient($restPkiUrl, $restPkiAccessToken);
 }
 
 function setNoCacheHeaders() {

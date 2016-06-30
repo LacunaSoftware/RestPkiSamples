@@ -8,13 +8,13 @@
 // The file RestPkiLegacy52.php contains the helper classes to call the REST PKI API
 require_once 'RestPkiLegacy52.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the LacunaRestPkiClient
+// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient
 // class initialized with the API access token
 require_once 'util.php';
 
-// Instantiate the LacunaFullXmlSignatureStarter class, responsible for receiving the signature elements and start the
+// Instantiate the RestPkiFullXmlSignatureStarter class, responsible for receiving the signature elements and start the
 // signature process
-$signatureStarter = new LacunaFullXmlSignatureStarter(getRestPkiClient());
+$signatureStarter = new RestPkiFullXmlSignatureStarter(getRestPkiClient());
 
 // Set the XML to be signed, a sample Brazilian fiscal invoice pre-generated
 $signatureStarter->setXmlToSignPath('content/SampleDocument.xml');
@@ -23,17 +23,17 @@ $signatureStarter->setXmlToSignPath('content/SampleDocument.xml');
 // to the root element (which is most usual with enveloped signatures).
 $signatureStarter->setSignatureElementLocation(
 	'//ls:signaturePlaceholder',
-	LacunaXmlInsertionOptions::APPEND_CHILD,
+	RestPkiXmlInsertionOptions::APPEND_CHILD,
 	array('ls' => 'http://www.lacunasoftware.com/sample')
 );
 
 // Set the signature policy
-$signatureStarter->setSignaturePolicy(LacunaStandardSignaturePolicies::XML_XADES_BES);
+$signatureStarter->setSignaturePolicy(RestPkiStandardSignaturePolicies::XML_XADES_BES);
 
 // Set a SecurityContext to be used to determine trust in the certificate chain
-$signatureStarter->setSecurityContext(LacunaStandardSecurityContexts::PKI_BRAZIL);
+$signatureStarter->setSecurityContext(RestPkiStandardSecurityContexts::PKI_BRAZIL);
 // Note: By changing the SecurityContext above you can accept only certificates from a certain PKI, for instance,
-// ICP-Brasil (LacunaStandardSecurityContexts::PKI_BRAZIL).
+// ICP-Brasil (RestPkiStandardSecurityContexts::PKI_BRAZIL).
 
 // Call the startWithWebPki() method, which initiates the signature. This yields the token, a 43-character
 // case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the

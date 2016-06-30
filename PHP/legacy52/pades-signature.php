@@ -13,7 +13,7 @@
 // capabilities of the newer versions of PHP - https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP
 require_once 'RestPkiLegacy52.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the LacunaRestPkiClient
+// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient
 // class initialized with the API access token
 require_once 'util.php';
 
@@ -27,11 +27,11 @@ function getVisualRepresentationPosition($sampleNumber) {
 		case 1:
 			// Example #1: automatic positioning on footnote. This will insert the signature, and future signatures,
 			// ordered as a footnote of the last page of the document
-			return LacunaPadesVisualPositioningPresets::getFootnote(getRestPkiClient());
+			return RestPkiPadesVisualPositioningPresets::getFootnote(getRestPkiClient());
 
 		case 2:
 			// Example #2: get the footnote positioning preset and customize it
-			$visualPosition = LacunaPadesVisualPositioningPresets::getFootnote(getRestPkiClient());
+			$visualPosition = RestPkiPadesVisualPositioningPresets::getFootnote(getRestPkiClient());
 			$visualPosition->auto->container->left = 2.54;
 			$visualPosition->auto->container->bottom = 2.54;
 			$visualPosition->auto->container->right = 2.54;
@@ -40,11 +40,11 @@ function getVisualRepresentationPosition($sampleNumber) {
 		case 3:
 			// Example #3: automatic positioning on new page. This will insert the signature, and future signatures,
 			// in a new page appended to the end of the document.
-			return LacunaPadesVisualPositioningPresets::getNewPage(getRestPkiClient());
+			return RestPkiPadesVisualPositioningPresets::getNewPage(getRestPkiClient());
 
 		case 4:
 			// Example #4: get the "new page" positioning preset and customize it
-			$visualPosition = LacunaPadesVisualPositioningPresets::getNewPage(getRestPkiClient());
+			$visualPosition = RestPkiPadesVisualPositioningPresets::getNewPage(getRestPkiClient());
 			$visualPosition->auto->container->left = 2.54;
 			$visualPosition->auto->container->top = 2.54;
 			$visualPosition->auto->container->right = 2.54;
@@ -97,9 +97,9 @@ function getVisualRepresentationPosition($sampleNumber) {
 	}
 }
 
-// Instantiate the LacunaPadesSignatureStarter class, responsible for receiving the signature elements and start the
+// Instantiate the RestPkiPadesSignatureStarter class, responsible for receiving the signature elements and start the
 // signature process
-$signatureStarter = new LacunaPadesSignatureStarter(getRestPkiClient());
+$signatureStarter = new RestPkiPadesSignatureStarter(getRestPkiClient());
 // If the user was redirected here by upload.php (signature with file uploaded by user), the "userfile" URL argument
 // will contain the filename under the "app-data" folder. Otherwise (signature with server file), we'll sign a sample
 // document.
@@ -110,12 +110,12 @@ if (!empty($userfile)) {
 	$signatureStarter->setPdfToSignPath('content/SampleDocument.pdf');
 }
 // Set the signature policy
-$signatureStarter->setSignaturePolicy(LacunaStandardSignaturePolicies::PADES_BASIC);
+$signatureStarter->setSignaturePolicy(RestPkiStandardSignaturePolicies::PADES_BASIC);
 
 // Set a SecurityContext to be used to determine trust in the certificate chain
-$signatureStarter->setSecurityContext(LacunaStandardSecurityContexts::PKI_BRAZIL);
+$signatureStarter->setSecurityContext(RestPkiStandardSecurityContexts::PKI_BRAZIL);
 // Note: By changing the SecurityContext above you can accept only certificates from a certain PKI, for instance,
-// ICP-Brasil (LacunaStandardSecurityContexts::PKI_BRAZIL).
+// ICP-Brasil (RestPkiStandardSecurityContexts::PKI_BRAZIL).
 
 // Set the visual representation for the signature
 $signatureStarter->setVisualRepresentation(array(

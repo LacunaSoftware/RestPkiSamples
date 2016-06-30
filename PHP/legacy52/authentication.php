@@ -10,21 +10,21 @@
 // capabilities of the newer versions of PHP - https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP
 require_once 'RestPkiLegacy52.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the LacunaRestPkiClient
+// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient
 // class initialized with the API access token
 require_once 'util.php';
 
-// Get an instance of the LacunaAuthentication class
+// Get an instance of the RestPkiAuthentication class
 $auth = getRestPkiClient()->getAuthentication();
 
 // Call the startWithWebPki() method, which initiates the authentication. This yields the "token", a 22-character
 // case-sensitive URL-safe string, which represents this authentication process. We'll use this value to call the
 // signWithRestPki() method on the Web PKI component (see javascript below) and also to call the completeWithWebPki()
 // method on the file authentication-action.php. This should not be mistaken with the API access token.
-$token = $auth->startWithWebPki(LacunaStandardSecurityContexts::PKI_BRAZIL);
+$token = $auth->startWithWebPki(RestPkiStandardSecurityContexts::PKI_BRAZIL);
 
 // Note: By changing the SecurityContext above you can accept only certificates from a certain PKI,
-// for instance, ICP-Brasil (LacunaStandardSecurityContexts::PKI_BRAZIL).
+// for instance, ICP-Brasil (RestPkiStandardSecurityContexts::PKI_BRAZIL).
 
 // The token acquired above can only be used for a single authentication. In order to retry authenticating it is
 // necessary to get a new token. This can be a problem if the user uses the back button of the browser, since the

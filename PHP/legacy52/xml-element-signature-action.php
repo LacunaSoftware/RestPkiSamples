@@ -7,15 +7,15 @@
 // The file RestPkiLegacy52.php contains the helper classes to call the REST PKI API
 require_once 'RestPkiLegacy52.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the LacunaRestPkiClient
+// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient
 // class initialized with the API access token
 require_once 'util.php';
 
 // Get the token for this signature (rendered in a hidden input field, see xml-element-signature.php)
 $token = $_POST['token'];
 
-// Instantiate the LacunaXmlSignatureFinisher class, responsible for completing the signature process
-$signatureFinisher = new LacunaXmlSignatureFinisher(getRestPkiClient());
+// Instantiate the RestPkiXmlSignatureFinisher class, responsible for completing the signature process
+$signatureFinisher = new RestPkiXmlSignatureFinisher(getRestPkiClient());
 
 // Set the token
 $signatureFinisher->setToken($token);

@@ -16,7 +16,7 @@
 // capabilities of the newer versions of PHP - https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP
 require_once 'RestPkiLegacy52.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the LacunaRestPkiClient
+// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient
 // class initialized with the API access token
 require_once 'util.php';
 
@@ -24,9 +24,9 @@ require_once 'util.php';
 $userfile = isset($_GET['userfile']) ? $_GET['userfile'] : null;
 $cmsfile = isset($_GET['cmsfile']) ? $_GET['cmsfile'] : null;
 
-// Instantiate the LacunaCadesSignatureStarter class, responsible for receiving the signature elements and start the
+// Instantiate the RestPkiCadesSignatureStarter class, responsible for receiving the signature elements and start the
 // signature process
-$signatureStarter = new LacunaCadesSignatureStarter(getRestPkiClient());
+$signatureStarter = new RestPkiCadesSignatureStarter(getRestPkiClient());
 
 
 if (!empty($userfile)) {
@@ -60,9 +60,9 @@ if (!empty($userfile)) {
 }
 
 // Set the signature policy
-$signatureStarter->setSignaturePolicy(LacunaStandardSignaturePolicies::CADES_ICPBR_ADR_BASICA);
+$signatureStarter->setSignaturePolicy(RestPkiStandardSignaturePolicies::CADES_ICPBR_ADR_BASICA);
 // Optionally, set a SecurityContext to be used to determine trust in the certificate chain
-//$signatureStarter->setSecurityContext(LacunaStandardSecurityContexts::PKI_BRAZIL);
+//$signatureStarter->setSecurityContext(RestPkiStandardSecurityContexts::PKI_BRAZIL);
 
 // Note: Depending on the signature policy chosen above, setting the security context may be mandatory (this is not
 // the case for ICP-Brasil policies, which will automatically use the PKI_BRAZIL security context if none is passed)

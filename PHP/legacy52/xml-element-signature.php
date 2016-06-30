@@ -8,13 +8,13 @@
 // The file RestPkiLegacy52.php contains the helper classes to call the REST PKI API
 require_once 'RestPkiLegacy52.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the LacunaRestPkiClient
+// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient
 // class initialized with the API access token
 require_once 'util.php';
 
-// Instantiate the LacunaXmlElementSignatureStarter class, responsible for receiving the signature elements and start
+// Instantiate the RestPkiXmlElementSignatureStarter class, responsible for receiving the signature elements and start
 // the signature process
-$signatureStarter = new LacunaXmlElementSignatureStarter(getRestPkiClient());
+$signatureStarter = new RestPkiXmlElementSignatureStarter(getRestPkiClient());
 
 // Set the XML to be signed, a sample Brazilian fiscal invoice pre-generated
 $signatureStarter->setXmlToSignPath('content/SampleNFe.xml');
@@ -23,11 +23,11 @@ $signatureStarter->setXmlToSignPath('content/SampleNFe.xml');
 $signatureStarter->setToSignElementId('NFe35141214314050000662550010001084271182362300');
 
 // Set the signature policy
-$signatureStarter->setSignaturePolicy(LacunaStandardSignaturePolicies::XML_ICPBR_NFE_PADRAO_NACIONAL);
+$signatureStarter->setSignaturePolicy(RestPkiStandardSignaturePolicies::XML_ICPBR_NFE_PADRAO_NACIONAL);
 
 // Optionally, set a SecurityContext to be used to determine trust in the certificate chain. Since we're using the
 // XML_ICPBR_NFE_PADRAO_NACIONAL policy, the security context will default to PKI Brazil (ICP-Brasil)
-//$signatureStarter->setSecurityContext(LacunaStandardSecurityContexts::PKI_BRAZIL);
+//$signatureStarter->setSecurityContext(RestPkiStandardSecurityContexts::PKI_BRAZIL);
 // Note: By changing the SecurityContext above you can accept only certificates from a custom PKI for tests.
 
 // Call the startWithWebPki() method, which initiates the signature. This yields the token, a 43-character

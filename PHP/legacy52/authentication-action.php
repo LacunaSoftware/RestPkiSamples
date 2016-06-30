@@ -9,18 +9,18 @@
 // capabilities of the newer versions of PHP - https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP
 require_once 'RestPkiLegacy52.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the LacunaRestPkiClient
+// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient
 // class initialized with the API access token
 require_once 'util.php';
 
 // Get the token for this authentication (rendered in a hidden input field, see authentication.php)
 $token = $_POST['token'];
 
-// Get an instance of the LacunaAuthentication class
+// Get an instance of the RestPkiAuthentication class
 $auth = getRestPkiClient()->getAuthentication();
 
 // Call the completeWithWebPki() method with the token, which finalizes the authentication process. The call yields a
-// LacunaValidationResults which denotes whether the authentication was successful or not (we'll use it to render the
+// RestPkiValidationResults which denotes whether the authentication was successful or not (we'll use it to render the
 // page accordingly, see below).
 $vr = $auth->completeWithWebPki($token);
 
