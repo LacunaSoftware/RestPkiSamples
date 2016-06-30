@@ -138,7 +138,8 @@
     <Compile Include="Controllers\BatchSignatureOptimizedController.cs" />
     <Compile Include="Controllers\CadesSignatureController.cs" />
     <Compile Include="Controllers\BatchSignatureController.cs" />
-    <Compile Include="Controllers\OpenSignatureController.cs" />
+    <Compile Include="Controllers\OpenPadesSignatureController.cs" />
+    <Compile Include="Controllers\OpenCadesSignatureController.cs" />
     <Compile Include="Controllers\XmlFullSignatureController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PadesSignatureController.cs" />
@@ -192,6 +193,8 @@
     <Content Include="Content\10.pdf" />
     <None Include="Properties\PublishProfiles\Filesystem.pubxml" />
     <Content Include="Views\BatchSignatureOptimized\Index.cshtml" />
+    <Content Include="Views\OpenPadesSignature\Index.cshtml" />
+    <Content Include="Views\OpenCadesSignature\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -199,9 +202,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\OpenSignature\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>

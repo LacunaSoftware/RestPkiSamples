@@ -1,0 +1,65 @@
+﻿@model Lacuna.RestPki.Client.CadesSignature
+
+<h2>Open existing CAdES Signature</h2>
+
+<h3>The given file contains @Model.Signers.Count signatures:</h3>
+
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
+	@for (var i = 0; i < Model.Signers.Count; i++) {
+
+		var signer = Model.Signers[i];
+		var collapseId = string.Format("signer_{0}_collapse", i);
+		var headingId = string.Format("signer_{0}_heading", i);
+
+		<div class="panel panel-default">
+			<div class="panel-heading" role="tab" id="@headingId">
+				<h4 class="panel-title">
+					<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#@collapseId" aria-expanded="true" aria-controls="@collapseId">
+						@signer.SigningCertificate.SubjectName.CommonName
+						@if (signer.ValidationResults != null) {
+							<text>- </text>
+							if (signer.ValidationResults.IsValid) {
+								<span style="color: green; font-weight: bold;">valid</span>
+							} else {
+								<span style="color: red; font-weight: bold;">invalid</span>
+							}
+						}
+					</a>
+				</h4>
+			</div>
+			<div id="@collapseId" class="panel-collapse collapse" role="tabpanel" aria-labelledby="@headingId">
+				<div class="panel-body">
+					<p>Signing time: @signer.SigningTime</p>
+					<p>Message digest: @signer.MessageDigest.Algorithm.Name @BitConverter.ToString(signer.MessageDigest.Value) </p>
+					@if (signer.SignaturePolicy != null) {
+						<p>Signature policy: @signer.SignaturePolicy.Oid</p>
+					}
+					<p>
+						Signer information:
+						<ul>
+							<li>Subject: @signer.SigningCertificate.SubjectName.CommonName</li>
+							<li>Email: @signer.SigningCertificate.EmailAddress</li>
+							<li>
+								ICP-Brasil fields
+								<ul>
+									<li>Tipo de certificado: @signer.SigningCertificate.PkiBrazil.CertificateType</li>
+									<li>CPF: @signer.SigningCertificate.PkiBrazil.Cpf</li>
+									<li>Responsavel: @signer.SigningCertificate.PkiBrazil.Responsavel</li>
+									<li>Empresa: @signer.SigningCertificate.PkiBrazil.CompanyName</li>
+									<li>CNPJ: @signer.SigningCertificate.PkiBrazil.Cnpj</li>
+								</ul>
+							</li>
+						</ul>
+					</p>
+					@if (signer.ValidationResults != null) {
+						<p>
+								Validation results:<br/>
+								<textarea style="width: 100%" rows="20">@signer.ValidationResults.ToString()</textarea>
+						</p>
+					}
+				</div>
+			</div>
+		</div>
+	}
+</div>

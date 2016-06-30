@@ -8,21 +8,21 @@ using System.Web.Mvc;
 
 namespace Lacuna.RestPki.SampleSite.Controllers {
 
-	public class OpenSignatureController : Controller {
+	public class OpenPadesSignatureController : Controller {
 
 		[HttpGet]
 		public ActionResult Index(string userfile) {
-
+			if (string.IsNullOrEmpty(userfile)) {
+				return HttpNotFound();
+			}
 			var filename = userfile.Replace("_", "."); // Note: we're passing the filename argument with "." as "_" because of limitations of ASP.NET MVC
-			var sigExplorer = Util.GetRestPkiClient().GetCadesSignatureExplorer();
+			var sigExplorer = Util.GetRestPkiClient().GetPadesSignatureExplorer();
 			sigExplorer.SetSignatureFile(Server.MapPath("~/App_Data/" + filename));
-			sigExplorer.ExplicitValidationPolicies.Add(StandardCadesSignaturePolicies.PkiBrazil.AdrBasica);
-			sigExplorer.ImplicitValidationPolicy = StandardCadesSignaturePolicies.CadesBes;
+			sigExplorer.ImplicitValidationPolicy = StandardPadesSignaturePolicies.Basic;
 			sigExplorer.ValidationSecurityContext = StandardSecurityContexts.PkiBrazil;
 			sigExplorer.Validate = true;
-			sigExplorer.SetDataFile(@"C:\temp\C6FD288E7B4B0B1D58AEA06672706958.pdf");
 			var signature = sigExplorer.Open();
-			return null;
+			return View(signature);
 		}
 
 	}
