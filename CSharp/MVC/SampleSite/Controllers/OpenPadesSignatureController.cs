@@ -1,4 +1,5 @@
 ﻿using Lacuna.RestPki.Api;
+using Lacuna.RestPki.Client;
 using SampleSite.Classes;
 using System;
 using System.Collections.Generic;
@@ -16,14 +17,14 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 				return HttpNotFound();
 			}
 			var filename = userfile.Replace("_", "."); // Note: we're passing the filename argument with "." as "_" because of limitations of ASP.NET MVC
-			var sigExplorer = Util.GetRestPkiClient().GetPadesSignatureExplorer();
+			var sigExplorer = new PadesSignatureExplorer(Util.GetRestPkiClient()) {
+				Validate = true,
+				ImplicitPolicy = StandardPadesSignaturePolicies.Basic,
+				SecurityContext = StandardSecurityContexts.PkiBrazil
+			};
 			sigExplorer.SetSignatureFile(Server.MapPath("~/App_Data/" + filename));
-			sigExplorer.ImplicitValidationPolicy = StandardPadesSignaturePolicies.Basic;
-			sigExplorer.ValidationSecurityContext = StandardSecurityContexts.PkiBrazil;
-			sigExplorer.Validate = true;
 			var signature = sigExplorer.Open();
 			return View(signature);
 		}
-
 	}
 }
