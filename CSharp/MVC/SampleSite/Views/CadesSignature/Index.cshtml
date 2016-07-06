@@ -70,8 +70,7 @@
 			// http://webpki.lacunasoftware.com/Help/classes/LacunaWebPKI.html#method_init
 			pki.init({
 				ready: loadCertificates, // as soon as the component is ready we'll load the certificates
-				defaultError: onWebPkiError, // generic error callback on Content/js/app/site.js
-				restPkiUrl: 'http://localhost:53358/'
+				defaultError: onWebPkiError // generic error callback on Content/js/app/site.js
 			});
 		}
 

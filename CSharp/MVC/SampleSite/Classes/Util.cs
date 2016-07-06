@@ -16,7 +16,7 @@ namespace SampleSite.Classes {
 			if (string.IsNullOrEmpty(accessToken) || accessToken.Contains(" API ")) {
 				throw new Exception("The API access token was not set! Hint: to run this sample you must generate an API access token on the REST PKI website and paste it on the web.config file");
 			}
-			return new RestPkiClient("http://localhost:53358/", ConfigurationManager.AppSettings["RestPkiAccessToken"]);
+			return new RestPkiClient("https://pki.rest/", ConfigurationManager.AppSettings["RestPkiAccessToken"]);
 		}
 
 		public static string ContentPath {
