@@ -37,7 +37,7 @@ public class OpenPadesSignatureController {
         // Parameters for the signature validation. We have encapsulated this code in a method to include several
         // possibilities depending on the argument passed. Experiment changing the argument to see different validation
         // configurations. Once you decide which is best for your case, you can place the code directly here.
-        setValidationParameters(sigExplorer, 2);
+        setValidationParameters(sigExplorer, 1);
         // try changing this number ---------^ for different validation parameters
 
         // Call the open() method, which returns the signature file's information
