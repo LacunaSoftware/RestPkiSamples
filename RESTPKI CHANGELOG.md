@@ -1,6 +1,21 @@
 Lacuna Rest PKI change log
 ==========================
 
+1.8.0 (2016-07-05)
+------------------
+
+- Add new API to open/validate CAdES and PAdES signatures
+- Add support for new ICP-Brasil PAdES signature policies AD-RB and AD-RT
+- Add transaction history report
+- Add support for tags {{signerEmail}} and {{issuerCommonName}} on PAdES visual representation
+- Add property BinaryThumbprintSHA256 to CertificateModel
+- Add support for creating users without a password (useful for application users)
+- Add warning on system status when changing the storage when there are already stored blobs
+- Increase maximum API request length to 100 MB
+- Fix bug that prevented CAdES co-signatures
+- Fix authorization bug on the download route for the security contexts' trusted root certificates
+- Update Lacuna PKI SDK to 1.13.0
+
 1.7.2 (2016-06-10)
 ------------------
 
