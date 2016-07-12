@@ -1,6 +1,12 @@
 Lacuna Rest PKI change log
 ==========================
 
+1.8.1 (2016-07-11)
+------------------
+
+- Fix bug affecting some signatures of large PDFs
+- Update Lacuna PKI SDK to 1.13.1
+
 1.8.0 (2016-07-05)
 ------------------
 
