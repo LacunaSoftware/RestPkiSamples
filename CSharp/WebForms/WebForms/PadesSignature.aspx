@@ -1,8 +1,8 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="CadesSignature.aspx.cs" Inherits="WebForms.CadesSignature" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="PadesSignature.aspx.cs" Inherits="WebForms.PadesSignature" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 	
-	<h2>CAdES Signature</h2>
+	<h2>PAdES Signature</h2>
 	
 	<%-- Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it later on (see javascript below). --%>
 	<select id="certificateSelect"></select>

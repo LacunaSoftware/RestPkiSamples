@@ -6,13 +6,13 @@
 	Choose one of the following samples:
 	<ul>
 		<%--<li><a href="/Authentication">Authentication with digital certificate</a></li>--%>
-		<%--<li>
+		<li>
 			Create a PAdES signature
 			<ul>
 				<li><a href="/PadesSignature">With a file already on server</a></li>
-				<li><a href="/Upload?rc=PadesSignature">With a file uploaded by user</a></li>
+				<%--<li><a href="/Upload?rc=PadesSignature">With a file uploaded by user</a></li>--%>
 			</ul>
-		</li>--%>
+		</li>
 		<li>
 			Create a CAdES signature
 			<ul>

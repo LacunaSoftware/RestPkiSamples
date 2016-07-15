@@ -162,6 +162,8 @@
     <Content Include="Content\09.pdf" />
     <Content Include="Content\10.pdf" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="PadesSignature.aspx" />
+    <Content Include="PadesSignatureInfo.aspx" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -245,6 +247,20 @@
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="PadesSignature.aspx.cs">
+      <DependentUpon>PadesSignature.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PadesSignature.aspx.designer.cs">
+      <DependentUpon>PadesSignature.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PadesSignatureInfo.aspx.cs">
+      <DependentUpon>PadesSignatureInfo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PadesSignatureInfo.aspx.designer.cs">
+      <DependentUpon>PadesSignatureInfo.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Site.Master.cs">
