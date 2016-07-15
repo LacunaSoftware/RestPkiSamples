@@ -16,7 +16,7 @@
         <dependency>
 	        <groupId>com.lacunasoftware.restpki</groupId>
 	        <artifactId>restpki-client</artifactId>
-	        <version>1.5.2</version>
+	        <version>1.6.0</version>
         </dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -33,7 +33,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>1.2.3.RELEASE</version>
 				<configuration>
-					<mainClass>br.com.lacuna.Application</mainClass>
+					<mainClass>sample.Application</mainClass>
 					<source>1.8</source>
 					<target>1.8</target>
 					<addResources>false</addResources>
