@@ -63,9 +63,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 					// possibilities depending on the argument passed. Experiment changing the argument to see different examples
 					// of signature positioning. Once you decide which is best for your case, you can place the code directly here.
 					Position = PadesVisualElements.GetVisualPositioning(1)
-				},
-
-				BypassMarksIfSigned = false
+				}
 			};
 
 			// If the user was redirected here by UploadController (signature with file uploaded by user), the "userfile" URL argument
