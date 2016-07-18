@@ -23,7 +23,50 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 
 			// Get an instance of the PadesSignatureStarter class, responsible for receiving the signature elements and start the
 			// signature process
-			var signatureStarter = Util.GetRestPkiClient().GetPadesSignatureStarter();
+			var signatureStarter = new PadesSignatureStarter(Util.GetRestPkiClient()) {
+
+				// Set the signature policy
+				SignaturePolicyId = StandardPadesSignaturePolicies.Basic,
+
+				// Set a SecurityContext to be used to determine trust in the certificate chain
+				SecurityContextId = StandardSecurityContexts.PkiBrazil,
+				// Note: By changing the SecurityContext above you can accept certificates from a custom security context created on the Rest PKI website.
+
+				// Set a visual representation for the signature
+				VisualRepresentation = new PadesVisualRepresentation() {
+
+					// The tags {{signerName}} and {{signerNationalId}} will be substituted according to the user's certificate
+					// signerName -> full name of the signer
+					// signerNationalId -> if the certificate is ICP-Brasil, contains the signer's CPF
+					Text = new PadesVisualText("Signed by {{signerName}} ({{signerNationalId}})") {
+
+						// Specify that the signing time should also be rendered
+						IncludeSigningTime = true,
+
+						// Optionally set the horizontal alignment of the text ('Left' or 'Right'), if not set the default is Left
+						HorizontalAlign = PadesTextHorizontalAlign.Left
+
+					},
+
+					// We'll use as background the image in Content/PdfStamp.png
+					Image = new PadesVisualImage(Util.GetPdfStampContent(), "image/png") {
+
+						// Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is completely opaque).
+						Opacity = 50,
+
+						// Align the image to the right
+						HorizontalAlign = PadesHorizontalAlign.Right
+
+					},
+
+					// Position of the visual representation. We have encapsulated this code in a method to include several
+					// possibilities depending on the argument passed. Experiment changing the argument to see different examples
+					// of signature positioning. Once you decide which is best for your case, you can place the code directly here.
+					Position = PadesVisualElements.GetVisualPositioning(1)
+				},
+
+				BypassMarksIfSigned = false
+			};
 
 			// If the user was redirected here by UploadController (signature with file uploaded by user), the "userfile" URL argument
 			// will contain the filename under the "App_Data" folder. Otherwise (signature with server file), we'll sign a sample
@@ -36,52 +79,11 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 				signatureStarter.SetPdfToSign(Server.MapPath("~/App_Data/" + userfile.Replace("_", "."))); // Note: we're passing the filename argument with "." as "_" because of limitations of ASP.NET MVC
 			}
 
-			// Set the signature policy
-			signatureStarter.SetSignaturePolicy(StandardPadesSignaturePolicies.Basic);
-
-			// Set a SecurityContext to be used to determine trust in the certificate chain
-			signatureStarter.SetSecurityContext(StandardSecurityContexts.PkiBrazil);
-			// Note: By changing the SecurityContext above you can accept only certificates from a certain PKI,
-			// for instance, ICP-Brasil (Lacuna.RestPki.Api.StandardSecurityContexts.PkiBrazil).
-
-			// Set a visual representation for the signature
-			signatureStarter.SetVisualRepresentation(new PadesVisualRepresentation() {
-				
-				// The tags {{signerName}} and {{signerNationalId}} will be substituted according to the user's certificate
-				// signerName -> full name of the signer
-				// signerNationalId -> if the certificate is ICP-Brasil, contains the signer's CPF
-				Text = new PadesVisualText("Signed by {{signerName}} ({{signerNationalId}})") {
-					
-					// Specify that the signing time should also be rendered
-					IncludeSigningTime = true,
-
-					// Optionally set the horizontal alignment of the text ('Left' or 'Right'), if not set the default is Left
-					HorizontalAlign = PadesTextHorizontalAlign.Left
-
-				},
-				
-				// We'll use as background the image in Content/PdfStamp.png
-				Image = new PadesVisualImage(Util.GetPdfStampContent(), "image/png") {
-
-					// Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is completely opaque).
-					Opacity = 50,
-
-					// Align the image to the right
-					HorizontalAlign = PadesHorizontalAlign.Right
-
-				},
-
-				// Position of the visual representation. We have encapsulated this code in a method to include several
-				// possibilities depending on the argument passed. Experiment changing the argument to see different examples
-				// of signature positioning. Once you decide which is best for your case, you can place the code directly here.
-				Position = PadesVisualElements.GetVisualPositioning(1)
-			});
-
 			// Add a single PDF mark to every page of the document before signing. Zero or more marks may be added.
 			// They can be used for any purpose you deem necessary. We have encapsulated this code in a method to include several
 			// possibilities depending on the argument passed. Experiment changing the argument to see different examples
 			// of PDF marks. Once you decide which is best for your case, you can place the code directly here.
-			signatureStarter.AddPdfMark(PadesVisualElements.GetPdfMark(1));
+			signatureStarter.PdfMarks.Add(PadesVisualElements.GetPdfMark(1));
 
 			// Call the StartWithWebPki() method, which initiates the signature. This yields the token, a 43-character
 			// case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the

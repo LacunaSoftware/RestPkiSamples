@@ -81,55 +81,55 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 
 			// Get an instance of the PadesSignatureStarter class, responsible for receiving the signature elements and start the
 			// signature process
-			var signatureStarter = Util.GetRestPkiClient().GetPadesSignatureStarter();
+			var signatureStarter = new PadesSignatureStarter(Util.GetRestPkiClient()) {
+
+				// Set the user's certificate. Notice that this step is not necessary on the regular batch signature example. This
+				// enhances the performance of the batch processing
+				SignerCertificate = batchInfo.Certificate,
+
+				// Set the signature policy
+				SignaturePolicyId = StandardPadesSignaturePolicies.Basic,
+
+				// Set a SecurityContext to be used to determine trust in the certificate chain
+				SecurityContextId = StandardSecurityContexts.PkiBrazil,
+				// Note: By changing the SecurityContext above you can accept certificates from a custom security context created on the Rest PKI website.
+
+				// Set a visual representation for the signature
+				VisualRepresentation = new PadesVisualRepresentation() {
+
+					// The tags {{signerName}} and {{signerNationalId}} will be substituted according to the user's certificate
+					// signerName -> full name of the signer
+					// signerNationalId -> if the certificate is ICP-Brasil, contains the signer's CPF
+					Text = new PadesVisualText("Signed by {{signerName}} ({{signerNationalId}})") {
+
+						// Specify that the signing time should also be rendered
+						IncludeSigningTime = true,
+
+						// Optionally set the horizontal alignment of the text ('Left' or 'Right'), if not set the default is Left
+						HorizontalAlign = PadesTextHorizontalAlign.Left
+
+					},
+
+					// We'll use as background the image in Content/PdfStamp.png
+					Image = new PadesVisualImage(Util.GetPdfStampContent(), "image/png") {
+
+						// Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is completely opaque).
+						Opacity = 50,
+
+						// Align the image to the right
+						HorizontalAlign = PadesHorizontalAlign.Right
+
+					},
+
+					// Position of the visual representation. We have encapsulated this code in a method to include several
+					// possibilities depending on the argument passed. Experiment changing the argument to see different examples
+					// of signature positioning. Once you decide which is best for your case, you can place the code directly here.
+					Position = getVisualPositioning(1)
+				}
+			};
 
 			// Set the document to be signed based on its ID (passed to us from the page)
 			signatureStarter.SetPdfToSign(Util.GetBatchDocContent(request.DocumentId));
-
-			// Set the user's certificate. Notice that this step is not necessary on the regular batch signature example. This
-			// enhances the performance of the batch processing
-			signatureStarter.SetSignerCertificate(batchInfo.Certificate);
-
-			// Set the signature policy
-			signatureStarter.SetSignaturePolicy(StandardPadesSignaturePolicies.Basic);
-
-			// Set a SecurityContext to be used to determine trust in the certificate chain
-			signatureStarter.SetSecurityContext(StandardSecurityContexts.PkiBrazil);
-			// Note: By changing the SecurityContext above you can accept only certificates from a certain PKI,
-			// for instance, ICP-Brasil (Lacuna.RestPki.Api.StandardSecurityContexts.PkiBrazil).
-
-			// Set a visual representation for the signature
-			signatureStarter.SetVisualRepresentation(new PadesVisualRepresentation() {
-				
-				// The tags {{signerName}} and {{signerNationalId}} will be substituted according to the user's certificate
-				// signerName -> full name of the signer
-				// signerNationalId -> if the certificate is ICP-Brasil, contains the signer's CPF
-				Text = new PadesVisualText("Signed by {{signerName}} ({{signerNationalId}})") {
-					
-					// Specify that the signing time should also be rendered
-					IncludeSigningTime = true,
-
-					// Optionally set the horizontal alignment of the text ('Left' or 'Right'), if not set the default is Left
-					HorizontalAlign = PadesTextHorizontalAlign.Left
-
-				},
-				
-				// We'll use as background the image in Content/PdfStamp.png
-				Image = new PadesVisualImage(Util.GetPdfStampContent(), "image/png") {
-
-					// Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is completely opaque).
-					Opacity = 50,
-
-					// Align the image to the right
-					HorizontalAlign = PadesHorizontalAlign.Right
-
-				},
-
-				// Position of the visual representation. We have encapsulated this code in a method to include several
-				// possibilities depending on the argument passed. Experiment changing the argument to see different examples
-				// of signature positioning. Once you decide which is best for your case, you can place the code directly here.
-				Position = getVisualPositioning(1)
-			});
 
 			// Call the Start() method, which initiates the signature. Notice that, on the regular signature example, we call the
 			// StartWithRestPki() method, which is simpler but with worse performance. The Start() method will yield not only the
@@ -159,13 +159,15 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 		public ActionResult Complete(BatchSignatureCompleteRequest request) {
 
 			// Get an instance of the PadesSignatureFinisher class, responsible for completing the signature process
-			var signatureFinisher = Util.GetRestPkiClient().GetPadesSignatureFinisher();
+			var signatureFinisher = new PadesSignatureFinisher(Util.GetRestPkiClient()) {
 
-			// Set the token for this signature (rendered in a hidden input field, see the view)
-			signatureFinisher.SetToken(request.Token);
+				// Set the token for this signature (rendered in a hidden input field, see the view)
+				Token = request.Token,
 
-			// Set the result of the RSA signature. Notice that this call is not necessary on the "regular" batch signature example
-			signatureFinisher.SetSignature(request.Signature);
+				// Set the result of the RSA signature. Notice that this call is not necessary on the "regular" batch signature example
+				Signature = request.Signature
+
+			};
 
 			// Call the Finish() method, which finalizes the signature process and returns the signed PDF
 			var signedPdf = signatureFinisher.Finish();
@@ -226,7 +228,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 				case 5:
 					// Example #5: manual positioning
 					// The first parameter is the page number. Zero means the signature will be placed on a new page appended to the end of the document
-					return new PadesVisualManualPositioning(0, PadesMeasurementUnits.Centimeters, new PadesVisualRectangle() {
+					return new PadesVisualManualPositioning(0, new PadesVisualRectangle() {
 						// define a manual position of 5cm x 3cm, positioned at 1 inch from  the left and bottom margins
 						Left = 2.54,
 						Bottom = 2.54,
@@ -238,7 +240,6 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 					// Example #6: custom auto positioning
 					return new PadesVisualAutoPositioning() {
 						PageNumber = -1, // negative values represent pages counted from the end of the document (-1 is last page)
-						MeasurementUnits = PadesMeasurementUnits.Centimeters,
 						// Specification of the container where the signatures will be placed, one after the other
 						Container = new PadesVisualRectangle() {
 							// Specifying left and right (but no width) results in a variable-width container with the given margins

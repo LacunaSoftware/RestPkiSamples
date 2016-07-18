@@ -1,4 +1,5 @@
 ﻿using Lacuna.RestPki.Api;
+using Lacuna.RestPki.Client;
 using Lacuna.RestPki.SampleSite.Models;
 using SampleSite.Classes;
 using System;
@@ -26,7 +27,23 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 
 			// Get an instance of the CadesSignatureStarter class, responsible for receiving the signature elements and start the
 			// signature process
-			var signatureStarter = Util.GetRestPkiClient().GetCadesSignatureStarter();
+			var signatureStarter = new CadesSignatureStarter(Util.GetRestPkiClient()) {
+
+				// Set the signature policy
+				SignaturePolicyId = StandardCadesSignaturePolicies.PkiBrazil.AdrBasica,
+
+				// Optionally, set a SecurityContext to be used to determine trust in the certificate chain
+				//SecurityContextId = StandardSecurityContexts.PkiBrazil,
+				// Note: Depending on the signature policy chosen above, setting the security context may be mandatory (this is not
+				// the case for ICP-Brasil policies, which will automatically use the PkiBrazil security context if none is passed)
+
+				// Optionally, set whether the content should be encapsulated in the resulting CMS. If this parameter is ommitted,
+				// the following rules apply:
+				// - If no CmsToSign is given, the resulting CMS will include the content
+				// - If a CmsToCoSign is given, the resulting CMS will include the content if and only if the CmsToCoSign also includes the content
+				EncapsulateContent = true
+
+			};
 
 			if (!string.IsNullOrEmpty(userfile)) {
 				
@@ -53,20 +70,6 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 				signatureStarter.SetContentToSign(Util.GetSampleDocContent());
 
 			}
-
-			// Set the signature policy
-			signatureStarter.SetSignaturePolicy(StandardCadesSignaturePolicies.PkiBrazil.AdrBasica);
-
-			// Optionally, set a SecurityContext to be used to determine trust in the certificate chain
-			//signatureStarter.SetSecurityContext(StandardSecurityContexts.PkiBrazil);
-			// Note: Depending on the signature policy chosen above, setting the security context may be mandatory (this is not
-			// the case for ICP-Brasil policies, which will automatically use the PkiBrazil security context if none is passed)
-
-			// Optionally, set whether the content should be encapsulated in the resulting CMS. If this parameter is ommitted,
-			// the following rules apply:
-			// - If no CmsToSign is given, the resulting CMS will include the content
-			// - If a CmsToCoSign is given, the resulting CMS will include the content if and only if the CmsToCoSign also includes the content
-			signatureStarter.SetEncapsulateContent(true);
 
 			// Call the StartWithWebPki() method, which initiates the signature. This yields the token, a 43-character
 			// case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
@@ -95,10 +98,12 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 		public ActionResult Index(CadesSignatureModel model) {
 
 			// Get an instance of the PadesSignatureFinisher class, responsible for completing the signature process
-			var signatureFinisher = Util.GetRestPkiClient().GetCadesSignatureFinisher();
+			var signatureFinisher = new PadesSignatureFinisher(Util.GetRestPkiClient()) {
 
-			// Set the token for this signature (rendered in a hidden input field, see the view)
-			signatureFinisher.SetToken(model.Token);
+				// Set the token for this signature (rendered in a hidden input field, see the view)
+				Token = model.Token
+
+			};
 
 			// Call the Finish() method, which finalizes the signature process and returns the CMS
 			var cms = signatureFinisher.Finish();
