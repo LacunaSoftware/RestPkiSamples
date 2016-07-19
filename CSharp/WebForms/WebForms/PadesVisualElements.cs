@@ -86,24 +86,15 @@ namespace WebForms {
 					// Example #1: A sample text and image are placed at the bottom of every page.
 					// First, we create the mark object. It contains no elements, being a simple empty box.
 					var mark = new PdfMark() {
-						// Then, we set the mark's position in every page.
-						Position = new PdfMarkManualPositioning() {
-							// We'll use centimeters.
-							MeasurementUnits = PadesMeasurementUnits.Centimeters,
-							// Specification of the container where the mark's placed.
-							Container = new PadesVisualRectangle() {
-								// Specifying just the width results in a horizontally centered fixed-width container
-								Width = 8,
-								// Specifying bottom and height (but no top) results in a bottom-aligned fixed-height container
-								Bottom = 0.2,
-								Height = 0.6
-							},
-						},
-						// This example has no background and no borders.
-						Appearance = new PdfMarkCustomAppearance() {
-							BackgroundColor = Color.Transparent,
-							BorderColor = Color.Transparent
+						// Here, we set the mark's position in every page.
+						Container = new PadesVisualRectangle() {
+							// Specifying the width (but no left nor right) results in a horizontally centered fixed-width container
+							Width = 8,
+							// Specifying bottom and height (but no top) results in a bottom-aligned fixed-height container
+							Bottom = 0.2,
+							Height = 0.6
 						}
+						// This example has no background and no borders, so we don't set BackgroundColor nor BorderColor
 					};
 
 					// First, the image.
@@ -168,24 +159,17 @@ namespace WebForms {
 					// First, we create the mark object. It contains no elements, being a simple empty box.
 					mark = new PdfMark() {
 						// Then, we set the mark's position in every page.
-						Position = new PdfMarkManualPositioning() {
-							// We'll use centimeters.
-							MeasurementUnits = PadesMeasurementUnits.Centimeters,
-							// Specification of the container where the mark's placed.
-							Container = new PadesVisualRectangle() {
-								// Specifying right and width (but no left) results in a right-aligned fixed-width container
-								Right = 1,
-								Width = 2.54,
-								// Specifying bottom and height (but no top) results in a bottom-aligned fixed-height container
-								Bottom = 1,
-								Height = 2.54
-							},
+						Container = new PadesVisualRectangle() {
+							// Specifying right and width (but no left) results in a right-aligned fixed-width container
+							Right = 1,
+							Width = 2.54,
+							// Specifying bottom and height (but no top) results in a bottom-aligned fixed-height container
+							Bottom = 1,
+							Height = 2.54
 						},
 						// After that, its border must be configured.
-						Appearance = new PdfMarkCustomAppearance() {
-							BorderWidth = 0.02,
-							BorderColor = Color.Black
-						}
+						BorderWidth = 0.02,
+						BorderColor = Color.Black
 					};
 
 					// Add a single image element
@@ -211,23 +195,16 @@ namespace WebForms {
 					// First, we create the mark object. It contains no elements, being a simple empty box.
 					mark = new PdfMark() {
 						// Then, we set the mark's position in every page.
-						Position = new PdfMarkManualPositioning() {
-							// We'll use centimeters.
-							MeasurementUnits = PadesMeasurementUnits.Centimeters,
-							// Specification of the container where the mark's placed.
-							Container = new PadesVisualRectangle() {
-								// Specifying left and right (but no width) results in a variable-width container with the given margins
-								Left = 0,
-								Right = 0,
-								// Specifying top and height (but no bottom) results in a top-aligned fixed-height container
-								Top = 0.5,
-								Height = 1
-							},
+						Container = new PadesVisualRectangle() {
+							// Specifying left and right (but no width) results in a variable-width container with the given margins
+							Left = 0,
+							Right = 0,
+							// Specifying top and height (but no bottom) results in a top-aligned fixed-height container
+							Top = 0.5,
+							Height = 1
 						},
 						// We'll not need a border, just a background color.
-						Appearance = new PdfMarkCustomAppearance() {
-							BackgroundColor = Color.FromArgb(127, 0, 128, 192)
-						}
+						BackgroundColor = Color.FromArgb(127, 0, 128, 192)
 					};
 
 					// Add a single text element.
@@ -262,5 +239,6 @@ namespace WebForms {
 
 			}
 		}
+
 	}
 }
