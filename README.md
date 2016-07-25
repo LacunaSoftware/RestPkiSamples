@@ -56,4 +56,4 @@ From then on, the certificates in our test PKI will be trusted. Download the fil
 
 If you need a certificate with a particular information, [contact us](http://support.lacunasoftware.com/).
 
-Remember to remove the trust in the Lacuna Test PKI security context when you're moving to a production environment. Better yet, use some sort of conditional compilation so that the test PKI is only trusted when running in debug mode.
+Always remember to **remove the trust in the Lacuna Test PKI security context when you're moving to a production environment**. Better yet, use some sort of conditional compilation so that the test PKI is only trusted when running in debug mode.
