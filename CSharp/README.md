@@ -9,6 +9,8 @@ For other languages, please visit the [project root](https://github.com/LacunaSo
 To run the samples, you will need an **API access token**. If you don't have one, register on the
 [REST PKI website](https://pki.rest/) and generate a token.
 
+If you need test certificates for development or staging environments, [click here](https://github.com/LacunaSoftware/RestPkiSamples#test-certificates).
+
 Default sample (ASP.NET MVC)
 ----------------------------
 

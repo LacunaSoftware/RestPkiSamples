@@ -15,6 +15,8 @@ You should choose between one of the sample projects in this folder based on you
 * PHP 5.3 and 5.4: [Legacy sample for PHP 5.3 and 5.4](#legacy-sample-for-php-53-and-54)
 * PHP 5.2: [Legacy sample for PHP 5.2](#legacy-sample-for-php-52)
 
+If you need test certificates for development or staging environments, [click here](https://github.com/LacunaSoftware/RestPkiSamples#test-certificates).
+
 Standard sample
 ---------------
 
