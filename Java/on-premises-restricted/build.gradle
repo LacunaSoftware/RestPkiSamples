@@ -25,7 +25,7 @@ jar {
 }
 
 dependencies {
-	compile("com.lacunasoftware.restpki:restpki-client:1.5.2")
+	compile("com.lacunasoftware.restpki:restpki-client:1.6.1")
 	compile("org.springframework.boot:spring-boot-starter-thymeleaf")
 	compile("commons-io:commons-io:2.4")
 }
