@@ -1,14 +1,14 @@
-﻿@model Lacuna.RestPki.Client.CadesSignature
+﻿@model Lacuna.RestPki.Client.CadesSignatureWithEncapsulatedContent
 
 <h2>Open existing CAdES Signature</h2>
 
-<h3>The given file contains @Model.Signers.Count signatures:</h3>
+<h3>The given file contains @Model.Signature.Signers.Count signatures:</h3>
 
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 
-	@for (var i = 0; i < Model.Signers.Count; i++) {
+	@for (var i = 0; i < Model.Signature.Signers.Count; i++) {
 
-		var signer = Model.Signers[i];
+		var signer = Model.Signature.Signers[i];
 		var collapseId = string.Format("signer_{0}_collapse", i);
 		var headingId = string.Format("signer_{0}_heading", i);
 
@@ -63,5 +63,12 @@
 				</div>
 			</div>
 		</div>
+	}
+
+	@if (Model.EncapsulatedContent != null) {
+
+	   <!-- Add a button to download the encapsulated content -->
+	   <a href="@Model.EncapsulatedContent.Url" class="btn btn-primary" style="margin-top:2em">Download Encapsulated Content</a>
+
 	}
 </div>

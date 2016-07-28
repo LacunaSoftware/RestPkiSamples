@@ -34,11 +34,11 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 			// Parameters for the signature validation. We have encapsulated this code in a method to include several
 			// possibilities depending on the argument passed. Experiment changing the argument to see different validation
 			// configurations. Once you decide which is best for your case, you can place the code directly here.
-			setValidationParameters(sigExplorer, 1); 
+			setValidationParameters(sigExplorer, 1);
 			// try changing this number ---------^ for different validation parameters
 
-			// Call the Open() method, which returns the signature file's information
-			var signature = sigExplorer.Open();
+			// Call the OpenAndExtractContent() method, which returns the signature file's information along with a link to download its encapsulated content
+			var signature = sigExplorer.OpenAndExtractContent();
 
 			// Render the information (see file Views/OpenCadesSignature/Index.html for more information on the information returned)
 			return View(signature);
