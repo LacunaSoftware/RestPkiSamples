@@ -1,6 +1,11 @@
 Lacuna Rest PKI change log
 ==========================
 
+1.8.2 (2016-07-19)
+------------------
+
+- Fix bug on CAdES co-signatures with timestamp
+
 1.8.1 (2016-07-11)
 ------------------
 
