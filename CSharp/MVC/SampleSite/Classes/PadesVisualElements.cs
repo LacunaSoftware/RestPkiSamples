@@ -43,7 +43,7 @@ namespace Lacuna.RestPki.SampleSite.Classes {
 				case 5:
 					// Example #5: manual positioning
 					// The first parameter is the page number. Zero means the signature will be placed on a new page appended to the end of the document
-					return new PadesVisualManualPositioning(0, PadesMeasurementUnits.Centimeters, new PadesVisualRectangle() {
+					return new PadesVisualManualPositioning(0, new PadesVisualRectangle() {
 						// define a manual position of 5cm x 3cm, positioned at 1 inch from  the left and bottom margins
 						Left = 2.54,
 						Bottom = 2.54,
@@ -55,7 +55,6 @@ namespace Lacuna.RestPki.SampleSite.Classes {
 					// Example #6: custom auto positioning
 					return new PadesVisualAutoPositioning() {
 						PageNumber = -1, // negative values represent pages counted from the end of the document (-1 is last page)
-						MeasurementUnits = PadesMeasurementUnits.Centimeters,
 						// Specification of the container where the signatures will be placed, one after the other
 						Container = new PadesVisualRectangle() {
 							// Specifying left and right (but no width) results in a variable-width container with the given margins

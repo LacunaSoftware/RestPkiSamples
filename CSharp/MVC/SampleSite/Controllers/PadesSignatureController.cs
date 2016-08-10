@@ -21,15 +21,17 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 		[HttpGet]
 		public ActionResult Index(string userfile) {
 
-			// Get an instance of the PadesSignatureStarter class, responsible for receiving the signature elements and start the
-			// signature process
-			var signatureStarter = new PadesSignatureStarter(Util.GetRestPkiClient()) {
+            // Get an instance of the PadesSignatureStarter class, responsible for receiving the signature elements and start the
+            // signature process
+            var signatureStarter = new PadesSignatureStarter(Util.GetRestPkiClient()) {
 
-				// Set the signature policy
-				SignaturePolicyId = StandardPadesSignaturePolicies.Basic,
+                MeasurementUnits = PadesMeasurementUnits.Centimeters,
 
-				// Set a SecurityContext to be used to determine trust in the certificate chain
-				SecurityContextId = StandardSecurityContexts.PkiBrazil,
+                // Set the signature policy
+                SignaturePolicyId = StandardPadesSignaturePolicies.Basic,
+
+                // Set a SecurityContext to be used to determine trust in the certificate chain
+                SecurityContextId = StandardSecurityContexts.PkiBrazil,
 				// Note: By changing the SecurityContext above you can accept certificates from a custom security context created on the Rest PKI website.
 
 				// Set a visual representation for the signature
