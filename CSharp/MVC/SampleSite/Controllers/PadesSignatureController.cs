@@ -25,6 +25,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
             // signature process
             var signatureStarter = new PadesSignatureStarter(Util.GetRestPkiClient()) {
 
+                // Set the unit of measurement used to edit the pdf marks and visual representations
                 MeasurementUnits = PadesMeasurementUnits.Centimeters,
 
                 // Set the signature policy
