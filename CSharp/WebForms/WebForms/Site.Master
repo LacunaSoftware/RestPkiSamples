@@ -64,14 +64,14 @@
 								<%--<li><a href="/Upload?rc=CadesSignature">With file uploaded by user</a></li>--%>
 							</ul>
 						</li>
-						<%--<li class="dropdown">
+						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">XML signature <span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li><a href="/XmlFullSignature">Full XML signature (enveloped signature)</a></li>
+								<%--<li><a href="/XmlFullSignature">Full XML signature (enveloped signature)</a></li>--%>
 								<li><a href="/XmlElementSignature">XML element signature</a></li>
 							</ul>
 						</li>
-						<li class="dropdown">
+						<%--<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Batch signature <span class="caret"></span></a>
 							<ul class="dropdown-menu">
 								<li><a href="/BatchSignature">Simple batch signature</a></li>

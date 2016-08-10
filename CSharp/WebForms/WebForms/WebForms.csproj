@@ -161,6 +161,8 @@
     <Content Include="Content\08.pdf" />
     <Content Include="Content\09.pdf" />
     <Content Include="Content\10.pdf" />
+    <Content Include="XmlElementSignature.aspx" />
+    <Content Include="XmlElementSignatureInfo.aspx" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="PadesSignature.aspx" />
     <Content Include="PadesSignatureInfo.aspx" />
@@ -285,6 +287,20 @@
     </Compile>
     <Compile Include="ViewSwitcher.ascx.designer.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="XmlElementSignature.aspx.cs">
+      <DependentUpon>XmlElementSignature.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="XmlElementSignature.aspx.designer.cs">
+      <DependentUpon>XmlElementSignature.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="XmlElementSignatureInfo.aspx.cs">
+      <DependentUpon>XmlElementSignatureInfo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="XmlElementSignatureInfo.aspx.designer.cs">
+      <DependentUpon>XmlElementSignatureInfo.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

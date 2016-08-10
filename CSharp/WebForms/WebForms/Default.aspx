@@ -20,13 +20,13 @@
 				<%--<li><a href="/Upload?rc=CadesSignature">With a file uploaded by user</a></li>--%>
 			</ul>
 		</li>
-		<%--<li>
+		<li>
 			Create a XML signature
 			<ul>
-				<li><a href="/XmlFullSignature">Full XML signature (enveloped signature)</a></li>
+				<%--<li><a href="/XmlFullSignature">Full XML signature (enveloped signature)</a></li>--%>
 				<li><a href="/XmlElementSignature">XML element signature</a></li>
 			</ul>
-		</li>--%>
+		</li>
 		<%--<li>
 			Sign a batch of files
 			<ul>
