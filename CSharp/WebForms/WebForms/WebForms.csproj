@@ -47,7 +47,7 @@
       <HintPath>..\packages\Lacuna.RestClient.1.7.0\lib\net45\Lacuna.RestClient.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Lacuna.RestPki.Api, Version=1.8.0.0, Culture=neutral, PublicKeyToken=5705bce581cd1847, processorArchitecture=MSIL">
+    <Reference Include="Lacuna.RestPki.Api, Version=1.9.0.0, Culture=neutral, PublicKeyToken=5705bce581cd1847, processorArchitecture=MSIL">
       <HintPath>..\packages\Lacuna.RestPki.Client.1.5.0\lib\net45\Lacuna.RestPki.Api.dll</HintPath>
       <Private>True</Private>
     </Reference>

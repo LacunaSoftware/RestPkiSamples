@@ -22,6 +22,9 @@ namespace WebForms {
 				// signature process
 				var signatureStarter = Util.GetRestPkiClient().GetPadesSignatureStarter();
 
+                // Set the unit of measurement used to edit the pdf marks and visual representations
+                signatureStarter.MeasurementUnits = PadesMeasurementUnits.Centimeters;
+
 				// Set the file to be signed as a byte array
 				signatureStarter.SetPdfToSign(Util.GetSampleDocContent());
 
@@ -70,7 +73,7 @@ namespace WebForms {
 				// They can be used for any purpose you deem necessary. We have encapsulated this code in a method to include several
 				// possibilities depending on the argument passed. Experiment changing the argument to see different examples
 				// of PDF marks. Once you decide which is best for your case, you can place the code directly here.
-				signatureStarter.AddPdfMark(PadesVisualElements.GetPdfMark(1));
+				signatureStarter.PdfMarks.Add(PadesVisualElements.GetPdfMark(1));
 
 				// Call the StartWithWebPki() method, which initiates the signature. This yields the token, a 43-character
 				// case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
