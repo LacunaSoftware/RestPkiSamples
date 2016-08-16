@@ -1,9 +1,9 @@
 <?php
 /*
- * This file executes an PAdES signature opening with REST PKI and renders the opening signature page for inspection,
- * the option of validating a signature was set, so the result of the validation will be rendered on the page. There're
- * an option to choose which validation parameters will be use in the validation. This option can be changed in the code
- * above.
+ * This file executes a PAdES signature opening with REST PKI and renders the opening signature page for inspection,
+ * the option of validating a signature was set, so the result of the validation will be rendered on the page too.
+ * There're an option to choose which validation parameters will be use in the validation. This option can be changed in
+ * the code above.
  *
  */
 
@@ -37,9 +37,9 @@ function setValidationParameters($sigExplorer, $caseNumber) {
             // By omitting the accepted policies catalog and defining a default policy, we're telling Rest PKI to
             // validate all signatures in the file with the default policy -- even signatures with an explicit signature
             // policy.
-            $sigExplorer->setDefaultSignaturePolicy(StandardSignaturePolicies::PADES_BASIC);
+            $sigExplorer->setDefaultSignaturePolicyId(StandardSignaturePolicies::PADES_BASIC);
             // The PAdES Basic policy requires us to choose a security context
-            $sigExplorer->setSecurityContext(StandardSecurityContexts::PKI_BRAZIL);
+            $sigExplorer->setSecurityContextId(StandardSecurityContexts::PKI_BRAZIL);
             break;
 
         /**
@@ -57,8 +57,8 @@ function setValidationParameters($sigExplorer, $caseNumber) {
          * Same case as example #1, but using the WindowsServer trust arbitrator
          */
         case 3:
-            $sigExplorer->setDefaultSignaturePolicy(StandardSignaturePolicies::PADES_BASIC);
-            $sigExplorer->setSecurityContext(StandardSecurityContexts::WINDOWS_SERVER);
+            $sigExplorer->setDefaultSignaturePolicyId(StandardSignaturePolicies::PADES_BASIC);
+            $sigExplorer->setSecurityContextId(StandardSecurityContexts::WINDOWS_SERVER);
             break;
 
         /**
@@ -115,19 +115,19 @@ setExpiredPage();
                                  // required to use the Web PKI component) ?>
 </head>
 <body>
-<?php include 'menu.php' // The top menu, this can be removed entirely ?>
-<div class="container">
-    <h2>Open existing PAdES Signature</h2>
+    <?php include 'menu.php' // The top menu, this can be removed entirely ?>
+    <div class="container">
+        <h2>Open existing PAdES Signature</h2>
 
-    <h3>The given file contains <?= count($signature->signers) ?> signatures:</h3>
+        <h3>The given file contains <?= count($signature->signers) ?> signatures:</h3>
 
-    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 
-        <?php for ($i = 0; $i < count($signature->signers); $i++) {
+            <?php for ($i = 0; $i < count($signature->signers); $i++) {
 
-            $signer = $signature->signers[$i];
-            $collapseId = "signer_".$i."_collapse";
-            $headingId = "signer_".$i."_heading";
+                $signer = $signature->signers[$i];
+                $collapseId = "signer_".$i."_collapse";
+                $headingId = "signer_".$i."_heading";
 
             ?>
 
@@ -173,12 +173,12 @@ setExpiredPage();
                                 </li>
                             </ul>
                         </p>
+                        <?php if ($signer->validationResults != null) { ?>
+                            <p>Validation results:<br/>
+                                <textarea style="width: 100%" rows="20"><?= $signer->validationResults ?></textarea>
+                            </p>
+                        <?php } ?>
                     </div>
-                    <?php if ($signer->validationResults != null) { ?>
-                    <p>Validation results:<br/>
-                        <textarea style="width: 100%" rows="20"><?= $signer->validationResults ?></textarea>
-                    </p>
-                    <?php } ?>
                 </div>
             </div>
         </div>

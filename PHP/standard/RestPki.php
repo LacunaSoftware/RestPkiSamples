@@ -474,7 +474,7 @@ abstract class SignatureExplorer {
 		$this->validade = $validate;
 	}
 
-	public function setDefaultSignaturePolicy($signaturePolicyId) {
+	public function setDefaultSignaturePolicyId($signaturePolicyId) {
 		$this->defaultSignaturePolicyId = $signaturePolicyId;
 	}
 
@@ -482,7 +482,7 @@ abstract class SignatureExplorer {
 		$this->acceptableExplicitPolicies = $policyCatalog;
 	}
 
-	public function setSecurityContext($securityContextId) {
+	public function setSecurityContextId($securityContextId) {
 		$this->securityContextId = $securityContextId;
 	}
 
@@ -524,6 +524,9 @@ class PadesSignatureExplorer extends SignatureExplorer {
             foreach ($response->signers as $signer) {
                 $signer->validationResults = new ValidationResults($signer->validationResults);
                 $signer->messageDigest->algorithm = DigestAlgorithm::getInstanceByApiAlgorithm($signer->messageDigest->algorithm);
+                if(isset($signer->signingTime)) {
+                    $signer->signingTime = date("d/m/Y H:i:s P", strtotime($signer->signingTime));
+                }
             }
 
 			return $response;
@@ -558,6 +561,9 @@ class CadesSignatureExplorer extends SignatureExplorer {
         foreach ($response->signers as $signer) {
             $signer->validationResults = new ValidationResults($signer->validationResults);
             $signer->messageDigest->algorithm = DigestAlgorithm::getInstanceByApiAlgorithm($signer->messageDigest->algorithm);
+            if(isset($signer->signingTime)) {
+                $signer->signingTime = date("d/m/Y H:i:s P", strtotime($signer->signingTime));
+            }
         }
 
         return $response;
@@ -576,6 +582,8 @@ class CadesSignatureExplorer extends SignatureExplorer {
 		foreach ($response as $alg) {
 			array_push($algs, DigestAlgorithm::getInstanceByApiAlgorithm($alg));
 		}
+
+		return $algs;
 	}
 
 	private function computeDataHashes($dataFileStream, $algorithms) {
@@ -583,7 +591,7 @@ class CadesSignatureExplorer extends SignatureExplorer {
         foreach ($algorithms as $algorithm) {
             $digestValue = mhash($algorithm->getHashId(), $dataFileStream);
             $dataHash = array (
-                'algorithm' => $algorithm->algorithm,
+                'algorithm' => $algorithm->getAlgorithm(),
                 'value' => base64_encode($digestValue),
                 'hexValue' => null
             );
@@ -787,6 +795,7 @@ class StandardSecurityContexts {
 
 class StandardSignaturePolicies {
 	const PADES_BASIC = '78d20b33-014d-440e-ad07-929f05d00cdf';
+    const PADES_ICPBR_ADR_BASICA = '531d5012-4c0d-4b6f-89e8-ebdcc605d7c2';
 	const PADES_ICPBR_ADR_TEMPO = '10f0d9a5-a0a9-42e9-9523-e181ce05a25b';
 	const CADES_BES = 'a4522485-c9e5-46c3-950b-0d6e951e17d1';
 	const CADES_ICPBR_ADR_BASICA = '3ddd8001-1672-4eb5-a4a2-6e32b17ddc46';
@@ -830,7 +839,7 @@ class StandardSignaturePolicyCatalog {
 
 	public static function getPkiBrazilPades() {
 		return array(
-			StandardSignaturePolicies::PADES_BASIC,
+			StandardSignaturePolicies::PADES_ICPBR_ADR_BASICA,
 			StandardSignaturePolicies::PADES_ICPBR_ADR_TEMPO
 		);
 	}
