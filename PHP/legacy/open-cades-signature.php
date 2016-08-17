@@ -1,9 +1,9 @@
 <?php
 /*
- * This file executes an CAdES signature opening with REST PKI and renders the opening signature page for inspection,
- * the option of validating a signature was set, so the result of the validation will be rendered on the page. There're
- * an option to choose which validation parameters will be used in the validation. This option can be changed in the code
- * above.
+ * This file executes a CAdES signature opening with REST PKI and renders the opening signature page for inspection,
+ * the option of validating a signature was set, so the result of the validation will be rendered on the page too.
+ * There're an option to choose which validation parameters will be used in the validation. This option can be changed
+ * in the code above.
  *
  */
 
@@ -45,9 +45,9 @@ function setValidationParameters($sigExplorer, $caseNumber) {
             // By omitting the accepted policies catalog and defining a default policy, we're telling Rest PKI to
             // validate all signatures in the file with the default policy -- even signatures with an explicit signature
             // policy.
-            $sigExplorer->setDefaultSignaturePolicy(StandardSignaturePolicies::CADES_BES);
+            $sigExplorer->setDefaultSignaturePolicyId(StandardSignaturePolicies::CADES_BES);
             // The CadesBes policy requires us to choose a security context
-            $sigExplorer->setSecurityContext(StandardSecurityContexts::PKI_BRAZIL);
+            $sigExplorer->setSecurityContextId(StandardSecurityContexts::PKI_BRAZIL);
             break;
 
         /**
@@ -56,8 +56,8 @@ function setValidationParameters($sigExplorer, $caseNumber) {
          * Same case as example #2, but using the WindowsServer trust arbitrator
          */
         case 3:
-            $sigExplorer->setDefaultSignaturePolicy(StandardSignaturePolicies::CADES_BES);
-            $sigExplorer->setSecurityContext(StandardSecurityContexts::WINDOWS_SERVER);
+            $sigExplorer->setDefaultSignaturePolicyId(StandardSignaturePolicies::CADES_BES);
+            $sigExplorer->setSecurityContextId(StandardSecurityContexts::WINDOWS_SERVER);
             break;
 
         /**
