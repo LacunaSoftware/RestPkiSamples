@@ -17,6 +17,7 @@
 					<ul class="dropdown-menu">
 						<li><a href="pades-signature.php">With file already on server</a></li>
 						<li><a href="upload.php?goto=pades-signature">With file uploaded by user</a></li>
+                        <li><a href="upload.php?goto=open-pades-signature">Open/validate existing signature</a></li>
 					</ul>
 				</li>
 				<li class="dropdown">
@@ -24,6 +25,7 @@
 					<ul class="dropdown-menu">
 						<li><a href="cades-signature.php">With file already on server</a></li>
 						<li><a href="upload.php?goto=cades-signature">With file uploaded by user</a></li>
+                        <li><a href="upload.php?goto=open-cades-signature">Open/validate existing signature</a></li>
 					</ul>
 				</li>
 				<li class="dropdown">
@@ -40,6 +42,6 @@
 					</ul>
 				</li>
 			</ul>
-		</div><!--/.nav-collapse -->
+            </div><!--/.nav-collapse -->
 	</div>
 </nav>

@@ -37,7 +37,7 @@ if (isset($_FILES['userfile'])) {
 ?><!DOCTYPE html>
 <html>
 <head>
-	<title>PAdES Signature (user file)</title>
+	<title>Upload a file</title>
 	<?php include 'includes.php' // jQuery and other libs (for a sample without jQuery, see https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP) ?>
 </head>
 <body>
