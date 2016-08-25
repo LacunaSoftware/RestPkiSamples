@@ -37,7 +37,7 @@ if (isset($_FILES['userfile'])) {
 ?><!DOCTYPE html>
 <html>
 <head>
-	<title>PAdES Signature (user file)</title>
+	<title>Upload a file</title>
 	<?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component) ?>
 </head>
 <body>
