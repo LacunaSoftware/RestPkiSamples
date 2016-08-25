@@ -22,8 +22,8 @@ namespace WebForms {
 				// signature process
 				var signatureStarter = Util.GetRestPkiClient().GetPadesSignatureStarter();
 
-                // Set the unit of measurement used to edit the pdf marks and visual representations
-                signatureStarter.MeasurementUnits = PadesMeasurementUnits.Centimeters;
+				// Set the unit of measurement used to edit the pdf marks and visual representations
+				signatureStarter.MeasurementUnits = PadesMeasurementUnits.Centimeters;
 
 				// Set the file to be signed as a byte array
 				signatureStarter.SetPdfToSign(Util.GetSampleDocContent());
@@ -69,10 +69,18 @@ namespace WebForms {
 					Position = PadesVisualElements.GetVisualPositioning(1)
 				});
 
-				// Add a single PDF mark to every page of the document before signing. Zero or more marks may be added.
-				// They can be used for any purpose you deem necessary. We have encapsulated this code in a method to include several
-				// possibilities depending on the argument passed. Experiment changing the argument to see different examples
-				// of PDF marks. Once you decide which is best for your case, you can place the code directly here.
+				/*
+					Optionally, add marks to the PDF before signing. These differ from the signature visual representation in that
+					they are actually changes done to the document prior to signing, not binded to any signature. Therefore, any number
+					of marks can be added, for instance one per page, whereas there can only be one visual representation per signature.
+					However, since the marks are in reality changes to the PDF, they can only be added to documents which have no previous
+					signatures, otherwise such signatures would be made invalid by the changes to the document (see property
+					PadesSignatureStarter.BypassMarksIfSigned). This problem does not occurr with signature visual representations.
+
+					We have encapsulated this code in a method to include several possibilities depending on the argument passed.
+					Experiment changing the argument to see different examples of PDF marks. Once you decide which is best for your case,
+					you can place the code directly here.
+				*/
 				signatureStarter.PdfMarks.Add(PadesVisualElements.GetPdfMark(1));
 
 				// Call the StartWithWebPki() method, which initiates the signature. This yields the token, a 43-character
