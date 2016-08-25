@@ -1,6 +1,12 @@
 Lacuna Rest PKI change log
 ==========================
 
+1.9.0 (2016-08-25)
+------------------
+
+- Add support for PDF marks
+- Improve billing report
+
 1.8.2 (2016-07-19)
 ------------------
 
