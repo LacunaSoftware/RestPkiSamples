@@ -81,7 +81,7 @@ namespace WebForms {
 					Experiment changing the argument to see different examples of PDF marks. Once you decide which is best for your case,
 					you can place the code directly here.
 				*/
-				signatureStarter.PdfMarks.Add(PadesVisualElements.GetPdfMark(1));
+				//signatureStarter.PdfMarks.Add(PadesVisualElements.GetPdfMark(1));
 
 				// Call the StartWithWebPki() method, which initiates the signature. This yields the token, a 43-character
 				// case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
