@@ -21,18 +21,18 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 		[HttpGet]
 		public ActionResult Index(string userfile) {
 
-            // Get an instance of the PadesSignatureStarter class, responsible for receiving the signature elements and start the
-            // signature process
-            var signatureStarter = new PadesSignatureStarter(Util.GetRestPkiClient()) {
+			// Get an instance of the PadesSignatureStarter class, responsible for receiving the signature elements and start the
+			// signature process
+			var signatureStarter = new PadesSignatureStarter(Util.GetRestPkiClient()) {
 
-                // Set the unit of measurement used to edit the pdf marks and visual representations
-                MeasurementUnits = PadesMeasurementUnits.Centimeters,
+				// Set the unit of measurement used to edit the pdf marks and visual representations
+				MeasurementUnits = PadesMeasurementUnits.Centimeters,
 
-                // Set the signature policy
-                SignaturePolicyId = StandardPadesSignaturePolicies.Basic,
+				// Set the signature policy
+				SignaturePolicyId = StandardPadesSignaturePolicies.Basic,
 
-                // Set a SecurityContext to be used to determine trust in the certificate chain
-                SecurityContextId = StandardSecurityContexts.PkiBrazil,
+				// Set a SecurityContext to be used to determine trust in the certificate chain
+				SecurityContextId = StandardSecurityContexts.PkiBrazil,
 				// Note: By changing the SecurityContext above you can accept certificates from a custom security context created on the Rest PKI website.
 
 				// Set a visual representation for the signature
@@ -66,7 +66,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 					// possibilities depending on the argument passed. Experiment changing the argument to see different examples
 					// of signature positioning. Once you decide which is best for your case, you can place the code directly here.
 					Position = PadesVisualElements.GetVisualPositioning(1)
-				}
+				},
 			};
 
 			// If the user was redirected here by UploadController (signature with file uploaded by user), the "userfile" URL argument
@@ -80,11 +80,19 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 				signatureStarter.SetPdfToSign(Server.MapPath("~/App_Data/" + userfile.Replace("_", "."))); // Note: we're passing the filename argument with "." as "_" because of limitations of ASP.NET MVC
 			}
 
-			// Add a single PDF mark to every page of the document before signing. Zero or more marks may be added.
-			// They can be used for any purpose you deem necessary. We have encapsulated this code in a method to include several
-			// possibilities depending on the argument passed. Experiment changing the argument to see different examples
-			// of PDF marks. Once you decide which is best for your case, you can place the code directly here.
-			signatureStarter.PdfMarks.Add(PadesVisualElements.GetPdfMark(1));
+			/*
+				Optionally, add marks to the PDF before signing. These differ from the signature visual representation in that
+				they are actually changes done to the document prior to signing, not binded to any signature. Therefore, any number
+				of marks can be added, for instance one per page, whereas there can only be one visual representation per signature.
+				However, since the marks are in reality changes to the PDF, they can only be added to documents which have no previous
+				signatures, otherwise such signatures would be made invalid by the changes to the document (see property
+				PadesSignatureStarter.BypassMarksIfSigned). This problem does not occurr with signature visual representations.
+			
+				We have encapsulated this code in a method to include several possibilities depending on the argument passed.
+				Experiment changing the argument to see different examples of PDF marks. Once you decide which is best for your case,
+				you can place the code directly here.
+			*/
+			//signatureStarter.PdfMarks.Add(PadesVisualElements.GetPdfMark(1));
 
 			// Call the StartWithWebPki() method, which initiates the signature. This yields the token, a 43-character
 			// case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the

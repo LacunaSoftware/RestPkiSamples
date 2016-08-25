@@ -77,7 +77,7 @@ namespace Lacuna.RestPki.SampleSite.Classes {
 		}
 
 		// This function is called by the Pades Signature Starter action (see PadesSignatureController.cs).
-		// It contains examples of PDF marks, isual elements of arbitrary content placed in every page.
+		// It contains examples of PDF marks, visual elements of arbitrary content placed in every page.
 		public static PdfMark GetPdfMark(int sampleNumber) {
 
 			switch (sampleNumber) {

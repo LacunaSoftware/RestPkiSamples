@@ -98,7 +98,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 		public ActionResult Index(CadesSignatureModel model) {
 
 			// Get an instance of the PadesSignatureFinisher class, responsible for completing the signature process
-			var signatureFinisher = new PadesSignatureFinisher(Util.GetRestPkiClient()) {
+			var signatureFinisher = new CadesSignatureFinisher(Util.GetRestPkiClient()) {
 
 				// Set the token for this signature (rendered in a hidden input field, see the view)
 				Token = model.Token
