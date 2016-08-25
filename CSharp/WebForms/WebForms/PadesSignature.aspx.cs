@@ -22,6 +22,9 @@ namespace WebForms {
 				// signature process
 				var signatureStarter = Util.GetRestPkiClient().GetPadesSignatureStarter();
 
+				// Set the unit of measurement used to edit the pdf marks and visual representations
+				signatureStarter.MeasurementUnits = PadesMeasurementUnits.Centimeters;
+
 				// Set the file to be signed as a byte array
 				signatureStarter.SetPdfToSign(Util.GetSampleDocContent());
 
@@ -63,8 +66,22 @@ namespace WebForms {
 					// Position of the visual representation. We have encapsulated this code in a method to include several
 					// possibilities depending on the argument passed. Experiment changing the argument to see different examples
 					// of signature positioning. Once you decide which is best for your case, you can place the code directly here.
-					Position = getVisualPositioning(1)
+					Position = PadesVisualElements.GetVisualPositioning(1)
 				});
+
+				/*
+					Optionally, add marks to the PDF before signing. These differ from the signature visual representation in that
+					they are actually changes done to the document prior to signing, not binded to any signature. Therefore, any number
+					of marks can be added, for instance one per page, whereas there can only be one visual representation per signature.
+					However, since the marks are in reality changes to the PDF, they can only be added to documents which have no previous
+					signatures, otherwise such signatures would be made invalid by the changes to the document (see property
+					PadesSignatureStarter.BypassMarksIfSigned). This problem does not occurr with signature visual representations.
+
+					We have encapsulated this code in a method to include several possibilities depending on the argument passed.
+					Experiment changing the argument to see different examples of PDF marks. Once you decide which is best for your case,
+					you can place the code directly here.
+				*/
+				//signatureStarter.PdfMarks.Add(PadesVisualElements.GetPdfMark(1));
 
 				// Call the StartWithWebPki() method, which initiates the signature. This yields the token, a 43-character
 				// case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
@@ -109,74 +126,5 @@ namespace WebForms {
 
 		}
 
-		// This function is called by the Page_Load method (see above). It contains examples of signature visual representation positionings.
-		private static PadesVisualPositioning getVisualPositioning(int sampleNumber) {
-
-			switch (sampleNumber) {
-
-				case 1:
-					// Example #1: automatic positioning on footnote. This will insert the signature, and future signatures,
-					// ordered as a footnote of the last page of the document
-					return PadesVisualPositioning.GetFootnote(Util.GetRestPkiClient());
-
-				case 2:
-					// Example #2: get the footnote positioning preset and customize it
-					var footnotePosition = PadesVisualPositioning.GetFootnote(Util.GetRestPkiClient());
-					footnotePosition.Container.Left = 2.54;
-					footnotePosition.Container.Bottom = 2.54;
-					footnotePosition.Container.Right = 2.54;
-					return footnotePosition;
-
-				case 3:
-					// Example #3: automatic positioning on new page. This will insert the signature, and future signatures,
-					// in a new page appended to the end of the document.
-					return PadesVisualPositioning.GetNewPage(Util.GetRestPkiClient());
-
-				case 4:
-					// Example #4: get the "new page" positioning preset and customize it
-					var newPagePos = PadesVisualPositioning.GetNewPage(Util.GetRestPkiClient());
-					newPagePos.Container.Left = 2.54;
-					newPagePos.Container.Top = 2.54;
-					newPagePos.Container.Right = 2.54;
-					newPagePos.SignatureRectangleSize.Width = 5;
-					newPagePos.SignatureRectangleSize.Height = 3;
-					return newPagePos;
-
-				case 5:
-					// Example #5: manual positioning
-					// The first parameter is the page number. Zero means the signature will be placed on a new page appended to the end of the document
-					return new PadesVisualManualPositioning(0, PadesMeasurementUnits.Centimeters, new PadesVisualRectangle() {
-						// define a manual position of 5cm x 3cm, positioned at 1 inch from  the left and bottom margins
-						Left = 2.54,
-						Bottom = 2.54,
-						Width = 5,
-						Height = 3
-					});
-
-				case 6:
-					// Example #6: custom auto positioning
-					return new PadesVisualAutoPositioning() {
-						PageNumber = -1, // negative values represent pages counted from the end of the document (-1 is last page)
-						MeasurementUnits = PadesMeasurementUnits.Centimeters,
-						// Specification of the container where the signatures will be placed, one after the other
-						Container = new PadesVisualRectangle() {
-							// Specifying left and right (but no width) results in a variable-width container with the given margins
-							Left = 2.54,
-							Right = 2.54,
-							// Specifying bottom and height (but no top) results in a bottom-aligned fixed-height container
-							Bottom = 2.54,
-							Height = 12.31
-						},
-						// Specification of the size of each signature rectangle
-						SignatureRectangleSize = new PadesSize(5, 3),
-						// The signatures will be placed in the container side by side. If there's no room left, the signatures
-						// will "wrap" to the next row. The value below specifies the vertical distance between rows
-						RowSpacing = 1
-					};
-
-				default:
-					return null;
-			}
-		}
 	}
 }
