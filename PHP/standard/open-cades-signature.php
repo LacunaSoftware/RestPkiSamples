@@ -1,10 +1,6 @@
 <?php
 /*
- * This file executes a CAdES signature opening with REST PKI and renders the opening signature page for inspection,
- * the option of validating a signature was set, so the result of the validation will be rendered on the page too.
- * There're an option to choose which validation parameters will be use in the validation. This option can be changed in
- * the code above.
- *
+ * This file submits a CAdES signature file to Rest PKI for inspection and renders the results.
  */
 
 // The file RestPki.php contains the helper classes to call the REST PKI API
@@ -19,6 +15,7 @@ use Lacuna\StandardSignaturePolicies;
 use Lacuna\StandardSecurityContexts;
 use Lacuna\StandardSignaturePolicyCatalog;
 
+// This function is called below. It encapsulates examples of signature validation parameters.
 function setValidationParameters($sigExplorer, $caseNumber) {
     switch ($caseNumber) {
         /**
@@ -84,17 +81,17 @@ function setValidationParameters($sigExplorer, $caseNumber) {
     }
 }
 
+// Our demo only works if a userfile is given to work with
+$userfile = isset($_GET['userfile']) ? $_GET['userfile'] : null;
+if (empty($userfile)) {
+    throw new \Exception("No file was uploaded");
+}
+
 // Get an instance of the CadesSignatureExplorer class, used to open/validate CAdES signatures
 $sigExplorer = new CadesSignatureExplorer(getRestPkiClient());
 
-// If the user was redirected here by upload.php (signature with file uploaded by user), the "userfile" URL argument
-// will contain the filename under the "app-data" folder.
-$userfile = isset($_GET['userfile']) ? $_GET['userfile'] : null;
-if (!empty($userfile)) {
-    $sigExplorer->setSignatureFile("app-data/{$userfile}");
-} else {
-    throw new \Exception("No file was uploaded");
-}
+// Set the CAdEs signature file to be inspected
+$sigExplorer->setSignatureFile("app-data/{$userfile}");
 
 // Specify that we want to validate the signatures in the file, not only inspect them
 $sigExplorer->setValidate(true);
@@ -107,12 +104,6 @@ setValidationParameters($sigExplorer, 1);
 
 // Call the open() method, which returns the signature file's information
 $signature = $sigExplorer->open();
-
-// The token acquired above can only be used for a single open signature attempt. In order to retry opening it is
-// necessary to get a new token. This can be a problem if the user uses the back button of the browser, since the
-// browser might show a cached page that we rendered previously, with a now stale token. To prevent this from happening,
-// we call the function setExpiredPage(), located in util.php, which sets HTTP headers to prevent caching of the page.
-setExpiredPage();
 
 ?>
 <!DOCTYPE html>
