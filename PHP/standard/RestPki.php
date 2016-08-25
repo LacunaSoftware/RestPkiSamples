@@ -457,7 +457,7 @@ abstract class SignatureExplorer {
 	/** @var RestPkiClient */
 	protected $restPkiClient;
 	protected $signatureFileContent;
-	protected $validade;
+	protected $validate;
 	protected $defaultSignaturePolicyId;
 	protected $acceptableExplicitPolicies;
 	protected $securityContextId;
@@ -471,7 +471,7 @@ abstract class SignatureExplorer {
 	}
 
 	public function setValidate($validate) {
-		$this->validade = $validate;
+		$this->validate = $validate;
 	}
 
 	public function setDefaultSignaturePolicyId($signaturePolicyId) {
@@ -488,7 +488,7 @@ abstract class SignatureExplorer {
 
 	protected function getRequest($mimeType) {
 		$request = array(
-			"validate" => $this->validade,
+			"validate" => $this->validate,
 			"defaultSignaturePolicyId" => $this->defaultSignaturePolicyId,
 			"securityContextId" => $this->securityContextId,
 			"acceptableExplicitPolicies" => $this->acceptableExplicitPolicies,

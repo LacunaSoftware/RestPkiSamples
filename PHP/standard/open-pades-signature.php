@@ -105,19 +105,22 @@ $signature = $sigExplorer->open();
                                  // required to use the Web PKI component) ?>
 </head>
 <body>
-    <?php include 'menu.php' // The top menu, this can be removed entirely ?>
-    <div class="container">
-        <h2>Open existing PAdES Signature</h2>
 
-        <h3>The given file contains <?= count($signature->signers) ?> signatures:</h3>
+<?php include 'menu.php' // The top menu, this can be removed entirely ?>
 
-        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+<div class="container">
 
-            <?php for ($i = 0; $i < count($signature->signers); $i++) {
+    <h2>Open existing PAdES Signature</h2>
 
-                $signer = $signature->signers[$i];
-                $collapseId = "signer_".$i."_collapse";
-                $headingId = "signer_".$i."_heading";
+    <h3>The given file contains <?= count($signature->signers) ?> signatures:</h3>
+
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
+        <?php for ($i = 0; $i < count($signature->signers); $i++) {
+
+            $signer = $signature->signers[$i];
+            $collapseId = "signer_".$i."_collapse";
+            $headingId = "signer_".$i."_heading";
 
             ?>
 
@@ -171,8 +174,9 @@ $signature = $sigExplorer->open();
                     </div>
                 </div>
             </div>
-        </div>
         <?php } ?>
     </div>
+</div>
+
 </body>
 </html>

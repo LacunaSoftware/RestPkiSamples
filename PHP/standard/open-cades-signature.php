@@ -114,8 +114,11 @@ $signature = $sigExplorer->open();
                                  // required to use the Web PKI component) ?>
 </head>
 <body>
+
 <?php include 'menu.php' // The top menu, this can be removed entirely ?>
+
 <div class="container">
+
     <h2>Open existing CAdES Signature</h2>
 
     <h3>The given file contains <?= count($signature->signers) ?> signatures:</h3>
@@ -183,5 +186,6 @@ $signature = $sigExplorer->open();
         <?php } ?>
     </div>
 </div>
+
 </body>
 </html>
