@@ -14,89 +14,11 @@ require_once 'RestPki.php';
 require_once 'util.php';
 
 use Lacuna\PadesSignatureStarter;
-use Lacuna\PadesVisualPositioningPresets;
-use Lacuna\StandardSecurityContexts;
 use Lacuna\StandardSignaturePolicies;
+use Lacuna\PadesMeasurementUnits;
+use Lacuna\PadesVisualElements;
+use Lacuna\StandardSecurityContexts;
 
-// This function is called below. It contains examples of signature visual representation positionings. This code is
-// only in a separate function in order to organize the various examples, you can pick the one that best suits your
-// needs and use it below directly without an encapsulating function.
-function getVisualRepresentationPosition($sampleNumber) {
-
-    switch ($sampleNumber) {
-
-        case 1:
-            // Example #1: automatic positioning on footnote. This will insert the signature, and future signatures,
-            // ordered as a footnote of the last page of the document
-            return PadesVisualPositioningPresets::getFootnote(getRestPkiClient());
-
-        case 2:
-            // Example #2: get the footnote positioning preset and customize it
-            $visualPosition = PadesVisualPositioningPresets::getFootnote(getRestPkiClient());
-            $visualPosition->auto->container->left = 2.54;
-            $visualPosition->auto->container->bottom = 2.54;
-            $visualPosition->auto->container->right = 2.54;
-            return $visualPosition;
-
-        case 3:
-            // Example #3: automatic positioning on new page. This will insert the signature, and future signatures,
-            // in a new page appended to the end of the document.
-            return PadesVisualPositioningPresets::getNewPage(getRestPkiClient());
-
-        case 4:
-            // Example #4: get the "new page" positioning preset and customize it
-            $visualPosition = PadesVisualPositioningPresets::getNewPage(getRestPkiClient());
-            $visualPosition->auto->container->left = 2.54;
-            $visualPosition->auto->container->top = 2.54;
-            $visualPosition->auto->container->right = 2.54;
-            $visualPosition->auto->signatureRectangleSize->width = 5;
-            $visualPosition->auto->signatureRectangleSize->height = 3;
-            return $visualPosition;
-
-        case 5:
-            // Example #5: manual positioning
-            return [
-                'pageNumber' => 0, // zero means the signature will be placed on a new page appended to the end of the document
-                'measurementUnits' => 'Centimeters',
-                // define a manual position of 5cm x 3cm, positioned at 1 inch from the left and bottom margins
-                'manual' => [
-                    'left' => 2.54,
-                    'bottom' => 2.54,
-                    'width' => 5,
-                    'height' => 3
-                ]
-            ];
-
-        case 6:
-            // Example #6: custom auto positioning
-            return [
-                'pageNumber' => -1, // negative values represent pages counted from the end of the document (-1 is last page)
-                'measurementUnits' => 'Centimeters',
-                'auto' => [
-                    // Specification of the container where the signatures will be placed, one after the other
-                    'container' => [
-                        // Specifying left and right (but no width) results in a variable-width container with the given margins
-                        'left' => 2.54,
-                        'right' => 2.54,
-                        // Specifying bottom and height (but no top) results in a bottom-aligned fixed-height container
-                        'bottom' => 2.54,
-                        'height' => 12.31
-                    ],
-                    // Specification of the size of each signature rectangle
-                    'signatureRectangleSize' => [
-                        'width' => 5,
-                        'height' => 3
-                    ],
-                    // The signatures will be placed in the container side by side. If there's no room left, the signatures
-                    // will "wrap" to the next row. The value below specifies the vertical distance between rows
-                    'rowSpacing' => 1
-                ]
-            ];
-
-        default:
-            return null;
-    }
-}
 
 // Get the document id for this signature (received from the POST call, see batch-signature-form.js)
 $id = $_POST['id'];
@@ -104,6 +26,9 @@ $id = $_POST['id'];
 // Instantiate the PadesSignatureStarter class, responsible for receiving the signature elements and start the
 // signature process
 $signatureStarter = new PadesSignatureStarter(getRestPkiClient());
+
+// Set the unit of measurement used to edit the pdf marks and visual representations
+$signatureStarter->measurementUnits = PadesMeasurementUnits::CENTIMETERS;
 
 // Set the document to be signed based on its ID
 $signatureStarter->setPdfToSignPath("content/{$id}.pdf");
@@ -131,6 +56,16 @@ $signatureStarter->setVisualRepresentation([
 
         // Optionally set the horizontal alignment of the text ('Left' or 'Right'), if not set the default is Left
         'horizontalAlign' => 'Left',
+
+        // Optionally set the container within the signature rectangle on which to place the text. By default, the
+        // text can occupy the entire rectangle (how much of the rectangle the text will actually fill depends on the
+        // length and font size). Below, we specify that the text should respect a right margin of 1.5 cm.
+        'container' => [
+            'left' => 0,
+            'top' => 0,
+            'right' => 1.5,
+            'bottom' => 0
+        ]
     ],
 
     'image' => [
@@ -145,7 +80,10 @@ $signatureStarter->setVisualRepresentation([
         'opacity' => 50,
 
         // Align the image to the right
-        'horizontalAlign' => 'Right'
+        'horizontalAlign' => 'Right',
+
+        // Align the image to the center
+		'verticalAlign' => 'Center',
 
     ],
 
@@ -153,8 +91,22 @@ $signatureStarter->setVisualRepresentation([
     // possibilities depending on the argument passed to the function. Experiment changing the argument to see
     // different examples of signature positioning. Once you decide which is best for your case, you can place the
     // code directly here.
-    'position' => getVisualRepresentationPosition(3)
+    'position' => PadesVisualElements::getVisualRepresentationPosition(3)
 ]);
+
+/*
+	Optionally, add marks to the PDF before signing. These differ from the signature visual representation in that
+	they are actually changes done to the document prior to signing, not binded to any signature. Therefore, any number
+	of marks can be added, for instance one per page, whereas there can only be one visual representation per signature.
+	However, since the marks are in reality changes to the PDF, they can only be added to documents which have no previous
+	signatures, otherwise such signatures would be made invalid by the changes to the document (see property
+	PadesSignatureStarter.BypassMarksIfSigned). This problem does not occurr with signature visual representations.
+
+	We have encapsulated this code in a method to include several possibilities depending on the argument passed.
+	Experiment changing the argument to see different examples of PDF marks. Once you decide which is best for your case,
+	you can place the code directly here.
+*/
+//array_push($signatureStarter->pdfMarks, PadesVisualElements::GetPdfMark(1));
 
 // Call the startWithWebPki() method, which initiates the signature. This yields the token, a 43-character
 // case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the

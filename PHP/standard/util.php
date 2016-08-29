@@ -40,3 +40,7 @@ function createAppData() {
 		mkdir($appDataPath);
 	}
 }
+
+function getPdfStampContent() {
+    return file_get_contents('content/PdfStamp.png');
+}

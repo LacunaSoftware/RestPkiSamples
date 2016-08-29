@@ -66,6 +66,8 @@ if ($vr->isValid()) {
 						<li>Responsavel: <?= $userCert->pkiBrazil->responsavel ?></li>
 						<li>Empresa: <?= $userCert->pkiBrazil->companyName ?></li>
 						<li>CNPJ: <?= $userCert->pkiBrazil->cnpj ?></li>
+						<li>RG: <?= $userCert->pkiBrazil->rgNumero." ".$userCert->pkiBrazil->rgEmissor." ".$userCert->pkiBrazil->rgEmissorUF ?></li>
+						<li>OAB: <?= $userCert->pkiBrazil->oabNumero." ".$userCert->pkiBrazil->oabUF ?></li>
 					</ul>
 				</li>
 			</ul>

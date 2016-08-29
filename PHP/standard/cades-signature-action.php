@@ -27,7 +27,7 @@ $cms = $signatureFinisher->finish();
 
 // Get information about the certificate used by the user to sign the file. This method must only be called after
 // calling the finish() method.
-$signerCert = $signatureFinisher->getCertificate();
+$signerCert = $signatureFinisher->getCertificateInfo();
 
 // At this point, you'd typically store the CMS on your database. For demonstration purposes, we'll
 // store the CMS on a temporary folder publicly accessible and render a link to it.
@@ -65,6 +65,8 @@ file_put_contents("app-data/{$filename}", $cms);
 				<li>Responsavel: <?= $signerCert->pkiBrazil->responsavel ?></li>
 				<li>Empresa: <?= $signerCert->pkiBrazil->companyName ?></li>
 				<li>CNPJ: <?= $signerCert->pkiBrazil->cnpj ?></li>
+				<li>RG: <?= $signerCert->pkiBrazil->rgNumero." ".$signerCert->pkiBrazil->rgEmissor." ".$signerCert->pkiBrazil->rgEmissorUF ?></li>
+				<li>OAB: <?= $signerCert->pkiBrazil->oabNumero." ".$signerCert->pkiBrazil->oabUF ?></li>
 			</ul>
 		</li>
 	</ul>
