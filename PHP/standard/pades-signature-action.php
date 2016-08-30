@@ -27,7 +27,7 @@ $signedPdf = $signatureFinisher->finish();
 
 // Get information about the certificate used by the user to sign the file. This method must only be called after
 // calling the finish() method.
-$signerCert = $signatureFinisher->getCertificate();
+$signerCert = $signatureFinisher->getCertificateInfo();
 
 // At this point, you'd typically store the signed PDF on your database. For demonstration purposes, we'll
 // store the PDF on a temporary folder publicly accessible and render a link to it.
@@ -39,8 +39,8 @@ file_put_contents("app-data/{$filename}", $signedPdf);
 ?><!DOCTYPE html>
 <html>
 <head>
-	<title>PAdES Signature</title>
-	<?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component) ?>
+    <title>PAdES Signature</title>
+    <?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component) ?>
 </head>
 <body>
 
@@ -48,34 +48,37 @@ file_put_contents("app-data/{$filename}", $signedPdf);
 
 <div class="container">
 
-	<h2>PAdES Signature</h2>
+    <h2>PAdES Signature</h2>
 
-	<p>File signed successfully!</p>
+    <p>File signed successfully!</p>
 
-	<p>
-		Signer information:
-		<ul>
-			<li>Subject: <?= $signerCert->subjectName->commonName ?></li>
-			<li>Email: <?= $signerCert->emailAddress ?></li>
-			<li>
-				ICP-Brasil fields
-				<ul>
-					<li>Tipo de certificado: <?= $signerCert->pkiBrazil->certificateType ?></li>
-					<li>CPF: <?= $signerCert->pkiBrazil->cpf ?></li>
-					<li>Responsavel: <?= $signerCert->pkiBrazil->responsavel ?></li>
-					<li>Empresa: <?= $signerCert->pkiBrazil->companyName ?></li>
-					<li>CNPJ: <?= $signerCert->pkiBrazil->cnpj ?></li>
-				</ul>
-			</li>
-		</ul>
-	</p>
-	
-	<h3>Actions:</h3>
-	<ul>
-		<li><a href="app-data/<?= $filename ?>">Download the signed file</a></li>
-		<li><a href="open-pades-signature.php?userfile=<?= $filename ?>">Open/validate the signed file</a></li>
-		<li><a href="pades-signature.php?userfile=<?= $filename ?>">Co-sign with another certificate</a></li>
-	</ul>
+    <p>
+        Signer information:
+    <ul>
+        <li>Subject: <?= $signerCert->subjectName->commonName ?></li>
+        <li>Email: <?= $signerCert->emailAddress ?></li>
+        <li>
+            ICP-Brasil fields
+            <ul>
+                <li>Tipo de certificado: <?= $signerCert->pkiBrazil->certificateType ?></li>
+                <li>CPF: <?= $signerCert->pkiBrazil->cpf ?></li>
+                <li>Responsavel: <?= $signerCert->pkiBrazil->responsavel ?></li>
+                <li>Empresa: <?= $signerCert->pkiBrazil->companyName ?></li>
+                <li>CNPJ: <?= $signerCert->pkiBrazil->cnpj ?></li>
+                <li>
+                    RG: <?= $signerCert->pkiBrazil->rgNumero . " " . $signerCert->pkiBrazil->rgEmissor . " " . $signerCert->pkiBrazil->rgEmissorUF ?></li>
+                <li>OAB: <?= $signerCert->pkiBrazil->oabNumero . " " . $signerCert->pkiBrazil->oabUF ?></li>
+            </ul>
+        </li>
+    </ul>
+    </p>
+
+    <h3>Actions:</h3>
+    <ul>
+        <li><a href="app-data/<?= $filename ?>">Download the signed file</a></li>
+        <li><a href="open-pades-signature.php?userfile=<?= $filename ?>">Open/validate the signed file</a></li>
+        <li><a href="pades-signature.php?userfile=<?= $filename ?>">Co-sign with another certificate</a></li>
+    </ul>
 
 </div>
 
