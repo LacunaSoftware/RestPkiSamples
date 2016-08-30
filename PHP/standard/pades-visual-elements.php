@@ -250,6 +250,49 @@ class PadesVisualElements
 
                 return $mark;
 
+            case 4:
+                // Example #4: Same as example #3, but written vertically on the right side of each page
+                // First, we create the mark object. It contains no elements, being a simple empty box.
+                $mark = new PdfMark();
+                // Then, we set the mark's position in every page.
+                $mark->container = [
+                    // Specifying right and width (but no left) results in a right-aligned fixed-width container
+                    'right' => 0.5,
+                    'width' => 1,
+                    // Specifying top and bottom (but no height) results in a variable-height container with the given margins
+                    'top' => 0,
+                    'bottom' => 0
+                ];
+                // We'll not need a border, just a background color.
+                $mark->backgroundColor = new Color(0, 128, 192, 50);
+
+                // Add a single text element.
+                $element = new PdfMarkTextElement();
+                // We center the text.
+                $element->relativeContainer = [
+                    // Specifying just the height (but not top or bottom) results in a vertically centered fixed-height container
+                    'height' => 5,
+                    // Specifying just the width (but not left or right) results in a horizontally centered fixed-width container
+                    'width' => 1
+                ];
+                // 90 degrees rotation (counter clockwise)
+                $element->rotation = 90;
+                // This example has a single section.
+                $section = new PdfTextSection();
+                // We set the text.
+                $section->text = "Signed with RestPKI";
+                // Its color.
+                $section->color = new Color("#FFFFFF"); // White
+                // Its size.
+                $section->fontSize = 12;
+                // And the style.
+                $section->style = PdfTextStyle::BOLD;
+                // Then add the text section.
+                array_push($element->textSections, $section);
+                array_push($mark->elements, $element);
+
+                return $mark;
+
             default:
                 return null;
 
