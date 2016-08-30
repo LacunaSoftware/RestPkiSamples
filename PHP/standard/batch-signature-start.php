@@ -50,13 +50,10 @@ $signatureStarter->setVisualRepresentation([
         // signerName -> full name of the signer
         // signerNationalId -> if the certificate is ICP-Brasil, contains the signer's CPF
         'text' => 'Signed by {{signerName}} ({{signerNationalId}})',
-
         // Specify that the signing time should also be rendered
         'includeSigningTime' => true,
-
         // Optionally set the horizontal alignment of the text ('Left' or 'Right'), if not set the default is Left
         'horizontalAlign' => 'Left',
-
         // Optionally set the container within the signature rectangle on which to place the text. By default, the
         // text can occupy the entire rectangle (how much of the rectangle the text will actually fill depends on the
         // length and font size). Below, we specify that the text should respect a right margin of 1.5 cm.
@@ -67,7 +64,6 @@ $signatureStarter->setVisualRepresentation([
             'bottom' => 0
         ]
     ],
-
     'image' => [
 
         // We'll use as background the image content/PdfStamp.png
@@ -75,18 +71,14 @@ $signatureStarter->setVisualRepresentation([
             'content' => base64_encode(file_get_contents('content/PdfStamp.png')),
             'mimeType' => 'image/png'
         ],
-
         // Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is completely opaque).
         'opacity' => 50,
-
         // Align the image to the right
         'horizontalAlign' => 'Right',
-
         // Align the image to the center
-		'verticalAlign' => 'Center',
+        'verticalAlign' => 'Center',
 
     ],
-
     // Position of the visual representation. We have encapsulated this code in a function to include several
     // possibilities depending on the argument passed to the function. Experiment changing the argument to see
     // different examples of signature positioning. Once you decide which is best for your case, you can place the

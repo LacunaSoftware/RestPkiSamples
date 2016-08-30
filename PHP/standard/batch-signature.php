@@ -9,7 +9,9 @@
  */
 
 // It is up to your application's business logic to determine which documents will compose the batch
-$documentsIds = array_map( function($id) { return sprintf("%02d", $id); }, range(1,30) );
+$documentsIds = array_map(function ($id) {
+    return sprintf("%02d", $id);
+}, range(1, 30));
 
 ?>
 <!DOCTYPE html>
@@ -35,13 +37,14 @@ $documentsIds = array_map( function($id) { return sprintf("%02d", $id); }, range
 
         <div class="form-group">
             <label>File to sign</label>
+
             <p>
                 You'll be signing the following files:
                 <?php
                 // UL element to hold the batch's documents (we'll render these programatically,
                 // see batch-signature-form.js)
                 ?>
-                <ul id="docList" />
+            <ul id="docList"/>
             </p>
         </div>
 
@@ -61,7 +64,7 @@ $documentsIds = array_map( function($id) { return sprintf("%02d", $id); }, range
         ?>
         <button id="signButton" type="button" class="btn btn-primary">Sign Batch</button>
         <button id="refreshButton" type="button" class="btn btn-default">Refresh Certificates</button>
-        
+
     </form>
 
 </div>

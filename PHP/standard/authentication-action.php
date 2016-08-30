@@ -23,20 +23,20 @@ $auth = getRestPkiClient()->getAuthentication();
 $vr = $auth->completeWithWebPki($token);
 
 if ($vr->isValid()) {
-	$userCert = $auth->getCertificate();
-	// At this point, you have assurance that the certificate is valid according to the SecurityContext specified on the
-	// file authentication.php and that the user is indeed the certificate's subject. Now, you'd typically query your
-	// database for a user that matches one of the certificate's fields, such as $userCert->emailAddress or
-	// $userCert->pkiBrazil->cpf (the actual field to be used as key depends on your application's business logic) and
-	// set the user as authenticated with whatever web security framework your application uses. For demonstration
-	// purposes, we'll just render the user's certificate information.
+    $userCert = $auth->getCertificate();
+    // At this point, you have assurance that the certificate is valid according to the SecurityContext specified on the
+    // file authentication.php and that the user is indeed the certificate's subject. Now, you'd typically query your
+    // database for a user that matches one of the certificate's fields, such as $userCert->emailAddress or
+    // $userCert->pkiBrazil->cpf (the actual field to be used as key depends on your application's business logic) and
+    // set the user as authenticated with whatever web security framework your application uses. For demonstration
+    // purposes, we'll just render the user's certificate information.
 }
 
 ?><!DOCTYPE html>
 <html>
 <head>
-	<title>Authentication</title>
-	<?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component) ?>
+    <title>Authentication</title>
+    <?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component) ?>
 </head>
 <body>
 
@@ -44,56 +44,56 @@ if ($vr->isValid()) {
 
 <div class="container">
 
-	<?php
+    <?php
 
-	// We'll render different contents depending on whether the authentication succeeded or not
-	if ($vr->isValid()) {
+    // We'll render different contents depending on whether the authentication succeeded or not
+    if ($vr->isValid()) {
 
-		?>
+        ?>
 
-		<h2>Authentication successful</h2>
+        <h2>Authentication successful</h2>
 
-		<p>
-			User certificate information:
-			<ul>
-				<li>Subject: <?= $userCert->subjectName->commonName ?></li>
-				<li>Email: <?= $userCert->emailAddress ?></li>
-				<li>
-					ICP-Brasil fields
-					<ul>
-						<li>Tipo de certificado: <?= $userCert->pkiBrazil->certificateType ?></li>
-						<li>CPF: <?= $userCert->pkiBrazil->cpf ?></li>
-						<li>Responsavel: <?= $userCert->pkiBrazil->responsavel ?></li>
-						<li>Empresa: <?= $userCert->pkiBrazil->companyName ?></li>
-						<li>CNPJ: <?= $userCert->pkiBrazil->cnpj ?></li>
-						<li>RG: <?= $userCert->pkiBrazil->rgNumero." ".$userCert->pkiBrazil->rgEmissor." ".$userCert->pkiBrazil->rgEmissorUF ?></li>
-						<li>OAB: <?= $userCert->pkiBrazil->oabNumero." ".$userCert->pkiBrazil->oabUF ?></li>
-					</ul>
-				</li>
-			</ul>
-		</p>
+        <p>
+            User certificate information:
+            <ul>
+                <li>Subject: <?= $userCert->subjectName->commonName ?></li>
+                <li>Email: <?= $userCert->emailAddress ?></li>
+                <li>
+                    ICP-Brasil fields
+                    <ul>
+                        <li>Tipo de certificado: <?= $userCert->pkiBrazil->certificateType ?></li>
+                        <li>CPF: <?= $userCert->pkiBrazil->cpf ?></li>
+                        <li>Responsavel: <?= $userCert->pkiBrazil->responsavel ?></li>
+                        <li>Empresa: <?= $userCert->pkiBrazil->companyName ?></li>
+                        <li>CNPJ: <?= $userCert->pkiBrazil->cnpj ?></li>
+                        <li>RG: <?= $userCert->pkiBrazil->rgNumero." ".$userCert->pkiBrazil->rgEmissor." ".$userCert->pkiBrazil->rgEmissorUF ?></li>
+                        <li>OAB: <?= $userCert->pkiBrazil->oabNumero." ".$userCert->pkiBrazil->oabUF ?></li>
+                    </ul>
+                </li>
+            </ul>
+        </p>
 
-		<?php
+        <?php
 
-	} else {
+    } else {
 
-		// The $vr object can be used as a string, but the string contains tabs and new line characters for formatting,
-		// which we'll convert to <br>'s and &nbsp;'s.
-		$vrHtml = $vr;
-		$vrHtml = str_replace("\n", '<br/>', $vrHtml);
-		$vrHtml = str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $vrHtml);
+        // The $vr object can be used as a string, but the string contains tabs and new line characters for formatting,
+        // which we'll convert to <br>'s and &nbsp;'s.
+        $vrHtml = $vr;
+        $vrHtml = str_replace("\n", '<br/>', $vrHtml);
+        $vrHtml = str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $vrHtml);
 
-		?>
+        ?>
 
-		<h2>Authentication Failed</h2>
-		<p><?= $vrHtml ?></p>
-		<p><a href="authentication.php" class="btn btn-primary">Try again</a></p>
+        <h2>Authentication Failed</h2>
+        <p><?= $vrHtml ?></p>
+        <p><a href="authentication.php" class="btn btn-primary">Try again</a></p>
 
-		<?php
+        <?php
 
-	}
+    }
 
-	?>
+    ?>
 
 </div>
 

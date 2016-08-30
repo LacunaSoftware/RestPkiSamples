@@ -39,8 +39,8 @@ file_put_contents("app-data/{$filename}", $signedXml);
 ?><!DOCTYPE html>
 <html>
 <head>
-	<title>Full XML signature (enveloped signature)</title>
-	<?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component) ?>
+    <title>Full XML signature (enveloped signature)</title>
+    <?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component) ?>
 </head>
 <body>
 
@@ -48,29 +48,30 @@ file_put_contents("app-data/{$filename}", $signedXml);
 
 <div class="container">
 
-	<h2>Full XML signature (enveloped signature)</h2>
+    <h2>Full XML signature (enveloped signature)</h2>
 
-	<p>File signed successfully! <a href="app-data/<?= $filename ?>">Click here to download the signed file</a></p>
+    <p>File signed successfully! <a href="app-data/<?= $filename ?>">Click here to download the signed file</a></p>
 
-	<p>
-		Signer information:
-	<ul>
-		<li>Subject: <?= $signerCert->subjectName->commonName ?></li>
-		<li>Email: <?= $signerCert->emailAddress ?></li>
-		<li>
-			ICP-Brasil fields
-			<ul>
-				<li>Tipo de certificado: <?= $signerCert->pkiBrazil->certificateType ?></li>
-				<li>CPF: <?= $signerCert->pkiBrazil->cpf ?></li>
-				<li>Responsavel: <?= $signerCert->pkiBrazil->responsavel ?></li>
-				<li>Empresa: <?= $signerCert->pkiBrazil->companyName ?></li>
-				<li>CNPJ: <?= $signerCert->pkiBrazil->cnpj ?></li>
-				<li>RG: <?= $signerCert->pkiBrazil->rgNumero." ".$signerCert->pkiBrazil->rgEmissor." ".$signerCert->pkiBrazil->rgEmissorUF ?></li>
-				<li>OAB: <?= $signerCert->pkiBrazil->oabNumero." ".$signerCert->pkiBrazil->oabUF ?></li>
-			</ul>
-		</li>
-	</ul>
-	</p>
+    <p>
+        Signer information:
+    <ul>
+        <li>Subject: <?= $signerCert->subjectName->commonName ?></li>
+        <li>Email: <?= $signerCert->emailAddress ?></li>
+        <li>
+            ICP-Brasil fields
+            <ul>
+                <li>Tipo de certificado: <?= $signerCert->pkiBrazil->certificateType ?></li>
+                <li>CPF: <?= $signerCert->pkiBrazil->cpf ?></li>
+                <li>Responsavel: <?= $signerCert->pkiBrazil->responsavel ?></li>
+                <li>Empresa: <?= $signerCert->pkiBrazil->companyName ?></li>
+                <li>CNPJ: <?= $signerCert->pkiBrazil->cnpj ?></li>
+                <li>
+                    RG: <?= $signerCert->pkiBrazil->rgNumero . " " . $signerCert->pkiBrazil->rgEmissor . " " . $signerCert->pkiBrazil->rgEmissorUF ?></li>
+                <li>OAB: <?= $signerCert->pkiBrazil->oabNumero . " " . $signerCert->pkiBrazil->oabUF ?></li>
+            </ul>
+        </li>
+    </ul>
+    </p>
 
 </div>
 

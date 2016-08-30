@@ -4,12 +4,14 @@ namespace Lacuna;
 
 // This class contains settings for signature visual positioning and PDF marks, which are options when performing
 // PAdES signatures.
-class PadesVisualElements {
+class PadesVisualElements
+{
 
     // This function is called by pades-signature.php. It contains examples of signature visual representation
     // positionings. This code is only in a separate function in order to organize the various examples, you can pick
     // the one that best suits your needs and use it below directly without an encapsulating function.
-    static function getVisualRepresentationPosition($sampleNumber) {
+    static function getVisualRepresentationPosition($sampleNumber)
+    {
 
         switch ($sampleNumber) {
 
@@ -94,7 +96,8 @@ class PadesVisualElements {
     // This function is called by pades-signature.php. It contains examples of PDF marks, visual elements of arbitrary
     // content placed in every page. This code is only in a separate function in order to organize the various examples,
     // you can pick the one that best suits your needs and use it below directly without an encapsulating function.
-    static function getPdfMark($sampleNumber) {
+    static function getPdfMark($sampleNumber)
+    {
 
         switch ($sampleNumber) {
 
@@ -128,7 +131,7 @@ class PadesVisualElements {
                 // We'll use the image at 'content/PdfStamp.png'.
                 $element->image = new PdfMarkImage(getPdfStampContent(), "image/png");
                 // Opacity is an integer from 0 to 1000 (0 is completely transparent, 100 is completely opaque).
-                $element->image->opacity =  75;
+                $element->image->opacity = 75;
                 array_push($mark->elements, $element);
 
 
