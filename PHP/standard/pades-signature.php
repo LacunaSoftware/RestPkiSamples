@@ -15,6 +15,9 @@ require_once 'RestPki.php';
 // initialized with the API access token
 require_once 'util.php';
 
+// The file pades-visual-elements.php contains sample settings for visual representations and PDF marks (see below)
+require_once 'pades-visual-elements.php';
+
 use Lacuna\PadesSignatureStarter;
 use Lacuna\StandardSignaturePolicies;
 use Lacuna\PadesMeasurementUnits;
@@ -86,7 +89,7 @@ $signatureStarter->setVisualRepresentation([
 	// possibilities depending on the argument passed to the function. Experiment changing the argument to see
 	// different examples of signature positioning. Once you decide which is best for your case, you can place the
 	// code directly here.
-	'position' => PadesVisualElements::getVisualRepresentationPosition(3)
+	'position' => PadesVisualElements::getVisualRepresentationPosition(1)
 
 ]);
 
@@ -112,7 +115,7 @@ if (!empty($userfile)) {
 	Experiment changing the argument to see different examples of PDF marks. Once you decide which is best for your case,
 	you can place the code directly here.
 */
-//array_push($signatureStarter->pdfMarks, PadesVisualElements::GetPdfMark(1));
+//array_push($signatureStarter->pdfMarks, PadesVisualElements::getPdfMark(1));
 
 // Call the startWithWebPki() method, which initiates the signature. This yields the token, a 43-character
 // case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
