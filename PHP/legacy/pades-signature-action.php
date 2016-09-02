@@ -52,27 +52,32 @@ file_put_contents("app-data/{$filename}", $signedPdf);
 
 	<h2>PAdES Signature</h2>
 
-	<p>File signed successfully! <a href="app-data/<?php echo $filename; ?>">Click here to download the signed file</a></p>
+	<p>File signed successfully!</p>
 
 	<p>
 		Signer information:
-	<ul>
-		<li>Subject: <?php echo $signerCert->subjectName->commonName; ?></li>
-		<li>Email: <?php echo $signerCert->emailAddress; ?></li>
-		<li>
-			ICP-Brasil fields
-			<ul>
-				<li>Tipo de certificado: <?php echo $signerCert->pkiBrazil->certificateType; ?></li>
-				<li>CPF: <?php echo $signerCert->pkiBrazil->cpf; ?></li>
-				<li>Responsavel: <?php echo $signerCert->pkiBrazil->responsavel; ?></li>
-				<li>Empresa: <?php echo $signerCert->pkiBrazil->companyName; ?></li>
-				<li>CNPJ: <?php echo $signerCert->pkiBrazil->cnpj; ?></li>
-			</ul>
-		</li>
-	</ul>
+		<ul>
+			<li>Subject: <?php echo $signerCert->subjectName->commonName; ?></li>
+			<li>Email: <?php echo $signerCert->emailAddress; ?></li>
+			<li>
+				ICP-Brasil fields
+				<ul>
+					<li>Tipo de certificado: <?php echo $signerCert->pkiBrazil->certificateType; ?></li>
+					<li>CPF: <?php echo $signerCert->pkiBrazil->cpf; ?></li>
+					<li>Responsavel: <?php echo $signerCert->pkiBrazil->responsavel; ?></li>
+					<li>Empresa: <?php echo $signerCert->pkiBrazil->companyName; ?></li>
+					<li>CNPJ: <?php echo $signerCert->pkiBrazil->cnpj; ?></li>
+				</ul>
+			</li>
+		</ul>
 	</p>
 
-	<p><a href="pades-signature.php?userfile=<?php echo $filename; ?>">Click here</a> to co-sign with another certificate</p>
+	<h3>Actions:</h3>
+	<ul>
+		<li><a href="app-data/<?php echo $filename ?>">Download the signed file</a></li>
+		<li><a href="open-pades-signature.php?userfile=<?php echo $filename ?>">Open/validate the signed file</a></li>
+		<li><a href="pades-signature.php?userfile=<?php echo $filename ?>">Co-sign with another certificate</a></li>
+	</ul>
 
 </div>
 

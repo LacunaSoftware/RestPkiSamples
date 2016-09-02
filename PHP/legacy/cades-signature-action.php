@@ -52,7 +52,7 @@ file_put_contents("app-data/{$filename}", $cms);
 
 	<h2>CAdES Signature</h2>
 
-	<p>File signed successfully! <a href="app-data/<?php echo $filename; ?>">Click here to download the signed file</a></p>
+	<p>File signed successfully!</p>
 
 	<p>
 		Signer information:
@@ -72,7 +72,12 @@ file_put_contents("app-data/{$filename}", $cms);
 	</ul>
 	</p>
 
-	<p><a href="cades-signature.php?cmsfile=<?php echo $filename; ?>">Click here</a> to co-sign with another certificate</p>
+	<h3>Actions:</h3>
+	<ul>
+		<li><a href="app-data/<?php echo $filename ?>">Download the signed file</a></li>
+		<li><a href="open-cades-signature.php?userfile=<?php echo $filename ?>">Open/validate the signed file</a></li>
+		<li><a href="cades-signature.php?cmsfile=<?php echo $filename ?>">Co-sign with another certificate</a></li>
+	</ul>
 
 </div>
 
