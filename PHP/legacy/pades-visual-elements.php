@@ -11,7 +11,8 @@ class PadesVisualElements
     // visual representation positionings. This code is only in a separate function in order to organize the various
     // examples, you can pick the one that best suits your needs and use it below directly without an encapsulating
     // function.
-    static function getVisualRepresentationPosition($sampleNumber) {
+    static function getVisualRepresentationPosition($sampleNumber)
+    {
 
         switch ($sampleNumber) {
 

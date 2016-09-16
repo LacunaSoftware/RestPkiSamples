@@ -18,7 +18,8 @@ use Lacuna\StandardSecurityContexts;
 use Lacuna\StandardSignaturePolicyCatalog;
 
 // This function is called below. It encapsulates examples of signature validation parameters.
-function setValidationParameters($sigExplorer, $caseNumber) {
+function setValidationParameters($sigExplorer, $caseNumber)
+{
 
     switch ($caseNumber) {
 
@@ -122,19 +123,21 @@ $signature = $sigExplorer->open();
         <?php for ($i = 0; $i < count($signature->signers); $i++) {
 
             $signer = $signature->signers[$i];
-            $collapseId = "signer_".$i."_collapse";
-            $headingId = "signer_".$i."_heading";
+            $collapseId = "signer_" . $i . "_collapse";
+            $headingId = "signer_" . $i . "_heading";
 
             ?>
 
             <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="<?php echo $headingId?>">
+                <div class="panel-heading" role="tab" id="<?php echo $headingId ?>">
                     <h4 class="panel-title">
-                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#<?php echo $collapseId?>" aria-expanded="true" aria-controls="<?php echo $collapseId?>">
-                            <?php echo  $signer->certificate->subjectName->commonName ?>
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                           href="#<?php echo $collapseId ?>" aria-expanded="true"
+                           aria-controls="<?php echo $collapseId ?>">
+                            <?php echo $signer->certificate->subjectName->commonName ?>
                             <?php if ($signer->validationResults != null) { ?>
-                                <text>- </text>
-                                <?php if ($signer->validationResults->isValid()) {?>
+                                <text>-</text>
+                                <?php if ($signer->validationResults->isValid()) { ?>
                                     <span style="color: green; font-weight: bold;">valid</span>
                                 <?php } else { ?>
                                     <span style="color: red; font-weight: bold;">invalid</span>
@@ -143,35 +146,41 @@ $signature = $sigExplorer->open();
                         </a>
                     </h4>
                 </div>
-                <div id="<?php echo $collapseId?>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="<?php echo $headingId?>">
+                <div id="<?php echo $collapseId ?>" class="panel-collapse collapse" role="tabpanel"
+                     aria-labelledby="<?php echo $headingId ?>">
                     <div class="panel-body">
-                        <p>Signing time: <?php echo  $signer->signingTime ?></p>
-                        <p>Message digest: <?php echo  $signer->messageDigest->algorithm->getName()." ".$signer->messageDigest->hexValue ?></p>
+                        <p>Signing time: <?php echo $signer->signingTime ?></p>
+                        <p>Message
+                            digest: <?php echo $signer->messageDigest->algorithm->getName() . " " . $signer->messageDigest->hexValue ?></p>
                         <?php if ($signer->signaturePolicy != null) { ?>
-                            <p>Signature policy: <?php echo  $signer->signaturePolicy->oid?></p>
+                            <p>Signature policy: <?php echo $signer->signaturePolicy->oid ?></p>
                         <?php } ?>
                         <p>
                             Signer information:
                         <ul>
-                            <li>Subject: <?php echo  $signer->certificate->subjectName->commonName ?></li>
-                            <li>Email: <?php echo  $signer->certificate->emailAddress ?></li>
+                            <li>Subject: <?php echo $signer->certificate->subjectName->commonName ?></li>
+                            <li>Email: <?php echo $signer->certificate->emailAddress ?></li>
                             <li>
                                 ICP-Brasil fields
                                 <ul>
-                                    <li>Tipo de certificado: <?php echo  $signer->certificate->pkiBrazil->certificateType ?></li>
-                                    <li>CPF: <?php echo  $signer->certificate->pkiBrazil->cpf ?></li>
-                                    <li>Responsavel: <?php echo  $signer->certificate->pkiBrazil->responsavel ?></li>
-                                    <li>Empresa: <?php echo  $signer->certificate->pkiBrazil->companyName ?></li>
-                                    <li>CNPJ: <?php echo  $signer->certificate->pkiBrazil->cnpj ?></li>
-                                    <li>RG: <?php echo  $signer->certificate->pkiBrazil->rgNumero." ".$signer->certificate->pkiBrazil->rgEmissor." ".$signer->certificate->pkiBrazil->rgEmissorUF ?></li>
-                                    <li>OAB: <?php echo  $signer->certificate->pkiBrazil->oabNumero." ".$signer->certificate->pkiBrazil->oabUF ?></li>
+                                    <li>Tipo de
+                                        certificado: <?php echo $signer->certificate->pkiBrazil->certificateType ?></li>
+                                    <li>CPF: <?php echo $signer->certificate->pkiBrazil->cpf ?></li>
+                                    <li>Responsavel: <?php echo $signer->certificate->pkiBrazil->responsavel ?></li>
+                                    <li>Empresa: <?php echo $signer->certificate->pkiBrazil->companyName ?></li>
+                                    <li>CNPJ: <?php echo $signer->certificate->pkiBrazil->cnpj ?></li>
+                                    <li>
+                                        RG: <?php echo $signer->certificate->pkiBrazil->rgNumero . " " . $signer->certificate->pkiBrazil->rgEmissor . " " . $signer->certificate->pkiBrazil->rgEmissorUF ?></li>
+                                    <li>
+                                        OAB: <?php echo $signer->certificate->pkiBrazil->oabNumero . " " . $signer->certificate->pkiBrazil->oabUF ?></li>
                                 </ul>
                             </li>
                         </ul>
                         </p>
                         <?php if ($signer->validationResults != null) { ?>
                             <p>Validation results:<br/>
-                                <textarea style="width: 100%" rows="20"><?php echo  $signer->validationResults ?></textarea>
+                                <textarea style="width: 100%"
+                                          rows="20"><?php echo $signer->validationResults ?></textarea>
                             </p>
                         <?php } ?>
                     </div>

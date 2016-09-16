@@ -41,8 +41,8 @@ file_put_contents("app-data/{$filename}", $cms);
 ?><!DOCTYPE html>
 <html>
 <head>
-	<title>PAdES Signature</title>
-	<?php include 'includes.php' // jQuery and other libs (for a sample without jQuery, see https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP#barebones-sample) ?>
+    <title>PAdES Signature</title>
+    <?php include 'includes.php' // jQuery and other libs (for a sample without jQuery, see https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP#barebones-sample) ?>
 </head>
 <body>
 
@@ -50,36 +50,37 @@ file_put_contents("app-data/{$filename}", $cms);
 
 <div class="container">
 
-	<h2>CAdES Signature</h2>
+    <h2>CAdES Signature</h2>
 
-	<p>File signed successfully!</p>
+    <p>File signed successfully!</p>
 
-	<p>
-		Signer information:
-	<ul>
-		<li>Subject: <?php echo $signerCert->subjectName->commonName; ?></li>
-		<li>Email: <?php echo $signerCert->emailAddress; ?></li>
-		<li>
-			ICP-Brasil fields
-			<ul>
-				<li>Tipo de certificado: <?php echo $signerCert->pkiBrazil->certificateType; ?></li>
-				<li>CPF: <?php echo $signerCert->pkiBrazil->cpf; ?></li>
-				<li>Responsavel: <?php echo $signerCert->pkiBrazil->responsavel; ?></li>
-				<li>Empresa: <?php echo $signerCert->pkiBrazil->companyName; ?></li>
-				<li>CNPJ: <?php echo $signerCert->pkiBrazil->cnpj; ?></li>
-				<li>RG: <?php echo $signerCert->pkiBrazil->rgNumero." ".$signerCert->pkiBrazil->rgEmissor." ".$signerCert->pkiBrazil->rgEmissorUF ?></li>
-				<li>OAB: <?php echo $signerCert->pkiBrazil->oabNumero." ".$signerCert->pkiBrazil->oabUF ?></li>
-			</ul>
-		</li>
-	</ul>
-	</p>
+    <p>
+        Signer information:
+    <ul>
+        <li>Subject: <?php echo $signerCert->subjectName->commonName; ?></li>
+        <li>Email: <?php echo $signerCert->emailAddress; ?></li>
+        <li>
+            ICP-Brasil fields
+            <ul>
+                <li>Tipo de certificado: <?php echo $signerCert->pkiBrazil->certificateType; ?></li>
+                <li>CPF: <?php echo $signerCert->pkiBrazil->cpf; ?></li>
+                <li>Responsavel: <?php echo $signerCert->pkiBrazil->responsavel; ?></li>
+                <li>Empresa: <?php echo $signerCert->pkiBrazil->companyName; ?></li>
+                <li>CNPJ: <?php echo $signerCert->pkiBrazil->cnpj; ?></li>
+                <li>
+                    RG: <?php echo $signerCert->pkiBrazil->rgNumero . " " . $signerCert->pkiBrazil->rgEmissor . " " . $signerCert->pkiBrazil->rgEmissorUF ?></li>
+                <li>OAB: <?php echo $signerCert->pkiBrazil->oabNumero . " " . $signerCert->pkiBrazil->oabUF ?></li>
+            </ul>
+        </li>
+    </ul>
+    </p>
 
-	<h3>Actions:</h3>
-	<ul>
-		<li><a href="app-data/<?php echo $filename ?>">Download the signed file</a></li>
-		<li><a href="open-cades-signature.php?userfile=<?php echo $filename ?>">Open/validate the signed file</a></li>
-		<li><a href="cades-signature.php?cmsfile=<?php echo $filename ?>">Co-sign with another certificate</a></li>
-	</ul>
+    <h3>Actions:</h3>
+    <ul>
+        <li><a href="app-data/<?php echo $filename ?>">Download the signed file</a></li>
+        <li><a href="open-cades-signature.php?userfile=<?php echo $filename ?>">Open/validate the signed file</a></li>
+        <li><a href="cades-signature.php?cmsfile=<?php echo $filename ?>">Co-sign with another certificate</a></li>
+    </ul>
 
 </div>
 
