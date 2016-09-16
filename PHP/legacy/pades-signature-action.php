@@ -29,7 +29,7 @@ $signedPdf = $signatureFinisher->finish();
 
 // Get information about the certificate used by the user to sign the file. This method must only be called after
 // calling the finish() method.
-$signerCert = $signatureFinisher->getCertificate();
+$signerCert = $signatureFinisher->getCertificateInfo();
 
 // At this point, you'd typically store the signed PDF on your database. For demonstration purposes, we'll
 // store the PDF on a temporary folder publicly accessible and render a link to it.
@@ -67,6 +67,8 @@ file_put_contents("app-data/{$filename}", $signedPdf);
 					<li>Responsavel: <?php echo $signerCert->pkiBrazil->responsavel; ?></li>
 					<li>Empresa: <?php echo $signerCert->pkiBrazil->companyName; ?></li>
 					<li>CNPJ: <?php echo $signerCert->pkiBrazil->cnpj; ?></li>
+					<li>RG: <?php echo $signerCert->pkiBrazil->rgNumero." ".$signerCert->pkiBrazil->rgEmissor." ".$signerCert->pkiBrazil->rgEmissorUF ?></li>
+					<li>OAB: <?php echo $signerCert->pkiBrazil->oabNumero." ".$signerCert->pkiBrazil->oabUF ?></li>
 				</ul>
 			</li>
 		</ul>

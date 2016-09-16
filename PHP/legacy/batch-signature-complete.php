@@ -31,7 +31,7 @@ $signedPdf = $signatureFinisher->finish();
 
 // Get information about the certificate used by the user to sign the file. This method must only be called after
 // calling the finish() method.
-$signerCert = $signatureFinisher->getCertificate();
+$signerCert = $signatureFinisher->getCertificateInfo();
 
 // At this point, you'd typically store the signed PDF on your database. For demonstration purposes, we'll
 // store the PDF on a temporary folder publicly accessible and render a link to it (see batch-signature-form.js).

@@ -33,13 +33,15 @@ if ($vr->isValid()) {
 	// set the user as authenticated with whatever web security framework your application uses. For demonstration
 	// purposes, we'll just render the user's certificate information.
 }
+?>
 
-?><!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 	<title>Authentication</title>
 	<meta charset="utf-8">
-	<?php include 'includes.php' // jQuery and other libs (for a sample without jQuery, see https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP) ?>
+	<?php include 'includes.php' // jQuery and other libs (for a sample without jQuery, see
+                                 // https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP) ?>
 </head>
 <body>
 
@@ -52,7 +54,7 @@ if ($vr->isValid()) {
 	// We'll render different contents depending on whether the authentication succeeded or not
 	if ($vr->isValid()) {
 
-		?>
+	    ?>
 
 		<h2>Authentication successful</h2>
 
@@ -69,12 +71,14 @@ if ($vr->isValid()) {
 						<li>Responsavel: <?php echo $userCert->pkiBrazil->responsavel; ?></li>
 						<li>Empresa: <?php echo $userCert->pkiBrazil->companyName; ?></li>
 						<li>CNPJ: <?php echo $userCert->pkiBrazil->cnpj; ?></li>
+						<li>RG: <?php echo $userCert->pkiBrazil->rgNumero." ".$userCert->pkiBrazil->rgEmissor." ".$userCert->pkiBrazil->rgEmissorUF ?></li>
+						<li>OAB: <?php echo $userCert->pkiBrazil->oabNumero." ".$userCert->pkiBrazil->oabUF ?></li>
 					</ul>
 				</li>
 			</ul>
 		</p>
 
-		<?php
+        <?php
 
 	} else {
 
@@ -84,17 +88,17 @@ if ($vr->isValid()) {
 		$vrHtml = str_replace("\n", '<br/>', $vrHtml);
 		$vrHtml = str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $vrHtml);
 
-		?>
+        ?>
 
 		<h2>Authentication Failed</h2>
 		<p><?php echo $vrHtml; ?></p>
 		<p><a href="authentication.php" class="btn btn-primary">Try again</a></p>
 
-		<?php
+        <?php
 
 	}
 
-	?>
+    ?>
 
 </div>
 
