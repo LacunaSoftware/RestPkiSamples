@@ -18,6 +18,8 @@ require_once 'util.php';
 // The file pades-visual-elements.php contains sample settings for visual representations and PDF marks (see below)
 require_once 'pades-visual-elements.php';
 
+require_once 'chunked-upload-utility.php';
+
 use Lacuna\PadesSignatureStarter;
 use Lacuna\StandardSignaturePolicies;
 use Lacuna\PadesMeasurementUnits;

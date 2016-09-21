@@ -70,6 +70,21 @@ class RestPkiClient
         return json_decode($httpResponse->getBody());
     }
 
+    public function postMultipartFormData($url, $multipartFormData) {
+        $verb = 'POST';
+        $client = $this->getRestClient();
+        $httResponse = null;
+        try {
+
+            $httpResponse = $client->request($verb, $url, $multipartFormData);
+
+        } catch (\GuzzleHttp\Exception\TransferException $e) {
+            throw new RestUnreachableException($verb, $url, $e);
+        }
+        $this->checkResponse($verb, $url, $httpResponse);
+        return json_decode($httpResponse->getBody());
+    }
+
     private function checkResponse($verb, $url, \Psr\Http\Message\ResponseInterface $httpResponse)
     {
         $statusCode = $httpResponse->getStatusCode();
@@ -301,7 +316,10 @@ abstract class SignatureStarter
 class PadesSignatureStarter extends SignatureStarter
 {
 
-    private $pdfContent;
+    private $pdfToSign;
+    private $pdfToSignPath;
+    private $toSignLength;
+
     public $measurementUnits;
     public $pageOptimization;
     public $bypassMarksIfSigned;
@@ -314,16 +332,20 @@ class PadesSignatureStarter extends SignatureStarter
         $this->bypassMarksIfSigned = true;
         $this->done = false;
         $this->pdfMarks = [];
+        $this->pdfToSign = $this->pdfToSignPath = null;
+        $this->toSignLength = 0;
     }
 
     public function setPdfToSignPath($pdfPath)
     {
-        $this->pdfContent = file_get_contents($pdfPath);
+        $this->pdfToSignPath = $pdfPath;
+        $this->toSignLength = filesize($pdfPath);
     }
 
     public function setPdfToSignContent($content)
     {
-        $this->pdfContent = $content;
+        $this->pdfToSign = $content;
+        $this->toSignLength = strlen($content);
     }
 
     public function setVisualRepresentation($visualRepresentation)
@@ -333,14 +355,24 @@ class PadesSignatureStarter extends SignatureStarter
 
     public function startWithWebPki()
     {
-
-        if (empty($this->pdfContent)) {
+        if ($this->toSignLength <= 0) {
             throw new \Exception("The PDF to sign was not set");
         }
         if (empty($this->signaturePolicyId)) {
             throw new \Exception("The signature policy was not set");
         }
 
+        $response = $this->StartSignature();
+
+        if (isset($response->certificate)) {
+            $this->certificateInfo = $response->certificate;
+        }
+        $this->done = true;
+
+        return $response->token;
+    }
+
+    protected function StartSignature() {
         $request = array(
             'signaturePolicyId' => $this->signaturePolicyId,
             'securityContextId' => $this->securityContextId,
@@ -351,23 +383,28 @@ class PadesSignatureStarter extends SignatureStarter
             'pageOptimization' => $this->pageOptimization,
             'visualRepresentation' => $this->visualRepresentation
         );
-        if (!empty($this->pdfContent)) {
-            $request['pdfToSign'] = base64_encode($this->pdfContent);
-        }
+
         if (!empty($this->certificate)) { // may be null
             $request['certificate'] = base64_encode($this->signerCertificate);
         }
 
-        $response = $this->restPkiClient->post('Api/PadesSignatures', $request);
-
-        if (isset($response->certificate)) {
-            $this->certificateInfo = $response->certificate;
+        if ($this->toSignLength > 1 * 1024 * 1024 ) {
+            $utility = new ChunkedUploadUtility($this->restPkiClient);
+            $request['pdfToSign'] = array(
+                "content" => null,
+                "mimeType" => null,
+                "blobToken" => ((!empty($this->pdfToSign)) ? $utility->ChunkedContentUpload($this->pdfToSign) : $utility->ChunkedFileUpload($this->pdfToSignPath))
+            );
+        } else {
+            $request['pdfToSign'] = array(
+                "content" => ((!empty($this->pdfToSign)) ? base64_encode($this->pdfToSign) : base64_encode(file_get_contents($this->pdfToSignPath))),
+                "mimeType" => null,
+                "blobToken" => null
+            );
         }
-        $this->done = true;
-
-        return $response->token;
+        $response = $this->restPkiClient->post('Api/v2/PadesSignatures', $request);
+        return $response;
     }
-
 }
 
 class CadesSignatureStarter extends SignatureStarter
@@ -687,7 +724,6 @@ class PadesSignatureFinisher extends SignatureFinisher
         file_put_contents($pdfPath, $this->signedPdf);
     }
 }
-
 
 class CadesSignatureFinisher extends SignatureFinisher
 {
