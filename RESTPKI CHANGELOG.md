@@ -1,6 +1,11 @@
 Lacuna Rest PKI change log
 ==========================
 
+1.9.1 (2016-09-22)
+------------------
+
+- Fix bug preventing use of tags {{signerEmail}} and {{issuerCommonName}} on PAdES visual representation
+
 1.9.0 (2016-08-25)
 ------------------
 
