@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import sample.Application;
+import sample.controller.util.PadesVisualElements;
 import sample.util.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -49,6 +50,9 @@ public class PadesSignatureController {
 
 		}
 
+		// Set the unit of measurement used to edit the pdf marks and visual representations
+		signatureStarter.setMeasurementUnits(PadesMeasurementUnits.Centimeters);
+
 		// Set the signature policy
 		signatureStarter.setSignaturePolicy(SignaturePolicy.PadesBasic);
 
@@ -76,10 +80,22 @@ public class PadesSignatureController {
 		// possibilities depending on the argument passed to the function. Experiment changing the argument to see
 		// different examples of signature positioning (valid values are 1-6). Once you decide which is best for your
 		// case, you can place the code directly here.
-		visualRepresentation.setPosition(getVisualRepresentationPosition(4));
+		visualRepresentation.setPosition(PadesVisualElements.getVisualRepresentationPosition(4));
 
 		// Set the visual representation created
 		signatureStarter.setVisualRepresentation(visualRepresentation);
+
+		// Optionally, add marks to the PDF before signing. These differ from the signature visual representation in that
+		// they are actually changes done to the document prior to signing, not binded to any signature. Therefore, any number
+		// of marks can be added, for instance one per page, whereas there can only be one visual representation per signature.
+		// However, since the marks are in reality changes to the PDF, they can only be added to documents which have no previous
+		// signatures, otherwise such signatures would be made invalid by the changes to the document (see property
+		// PadesSignatureStarter.bypassMarksIfSigned). This problem does not occurr with signature visual representations.
+
+		// We have encapsulated this code in a method to include several possibilities depending on the argument passed.
+		// Experiment changing the argument to see different examples of PDF marks. Once you decide which is best for your case,
+		// you can place the code directly here.
+		// signatureStarter.addPdfMark(PadesVisualElements.getPdfMark(1));
 
 		// Call the startWithWebPki() method, which initiates the signature. This yields the token, a 43-character
 		// case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
@@ -98,70 +114,6 @@ public class PadesSignatureController {
 		model.addAttribute("token", token);
 		model.addAttribute("userfile", userfile);
 		return "pades-signature";
-	}
-
-	// This method is called by the get() method. It contains examples of signature visual representation positionings.
-	private PadesVisualPositioning getVisualRepresentationPosition(int sampleNumber) throws RestException {
-
-		switch (sampleNumber) {
-
-			case 1:
-				// Example #1: automatic positioning on footnote. This will insert the signature, and future signatures,
-				// ordered as a footnote of the last page of the document
-				return PadesVisualPositioning.getFootnote(Util.getRestPkiClient());
-
-			case 2:
-				// Example #2: get the footnote positioning preset and customize it
-				PadesVisualAutoPositioning footnotePosition = PadesVisualPositioning.getFootnote(Util.getRestPkiClient());
-				footnotePosition.getContainer().setLeft(2.54);
-				footnotePosition.getContainer().setBottom(2.54);
-				footnotePosition.getContainer().setRight(2.54);
-				return footnotePosition;
-
-			case 3:
-				// Example #3: automatic positioning on new page. This will insert the signature, and future signatures,
-				// in a new page appended to the end of the document.
-				return PadesVisualPositioning.getNewPage(Util.getRestPkiClient());
-
-			case 4:
-				// Example #4: get the "new page" positioning preset and customize it
-				PadesVisualAutoPositioning newPagePos = PadesVisualPositioning.getNewPage(Util.getRestPkiClient());
-				newPagePos.getContainer().setLeft(2.54);
-				newPagePos.getContainer().setTop(2.54);
-				newPagePos.getContainer().setRight(2.54);
-				newPagePos.setSignatureRectangleSize(new PadesSize(5, 3));
-				return newPagePos;
-
-			case 5:
-				// Example #5: manual positioning
-				PadesVisualRectangle pos = new PadesVisualRectangle();
-				// define a manual position of 5cm x 3cm, positioned at 1 inch from the left and bottom margins
-				pos.setWidthLeftAnchored(5.0, 2.54);
-				pos.setHeightBottomAnchored(3.0, 2.54);
-				return new PadesVisualManualPositioning(
-					0, // Page number. Zero means the signature will be placed on a new page appended to the end of the document
-					PadesMeasurementUnits.Centimeters,
-					pos // reference to the manual position defined above
-				);
-
-			case 6:
-				// Example #6: custom auto positioning
-				PadesVisualRectangle container = new PadesVisualRectangle();
-				// Specification of the container where the signatures will be placed, one after the other
-				container.setHorizontalStretch(2.54, 2.54); // variable-width container with the given margins
-				container.setHeightBottomAnchored(12.31, 2.54); // bottom-aligned fixed-height container
-				return new PadesVisualAutoPositioning(
-					-1, // Page number. Negative values represent pages counted from the end of the document (-1 is last page)
-					PadesMeasurementUnits.Centimeters,
-					container, // Reference to the container defined above
-					new PadesSize(5.0, 3.0), // Specification of the size of each signature rectangle
-					1.0 // The signatures will be placed in the container side by side. If there's no room left, the signatures
-					    // will "wrap" to the next row. This value specifies the vertical distance between rows
-				);
-
-			default:
-				return null;
-		}
 	}
 
 	/*
