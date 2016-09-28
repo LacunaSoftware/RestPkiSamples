@@ -1,6 +1,12 @@
 Lacuna Rest PKI change log
 ==========================
 
+1.10.0 (2016-09-27)
+-------------------
+
+- Add support for performing CAdES detached signatures without uploading the data file
+- Improve user management
+
 1.9.1 (2016-09-22)
 ------------------
 
