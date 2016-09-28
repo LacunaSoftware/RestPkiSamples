@@ -530,8 +530,15 @@ class PadesSignatureExplorer extends SignatureExplorer {
 class CadesSignatureExplorer extends SignatureExplorer {
     const CMS_SIGNATURE_MIME_TYPE = "application/pkcs7-signature";
 
+    private $dataFileContent;
+
     public function __construct($client) {
         parent::__construct($client);
+    }
+
+    public function setDataFile($filePath)
+    {
+        $this->dataFileContent = file_get_contents($filePath);
     }
 
     public function open() {
@@ -540,9 +547,11 @@ class CadesSignatureExplorer extends SignatureExplorer {
             throw new \RuntimeException("The signature file to open not set");
         }
 
-        $requiredHashes = $this->getRequiredHashes();
-        if(count($requiredHashes) > 0) {
-            $dataHashes = $this->computeDataHashes($this->signatureFileContent, $requiredHashes);
+        if($this->dataFileContent != null) {
+            $requiredHashes = $this->getRequiredHashes();
+            if (count($requiredHashes) > 0) {
+                $dataHashes = $this->computeDataHashes($this->dataFileContent, $requiredHashes);
+            }
         }
 
         $request = $this->getRequest(self::CMS_SIGNATURE_MIME_TYPE);
