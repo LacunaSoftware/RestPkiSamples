@@ -958,6 +958,8 @@ class StandardSecurityContexts
 class StandardSignaturePolicies
 {
     const PADES_BASIC = '78d20b33-014d-440e-ad07-929f05d00cdf';
+    const PADES_BASIC_WITH_ICPBR_CERTS = '3fec800c-366c-49bf-82c5-2e72154e70f6';
+    const PADES_T_WITH_ICPBR_CERTS = '6a39aeea-a2d0-4754-bf8c-19da15296ddb';
     const PADES_ICPBR_ADR_BASICA = '531d5012-4c0d-4b6f-89e8-ebdcc605d7c2';
     const PADES_ICPBR_ADR_TEMPO = '10f0d9a5-a0a9-42e9-9523-e181ce05a25b';
     const CADES_BES = 'a4522485-c9e5-46c3-950b-0d6e951e17d1';
