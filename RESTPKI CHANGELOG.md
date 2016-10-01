@@ -1,6 +1,11 @@
 Lacuna Rest PKI change log
 ==========================
 
+1.10.1 (2016-10-01)
+-------------------
+
+- Add standard PAdES policies "Basic with ICP-Brasil certificates" and "PAdES-T with ICP-Brasil certificates"
+
 1.10.0 (2016-09-27)
 -------------------
 
