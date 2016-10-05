@@ -5,7 +5,7 @@
 	<h2>REST PKI Samples</h2>
 	Choose one of the following samples:
 	<ul>
-		<%--<li><a href="/Authentication">Authentication with digital certificate</a></li>--%>
+		<li><a href="/Authentication">Authentication with digital certificate</a></li>
 		<li>
 			Create a PAdES signature
 			<ul>

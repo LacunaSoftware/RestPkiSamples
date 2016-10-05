@@ -138,6 +138,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Authentication.aspx" />
+    <Content Include="AuthenticationFail.aspx" />
+    <Content Include="AuthenticationSuccess.aspx" />
     <Content Include="CadesSignatureInfo.aspx" />
     <Content Include="CadesSignature.aspx" />
     <Content Include="Content\bootstrap.css" />
@@ -219,6 +222,27 @@
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Authentication.aspx.cs">
+      <DependentUpon>Authentication.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Authentication.aspx.designer.cs">
+      <DependentUpon>Authentication.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="AuthenticationFail.aspx.cs">
+      <DependentUpon>AuthenticationFail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AuthenticationFail.aspx.designer.cs">
+      <DependentUpon>AuthenticationFail.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="AuthenticationSuccess.aspx.cs">
+      <DependentUpon>AuthenticationSuccess.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AuthenticationSuccess.aspx.designer.cs">
+      <DependentUpon>AuthenticationSuccess.aspx</DependentUpon>
+    </Compile>
     <Compile Include="CadesSignatureInfo.aspx.cs">
       <DependentUpon>CadesSignatureInfo.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
