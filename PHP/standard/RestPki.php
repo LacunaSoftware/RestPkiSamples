@@ -1545,3 +1545,35 @@ class ResourceContentOrReference
     {
     }
 }
+
+class NameOids {
+    const COMMON_NAME = '2.5.4.3';
+    const SURNAME = '2.5.4.4';
+    const SERIAL_NUMBER = '2.5.4.5';
+    const COUNTRY = '2.5.4.6';
+    const LOCALITY = '2.5.4.7';
+    const STATE_NAME = '2.5.4.8';
+    const STREET_ADDRESS = '2.5.4.9';
+    const ORGANIZATION = '2.5.4.10';
+    const ORGANIZATIONAL_UNIT = '2.5.4.11';
+    const TITLE = '2.5.4.12';
+    const DESCRIPTION = '2.5.4.13';
+    const BUSINESS_CATEGORY = '2.5.4.15';
+    const POSTAL_CODE = '2.5.4.17';
+    const TELEPHONE_NUMBER = '2.5.4.20';
+    const NAME = '2.5.4.41';
+    const GIVEN_NAME = '2.5.4.42';
+    const INITIALS = '2.5.4.43';
+    const GENERATION_QUALIFIER = '2.5.4.44';
+    const DN_QUALIFIER = '2.5.4.46';
+    const HOUSE_IDENTIFIER = '2.5.4.51';
+    const PSEUDONYM = '2.5.4.65';
+    const EMAIL_ADDRESS = '1.2.840.113549.1.9.1';
+    const UNSTRUCTURED_ADDRESS = '1.2.840.113549.1.9.8';
+    const USER_ID = '0.9.2342.19200300.100.1.1';
+    const DOMAIN_COMPONENT = '0.9.2342.19200300.100.1.25';
+    const PKI_SPAIN_NIF = '1.3.6.1.4.1.18838.1.1';
+    const EV_JURISDICTION_OF_INCORPORATION_LOCALITY_NAME = '1.3.6.1.4.1.311.60.2.1.1';
+    const EV_JURISDICTION_OF_INCORPORATION_STATE_OR_PROVINCE_NAME = '1.3.6.1.4.1.311.60.2.1.2';
+    const EV_JURISDICTION_OF_INCORPORATION_COUNTRY_NAME = '1.3.6.1.4.1.311.60.2.1.3';
+}

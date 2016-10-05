@@ -58,6 +58,13 @@ if ($vr->isValid()) {
             <ul>
                 <li>Subject: <?= $userCert->subjectName->commonName ?></li>
                 <li>Email: <?= $userCert->emailAddress ?></li>
+                <?php // Less common fields in the subject name and issuer name are accessible through the "allValues" property ?>
+                <?php if (isset($userCert->subjectName->allValues->{\Lacuna\NameOids::GIVEN_NAME})) { ?>
+                    <li>Given name: <?= implode(', ', $userCert->subjectName->allValues->{\Lacuna\NameOids::GIVEN_NAME}) ?></li>
+                <?php } ?>
+                <?php if (isset($userCert->subjectName->allValues->{\Lacuna\NameOids::SURNAME})) { ?>
+                    <li>Surname: <?= implode(', ', $userCert->subjectName->allValues->{\Lacuna\NameOids::SURNAME}) ?></li>
+                <?php } ?>
                 <li>
                     ICP-Brasil fields
                     <ul>
