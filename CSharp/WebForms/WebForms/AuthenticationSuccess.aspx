@@ -11,6 +11,7 @@
 	<ul>
 		<li>Subject: <%= certificate.SubjectName.CommonName %></li>
 		<li>Email: <%= certificate.EmailAddress %></li>
+		
 		<%-- Less common fields in the subject name and issuer name are also accessible: --%>
 		<% if (!string.IsNullOrEmpty(certificate.SubjectName[Name.Oids.GivenName])) { %>
 			<li>Given name: <%= certificate.SubjectName[Name.Oids.GivenName] %></li>
@@ -18,6 +19,10 @@
 		<% if (!string.IsNullOrEmpty(certificate.SubjectName[Name.Oids.Surname])) { %>
 			<li>Surname: <%= certificate.SubjectName[Name.Oids.Surname] %></li>
 		<% } %>
+		<% if (!string.IsNullOrEmpty(certificate.SubjectName[Name.Oids.TelephoneNumber])) { %>
+			<li>Phone: <%= certificate.SubjectName[Name.Oids.TelephoneNumber] %></li>
+		<% } %>
+		
 		<li>ICP-Brasil fields
 			<ul>
 				<li>Tipo de certificado: <%= certificate.PkiBrazil.CertificateType %></li>
