@@ -27,7 +27,7 @@ namespace WebForms {
 				// case-sensitive URL-safe string, which represents this authentication process. We'll use this value to call the
 				// signWithRestPki() method on the Web PKI component (see javascript on the view) and also to call the
 				// CompleteWithWebPki() method on the POST action below (this should not be mistaken with the API access token).
-				var token = auth.StartWithWebPki(StandardSecurityContexts.PkiBrazil);
+				var token = auth.StartWithWebPki(StandardSecurityContexts.WindowsServer);
 
 				// Alternative option: authenticate the user with a custom security context containting, for instance, your private PKI certificate
 				//var token = auth.StartWithWebPki(new Guid("ID OF YOUR CUSTOM SECURITY CONTEXT"));
