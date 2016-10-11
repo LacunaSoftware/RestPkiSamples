@@ -253,12 +253,41 @@ abstract class SignatureStarter
 
     /** @var RestPkiClient */
     protected $restPkiClient;
-    public $signerCertificate;
-    public $signaturePolicyId;
-    public $securityContextId;
-    public $callbackArgument;
+    protected $signerCertificateBase64;
+    protected $signaturePolicyId;
+    protected $securityContextId;
+    protected $callbackArgument;
     protected $done;
     protected $certificateInfo;
+
+    private static function getOpenSslSignatureAlgorithm($oid)
+    {
+        switch ($oid) {
+            case '1.2.840.113549.2.5':
+                return OPENSSL_ALGO_MD5;
+            case '1.3.14.3.2.26':
+                return OPENSSL_ALGO_SHA1;
+            case '2.16.840.1.101.3.4.2.1':
+                return OPENSSL_ALGO_SHA256;
+            case '2.16.840.1.101.3.4.2.2':
+                return OPENSSL_ALGO_SHA384;
+            case '2.16.840.1.101.3.4.2.3':
+                return OPENSSL_ALGO_SHA512;
+            default:
+                return null;
+        }
+    }
+
+    protected static function getClientSideInstructionsObject($response)
+    {
+        return (object)array(
+            'token' => $response->token,
+            'toSignData' => base64_decode($response->toSignData),
+            'toSignHash' => base64_decode($response->toSignHash),
+            'digestAlgorithmOid' => $response->digestAlgorithmOid,
+            'openSslSignatureAlgorithm' => self::getOpenSslSignatureAlgorithm($response->digestAlgorithmOid)
+        );
+    }
 
     protected function __construct($restPkiClient)
     {
@@ -267,7 +296,12 @@ abstract class SignatureStarter
 
     public function setSignerCertificate($certificate)
     {
-        $this->signerCertificate = $certificate;
+        $this->signerCertificateBase64 = base64_encode($certificate);
+    }
+
+    public function setSignerCertificateBase64($certificate)
+    {
+        $this->signerCertificateBase64 = $certificate;
     }
 
     public function setSignaturePolicy($signaturePolicyId)
@@ -295,6 +329,7 @@ abstract class SignatureStarter
     }
 
     public abstract function startWithWebPki();
+    public abstract function start();
 
 }
 
@@ -342,6 +377,7 @@ class PadesSignatureStarter extends SignatureStarter
         }
 
         $request = array(
+            'certificate' => $this->signerCertificateBase64,
             'signaturePolicyId' => $this->signaturePolicyId,
             'securityContextId' => $this->securityContextId,
             'callbackArgument' => $this->callbackArgument,
@@ -354,9 +390,6 @@ class PadesSignatureStarter extends SignatureStarter
         if (!empty($this->pdfContent)) {
             $request['pdfToSign'] = base64_encode($this->pdfContent);
         }
-        if (!empty($this->certificate)) { // may be null
-            $request['certificate'] = base64_encode($this->signerCertificate);
-        }
 
         $response = $this->restPkiClient->post('Api/PadesSignatures', $request);
 
@@ -366,6 +399,44 @@ class PadesSignatureStarter extends SignatureStarter
         $this->done = true;
 
         return $response->token;
+    }
+
+    public function start()
+    {
+
+        if (empty($this->pdfContent)) {
+            throw new \Exception("The PDF to sign was not set");
+        }
+        if (empty($this->signerCertificateBase64)) {
+            throw new \Exception("The signer certificate was not set");
+        }
+        if (empty($this->signaturePolicyId)) {
+            throw new \Exception("The signature policy was not set");
+        }
+
+        $request = array(
+            'certificate' => $this->signerCertificateBase64,
+            'signaturePolicyId' => $this->signaturePolicyId,
+            'securityContextId' => $this->securityContextId,
+            'callbackArgument' => $this->callbackArgument,
+            'pdfMarks' => $this->pdfMarks,
+            'bypassMarksIfSigned' => $this->bypassMarksIfSigned,
+            'measurementUnits' => $this->measurementUnits,
+            'pageOptimization' => $this->pageOptimization,
+            'visualRepresentation' => $this->visualRepresentation
+        );
+        if (!empty($this->pdfContent)) {
+            $request['pdfToSign'] = base64_encode($this->pdfContent);
+        }
+
+        $response = $this->restPkiClient->post('Api/PadesSignatures', $request);
+
+        if (isset($response->certificate)) {
+            $this->certificateInfo = $response->certificate;
+        }
+        $this->done = true;
+
+        return self::getClientSideInstructionsObject($response);
     }
 
 }
@@ -418,7 +489,7 @@ class CadesSignatureStarter extends SignatureStarter
         }
 
         $request = array(
-            'certificate' => $this->signerCertificate, // may be null
+            'certificate' => $this->signerCertificateBase64,
             'signaturePolicyId' => $this->signaturePolicyId,
             'securityContextId' => $this->securityContextId,
             'callbackArgument' => $this->callbackArgument,
@@ -434,12 +505,47 @@ class CadesSignatureStarter extends SignatureStarter
         $response = $this->restPkiClient->post('Api/CadesSignatures', $request);
 
         if (isset($response->certificate)) {
-            $this->certificateInfo = $response->certicate;
+            $this->certificateInfo = $response->certificate;
         }
 
         return $response->token;
     }
 
+    public function start()
+    {
+
+        if (empty($this->contentToSign) && empty($this->cmsToCoSign)) {
+            throw new \Exception("The content to sign was not set and no CMS to be co-signed was given");
+        }
+        if (empty($this->signerCertificateBase64)) {
+            throw new \Exception("The signer certificate was not set");
+        }
+        if (empty($this->signaturePolicyId)) {
+            throw new \Exception("The signature policy was not set");
+        }
+
+        $request = array(
+            'certificate' => $this->signerCertificateBase64,
+            'signaturePolicyId' => $this->signaturePolicyId,
+            'securityContextId' => $this->securityContextId,
+            'callbackArgument' => $this->callbackArgument,
+            'encapsulateContent' => $this->encapsulateContent
+        );
+        if (!empty($this->contentToSign)) {
+            $request['contentToSign'] = base64_encode($this->contentToSign);
+        }
+        if (!empty($this->cmsToCoSign)) {
+            $request['cmsToCoSign'] = base64_encode($this->cmsToCoSign);
+        }
+
+        $response = $this->restPkiClient->post('Api/CadesSignatures', $request);
+
+        if (isset($response->certificate)) {
+            $this->certificateInfo = $response->certificate;
+        }
+
+        return self::getClientSideInstructionsObject($response);
+    }
 }
 
 abstract class XmlSignatureStarter extends SignatureStarter
@@ -482,8 +588,8 @@ abstract class XmlSignatureStarter extends SignatureStarter
     protected function verifyCommonParameters($isWithWebPki = false)
     {
         if (!$isWithWebPki) {
-            if (empty($this->signerCertificate)) {
-                throw new \Exception('The certificate was not set');
+            if (empty($this->signerCertificateBase64)) {
+                throw new \Exception("The signer certificate was not set");
             }
         }
         if (empty($this->signaturePolicyId)) {
@@ -494,6 +600,7 @@ abstract class XmlSignatureStarter extends SignatureStarter
     protected function getRequest()
     {
         $request = array(
+            'certificate' => $this->signerCertificateBase64,
             'signaturePolicyId' => $this->signaturePolicyId,
             'securityContextId' => $this->securityContextId,
             'signatureElementId' => $this->signatureElementId
@@ -563,6 +670,27 @@ class XmlElementSignatureStarter extends XmlSignatureStarter
         $response = $this->restPkiClient->post('Api/XmlSignatures/XmlElementSignature', $request);
         return $response->token;
     }
+
+    public function start()
+    {
+
+        parent::verifyCommonParameters(false);
+        if (empty($this->xmlContent)) {
+            throw new \Exception('The XML was not set');
+        }
+        if (empty($this->toSignElementId)) {
+            throw new \Exception('The XML element Id to sign was not set');
+        }
+
+        $request = parent::getRequest();
+        $request['elementToSignId'] = $this->toSignElementId;
+        if ($this->idResolutionTable != null) {
+            $request['idResolutionTable'] = $this->idResolutionTable->toModel();
+        }
+
+        $response = $this->restPkiClient->post('Api/XmlSignatures/XmlElementSignature', $request);
+        return self::getClientSideInstructionsObject($response);
+    }
 }
 
 class FullXmlSignatureStarter extends XmlSignatureStarter
@@ -586,6 +714,20 @@ class FullXmlSignatureStarter extends XmlSignatureStarter
         $response = $this->restPkiClient->post('Api/XmlSignatures/FullXmlSignature', $request);
         return $response->token;
     }
+
+    public function start()
+    {
+
+        parent::verifyCommonParameters(false);
+        if (empty($this->xmlContent)) {
+            throw new \Exception('The XML was not set');
+        }
+
+        $request = parent::getRequest();
+
+        $response = $this->restPkiClient->post('Api/XmlSignatures/FullXmlSignature', $request);
+        return self::getClientSideInstructionsObject($response);
+    }
 }
 
 abstract class SignatureFinisher
@@ -593,8 +735,8 @@ abstract class SignatureFinisher
 
     /** @var RestPkiClient */
     protected $restPkiClient;
-    public $token;
-    public $signature;
+    protected $token;
+    protected $signatureBase64;
     protected $done;
     protected $callbackArgument;
     protected $certificateInfo;
@@ -611,7 +753,12 @@ abstract class SignatureFinisher
 
     public function setSignature($signature)
     {
-        $this->signature = $signature;
+        $this->signatureBase64 = base64_encode($signature);
+    }
+
+    public function setSignatureBase64($signature)
+    {
+        $this->signatureBase64 = $signature;
     }
 
     public abstract function finish();
@@ -654,11 +801,11 @@ class PadesSignatureFinisher extends SignatureFinisher
             throw new \Exception("The token was not set");
         }
 
-        if (empty($this->signature)) {
+        if (empty($this->signatureBase64)) {
             $response = $this->restPkiClient->post("Api/PadesSignatures/{$this->token}/Finalize", null);
         } else {
-            $request['signature'] = $this->signature;
-            $response = $this->restPkiClient->post("Api/PadesSignatures/{$this->token}/Finalize", $request);
+            $request['signature'] = $this->signatureBase64;
+            $response = $this->restPkiClient->post("Api/PadesSignatures/{$this->token}/SignedBytes", $request);
         }
 
         $this->signedPdf = base64_decode($response->signedPdf);
@@ -708,11 +855,11 @@ class CadesSignatureFinisher extends SignatureFinisher
             throw new \Exception("The token was not set");
         }
 
-        if (empty($this->signature)) {
+        if (empty($this->signatureBase64)) {
             $response = $this->restPkiClient->post("Api/CadesSignatures/{$this->token}/Finalize", null);
         } else {
-            $request['signature'] = $this->signature;
-            $response = $this->restPkiClient->post("Api/CadesSignatures/{$this->token}/Finalize", $request);
+            $request['signature'] = $this->signatureBase64;
+            $response = $this->restPkiClient->post("Api/CadesSignatures/{$this->token}/SignedBytes", $request);
         }
 
         $this->cms = base64_decode($response->cms);
@@ -754,11 +901,18 @@ class XmlSignatureFinisher extends SignatureFinisher
     public function finish()
     {
 
+        $request = null;
+
         if (empty($this->token)) {
             throw new \Exception("The token was not set");
         }
 
-        $response = $this->restPkiClient->post("Api/XmlSignatures/{$this->token}/Finalize", null);
+        if (empty($this->signatureBase64)) {
+            $response = $this->restPkiClient->post("Api/XmlSignatures/{$this->token}/Finalize", null);
+        } else {
+            $request['signature'] = $this->signatureBase64;
+            $response = $this->restPkiClient->post("Api/XmlSignatures/{$this->token}/SignedBytes", $request);
+        }
 
         $this->signedXml = base64_decode($response->signedXml);
         $this->certificateInfo = $response->certificate;
