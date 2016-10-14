@@ -3,9 +3,11 @@
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 	
 	<h2>Authentication</h2>
-	
+
 	<%-- Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it later on (see javascript below). --%>
-	<select id="certificateSelect"></select>
+    <label for="certificateSelect">Choose a certificate</label>
+    <br />
+    <select id="certificateSelect"></select>
 	
 	<%--
 		Action buttons. Notice that both buttons have a OnClientClick attribute, which calls the
