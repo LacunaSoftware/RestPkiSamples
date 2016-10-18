@@ -4,16 +4,24 @@
 	
 	<h2>XML Element Signature</h2>
 	
+    <div class="form-group">
+		<label>File to sign</label>
+		<p>You are signing the <i>infNFe</i> node of <a href='/Download?file=SampleNFe_xml&from=content'>this sample XML</a>.</p>
+	</div>
+
 	<%-- Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it later on (see javascript below). --%>
-	<select id="certificateSelect"></select>
+	<div class="form-group">
+		<label for="certificateSelect">Choose a certificate</label>
+		<select id="certificateSelect" class="form-control"></select>
+	</div>
 	
 	<%--
 		Action buttons. Notice that both buttons have a OnClientClick attribute, which calls the
 		client-side javascript functions "sign" and "refresh" below. Both functions return false,
 		which prevents the postback.
 	--%>
-	<asp:Button ID="SignButton" runat="server" Text="Sign File" OnClientClick="return sign();" />
-	<asp:Button ID="RefreshButton" runat="server" Text="Refresh" OnClientClick="return refresh();" />
+	<asp:Button ID="SignButton" runat="server" class="btn btn-primary" Text="Sign File" OnClientClick="return sign();" />
+	<asp:Button ID="RefreshButton" runat="server" class="btn btn-default" Text="Refresh" OnClientClick="return refresh();" />
 
 	<%--
 		Hidden button whose click event is fired by the "signature form" javascript upon completion

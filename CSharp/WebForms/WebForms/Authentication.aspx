@@ -5,17 +5,18 @@
 	<h2>Authentication</h2>
 
 	<%-- Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it later on (see javascript below). --%>
-    <label for="certificateSelect">Choose a certificate</label>
-    <br />
-    <select id="certificateSelect"></select>
+    <div class="form-group">
+		<label for="certificateSelect">Choose a certificate</label>
+		<select id="certificateSelect" class="form-control"></select>
+	</div>
 	
 	<%--
 		Action buttons. Notice that both buttons have a OnClientClick attribute, which calls the
 		client-side javascript functions "sign" and "refresh" below. Both functions return false,
 		which prevents the postback.
 	--%>
-	<asp:Button ID="SignInButton" runat="server" Text="Sign In" OnClientClick="return signIn();" />
-	<asp:Button ID="RefreshButton" runat="server" Text="Refresh" OnClientClick="return refresh();" />
+	<asp:Button ID="SignInButton" runat="server" class="btn btn-primary" Text="Sign In" OnClientClick="return signIn();" />
+	<asp:Button ID="RefreshButton" runat="server" class="btn btn-default" Text="Refresh" OnClientClick="return refresh();" />
 
 	<%--
 		Hidden button whose click event is fired by the "signature form" javascript upon completion
