@@ -115,11 +115,11 @@
     <Content Include="Content\css\bootstrap.css" />
     <Content Include="Content\css\site.css" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\js\lacuna-web-pki-2.5.0.js" />
     <Content Include="Content\js\site.js" />
     <Content Include="Content\js\bootstrap.js" />
     <Content Include="Content\js\jquery-1.11.3.js" />
     <Content Include="Content\js\jquery.blockUI.js" />
-    <Content Include="Content\js\lacuna-web-pki-2.3.1.js" />
     <Content Include="Content\PdfStamp.png" />
     <Content Include="Content\SampleDocument.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
