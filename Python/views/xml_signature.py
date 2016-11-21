@@ -83,7 +83,8 @@ def xml_element_signature():
         signature_starter.signature_policy_id = StandardSignaturePolicies.NFE_PADRAO_NACIONAL
         # Optionally, set a SecurityContext to be used to determine trust in the certificate chain. Since we're using
         # the StandardSignaturePolicies.NFE_PADRAO_NACIONAL policy, the security context will default to PKI
-        # Brazil (ICP-Brasil) signature_starter.security_context_id = StandardSecurityContexts.PKI_BRAZIL
+        # Brazil (ICP-Brasil)
+        # signature_starter.security_context_id = StandardSecurityContexts.PKI_BRAZIL
         # Note: By changing the SecurityContext above you can accept only certificates from a certain PKI
 
         # Call the start_with_webpki() method, which initiates the signature. This yields the token, a 43-character

@@ -46,7 +46,7 @@ def cades_signature(userfile=None, cmsfile=None):
         signature_starter.signature_policy_id = StandardSignaturePolicies.CADES_ICPBR_ADR_BASICA
 
         # Set a SecurityContext to be used to determine trust in the certificate chain
-        signature_starter.security_context_id = StandardSecurityContexts.PKI_BRAZIL
+        # signature_starter.security_context_id = StandardSecurityContexts.PKI_BRAZIL
         # Note: By changing the SecurityContext above you can accept only certificates from a certain PKI, for instance,
         # ICP-Brasil (lacunarestpki.StandardSecurityContexts.PKI_BRAZIL).
 

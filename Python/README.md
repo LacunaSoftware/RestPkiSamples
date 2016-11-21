@@ -21,11 +21,11 @@ To run the sample:
 
 2. Generate an API access token on the [REST PKI website](https://pki.rest/)
 
-3. Paste your access token on the file `demo.py`
+3. Paste your access token on the file `util.py`
    
 4. Install dependencies: `pip install -r requirements.txt`
 
-5. Run application: `python demo.py`
+5. Run application: `python run.py`
 
 6. Access the URL [http://localhost:5000](http://localhost:5000)
 
