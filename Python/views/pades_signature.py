@@ -3,18 +3,26 @@ import os
 import uuid
 
 from flask import Blueprint, make_response, render_template, request
-
 from lacunarestpki import PadesSignatureStarter, PadesSignatureFinisher, StandardSignaturePolicies, \
     StandardSecurityContexts, PadesVisualPositioningPresets
-from util import restpki_client, get_expired_page_headers
-from config import app, STATIC_FOLDER, TEMPLATE_DOCUMENT
 
+from util import restpki_client, get_expired_page_headers, STATIC_FOLDER, TEMPLATE_DOCUMENT, APPDATA_FOLDER
+
+# Create a blueprint for this view for its routes to be reachable
 blueprint = Blueprint('pades_signature', __name__)
 
 
 @blueprint.route('/pades-signature')
 @blueprint.route('/pades-signature/<userfile>')
 def pades_signature(userfile=None):
+    """
+        This function initiates a PAdES signature using REST PKI and renders the signature page.
+
+        Both PAdES signature examples, with a server file and with a file uploaded by the user, converge to this
+        function. The difference is that, when the file is uploaded by the user, the function is called with a URL
+        argument named "userfile".
+    """
+
     # Read the PDF stamp image
     f = open('static/PdfStamp.png', 'rb')
     pdf_stamp = f.read()
@@ -31,7 +39,7 @@ def pades_signature(userfile=None):
         #
         # Note: The file will be read with the standard open() function, so the same path rules apply.
         if userfile is not None:
-            signature_starter.set_pdf_path('%s/%s' % (app.config['APPDATA_FOLDER'], userfile))
+            signature_starter.set_pdf_path('%s/%s' % (APPDATA_FOLDER, userfile))
         else:
             signature_starter.set_pdf_path('%s/%s' % (STATIC_FOLDER, TEMPLATE_DOCUMENT))
 
@@ -102,6 +110,10 @@ def pades_signature(userfile=None):
 
 @blueprint.route('/pades-signature-action', methods=['POST'])
 def pades_signature_action():
+    """
+        This function receives the form submission from the template. We'll call REST PKI to complete the signature.
+    """
+
     # Get the token for this signature (rendered in a hidden input field, see pades-signature.html template)
     token = request.form['token']
 
@@ -122,12 +134,16 @@ def pades_signature_action():
     # store the PDF on a temporary folder publicly accessible and render a link to it.
 
     filename = '%s.pdf' % (str(uuid.uuid1()))
-    signature_finisher.write_signed_pdf(os.path.join(app.config['APPDATA_FOLDER'], filename))
+    signature_finisher.write_signed_pdf(os.path.join(APPDATA_FOLDER, filename))
 
     return render_template('pades-signature-info.html', filename=filename, signer_cert=signer_cert)
 
 
 def get_visual_representation_position(sample_number):
+    """
+        This function is called by the pades_signature function. It contains examples of signature visual representation
+        positionings.
+    """
     if sample_number == 1:
         # Example #1: automatic positioning on footnote. This will insert the signature, and future signatures,
         # ordered as a footnote of the last page of the document

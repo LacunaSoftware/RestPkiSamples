@@ -1,10 +1,10 @@
 # REST PKI client lib for Python
 # This file contains classes that encapsulate the calls to the REST PKI API.
-import sys
 import six
 import requests
 import base64
 import simplejson as json
+
 from abc import ABCMeta, abstractmethod
 
 
@@ -31,7 +31,6 @@ class StandardSignaturePolicies:
     XADES_ICPBR_ADR_BASICA = "1cf5db62-58b6-40ba-88a3-d41bada9b621"
     XADES_ICPBR_ADR_TEMPO = "5aa2e0af-5269-43b0-8d45-f4ef52921f04"
     NFE_PADRAO_NACIONAL = "a3c24251-d43a-4ba4-b25d-ee8e2ab24f06"
-
 
     def __init__(self):
         return
@@ -343,6 +342,7 @@ class XmlInsertionOptions:
     appendSibling = 'appendSibling'
     prependSibling = 'prependSibling'
 
+
 class NamespaceManager:
     namespaces = None
 
@@ -353,24 +353,30 @@ class NamespaceManager:
         ns = {'prefix': prefix, 'uri': uri}
         self.namespaces.append(ns)
 
+
 class XmlIdResolutionTable:
     _include_xml_id_attribute = None
     _element_id_attributes = None
     _global_id_attributes = None
 
-    def __init__(self, include_xml_id_attribute = True):
+    def __init__(self, include_xml_id_attribute=True):
         self._include_xml_id_attribute = include_xml_id_attribute
         self._element_id_attributes = []
         self._global_id_attributes = []
 
-    def add_global_id_attribute(self, id_attribute_local_name, id_attribute_namespace = None):
+    def add_global_id_attribute(self, id_attribute_local_name, id_attribute_namespace=None):
         self._global_id_attributes.append({'localName': id_attribute_local_name, 'namespace': id_attribute_namespace})
 
-    def set_element_id_attribute(self, element_local_name, element_namespace, id_attribute_local_name, id_attribute_namespace = None):
-        self._element_id_attributes.append({'element': {'localName': element_local_name, 'namespace': element_namespace}, 'attribute': {'localName': id_attribute_local_name, 'namespace': id_attribute_namespace}})
+    def set_element_id_attribute(self, element_local_name, element_namespace, id_attribute_local_name,
+                                 id_attribute_namespace=None):
+        self._element_id_attributes.append(
+            {'element': {'localName': element_local_name, 'namespace': element_namespace},
+             'attribute': {'localName': id_attribute_local_name, 'namespace': id_attribute_namespace}})
 
     def to_model(self):
-        return {'includeXmlIdAttribute': self._include_xml_id_attribute, 'elementIdAttributes': self._element_id_attributes, 'globalIdAttributes': self._global_id_attributes}
+        return {'includeXmlIdAttribute': self._include_xml_id_attribute,
+                'elementIdAttributes': self._element_id_attributes, 'globalIdAttributes': self._global_id_attributes}
+
 
 class XmlSignatureStarter:
     __metaclass__ = ABCMeta
@@ -409,12 +415,17 @@ class XmlSignatureStarter:
             data['xml'] = base64.b64encode(self.xml_content)
 
         if self._xpath is not None:
-            data['signatureElementLocation'] = {'xpath': self._xpath, 'InsertionOption': None if self._insertion_option is None else self._insertion_option, 'namespaces': None if self._namespace_manager is None else self._namespace_manager.namespaces}
+            data['signatureElementLocation'] = {
+                'xpath': self._xpath,
+                'InsertionOption': None if self._insertion_option is None else self._insertion_option,
+                'namespaces': None if self._namespace_manager is None else self._namespace_manager.namespaces
+            }
         data['signatureElementId'] = self.signature_element_id
         data['signaturePolicyId'] = self.signature_policy_id
         data['securityContextId'] = self.security_context_id
         data['callbackArgument'] = self.callback_argument
         return data
+
 
 class XmlElementSignatureStarter(XmlSignatureStarter):
     element_tosign_id = None
@@ -438,8 +449,8 @@ class XmlElementSignatureStarter(XmlSignatureStarter):
         response = self._client.post('Api/XmlSignatures/XmlElementSignature', data=data)
         return response.json().get('token', None)
 
-class FullXmlSignatureStarter(XmlSignatureStarter):
 
+class FullXmlSignatureStarter(XmlSignatureStarter):
     def __init__(self, client):
         super(FullXmlSignatureStarter, self).__init__(client)
 
@@ -451,6 +462,7 @@ class FullXmlSignatureStarter(XmlSignatureStarter):
         response = self._client.post('Api/XmlSignatures/FullXmlSignature', data=data)
         return response.json().get('token', None)
 
+
 class DetachedResourceXmlSignatureStarter(XmlSignatureStarter):
     resource_content = None
     resource_uri = None
@@ -458,14 +470,14 @@ class DetachedResourceXmlSignatureStarter(XmlSignatureStarter):
     def __init__(self, client):
         super(DetachedResourceXmlSignatureStarter, self).__init__(client)
 
-    def set_tosign_detached_resource(self, resource_path, resource_uri = None):
+    def set_tosign_detached_resource(self, resource_path, resource_uri=None):
         self.resource_uri = resource_uri
         f = open(resource_path, 'rb')
         self.resource_content = f.read()
         f.close()
 
     def start_with_webpki(self):
-        if self.resource_content is None or len(resource_content) == 0:
+        if self.resource_content is None or len(self.resource_content) == 0:
             raise Exception('The detached resource to sign was not set')
 
         data = super(DetachedResourceXmlSignatureStarter, self).get_common_request_data()
@@ -474,6 +486,7 @@ class DetachedResourceXmlSignatureStarter(XmlSignatureStarter):
         response = self._client.post('Api/XmlSignatures/DetachedResourceXmlSignature', data=data)
         return response.json().get('token', None)
 
+
 class OnlineResourceXmlSignatureStarter(XmlSignatureStarter):
     resource_uri = None
 
@@ -481,13 +494,14 @@ class OnlineResourceXmlSignatureStarter(XmlSignatureStarter):
         super(OnlineResourceXmlSignatureStarter, self).__init__(client)
 
     def start_with_webpki(self):
-        if self.resource_uri is None or resource_uri == '':
+        if self.resource_uri is None or self.resource_uri == '':
             raise Exception('The online resource URI to sign was not set')
 
         data = super(OnlineResourceXmlSignatureStarter, self).get_common_request_data()
         data['resourceToSignUri'] = self.resource_uri
         response = self._client.post('Api/XmlSignatures/OnlineResourceXmlSignature', data=data)
         return response.json().get('token', None)
+
 
 class XmlSignatureFinisher:
     token = ''
@@ -540,8 +554,8 @@ class XmlSignatureFinisher:
         f.write(self._signed_xml_content)
         f.close()
 
-#-----------------------------------------------------------------------------------------------------------------------
 
+# ----------------------------------------------------------------------------------------------------------------------
 @six.python_2_unicode_compatible
 class ValidationResults:
     errors = None

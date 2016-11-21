@@ -2,12 +2,12 @@ import os
 import uuid
 
 from flask import Blueprint, make_response, render_template, request
-
 from lacunarestpki import CadesSignatureStarter, StandardSignaturePolicies, StandardSecurityContexts, \
     CadesSignatureFinisher
-from util import restpki_client, get_expired_page_headers
-from config import app, STATIC_FOLDER, TEMPLATE_DOCUMENT
 
+from util import restpki_client, get_expired_page_headers, STATIC_FOLDER, TEMPLATE_DOCUMENT, APPDATA_FOLDER
+
+# Create a blueprint for this view for its routes to be reachable
 blueprint = Blueprint('cades_signature', __name__)
 
 
@@ -15,6 +15,15 @@ blueprint = Blueprint('cades_signature', __name__)
 @blueprint.route('/cades-signature/<userfile>')
 @blueprint.route('/cades-signature-cosign/<cmsfile>')
 def cades_signature(userfile=None, cmsfile=None):
+    """
+        This function initiates a CAdES signature using REST PKI and renders the signature page.
+
+        All CAdES signature examples converge to this action, but with different URL arguments:
+
+        1. Signature with a server file               : no arguments filled
+        2. Signature with a file uploaded by the user : "userfile" filled
+        3. Co-signature of a previously signed CMS    : "cmsfile" filled
+    """
 
     # Instantiate the CadesSignatureStarter class, responsible for receiving the signature elements and start the
     # signature process
@@ -27,9 +36,9 @@ def cades_signature(userfile=None, cmsfile=None):
         #
         # Note: The file will be read with the standard open() function, so the same path rules apply.
         if cmsfile is not None:
-            signature_starter.set_cms_to_cosign_path('%s/%s' % (app.config['APPDATA_FOLDER'], cmsfile))
+            signature_starter.set_cms_to_cosign_path('%s/%s' % (APPDATA_FOLDER, cmsfile))
         elif userfile is not None:
-            signature_starter.set_file_to_sign_path('%s/%s' % (app.config['APPDATA_FOLDER'], userfile))
+            signature_starter.set_file_to_sign_path('%s/%s' % (APPDATA_FOLDER, userfile))
         else:
             signature_starter.set_file_to_sign_path('%s/%s' % (STATIC_FOLDER, TEMPLATE_DOCUMENT))
 
@@ -66,6 +75,10 @@ def cades_signature(userfile=None, cmsfile=None):
 
 @blueprint.route('/cades-signature-action', methods=['POST'])
 def cades_signature_action():
+    """
+        This method receives the form submission from the template. We'll call REST PKI to complete the signature
+    """
+
     # Get the token for this signature (rendered in a hidden input field, see pades-signature.html template)
     token = request.form['token']
 
@@ -86,6 +99,6 @@ def cades_signature_action():
     # store the PDF on a temporary folder publicly accessible and render a link to it.
 
     filename = '%s.p7s' % (str(uuid.uuid1()))
-    signature_finisher.write_cms(os.path.join(app.config['APPDATA_FOLDER'], filename))
+    signature_finisher.write_cms(os.path.join(APPDATA_FOLDER, filename))
 
     return render_template('cades-signature-info.html', filename=filename, signer_cert=signer_cert)

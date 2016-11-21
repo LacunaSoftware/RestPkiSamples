@@ -1,13 +1,18 @@
 from flask import Blueprint, make_response, render_template, request
-
 from lacunarestpki import StandardSecurityContexts
+
 from util import restpki_client, get_expired_page_headers
 
+# Create a blueprint for this view for its routes to be called
 blueprint = Blueprint('authentication', __name__)
 
 
 @blueprint.route('/authentication')
 def auth():
+    """
+        This view function initiates an authentication with REST PKI and renders the authentication page.
+    """
+
     # Get an instance of the Authentication class
     authentication = restpki_client.get_authentication()
 
@@ -36,6 +41,10 @@ def auth():
 
 @blueprint.route('/authentication-action', methods=['POST'])
 def auth_action():
+    """
+        This view function receives the form submission from the template. We'll call REST PKI to validate
+    """
+
     # Get the token for this authentication (rendered in a hidden input field, see authentication.html template)
     token = request.form['token']
 
@@ -55,13 +64,14 @@ def auth_action():
         user_cert = None
 
         if vr.is_valid:
-            user_cert = authentication.certificate
             # At this point, you have assurance that the certificate is valid according to the SecurityContext specified
             # on the method start_with_webpki() and that the user is indeed the certificate's subject. Now, you'd
             # typically query your database for a user that matches one of the certificate's fields, such as
             # user_cert.emailAddress or user_cert.pkiBrazil.cpf (the actual field to be used as key depends on your
             # application's business logic) and set the user as authenticated with whatever web security framework your
             # application uses. For demonstration purposes, we'll just render the user's certificate information.
+            user_cert = authentication.certificate
+
     except Exception as e:
         return render_template('error.html', msg=e)
 

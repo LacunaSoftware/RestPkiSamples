@@ -2,17 +2,21 @@ import os
 import uuid
 
 from flask import Blueprint, make_response, render_template, request
-
 from lacunarestpki import FullXmlSignatureStarter, NamespaceManager, XmlInsertionOptions, StandardSignaturePolicies, \
     StandardSecurityContexts, XmlElementSignatureStarter, XmlSignatureFinisher
-from util import restpki_client, get_expired_page_headers
-from config import STATIC_FOLDER, XML_DOCUMENT, NFE_SAMPLE, app
+
+from util import restpki_client, get_expired_page_headers, STATIC_FOLDER, XML_DOCUMENT, NFE_SAMPLE, APPDATA_FOLDER
 
 blueprint = Blueprint('xml_signature', __name__)
 
 
 @blueprint.route('/xml-full-signature')
 def xml_full_signature():
+    """
+        This function initiates a XML element signature using REST PKI and renders the signature page. The full XML
+        signature is recommended in cases which there is a need to sign the whole XML file.
+    """
+
     # Instantiate the FullXmlSignatureStarter class, responsible for receiving the signature elements and start the
     # signature process
     try:
@@ -59,6 +63,11 @@ def xml_full_signature():
 
 @blueprint.route('/xml-element-signature')
 def xml_element_signature():
+    """
+        This function initiates a XML element signature using REST PKI and renders the signature page. The XML element
+        signature is recommended in cases which there is a need to sign a specific element of a XML.
+    """
+
     # Instantiate the FullXmlSignatureStarter class, responsible for receiving the signature elements and start the
     # signature process
     try:
@@ -100,6 +109,10 @@ def xml_element_signature():
 
 @blueprint.route('/xml-signature-action', methods=['POST'])
 def xml_signature_action():
+    """
+        This function receives the form submission from the template. We'll call REST PKI to complete the signature.
+    """
+
     # Get the token for this signature (rendered in a hidden input field, see xml-signature.html template)
     token = request.form['token']
 
@@ -120,6 +133,6 @@ def xml_signature_action():
     # store the XML on a temporary folder publicly accessible and render a link to it.
 
     filename = '%s.xml' % (str(uuid.uuid1()))
-    signature_finisher.write_signed_xml(os.path.join(app.config['APPDATA_FOLDER'], filename))
+    signature_finisher.write_signed_xml(os.path.join(APPDATA_FOLDER, filename))
 
     return render_template('xml-signature-info.html', filename=filename, signer_cert=signer_cert)
