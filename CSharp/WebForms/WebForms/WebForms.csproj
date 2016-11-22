@@ -164,6 +164,7 @@
     <Content Include="Content\08.pdf" />
     <Content Include="Content\09.pdf" />
     <Content Include="Content\10.pdf" />
+    <Content Include="Scripts\lacuna-web-pki-2.5.0.js" />
     <Content Include="XmlElementSignature.aspx" />
     <Content Include="XmlElementSignatureInfo.aspx" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -174,7 +175,6 @@
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <Content Include="Scripts\jquery.blockUI.js" />
-    <Content Include="Scripts\lacuna-web-pki-2.3.2.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />

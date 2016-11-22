@@ -26,7 +26,7 @@
 	<%--
 		Include the "webpki" bundle, which includes the following javascript files (see App_Start\BundleConfig.cs):
 		- jquery.blockUI.js       : jQuery plugin to block the UI
-		- lacuna-web-pki-2.3.2.js : Javascript library to access the Web PKI component (client-side component used to access the user's certificates)
+		- lacuna-web-pki-2.5.0.js : Javascript library to access the Web PKI component (client-side component used to access the user's certificates)
 		- signature-form.js       : Javascript code to call the Web PKI component
 	--%>
 	<asp:PlaceHolder runat="server">

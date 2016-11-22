@@ -1,6 +1,8 @@
 // -------------------- Add-on placeholder (IE only) --------------------
 var lacunaWebPKIExtension = null;
 
+
+
 // -------------------- Class declaration --------------------
 
 /**
@@ -48,9 +50,9 @@ LacunaWebPKI = function (license) {
 
 (function ($) {
 
-	// -------------------- Promise subclass --------------------
+    // -------------------- Promise subclass --------------------
 
-	/**
+    /**
 	 * An object that represents a promise to be fulfilled, through which the programmer can register callbacks for when the promise is fulfilled successfully or
 	 * for when an error occurrs. All asyncronous methods from the LacunaWebPKI class return an instance of this object.
 	 *
@@ -82,13 +84,13 @@ LacunaWebPKI = function (license) {
 	 * @for Promise
 	 * @constructor
 	 */
-	$.Promise = function (angularScope) {
-		this.successCallback = function() { };
-		this.errorCallback = function () { };
-		this.angularScope = angularScope;
-	};
+    $.Promise = function (angularScope) {
+        this.successCallback = function() { };
+        this.errorCallback = function () { };
+        this.angularScope = angularScope;
+    };
 
-	/**
+    /**
 	 * Registers a callback to be called when the operation is completed successfully. The callback receives a single argument representing the operation's result.
 	 *
 	 * The type of the argument (either string, array or object) and its meaning depend on the method that returns the promise. Please refer to each method's documentation
@@ -104,12 +106,12 @@ LacunaWebPKI = function (license) {
 		$scope.certificates = certs;
 	});
 	 */
-	$.Promise.prototype.success = function (callback) {
-		this.successCallback = callback;
-		return this;
-	};
+    $.Promise.prototype.success = function (callback) {
+        this.successCallback = callback;
+        return this;
+    };
 
-	/**
+    /**
 	 * Registers a callback to be called if an error occurs during the operation. The error callback signature is always the same, and so are the meaning of each argument, which are
 	 * described in the example below.
 	 *
@@ -132,81 +134,200 @@ LacunaWebPKI = function (license) {
 		}
 	});
 	 */
-	$.Promise.prototype.error = function (callback) {
-		this.errorCallback = callback;
-		return this;
-	};
+    $.Promise.prototype.error = function (callback) {
+        this.errorCallback = callback;
+        return this;
+    };
 
-	$.Promise.prototype._invokeSuccess = function (result, delay) {
-		if (delay > 0) {
-			var self = this;
-			setTimeout(function () {
-				self._invokeSuccess(result);
-			}, delay);
-		} else {
-			var callback = this.successCallback || function () { $._log('Success ignored (no callback registered)'); };
-			this._apply(function () {
-				callback(result);
-			});
-		}
-	};
+    $.Promise.prototype._invokeSuccess = function (result, delay) {
+        if (delay > 0) {
+            var self = this;
+            setTimeout(function () {
+                self._invokeSuccess(result);
+            }, delay);
+        } else {
+            var callback = this.successCallback || function () { $._log('Success ignored (no callback registered)'); };
+            this._apply(function () {
+                callback(result);
+            });
+        }
+    };
 
-	$.Promise.prototype._invokeError = function (message, error, origin, delay) {
-		if (delay > 0) {
-			var self = this;
-			setTimeout(function () {
-				self._invokeError(message, error, origin);
-			}, delay);
-		} else {
-			var callback = this.errorCallback || function (message, error, origin) {
-				throw 'Web PKI error originated at ' + origin + ': ' + message + '\n' + error;
-			};
-			this._apply(function () {
-				callback(message, error, origin);
-			});
-		}
-	};
+    $.Promise.prototype._invokeError = function (message, error, origin, delay) {
+        if (delay > 0) {
+            var self = this;
+            setTimeout(function () {
+                self._invokeError(message, error, origin);
+            }, delay);
+        } else {
+            var callback = this.errorCallback || function (message, error, origin) {
+                throw 'Web PKI error originated at ' + origin + ': ' + message + '\n' + error;
+            };
+            this._apply(function () {
+                callback(message, error, origin);
+            });
+        }
+    };
 
-	// https://coderwall.com/p/ngisma/safe-apply-in-angular-js
-	$.Promise.prototype._apply = function (callback) {
-		if (this.angularScope) {
-			var phase = this.angularScope.$root.$$phase;
-			if (phase == '$apply' || phase == '$digest') {
-				callback();
-			} else {
-				this.angularScope.$apply(function () {
-					callback();
-				});
-			}
-		} else {
-			callback();
-		}
-	};
+    // https://coderwall.com/p/ngisma/safe-apply-in-angular-js
+    $.Promise.prototype._apply = function (callback) {
+        if (this.angularScope) {
+            var phase = this.angularScope.$root.$$phase;
+            if (phase == '$apply' || phase == '$digest') {
+                callback();
+            } else {
+                this.angularScope.$apply(function () {
+                    callback();
+                });
+            }
+        } else {
+            callback();
+        }
+    };
 
 
-	// -------------------- Constants --------------------
+    // -------------------- Constants --------------------
 
 	$._installUrl = 'https://get.webpkiplugin.com/';
 	$._chromeExtensionId = 'dcngeagmmhegagicpcmpinaoklddcgon';
-	$._chromeExtensionRequiredVersion = '2.2.9';
-	$._chromeNativeWinRequiredVersion = '2.1.0';
-	$._chromeNativeLinuxRequiredVersion = '2.1.0';
-	$._ieAddonRequiredVersion = '2.0.1';
+	$._firefoxExtensionId = 'webpki@lacunasoftware.com';
 	$._chromeExtensionFirstVersionWithSelfUpdate = '2.0.20';
+	$._chromeExtensionRequiredVersion = '2.6.6';
+	$._firefoxExtensionRequiredVersion = '0.0.0';
+	$._chromeNativeWinRequiredVersion = '2.2.8';
+	$._chromeNativeLinuxRequiredVersion = '2.4.1';
+	$._chromeNativeMacRequiredVersion = '2.4.1';
+	$._ieAddonRequiredVersion = '2.0.6';
 
-	$._chromeInstallationStates = {
-		INSTALLED: 0,
-		EXTENSION_NOT_INSTALLED: 1,
-		EXTENSION_OUTDATED: 2,
-		NATIVE_NOT_INSTALLED: 3,
-		NATIVE_OUTDATED: 4
+    $._chromeInstallationStates = {
+        INSTALLED: 0,
+        EXTENSION_NOT_INSTALLED: 1,
+        EXTENSION_OUTDATED: 2,
+        NATIVE_NOT_INSTALLED: 3,
+        NATIVE_OUTDATED: 4
+    };
+
+    $._certKeyUsages = {
+        crlSign: 2,
+        dataEncipherment: 16,
+        decipherOnly: 32768,
+        digitalSignature: 128,
+        encipherOnly: 1,
+        keyAgreement: 8,
+        keyCertSign: 4,
+        keyEncipherment: 32,
+        nonRepudiation: 64
+    };
+
+    $.installationStates = {
+        INSTALLED: 0,
+        NOT_INSTALLED: 1,
+        OUTDATED: 2,
+        BROWSER_NOT_SUPPORTED: 3
+    };
+
+    // Pki Options ----------------------
+    $.padesPolicies = {
+        basic: 'basic',
+        brazilAdrBasica: 'brazilAdrBasica'
+    };
+
+    $.cadesPolicies = {
+        bes: 'cadesBes',
+        brazilAdrBasica: 'brazilAdrBasica'
+    };
+
+    $.cadesAcceptablePolicies = {
+        pkiBrazil: [
+            'brazilAdrBasica',
+            'brazilAdrTempo',
+            'brazilAdrValidacao',
+            'brazilAdrCompleta',
+            'brazilAdrArquivamento'
+        ]
+    };
+
+	$.standardTrustArbitrators = {
+	    pkiBrazil: {
+	        type: 'standard',
+	        standardArbitrator: 'pkiBrazil'
+	    },
+	    pkiItaly: {
+	        type: 'standard',
+	        standardArbitrator: 'pkiItaly'
+	    },
+	    pkiPeru: {
+	        type: 'standard',
+	        standardArbitrator: 'pkiPeru'
+	    },
+	    windows: {
+	        type: 'standard',
+	        standardArbitrator: 'windows'
+	    }
 	};
 
-	$.installationStates = {
-		INSTALLED: 0,
-		NOT_INSTALLED: 1,
-		OUTDATED: 2,
-		BROWSER_NOT_SUPPORTED: 3
+	$.outputModes = {
+	    showSaveFileDialog: 'showSaveFileDialog',
+	    saveInFolder: 'saveInFolder',
+	    autoSave: 'autoSave'
+	};
+
+	$.trustArbitratorTypes = {
+	    trustedRoot: 'trustedRoot',
+	    tsl: 'tsl',
+	    standard: 'standard'
+	};
+
+    // visual representation
+	$.padesPaperSizes = {
+	    custom: 'custom',
+	    a0: 'a0',
+	    a1: 'a1',
+	    a2: 'a2',
+	    a3: 'a3',
+	    a4: 'a4',
+	    a5: 'a5',
+	    a6: 'a6',
+	    a7: 'a7',
+	    a8: 'a8',
+	    letter: 'letter',
+	    legal: 'legal',
+	    ledger: 'ledger'
+	};
+
+	$.padesHorizontalAlign = {
+	    left: 'left',
+	    center: 'center',
+	    rigth: 'rigth'
+	};
+
+	$.padesVerticalAlign = {
+	    top: 'top',
+	    center: 'center',
+	    bottom: 'bottom'
+	};
+
+	$.padesMeasurementUnits = {
+	    centimeters: 'centimeters',
+	    pdfPoints: 'pdfPoints'
+	};
+
+	$.padesPageOrientations = {
+	    auto: 'auto',
+	    portrait: 'portrait',
+        landscape: 'landscape'
+	};
+
+    // pdf mark
+	$.markElementTypes = {
+	    text: 'text',
+	    image: 'image'
+	};
+
+	$.markTextStyle = {
+	    normal: 0,
+	    bold: 1,
+	    italic: 2
 	};
 
 	// -------------------- "Private" static functions (no reference to 'this') --------------------
@@ -239,8 +360,8 @@ LacunaWebPKI = function (license) {
 				return 1;
 			}
 
-			var v1p = parseInt(v1parts[i]);
-			var v2p = parseInt(v2parts[i]);
+			var v1p = parseInt(v1parts[i], 10);
+			var v2p = parseInt(v2parts[i], 10);
 
 			if (v1p === v2p) {
 				continue;
@@ -262,6 +383,35 @@ LacunaWebPKI = function (license) {
 		if (window.console) {
 			window.console.log(message);
 		}
+	};
+
+	$._parseDataUrl = function (url) {
+	    var match = /^data:(.+);base64,(.+)$/.exec(url);
+	    if (!match) {
+	        $._log('failed to parse data url');
+	        return null;
+	    }
+	    return {
+	        mimeType: match[1],
+	        content: match[2]
+	    };
+	};
+
+	$._downloadResource = function (url, callBack) {
+	    $._log('resolving resource reference: ' + url);
+	    var xhr = new XMLHttpRequest();
+	    xhr.open('GET', url);
+	    xhr.responseType = 'blob';
+	    xhr.onload = function() {
+	        var responseReader  = new FileReader();
+	        responseReader.onloadend = function () {
+	            $._log('resource reference resolved');
+	            var resource = $._parseDataUrl(responseReader.result);
+	            callBack(resource);
+	        };
+	        responseReader.readAsDataURL(xhr.response);
+	    };
+	    xhr.send();
 	};
 
 	// -------------------- "Private" instance functions (with references to 'this') --------------------
@@ -429,6 +579,7 @@ LacunaWebPKI = function (license) {
 	 * @method listCertificates
 	 *
 	 * @param [args] {Object}
+     * @param [args.filter] {Function}
 	 * @param [args.success] {Function} A function to be called when the operation is completed successfully, receiving an array with the retrieved certificates (please refer to examples for the properties in each item of the array).
 	 * @param [args.error] {Function} A function to be called if an error occurrs during the operation.
 	 * @return {Promise} A promise object that can be used to register a callback to be called when the operation completes. The success callback for this promise receives an array with the retrieved
@@ -485,9 +636,10 @@ LacunaWebPKI = function (license) {
 			var cert = result[i];
 			cert.validityStart = new Date(cert.validityStart);
 			cert.validityEnd = new Date(cert.validityEnd);
+			cert.keyUsage = $._processKeyUsage(cert.keyUsage);
 			if (cert.pkiBrazil && cert.pkiBrazil.dateOfBirth) {
 				var s = cert.pkiBrazil.dateOfBirth;
-				cert.pkiBrazil.dateOfBirth = new Date(parseInt(s.slice(0, 4)), parseInt(s.slice(5, 7)) - 1, parseInt(s.slice(8, 10)));
+				cert.pkiBrazil.dateOfBirth = new Date(parseInt(s.slice(0, 4), 10), parseInt(s.slice(5, 7), 10) - 1, parseInt(s.slice(8, 10), 10));
 			}
 			if (filter) {
 				if (filter(cert)) {
@@ -518,6 +670,55 @@ LacunaWebPKI = function (license) {
 		return toReturn;
 	};
 
+	$._processKeyUsage = function (keyUsageValue) {
+	    return {
+	        crlSign: (keyUsageValue & $._certKeyUsages.crlSign) !== 0,
+	        dataEncipherment: (keyUsageValue & $._certKeyUsages.dataEncipherment) !== 0,
+	        decipherOnly: (keyUsageValue & $._certKeyUsages.decipherOnly) !== 0,
+	        digitalSignature: (keyUsageValue & $._certKeyUsages.digitalSignature) !== 0,
+	        encipherOnly: (keyUsageValue & $._certKeyUsages.encipherOnly) !== 0,
+	        keyAgreement: (keyUsageValue & $._certKeyUsages.keyAgreement) !== 0,
+	        keyCertSign: (keyUsageValue & $._certKeyUsages.keyCertSign) !== 0,
+	        keyEncipherment: (keyUsageValue & $._certKeyUsages.keyEncipherment) !== 0,
+	        nonRepudiation: (keyUsageValue & $._certKeyUsages.nonRepudiation) !== 0
+	    };
+	};
+
+    /**
+     * @property filters
+     * @type Object
+     *
+     * @property isPkiBrazilPessoaFisica
+     * @type Function
+     *
+     * @property hasPkiBrazilCpf
+     * @type Function
+     *
+     * @property hasPkiBrazilCnpj
+     * @type Function
+     *
+     * @property isWithinValidity
+     * @type Function
+     *
+     * @property pkiBrazilCpfEquals
+     * @type Function
+     *
+     * @property pkiBrazilCnpjEquals
+     * @type Function
+     *
+     * @property hasPkiItalyCodiceFiscale
+     * @type Function
+     *
+     * @property pkiItalyCodiceFiscaleEquals
+     * @type Function
+     *
+     * @property all
+     * @type Function
+     *
+     * @property any
+     * @type Function
+     *
+     */
 	$.filters = {
 		isPkiBrazilPessoaFisica: function (cert) {
 			if (typeof cert == 'undefined') {
@@ -657,6 +858,12 @@ LacunaWebPKI = function (license) {
 		return context.promise;
 	};
 
+	$.saveFile = function (content) {
+		var context = this._createContext({});
+		$._requestHandler.sendCommand(context, 'saveFile', content);
+		return context.promise;
+	};
+
 	$.pollNative = function (args) {
 		if (!args) {
 			args = {};
@@ -664,9 +871,11 @@ LacunaWebPKI = function (license) {
 		var context = this._createContext(args);
 		var requiredNativeWinVersion = $._chromeNativeWinRequiredVersion;
 		var requiredNativeLinuxVersion = $._chromeNativeLinuxRequiredVersion;
+		var requiredNativeMacVersion = $._chromeNativeMacRequiredVersion;
 		$._requestHandler.sendCommand(context, 'pollNative', {
 			requiredNativeWinVersion: requiredNativeWinVersion,
-			requiredNativeLinuxVersion: requiredNativeLinuxVersion
+			requiredNativeLinuxVersion: requiredNativeLinuxVersion,
+			requiredNativeMacVersion: requiredNativeMacVersion
 		});
 		return context.promise;
 	};
@@ -802,6 +1011,22 @@ LacunaWebPKI = function (license) {
 		return context.promise;
 	};
 
+	$.showFileBrowser = function (args) {
+
+	    if (!args) {
+	        args = {};
+	    }
+
+	    var context = this._createContext(args);
+	    var request = {
+	        multiselect: args.multiselect,
+            filters: args.filters,
+            dialogTitle: args.dialogTitle
+	    };
+	    $._requestHandler.sendCommand(context, 'showFileBrowser', request);
+	    return context.promise;
+	};
+
 	$.downloadToFolder = function (args) {
 
 		if (!args) {
@@ -840,6 +1065,21 @@ LacunaWebPKI = function (license) {
 		return context.promise;
 	};
 
+	$.openFile = function (args) {
+
+	    if (!args) {
+	        args = {};
+	    } else if (typeof args === 'string') {
+	        args = {
+	            fileId: args
+	        };
+	    }
+
+	    var context = this._createContext(args);
+	    $._requestHandler.sendCommand(context, 'openFile', args.fileId);
+	    return context.promise;
+	};
+
 	/**
 	 * Redirects the user to the install page, with the appropriate url arguments so as to make the user be redirected back to the original page once the
 	 * installation completes successfully.
@@ -849,12 +1089,7 @@ LacunaWebPKI = function (license) {
 	 * @exampleurl https://jsfiddle.net/LacunaSoftware/6zk6c91u/embedded/
 	 */
 	$.redirectToInstallPage = function () {
-		var returnUrl = encodeURIComponent(document.URL);
-		if (this.brand) {
-			document.location.href = $._installUrl + this.brand + '?returnUrl=' + returnUrl;
-		} else {
-			document.location.href = $._installUrl + '?returnUrl=' + returnUrl;
-		}
+		document.location.href = $._installUrl + (this.brand || '') + '?returnUrl=' + encodeURIComponent(document.URL) + '&jslib=2.5.0';
 	};
 
 	$.updateExtension = function (args) {
@@ -884,21 +1119,181 @@ LacunaWebPKI = function (license) {
 		return M.join(' ');
 	})();
 
+
+
+    // -------------------- Web PKI Pro functions --------------------------
+	
+    /**
+	 * Signs a PDF file locally (available only for Windows)
+	 *
+	 * @method signPdf
+	 *
+	 * @param args {Object} An object with the following options:
+     * @param args.fileId {String}
+     * @param args.certificateThumbprint {String} The thumbprint of the certificate to be used, as yielded by the method {{#crossLink "LacunaWebPKI/listCertificates:method"}}{{/crossLink}}.
+     *
+     * @param args.output {Object}
+     * @param args.output.mode {String} The signed file output mode ('ShowSaveFileDialog' | 'SaveInFolder' | 'AutoSave').
+     * @param args.output.folderId {string} The destination folder id (case mode is 'SaveInFolder').
+     * @param args.output.autoSaveSuffix {String} The suffix for saved signed file (case mode is 'AutoSave' | 'SaveInFolder').
+     * @param args.output.dialogTitle {String} The save dialog title (case mode is 'ShowSaveFileDialog').
+     *
+     * @param args.trustArbitrators {Array}
+     * @param args.trustArbitrators.type {String} The trust arbitrator type ('TrustedRoot' | 'Tsl' | 'Standard').
+     * @param args.trustArbitrators.standardArbitrator A standard trust arbitrator. Used case type is 'Standard'. Can be ('PkiBrazil' | 'PkiItaly' | 'PkiPeru' | 'Windows').
+     * @param args.trustArbitrators.trustedRoot The base64 content of root X509 certificate to trust. Used case type is 'TrustedRoot'.
+     * @param args.trustArbitrators.tslUrl The TSL (Trust Service List) URL. Used case type is 'Tsl'.
+     * @param args.trustArbitrators.tslRoot The base64 content of TSL (Trust Service List) signer's root X509 certificate. Used case type is 'Tsl'.
+     * @param args.clearPolicyTrustArbitrators {Boolean} To clear or not any signature policy default trust arbitrator.
+     *
+     * @param args.
+     * @param args.
+     * @param args.
+	 * @param args.thumbprint 
+	 * @param args.data {String} The bytes to be signed, encoded in Base64.
+	 * @param args.digestAlgorithm {String} The name or OID of the digest algorithm to be used to compute the hash of the bytes during the signature operation. Common values for this
+	 *                                      parameter are 'SHA-256' or 'SHA-1'. The forms 'SHA256', 'sha256', 'sha 256', 'sha-256' will also work.
+	 * @param [args.success] {Function} A function to be called when the operation is completed successfully, receiving a string with the signature algorithm's output encoded in Base64.
+	 * @param [args.error] {Function} A function to be called if an error occurrs during the operation.
+	 * @return {Promise} A promise object that can be used to register a callback to be called when the operation completes The success callback for this promise receives a string
+	 *                   with the signature algorithm's output encoded in Base64.
+	 *
+	 * @example
+	// Let's assume you're using jQuery and have populated the dropdown "certificateSelect" with the certificates returned
+	// by the listCertificates method, putting on the value attribute of each option the certificate's thumbprint. Let's
+	// also assume that you received from the server the data to be signed and the digest algorithm to be used.
+	var selectedCertThumbprint = $('#certificateSelect').val();
+	var dataToSign = '...'; // typically received from server
+	var digestAlgorithmOid = '...'; // typically received from server
+	pki.signData({
+		thumbprint: selectedCertThumbprint,
+		data: dataToSign,
+		digestAlgorithm: digestAlgorithm
+	}).success(function (signature) {
+		// The success callback receives a single argument containing the signature output, encoded in Base64
+		alert('Signature: ' + signature);
+	});
+	 * @exampleurl https://jsfiddle.net/LacunaSoftware/718chbhb/embedded/
+	 */
+	$.signPdf = function (args) {
+	    var context = this._createContext(args);
+	    var request = {
+            // base
+	        fileId: args.fileId,
+	        certificateThumbprint: args.certificateThumbprint,
+	        output: {
+	            mode: args.output.mode,
+	            folderId: args.output.folderId,
+	            dialogTitle: args.output.dialogTitle,
+	            fileNameSuffix: args.output.fileNameSuffix
+	        },
+            trustArbitrators: args.trustArbitrators,
+            clearPolicyTrustArbitrators: args.clearPolicyTrustArbitrators,
+	        // pades
+            visualRepresentation: args.visualRepresentation,
+            pdfMarks: args.pdfMarks,
+            bypassMarksIfSigned: args.bypassMarksIfSigned,
+            policy: args.policy
+	    };
+
+	    if (request.visualRepresentation && request.visualRepresentation.image && request.visualRepresentation.image.resource && !request.visualRepresentation.image.resource.content && request.visualRepresentation.image.resource.url && !/^(https?:)?\/\//.exec(request.visualRepresentation.image.resource.url)) {
+	        $._downloadResource(request.visualRepresentation.image.resource.url, function (resource) {
+	            request.visualRepresentation.image.resource = resource;
+	            $._requestHandler.sendCommand(context, 'signPdf', request);
+	        });
+	    } else {
+	        $._requestHandler.sendCommand(context, 'signPdf', request);
+	    }
+	    return context.promise;
+	};
+
+	$.signCades = function (args) {
+	    var context = this._createContext(args);
+	    var request = {
+	        // base
+	        fileId: args.fileId,
+	        certificateThumbprint: args.certificateThumbprint,
+	        output: {
+	            mode: args.output.mode,
+	            folderId: args.output.folderId,
+	            dialogTitle: args.output.dialogTitle,
+	            fileNameSuffix: args.output.fileNameSuffix
+	        },
+	        trustArbitrators: args.trustArbitrators,
+	        clearPolicyTrustArbitrators: args.clearPolicyTrustArbitrators,
+	        // cades
+	        cmsToCosignFileId: args.cmsToCosignFileId,
+	        autoDetectCosign: args.autoDetectCosign,
+	        includeEncapsulatedContent: args.includeEncapsulatedContent === null || args.includeEncapsulatedContent === undefined ? true : args.includeEncapsulatedContent,
+	        policy: args.policy
+	    };
+
+
+	    $._requestHandler.sendCommand(context, 'signCades', request);
+	    return context.promise;
+	};
+
+	$.openPades = function (args) {
+	    var context = this._createContext(args);
+	    var request = {
+	        signatureFileId: args.signatureFileId,
+            validate: args.validate,
+            dateReference: args.dateReference,
+	        trustArbitrators: args.trustArbitrators,
+	        clearPolicyTrustArbitrators: args.clearPolicyTrustArbitrators,
+	        specificPolicy: args.specificPolicy
+	    };
+	    $._requestHandler.sendCommand(context, 'openPades', request);
+	    return context.promise;
+	};
+
+	$.openCades = function (args) {
+	    var context = this._createContext(args);
+	    var request = {
+	        signatureFileId: args.signatureFileId,
+	        originalFileId: args.originalFileId,
+	        validate: args.validate,
+	        dateReference: args.dateReference,
+	        trustArbitrators: args.trustArbitrators,
+	        clearPolicyTrustArbitrators: args.clearPolicyTrustArbitrators,
+	        specificPolicy: args.specificPolicy,
+	        acceptablePolicies: args.acceptablePolicies
+	    };
+	    $._requestHandler.sendCommand(context, 'openCades', request);
+	    return context.promise;
+	};
+
 	// -------------------- Browser-dependent singleton --------------------
 
 	if ($._requestHandler === undefined) {
 
-		if ($.detectedBrowser.indexOf("Chrome") >= 0) {
+		var isIE = ($.detectedBrowser.indexOf('IE') >= 0);
+		var isChrome = ($.detectedBrowser.indexOf('Chrome') >= 0);
+		var isFirefox = ($.detectedBrowser.indexOf('Firefox') >= 0);
+		
+		if (!isIE) {
 
 			// --------------------------------------------------------------------------------------------------------------------------------
-			// ---------------------------------------------------- CHROME REQUEST HANDLER ----------------------------------------------------
+			// ------------------------------------------------ WEB EXTENSION REQUEST HANDLER -------------------------------------------------
 			// --------------------------------------------------------------------------------------------------------------------------------
+
+			var extensionRequiredVersion = '0.0.0';
+			var extensionFirstVersionWithSelfUpdate = null;
+
+			if (isChrome) {
+				extensionRequiredVersion = $._chromeExtensionRequiredVersion;
+				extensionFirstVersionWithSelfUpdate = $._chromeExtensionFirstVersionWithSelfUpdate;
+			} else if (isFirefox) {
+				extensionRequiredVersion = $._firefoxExtensionRequiredVersion;
+			}
+
 
 			$._requestHandler = new function () {
 
 				var requestEventName = 'com.lacunasoftware.WebPKI.RequestEvent';
 				var responseEventName = 'com.lacunasoftware.WebPKI.ResponseEvent';
 				var pendingRequests = {};
+
 
 				var s4 = function () {
 					return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
@@ -922,9 +1317,16 @@ LacunaWebPKI = function (license) {
 						command: command,
 						request: request
 					};
-					var event = new CustomEvent('build', { 'detail': message });
-					event.initEvent(requestEventName);
-					document.dispatchEvent(event);
+					if (isChrome) {
+					    var event = new CustomEvent('build', { 'detail': message });
+					    event.initEvent(requestEventName);
+					    document.dispatchEvent(event);
+					} else {
+					    window.postMessage({
+					        port: requestEventName,
+					        message: message
+					    }, "*");
+					}
 				};
 
 				var checkInstalled = function (context) {
@@ -933,7 +1335,7 @@ LacunaWebPKI = function (license) {
 
 				var pollExtension = function (context, tryCount) {
 					$._log('polling extension');
-					var div = document.getElementById($._chromeExtensionId);
+					var div = document.getElementById($._chromeExtensionId) || document.getElementById($._firefoxExtensionId.replace(/[^A-Za-z0-9_]/g, '_'));
 					if (div === null) {
 						if (tryCount > 1) {
 							setTimeout(function () {
@@ -956,13 +1358,13 @@ LacunaWebPKI = function (license) {
 					$._log('checking extension version');
 					var subPromise = new $.Promise(null);
 					subPromise.success(function (version) {
-						if ($._compareVersions(version, $._chromeExtensionRequiredVersion) < 0) {
-							var canSelfUpdate = ($._compareVersions(version, $._chromeExtensionFirstVersionWithSelfUpdate) >= 0);
+						if ($._compareVersions(version, extensionRequiredVersion) < 0) {
+							var canSelfUpdate = (extensionFirstVersionWithSelfUpdate !== null && $._compareVersions(version, extensionFirstVersionWithSelfUpdate) >= 0);
 							context.promise._invokeSuccess({
 								isInstalled: false,
 								status: $.installationStates.OUTDATED,
 								browserSpecificStatus: $._chromeInstallationStates.EXTENSION_OUTDATED,
-								message: 'The Web PKI extension is outdated (installed version: ' + version + ', required version: ' + $._chromeExtensionRequiredVersion + ')',
+								message: 'The Web PKI extension is outdated (installed version: ' + version + ', required version: ' + extensionRequiredVersion + ')',
 								chromeExtensionCanSelfUpdate: canSelfUpdate
 							});
 						} else {
@@ -974,6 +1376,7 @@ LacunaWebPKI = function (license) {
 					});
 					sendCommand({ license: context.license, promise: subPromise }, 'getExtensionVersion', null);
 				};
+
 				var initializeExtension = function (context) {
 					$._log('initializing extension');
 					var subPromise = new $.Promise(null);
@@ -994,6 +1397,15 @@ LacunaWebPKI = function (license) {
 									status: $.installationStates.OUTDATED,
 									browserSpecificStatus: $._chromeInstallationStates.NATIVE_OUTDATED,
 									message: 'The Web PKI native component is outdated (installed version: ' + response.nativeInfo.installedVersion + ', required version: ' + $._chromeNativeLinuxRequiredVersion + ')',
+									platformInfo: response.platformInfo,
+									nativeInfo: response.nativeInfo
+								});
+							} else if (response.nativeInfo.os === 'Darwin' && $._compareVersions(response.nativeInfo.installedVersion, $._chromeNativeMacRequiredVersion) < 0) {
+								context.promise._invokeSuccess({
+									isInstalled: false,
+									status: $.installationStates.OUTDATED,
+									browserSpecificStatus: $._chromeInstallationStates.NATIVE_OUTDATED,
+									message: 'The Web PKI native component is outdated (installed version: ' + response.nativeInfo.installedVersion + ', required version: ' + $._chromeNativeMacRequiredVersion + ')',
 									platformInfo: response.platformInfo,
 									nativeInfo: response.nativeInfo
 								});
@@ -1029,8 +1441,7 @@ LacunaWebPKI = function (license) {
 					}
 				};
 
-				var onResponseReceived = function (data) {
-					var result = data.detail;
+				var onResponseReceived = function (result) {
 					var request = pendingRequests[result.requestId];
 					delete pendingRequests[result.requestId];
 					if (result.success) {
@@ -1046,10 +1457,21 @@ LacunaWebPKI = function (license) {
 				this.sendCommand = sendCommand;
 				this.checkInstalled = checkInstalled;
 
-				document.addEventListener(responseEventName, onResponseReceived);
+				if (isChrome) {
+				    document.addEventListener(responseEventName, function (event) {
+				        onResponseReceived(event.detail);
+				    });
+				} else {
+				    window.addEventListener('message', function (event) {
+				        if (event && event.data && event.data.port === responseEventName) {
+				            onResponseReceived(event.data.message);
+				        }
+				    });
+				}
+
 			};
 
-		} else if ($.detectedBrowser.indexOf('IE') >= 0) {
+		} else {
 
 			// --------------------------------------------------------------------------------------------------------------------------------
 			// ------------------------------------------------------ IE REQUEST HANDLER ------------------------------------------------------
@@ -1207,33 +1629,9 @@ LacunaWebPKI = function (license) {
 				poll();
 			};
 
-		} else {
-
-			// --------------------------------------------------------------------------------------------------------------------------------
-			// --------------------------------------------- UNSUPPORTED BROWSER REQUEST HANDLER ----------------------------------------------
-			// --------------------------------------------------------------------------------------------------------------------------------
-
-			$._requestHandler = new function () {
-
-				var sendCommand = function (context, command, request, responseProcessor) {
-					context.promise._invokeError('Browser not supported', 'Browser not supported', 'helper', 200);
-				};
-
-				var checkInstalled = function (context) {
-					context.promise._invokeSuccess({
-						isInstalled: false,
-						status: $.installationStates.BROWSER_NOT_SUPPORTED,
-						message: 'Your browser is not supported'
-					}, 200);
-				};
-
-				this.sendCommand = sendCommand;
-				this.checkInstalled = checkInstalled;
-			};
-
 		}
+
 
 	}
 
 })(LacunaWebPKI.prototype);
-
