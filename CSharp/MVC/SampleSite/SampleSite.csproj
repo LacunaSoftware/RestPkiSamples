@@ -116,6 +116,7 @@
     <Content Include="Content\css\site.css" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\js\lacuna-web-pki-2.5.0.js" />
+    <Content Include="Content\InvoiceWithSigs.xml" />
     <Content Include="Content\js\site.js" />
     <Content Include="Content\js\bootstrap.js" />
     <Content Include="Content\js\jquery-1.11.3.js" />
@@ -141,6 +142,7 @@
     <Compile Include="Controllers\BatchSignatureController.cs" />
     <Compile Include="Controllers\OpenPadesSignatureController.cs" />
     <Compile Include="Controllers\OpenCadesSignatureController.cs" />
+    <Compile Include="Controllers\XadesElementSignatureController.cs" />
     <Compile Include="Controllers\XmlFullSignatureController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PadesSignatureController.cs" />
@@ -151,6 +153,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AuthenticationModel.cs" />
+    <Compile Include="Models\BatchSignatureMaxOptimizedModels.cs" />
     <Compile Include="Models\BatchSignatureModel.cs" />
     <Compile Include="Models\BatchSignatureOptimizedModels.cs" />
     <Compile Include="Models\PadesSignatureModel.cs" />
@@ -196,6 +199,8 @@
     <Content Include="Views\BatchSignatureOptimized\Index.cshtml" />
     <Content Include="Views\OpenPadesSignature\Index.cshtml" />
     <Content Include="Views\OpenCadesSignature\Index.cshtml" />
+    <Content Include="Views\XadesElementSignature\Index.cshtml" />
+    <Content Include="Views\XadesElementSignature\SignatureInfo.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

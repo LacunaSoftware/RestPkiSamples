@@ -49,5 +49,8 @@ namespace SampleSite.Classes {
 			return File.ReadAllBytes(Path.Combine(ContentPath, "SampleDocument.xml"));
 		}
 
+		public static byte[] GetXmlInvoiceWithSigs() {
+			return File.ReadAllBytes(Path.Combine(ContentPath, "InvoiceWithSigs.xml"));
+		}
 	}
 }
