@@ -4,7 +4,7 @@ REST PKI PHP Samples
 This folder contains web applications written in PHP that show how to use the
 [REST PKI service](https://pki.rest/).
 
-For other languages, please visit the [project root](https://github.com/LacunaSoftware/RestPkiSamples).
+For other languages, please visit the [repository root](https://github.com/LacunaSoftware/RestPkiSamples).
 
 To run the samples, you will need an **API access token**. If you don't have one, register on the
 [REST PKI website](https://pki.rest/) and generate a token.
@@ -14,8 +14,6 @@ You should choose between one of the sample projects in this folder based on you
 * PHP 5.5+: [Standard sample](#standard-sample)
 * PHP 5.3 and 5.4: [Legacy sample for PHP 5.3 and 5.4](#legacy-sample-for-php-53-and-54)
 * PHP 5.2: [Legacy sample for PHP 5.2](#legacy-sample-for-php-52)
-
-If you need test certificates for development or staging environments, [click here](https://github.com/LacunaSoftware/RestPkiSamples#test-certificates).
 
 Standard sample
 ---------------
@@ -105,3 +103,9 @@ establish a secure SSL connection with REST PKI. To fix this, follow these steps
 You don't necessarily need to use the PEM file specified on step 1, there are other options such as
 [generating a PEM file yourself](http://www.swiftsoftwaregroup.com/configuring-phpcurl-root-certificates-windows-server/)
 based on the OS's trusted certificate roots.
+
+See also
+--------
+
+* [Test certificates](../TestCertificates.md)
+* [Samples in other programming languages](https://github.com/LacunaSoftware/RestPkiSamples)
