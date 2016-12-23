@@ -6,8 +6,8 @@ different programming languages.
 
 Choose one of the following programming languages to see the available sample projects:
 
-* [Java](Java/)
 * [PHP](PHP/)
+* [Java](Java/)
 * [C#](CSharp/)
 * [Python](Python/)
 * [Node.js](NodeJS/)
