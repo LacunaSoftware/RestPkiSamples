@@ -21,6 +21,7 @@ function getRestPkiClient()
     // -----------------------------------------------------------------------------------------------------------
     // IMPORTANT NOTICE: in production code, you should use HTTPS to communicate with REST PKI, otherwise your API
     // access token, as well as the documents you sign, will be sent to REST PKI unencrypted.
+	// For on premises, installations use the URL of your instance
     // -----------------------------------------------------------------------------------------------------------
     $restPkiUrl = 'http://pki.rest/';
     //$restPkiUrl = 'https://pki.rest/'; // <--- USE THIS IN PRODUCTION!

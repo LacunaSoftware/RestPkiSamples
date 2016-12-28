@@ -33,6 +33,7 @@ var signatureForm = (function() {
         pki.init({
             ready: loadCertificates, // as soon as the component is ready we'll load the certificates
             defaultError: onWebPkiError
+//			,restPkiUrl: 'http://hostname-ou-ip-do-seu-restpki/' <--- use this for on premises installations. 
         });
     }
 
