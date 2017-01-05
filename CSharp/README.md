@@ -4,12 +4,10 @@ REST PKI C# Samples
 This folder contains web applications written in C# that show how to use the
 [REST PKI service](https://pki.rest/).
 
-For other languages, please visit the [project root](https://github.com/LacunaSoftware/RestPkiSamples).
+For other languages, please visit the [repository root](https://github.com/LacunaSoftware/RestPkiSamples).
 
 To run the samples, you will need an **API access token**. If you don't have one, register on the
 [REST PKI website](https://pki.rest/) and generate a token.
-
-If you need test certificates for development or staging environments, [click here](https://github.com/LacunaSoftware/RestPkiSamples#test-certificates).
 
 Default sample (ASP.NET MVC)
 ----------------------------
@@ -44,6 +42,9 @@ The steps to execute the sample are the same as for the default sample.
 The samples use a client lib which encapsulates the API calls to REST PKI. The lib is a Nuget package
 targeting .NET Framework 4.5. If you need to support .NET Framework 4.0, please [contact us](https://webpki.lacunasoftware.com/#/Contact).
 
-See also:
+See also
+--------
 
+* [Test certificates](../TestCertificates.md)
+* [Samples in other programming languages](https://github.com/LacunaSoftware/RestPkiSamples)
 * [REST PKI .NET client lib on Nuget](https://www.nuget.org/packages/Lacuna.RestPki.Client)

@@ -20,6 +20,7 @@
                         <li><a href="pades-signature.php">With file already on server</a></li>
                         <li><a href="upload.php?goto=pades-signature">With file uploaded by user</a></li>
                         <li><a href="upload.php?goto=open-pades-signature">Open/validate existing signature</a></li>
+                        <li><a href="upload.php?goto=pades-signature-server-key">Using a server key</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
@@ -29,6 +30,7 @@
                         <li><a href="cades-signature.php">With file already on server</a></li>
                         <li><a href="upload.php?goto=cades-signature">With file uploaded by user</a></li>
                         <li><a href="upload.php?goto=open-cades-signature">Open/validate existing signature</a></li>
+                        <li><a href="upload.php?goto=cades-signature-server-key">Create a signature using a server key</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">

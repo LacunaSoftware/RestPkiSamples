@@ -66,8 +66,8 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 
 			} else {
 
-				// If both userfile and cmsfile are null, this is the "signature with server file" case. We'll set the file to be signed as a byte array
-				signatureStarter.SetContentToSign(Util.GetSampleDocContent());
+				// If both userfile and cmsfile are null, this is the "signature with server file" case. We'll set the path of the file to be signed
+				signatureStarter.SetFileToSign(Util.GetSampleDocPath());
 
 			}
 

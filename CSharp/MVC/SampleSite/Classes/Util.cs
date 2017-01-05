@@ -30,7 +30,11 @@ namespace SampleSite.Classes {
 		}
 
 		public static byte[] GetSampleDocContent() {
-			return File.ReadAllBytes(Path.Combine(ContentPath, "01.pdf"));
+			return File.ReadAllBytes(GetSampleDocPath());
+		}
+
+		public static string GetSampleDocPath() {
+			return Path.Combine(ContentPath, "01.pdf");
 		}
 
 		public static byte[] GetBatchDocContent(int id) {
@@ -45,5 +49,8 @@ namespace SampleSite.Classes {
 			return File.ReadAllBytes(Path.Combine(ContentPath, "SampleDocument.xml"));
 		}
 
+		public static byte[] GetXmlInvoiceWithSigs() {
+			return File.ReadAllBytes(Path.Combine(ContentPath, "InvoiceWithSigs.xml"));
+		}
 	}
 }

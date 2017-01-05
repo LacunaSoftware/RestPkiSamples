@@ -101,4 +101,14 @@ public class Util {
 		return buffer.toByteArray();
 	}
 
+	public static byte[] getBatchDocContent(int id) throws IOException {
+		Resource resource = new ClassPathResource("/static/" + String.format("%02d", id) + ".pdf");
+		InputStream fileStream = resource.getInputStream();
+		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		org.apache.commons.io.IOUtils.copy(fileStream, buffer);
+		fileStream.close();
+		buffer.flush();
+		return buffer.toByteArray();
+	}
+
 }

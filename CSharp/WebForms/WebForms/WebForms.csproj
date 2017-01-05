@@ -138,6 +138,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Authentication.aspx" />
+    <Content Include="AuthenticationFail.aspx" />
+    <Content Include="AuthenticationSuccess.aspx" />
     <Content Include="CadesSignatureInfo.aspx" />
     <Content Include="CadesSignature.aspx" />
     <Content Include="Content\bootstrap.css" />
@@ -161,6 +164,7 @@
     <Content Include="Content\08.pdf" />
     <Content Include="Content\09.pdf" />
     <Content Include="Content\10.pdf" />
+    <Content Include="Scripts\lacuna-web-pki-2.5.0.js" />
     <Content Include="XmlElementSignature.aspx" />
     <Content Include="XmlElementSignatureInfo.aspx" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -171,7 +175,6 @@
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <Content Include="Scripts\jquery.blockUI.js" />
-    <Content Include="Scripts\lacuna-web-pki-2.3.2.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
@@ -219,6 +222,27 @@
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Authentication.aspx.cs">
+      <DependentUpon>Authentication.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Authentication.aspx.designer.cs">
+      <DependentUpon>Authentication.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="AuthenticationFail.aspx.cs">
+      <DependentUpon>AuthenticationFail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AuthenticationFail.aspx.designer.cs">
+      <DependentUpon>AuthenticationFail.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="AuthenticationSuccess.aspx.cs">
+      <DependentUpon>AuthenticationSuccess.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AuthenticationSuccess.aspx.designer.cs">
+      <DependentUpon>AuthenticationSuccess.aspx</DependentUpon>
+    </Compile>
     <Compile Include="CadesSignatureInfo.aspx.cs">
       <DependentUpon>CadesSignatureInfo.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

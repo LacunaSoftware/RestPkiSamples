@@ -34,12 +34,18 @@ $signatureStarter = new PadesSignatureStarter(getRestPkiClient());
 $signatureStarter->measurementUnits = PadesMeasurementUnits::CENTIMETERS;
 
 // Set the signature policy
-$signatureStarter->setSignaturePolicy(StandardSignaturePolicies::PADES_BASIC);
+$signatureStarter->setSignaturePolicy(StandardSignaturePolicies::PADES_BASIC_WITH_ICPBR_CERTS);
 
-// Set a SecurityContext to be used to determine trust in the certificate chain
-$signatureStarter->setSecurityContext(StandardSecurityContexts::PKI_BRAZIL);
-// Note: By changing the SecurityContext above you can accept only certificates from a certain PKI, for instance,
-// ICP-Brasil (\Lacuna\StandardSecurityContexts::PKI_BRAZIL).
+// Alternative option: add a ICP-Brasil timestamp to the signature
+//$signatureStarter->setSignaturePolicy(StandardSignaturePolicies::PADES_T_WITH_ICPBR_CERTS);
+
+// Alternative option: PAdES Basic with PKIs trusted by Windows
+//$signatureStarter->setSignaturePolicy(StandardSignaturePolicies::PADES_BASIC);
+//$signatureStarter->setSecurityContext(StandardSecurityContexts::WINDOWS_SERVER);
+
+// Alternative option: PAdES Basic with a custom security context containting, for instance, your private PKI certificate
+//$signatureStarter->setSignaturePolicy(StandardSignaturePolicies::PADES_BASIC);
+//$signatureStarter->setSecurityContext('ID OF YOUR CUSTOM SECURITY CONTEXT');
 
 // Set the visual representation for the signature
 $signatureStarter->setVisualRepresentation([
@@ -176,7 +182,7 @@ setExpiredPage();
 // The file below contains the JS lib for accessing the Web PKI component. For more information, see:
 // https://webpki.lacunasoftware.com/#/Documentation
 ?>
-<script src="content/js/lacuna-web-pki-2.3.1.js"></script>
+<script src="content/js/lacuna-web-pki-2.5.0.js"></script>
 
 <?php
 // The file below contains the logic for calling the Web PKI component. It is only an example, feel free to alter it

@@ -4,12 +4,10 @@ REST PKI Java Samples
 This folder contains web applications written in Java that show how to use the
 [REST PKI service](https://pki.rest/).
 
-For other languages, please visit the [project root](https://github.com/LacunaSoftware/RestPkiSamples).
+For other languages, please visit the [repository root](https://github.com/LacunaSoftware/RestPkiSamples).
 
 To run the samples, you will need an **API access token**. If you don't have one, register on the
 [REST PKI website](https://pki.rest/) and generate a token.
-
-If you need test certificates for development or staging environments, [click here](https://github.com/LacunaSoftware/RestPkiSamples#test-certificates).
 
 Default sample
 --------------
@@ -101,11 +99,6 @@ If your project uses another tool for dependency resolution (e.g. Ivy), please v
 [package page on BinTray](https://bintray.com/lacunasoftware/maven/restpki-client) and click on
 the link "SET ME UP!".
 
-See also:
-
-* [Javadoc for the Java client lib](https://pki.rest/Content/docs/java-client/)
-
-
 Using a proxy server
 --------------------
 
@@ -149,3 +142,10 @@ If you don't wish to update your Java, you may alter the file `Java/sample-sprin
 and switch the REST PKI address to "http://pki.rest/" (with "http" instead of "https"). However, this fix
 should only be used while on development, since your API access token, as well as the documents you sign,
 will be sent to REST PKI unencrypted.
+
+See also
+--------
+
+* [Test certificates](../TestCertificates.md)
+* [Samples in other programming languages](https://github.com/LacunaSoftware/RestPkiSamples)
+* [Javadoc for the Java client lib](https://pki.rest/Content/docs/java-client/)

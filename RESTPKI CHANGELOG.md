@@ -1,6 +1,22 @@
 Lacuna Rest PKI change log
 ==========================
 
+1.10.1 (2016-10-01)
+-------------------
+
+- Add standard PAdES policies "Basic with ICP-Brasil certificates" and "PAdES-T with ICP-Brasil certificates"
+
+1.10.0 (2016-09-27)
+-------------------
+
+- Add support for performing CAdES detached signatures without uploading the data file
+- Improve user management
+
+1.9.1 (2016-09-22)
+------------------
+
+- Fix bug preventing use of tags {{signerEmail}} and {{issuerCommonName}} on PAdES visual representation
+
 1.9.0 (2016-08-25)
 ------------------
 
