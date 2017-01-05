@@ -7,14 +7,14 @@
  */
 
 require_once 'util.php';
-$MAX_FILE_SIZE = 1024 * 1024 * 1024;
+$MAX_FILE_SIZE = 1024 * 1024 * 1024; // 1GB
 
 if (isset($_FILES['userfile'])) {
 
     // Process the file uploaded
 
     $file = $_FILES['userfile'];
-    if ($file['size'] > $MAX_FILE_SIZE) { // 10MB
+    if ($file['size'] > $MAX_FILE_SIZE) {
         die('File too large');
     }
     $filenameParts = explode('.', $file['name']);
@@ -50,7 +50,7 @@ if (isset($_FILES['userfile'])) {
     <h2>Upload a file</h2>
 
     <form method="post" enctype="multipart/form-data">
-        <?php /* MAX_FILE_SIZE = 10MB (see http://php.net/manual/en/features.file-upload.post-method.php) */ ?>
+        <?php /* MAX_FILE_SIZE = 1GB (see http://php.net/manual/en/features.file-upload.post-method.php) */ ?>
         <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $MAX_FILE_SIZE ?>"/>
 
         <p>Select file: <input type="file" name="userfile"></p>
