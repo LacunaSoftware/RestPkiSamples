@@ -11,30 +11,30 @@ require_once 'RestPki.php';
 // initialized with the API access token
 require_once 'util.php';
 
-use Lacuna\PadesSignatureFinisher;
+use Lacuna\PadesSignatureFinisher2;
 
 // Get the token for this signature (rendered in a hidden input field, see pades-signature.php)
 $token = $_POST['token'];
 
 // Instantiate the PadesSignatureFinisher class, responsible for completing the signature process
-$signatureFinisher = new PadesSignatureFinisher(getRestPkiClient());
+$signatureFinisher = new PadesSignatureFinisher2(getRestPkiClient());
 
 // Set the token
 $signatureFinisher->setToken($token);
 
 // Call the finish() method, which finalizes the signature process and returns the signed PDF
-$signedPdf = $signatureFinisher->finish();
+$signatureResult = $signatureFinisher->finish();
 
 // Get information about the certificate used by the user to sign the file. This method must only be called after
 // calling the finish() method.
-$signerCert = $signatureFinisher->getCertificateInfo();
+$signerCert = $signatureResult->getCertificateInfo();
 
 // At this point, you'd typically store the signed PDF on your database. For demonstration purposes, we'll
 // store the PDF on a temporary folder publicly accessible and render a link to it.
 
 $filename = uniqid() . ".pdf";
 createAppData(); // make sure the "app-data" folder exists (util.php)
-file_put_contents("app-data/{$filename}", $signedPdf);
+$signatureResult->writeToFile("app-data/{$filename}");
 
 ?><!DOCTYPE html>
 <html>

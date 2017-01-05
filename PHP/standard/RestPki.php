@@ -195,6 +195,41 @@ class RestPkiClient
 
         return $blobToken;
     }
+
+    public function downloadContent($url)
+    {
+        $verb = 'GET';
+        $client = $this->getRestClient();
+        $httpResponse = null;
+        try {
+            $httpResponse = $client->get($url);
+        } catch (\GuzzleHttp\Exception\TransferException $ex) {
+            throw new RestUnreachableException($verb, $url, $ex);
+        }
+        $this->checkResponse($verb, $url, $httpResponse);
+        return $httpResponse->getBody();
+    }
+
+    public function downloadToFile($url, $path)
+    {
+        $handle = fopen($path, 'wb');
+
+        try {
+
+            $verb = 'GET';
+            $client = $this->getRestClient();
+            $httpResponse = null;
+            try {
+                $httpResponse = $client->get($url, ['sink' => $handle]);
+            } catch (\GuzzleHttp\Exception\TransferException $ex) {
+                throw new RestUnreachableException($verb, $url, $ex);
+            }
+            $this->checkResponse($verb, $url, $httpResponse);
+
+        } finally {
+            fclose($handle);
+        }
+    }
 }
 
 class RestException extends \Exception
@@ -1024,6 +1059,108 @@ class XmlSignatureFinisher extends SignatureFinisher
             throw new \Exception('The method writeSignedXmlToPath() can only be called after calling the finish() method');
         }
         file_put_contents($xmlPath, $this->signedXml);
+    }
+}
+
+abstract class SignatureFinisher2
+{
+
+    public $forceBlobResult;
+
+    /** @var RestPkiClient */
+    protected $restPkiClient;
+    protected $token;
+    protected $signatureBase64;
+
+    public function __construct($restPkiClient)
+    {
+        $this->restPkiClient = $restPkiClient;
+        $this->forceBlobResult = false;
+    }
+
+    public function setToken($token)
+    {
+        $this->token = $token;
+    }
+
+    public function setSignature($signature)
+    {
+        $this->signatureBase64 = base64_encode($signature);
+    }
+
+    public function setSignatureBase64($signature)
+    {
+        $this->signatureBase64 = $signature;
+    }
+
+    public abstract function finish();
+}
+
+class SignatureResult
+{
+    /** @var RestPkiClient */
+    private $restPkiClient;
+    private $fileModel;
+    private $certModel;
+    private $callbackArgument;
+
+
+    public function __construct($restPkiClient, $fileModel, $certModel, $callbackArgument)
+    {
+        $this->restPkiClient = $restPkiClient;
+        $this->fileModel = $fileModel;
+        $this->certModel = $certModel;
+        $this->callbackArgument = $callbackArgument;
+    }
+
+    public function getCallbackArgument()
+    {
+        return $this->callbackArgument;
+    }
+
+    public function getCertificateInfo()
+    {
+        return $this->certModel;
+    }
+
+    public function writeToFile($path) {
+        if (!empty($this->fileModel->content)) {
+            file_put_contents($this->fileModel->content);
+        } else {
+            $this->restPkiClient->downloadToFile($this->fileModel->url, $path);
+        }
+    }
+
+    public function getContent() {
+        if (!empty($this->fileModel->content)) {
+            return $this->fileModel->content;
+        } else {
+            return $this->restPkiClient->downloadContent($this->fileModel->url);
+        }
+    }
+}
+
+class PadesSignatureFinisher2 extends SignatureFinisher2
+{
+    public function __construct($restPkiClient)
+    {
+        parent::__construct($restPkiClient);
+    }
+
+    public function finish()
+    {
+        if (empty($this->token)) {
+            throw new \Exception("The token was not set");
+        }
+
+        $request = array(
+            'forceBlobResult' => $this->forceBlobResult,
+            'signature' => $this->signatureBase64
+        );
+
+        $response = $this->restPkiClient->post("Api/v2/PadesSignatures/{$this->token}/SignedBytes", $request);
+
+        return new SignatureResult($this->restPkiClient, $response->signedPdf, $response->certificate, $response->callbackArgument);
     }
 }
 
