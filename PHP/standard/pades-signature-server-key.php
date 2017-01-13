@@ -6,18 +6,11 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
-// initialized with the API access token
-require_once 'util.php';
-
-// The file pades-visual-elements.php contains sample settings for visual representations and PDF marks (see below)
-require_once 'pades-visual-elements.php';
-
-use Lacuna\RestPki\Client\PadesSignatureStarter;
-use Lacuna\RestPki\Client\StandardSignaturePolicies;
-use Lacuna\RestPki\Client\PadesMeasurementUnits;
-use Lacuna\RestPki\Client\StandardSecurityContexts;
-use Lacuna\RestPki\Client\PadesSignatureFinisher;
+use Lacuna\RestPki\PadesSignatureStarter;
+use Lacuna\RestPki\StandardSignaturePolicies;
+use Lacuna\RestPki\PadesMeasurementUnits;
+use Lacuna\RestPki\StandardSecurityContexts;
+use Lacuna\RestPki\PadesSignatureFinisher;
 use Lacuna\PadesVisualElements;
 
 // Read the PKCS #12 file
@@ -96,7 +89,7 @@ $signatureStarter->setVisualRepresentation([
     // possibilities depending on the argument passed to the function. Experiment changing the argument to see
     // different examples of signature positioning. Once you decide which is best for your case, you can place the
     // code directly here.
-    'position' => PadesVisualElements::getVisualRepresentationPosition(1)
+    'position' => getVisualRepresentationPosition(1)
 
 ]);
 

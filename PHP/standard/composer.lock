@@ -183,12 +183,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/LacunaSoftware/RestPkiPhpClient.git",
-                "reference": "2b35990261f3645a1ba1f84387d4e1ffa80711da"
+                "reference": "47e8a435fd41f226150b2d7ad893a095df14cbdc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LacunaSoftware/RestPkiPhpClient/zipball/2b35990261f3645a1ba1f84387d4e1ffa80711da",
-                "reference": "2b35990261f3645a1ba1f84387d4e1ffa80711da",
+                "url": "https://api.github.com/repos/LacunaSoftware/RestPkiPhpClient/zipball/47e8a435fd41f226150b2d7ad893a095df14cbdc",
+                "reference": "47e8a435fd41f226150b2d7ad893a095df14cbdc",
                 "shasum": ""
             },
             "require": {
@@ -198,7 +198,7 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "Lacuna\\RestPki\\Client\\": "src/"
+                    "Lacuna\\RestPki\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -216,7 +216,7 @@
                 "rest pki",
                 "signature"
             ],
-            "time": "2017-01-13 01:14:08"
+            "time": "2017-01-13 13:53:20"
         },
         {
             "name": "psr/http-message",

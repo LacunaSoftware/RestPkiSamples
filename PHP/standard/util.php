@@ -1,8 +1,8 @@
 <?php
 
-require __DIR__ . '/vendor/autoload.php';
+use Lacuna\RestPki\RestPkiClient;
 
-use Lacuna\RestPki\Client\RestPkiClient;
+require __DIR__ . '/vendor/autoload.php';
 
 function getRestPkiClient()
 {

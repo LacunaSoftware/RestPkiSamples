@@ -7,13 +7,9 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
-// initialized with the API access token
-require_once 'util.php';
-
-use Lacuna\RestPki\Client\XmlElementSignatureStarter;
-use Lacuna\RestPki\Client\StandardSecurityContexts;
-use Lacuna\RestPki\Client\StandardSignaturePolicies;
+use Lacuna\RestPki\XmlElementSignatureStarter;
+use Lacuna\RestPki\StandardSecurityContexts;
+use Lacuna\RestPki\StandardSignaturePolicies;
 
 // Instantiate the XmlElementSignatureStarter class, responsible for receiving the signature elements and start the
 // signature process

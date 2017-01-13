@@ -8,11 +8,7 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
-// initialized with the API access token
-require_once 'util.php';
-
-use Lacuna\RestPki\Client\PadesSignatureFinisher;
+use Lacuna\RestPki\PadesSignatureFinisher;
 
 // Get the token for this signature (received from the post call, see batch-signature-form.php)
 $token = $_POST['token'];

@@ -7,13 +7,9 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
-// initialized with the API access token
-require_once 'util.php';
-
-use Lacuna\RestPki\Client\FullXmlSignatureStarter;
-use Lacuna\RestPki\Client\StandardSecurityContexts;
-use Lacuna\RestPki\Client\StandardSignaturePolicies;
+use Lacuna\RestPki\FullXmlSignatureStarter;
+use Lacuna\RestPki\StandardSecurityContexts;
+use Lacuna\RestPki\StandardSignaturePolicies;
 
 // Instantiate the FullXmlSignatureStarter class, responsible for receiving the signature elements and start the
 // signature process
@@ -26,7 +22,7 @@ $signatureStarter->setXmlToSignPath('content/SampleDocument.xml');
 // to the root element (which is most usual with enveloped signatures).
 $signatureStarter->setSignatureElementLocation(
     '//ls:signaturePlaceholder',
-    \Lacuna\RestPki\Client\XmlInsertionOptions::APPEND_CHILD,
+    \Lacuna\RestPki\XmlInsertionOptions::APPEND_CHILD,
     array('ls' => 'http://www.lacunasoftware.com/sample')
 );
 

@@ -13,12 +13,8 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
-// initialized with the API access token
-require_once 'util.php';
-
-use Lacuna\RestPki\Client\CadesSignatureStarter;
-use Lacuna\RestPki\Client\StandardSignaturePolicies;
+use Lacuna\RestPki\CadesSignatureStarter;
+use Lacuna\RestPki\StandardSignaturePolicies;
 
 $userfile = isset($_GET['userfile']) ? $_GET['userfile'] : null;
 $cmsfile = isset($_GET['cmsfile']) ? $_GET['cmsfile'] : null;

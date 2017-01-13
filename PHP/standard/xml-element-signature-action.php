@@ -6,11 +6,7 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
-// initialized with the API access token
-require_once 'util.php';
-
-use Lacuna\RestPki\Client\XmlSignatureFinisher;
+use Lacuna\RestPki\XmlSignatureFinisher;
 
 // Get the token for this signature (rendered in a hidden input field, see xml-element-signature.php)
 $token = $_POST['token'];

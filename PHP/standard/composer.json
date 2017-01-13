@@ -1,4 +1,10 @@
 {
+  "autoload": {
+    "files": [
+      "util.php",
+      "util-pades.php"
+    ]
+  },
   "require": {
     "lacuna/restpki-client": "dev-develop"
   }

@@ -6,13 +6,9 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
-// initialized with the API access token
-require_once 'util.php';
-
-use Lacuna\RestPki\Client\CadesSignatureStarter;
-use Lacuna\RestPki\Client\StandardSignaturePolicies;
-use Lacuna\RestPki\Client\CadesSignatureFinisher;
+use Lacuna\RestPki\CadesSignatureStarter;
+use Lacuna\RestPki\StandardSignaturePolicies;
+use Lacuna\RestPki\CadesSignatureFinisher;
 
 // Read the PKCS #12 file
 if (!$certStore = file_get_contents("content/Pierre de Fermat.pfx")) {

@@ -5,14 +5,10 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
-// initialized with the API access token
-require_once 'util.php';
-
-use Lacuna\RestPki\Client\PadesSignatureExplorer;
-use Lacuna\RestPki\Client\StandardSignaturePolicies;
-use Lacuna\RestPki\Client\StandardSecurityContexts;
-use Lacuna\RestPki\Client\StandardSignaturePolicyCatalog;
+use Lacuna\RestPki\PadesSignatureExplorer;
+use Lacuna\RestPki\StandardSignaturePolicies;
+use Lacuna\RestPki\StandardSecurityContexts;
+use Lacuna\RestPki\StandardSignaturePolicyCatalog;
 
 // This function is called below. It encapsulates examples of signature validation parameters.
 function setValidationParameters(PadesSignatureExplorer $sigExplorer, $caseNumber)

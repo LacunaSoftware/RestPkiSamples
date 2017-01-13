@@ -8,6 +8,8 @@
  * start and complete each signature.
  */
 
+require __DIR__ . '/vendor/autoload.php';
+
 // It is up to your application's business logic to determine which documents will compose the batch
 $documentsIds = array_map(function ($id) {
     return sprintf("%02d", $id);
