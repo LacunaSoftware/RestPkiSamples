@@ -6,14 +6,13 @@
  * with the saved filename so that the page can render a link to it.
  */
 
-// The file RestPki.php contains the helper classes to call the REST PKI API
-require_once 'RestPki.php';
+require __DIR__ . '/vendor/autoload.php';
 
 // The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
 // initialized with the API access token
 require_once 'util.php';
 
-use Lacuna\PadesSignatureFinisher;
+use Lacuna\RestPki\Client\PadesSignatureFinisher;
 
 // Get the token for this signature (received from the post call, see batch-signature-form.php)
 $token = $_POST['token'];

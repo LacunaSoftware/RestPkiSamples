@@ -3,20 +3,19 @@
  * This file submits a CAdES signature file to Rest PKI for inspection and renders the results.
  */
 
-// The file RestPki.php contains the helper classes to call the REST PKI API
-require_once 'RestPki.php';
+require __DIR__ . '/vendor/autoload.php';
 
 // The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
 // initialized with the API access token
 require_once 'util.php';
 
-use Lacuna\CadesSignatureExplorer;
-use Lacuna\StandardSignaturePolicies;
-use Lacuna\StandardSecurityContexts;
-use Lacuna\StandardSignaturePolicyCatalog;
+use Lacuna\RestPki\Client\CadesSignatureExplorer;
+use Lacuna\RestPki\Client\StandardSignaturePolicies;
+use Lacuna\RestPki\Client\StandardSecurityContexts;
+use Lacuna\RestPki\Client\StandardSignaturePolicyCatalog;
 
 // This function is called below. It encapsulates examples of signature validation parameters.
-function setValidationParameters($sigExplorer, $caseNumber)
+function setValidationParameters(CadesSignatureExplorer $sigExplorer, $caseNumber)
 {
     switch ($caseNumber) {
         /**

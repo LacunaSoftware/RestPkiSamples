@@ -5,16 +5,15 @@
  * is posted to another file, xml-full-signature-action.php, which calls REST PKI again to complete the signature.
  */
 
-// The file RestPki.php contains the helper classes to call the REST PKI API
-require_once 'RestPki.php';
+require __DIR__ . '/vendor/autoload.php';
 
 // The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
 // initialized with the API access token
 require_once 'util.php';
 
-use Lacuna\FullXmlSignatureStarter;
-use Lacuna\StandardSecurityContexts;
-use Lacuna\StandardSignaturePolicies;
+use Lacuna\RestPki\Client\FullXmlSignatureStarter;
+use Lacuna\RestPki\Client\StandardSecurityContexts;
+use Lacuna\RestPki\Client\StandardSignaturePolicies;
 
 // Instantiate the FullXmlSignatureStarter class, responsible for receiving the signature elements and start the
 // signature process
@@ -27,7 +26,7 @@ $signatureStarter->setXmlToSignPath('content/SampleDocument.xml');
 // to the root element (which is most usual with enveloped signatures).
 $signatureStarter->setSignatureElementLocation(
     '//ls:signaturePlaceholder',
-    \Lacuna\XmlInsertionOptions::APPEND_CHILD,
+    \Lacuna\RestPki\Client\XmlInsertionOptions::APPEND_CHILD,
     array('ls' => 'http://www.lacunasoftware.com/sample')
 );
 

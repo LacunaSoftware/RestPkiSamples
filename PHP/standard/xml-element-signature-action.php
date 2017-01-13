@@ -4,14 +4,13 @@
  * This file receives the form submission from xml-element-signature.php. We'll call REST PKI to complete the signature.
  */
 
-// The file RestPki.php contains the helper classes to call the REST PKI API
-require_once 'RestPki.php';
+require __DIR__ . '/vendor/autoload.php';
 
 // The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
 // initialized with the API access token
 require_once 'util.php';
 
-use Lacuna\XmlSignatureFinisher;
+use Lacuna\RestPki\Client\XmlSignatureFinisher;
 
 // Get the token for this signature (rendered in a hidden input field, see xml-element-signature.php)
 $token = $_POST['token'];

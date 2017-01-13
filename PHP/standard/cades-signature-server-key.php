@@ -4,16 +4,15 @@
  * This file performs a CAdES signature using REST PKI and a PKCS #12 file located on the server-side.
  */
 
-// The file RestPki.php contains the helper classes to call the REST PKI API
-require_once 'RestPki.php';
+require __DIR__ . '/vendor/autoload.php';
 
 // The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
 // initialized with the API access token
 require_once 'util.php';
 
-use Lacuna\CadesSignatureStarter;
-use Lacuna\StandardSignaturePolicies;
-use Lacuna\CadesSignatureFinisher;
+use Lacuna\RestPki\Client\CadesSignatureStarter;
+use Lacuna\RestPki\Client\StandardSignaturePolicies;
+use Lacuna\RestPki\Client\CadesSignatureFinisher;
 
 // Read the PKCS #12 file
 if (!$certStore = file_get_contents("content/Pierre de Fermat.pfx")) {

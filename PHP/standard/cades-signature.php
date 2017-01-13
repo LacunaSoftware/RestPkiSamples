@@ -11,15 +11,14 @@
  * 3. Co-signature of a previously signed CMS    : "cmsfile" filled
  */
 
-// The file RestPki.php contains the helper classes to call the REST PKI API
-require_once 'RestPki.php';
+require __DIR__ . '/vendor/autoload.php';
 
 // The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
 // initialized with the API access token
 require_once 'util.php';
 
-use Lacuna\CadesSignatureStarter;
-use Lacuna\StandardSignaturePolicies;
+use Lacuna\RestPki\Client\CadesSignatureStarter;
+use Lacuna\RestPki\Client\StandardSignaturePolicies;
 
 $userfile = isset($_GET['userfile']) ? $_GET['userfile'] : null;
 $cmsfile = isset($_GET['cmsfile']) ? $_GET['cmsfile'] : null;

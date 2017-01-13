@@ -2,6 +2,18 @@
 
 namespace Lacuna;
 
+use Lacuna\RestPki\Client\Color;
+use Lacuna\RestPki\Client\PadesVisualPositioningPresets;
+use Lacuna\RestPki\Client\PadesMeasurementUnits;
+use Lacuna\RestPki\Client\PdfMark;
+use Lacuna\RestPki\Client\PdfMarkImage;
+use Lacuna\RestPki\Client\PdfMarkImageElement;
+use Lacuna\RestPki\Client\PdfMarkTextElement;
+use Lacuna\RestPki\Client\PdfTextSection;
+use Lacuna\RestPki\Client\PdfTextStyle;
+
+require __DIR__ . '/vendor/autoload.php';
+
 // This class contains settings for signature visual positioning and PDF marks, which are options when performing
 // PAdES signatures.
 class PadesVisualElements
@@ -96,6 +108,10 @@ class PadesVisualElements
     // This function is called by pades-signature.php. It contains examples of PDF marks, visual elements of arbitrary
     // content placed in every page. This code is only in a separate function in order to organize the various examples,
     // you can pick the one that best suits your needs and use it below directly without an encapsulating function.
+    /**
+     * @param $sampleNumber
+     * @return PdfMark|null
+     */
     static function getPdfMark($sampleNumber)
     {
 

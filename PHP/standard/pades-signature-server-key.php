@@ -4,8 +4,7 @@
  * This file performs a PAdES signature using REST PKI and a PKCS #12 file located on the server-side.
  */
 
-// The file RestPki.php contains the helper classes to call the REST PKI API
-require_once 'RestPki.php';
+require __DIR__ . '/vendor/autoload.php';
 
 // The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
 // initialized with the API access token
@@ -14,12 +13,12 @@ require_once 'util.php';
 // The file pades-visual-elements.php contains sample settings for visual representations and PDF marks (see below)
 require_once 'pades-visual-elements.php';
 
-use Lacuna\PadesSignatureStarter;
-use Lacuna\StandardSignaturePolicies;
-use Lacuna\PadesMeasurementUnits;
+use Lacuna\RestPki\Client\PadesSignatureStarter;
+use Lacuna\RestPki\Client\StandardSignaturePolicies;
+use Lacuna\RestPki\Client\PadesMeasurementUnits;
+use Lacuna\RestPki\Client\StandardSecurityContexts;
+use Lacuna\RestPki\Client\PadesSignatureFinisher;
 use Lacuna\PadesVisualElements;
-use Lacuna\StandardSecurityContexts;
-use Lacuna\PadesSignatureFinisher;
 
 // Read the PKCS #12 file
 if (!$certStore = file_get_contents("content/Pierre de Fermat.pfx")) {
