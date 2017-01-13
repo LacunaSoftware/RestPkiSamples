@@ -41,7 +41,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 					// The tags {{signerName}} and {{signerNationalId}} will be substituted according to the user's certificate
 					// signerName -> full name of the signer
 					// signerNationalId -> if the certificate is ICP-Brasil, contains the signer's CPF
-					Text = new PadesVisualText("Signed by {{signerName}} ({{signerNationalId}})") {
+					Text = new PadesVisualText("name: \"{{name}}\", national_id: \"{{national_id}}\", email: \"{{email}}\", subject_cn: \"{{subject_cn}}\", issuer_cn: \"{{issuer_cn}}\", br_cpf: \"{{br_cpf}}\", br_cpf_formatted: \"{{br_cpf_formatted}}\", br_cnpj: \"{{br_cnpj}}\", br_cnpj_formatted: \"{{br_cnpj_formatted}}\", br_responsavel: \"{{br_responsavel}}\", br_company: \"{{br_company}}\", br_oab_numbero: \"{{br_oab_numbero}}\", br_oab_uf: \"{{br_oab_uf}}\", br_rg_numero: \"{{br_rg_numero}}\", br_rg_emissor: \"{{br_rg_emissor}}\", br_rg_uf: \"{{br_rg_uf}}\", signerName: \"{{signerName}}\", signerEmail: \"{{signerEmail}}\", signerNationalId: \"{{signerNationalId}}\", issuerCommonName: \"{{issuerCommonName}}\"") {
 
 						// Specify that the signing time should also be rendered
 						IncludeSigningTime = true,
@@ -119,18 +119,20 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 		[HttpPost]
 		public ActionResult Index(Models.PadesSignatureModel model) {
 
-			// Get an instance of the PadesSignatureFinisher class, responsible for completing the signature process
-			var signatureFinisher = Util.GetRestPkiClient().GetPadesSignatureFinisher();
+			// Get an instance of the PadesSignatureFinisher2 class, responsible for completing the signature process
+			var signatureFinisher = new PadesSignatureFinisher2(Util.GetRestPkiClient()) {
 
-			// Set the token for this signature (rendered in a hidden input field, see the view)
-			signatureFinisher.SetToken(model.Token);
+				// Set the token for this signature (rendered in a hidden input field, see the view)
+				Token = model.Token
 
-			// Call the Finish() method, which finalizes the signature process and returns the signed PDF
-			var signedPdf = signatureFinisher.Finish();
+			};
 
-			// Get information about the certificate used by the user to sign the file. This method must only be called after
-			// calling the Finish() method.
-			var signerCert = signatureFinisher.GetCertificateInfo();
+			// Call the Finish() method, which finalizes the signature process and returns a SignatureResult object
+			var signatureResult = signatureFinisher.Finish();
+
+			// The "Certificate" property of the SignatureResult object contains information about the certificate used by the user
+			// to sign the file.
+			var signerCert = signatureResult.Certificate;
 
 			// At this point, you'd typically store the signed PDF on your database. For demonstration purposes, we'll
 			// store the PDF on the App_Data folder and render a page with a link to download the signed PDF and with the
@@ -142,7 +144,11 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 			}
 			var id = Guid.NewGuid();
 			var filename = id + ".pdf";
-			System.IO.File.WriteAllBytes(Path.Combine(appDataPath, filename), signedPdf);
+
+			// The SignatureResult object has various methods for writing the signature file to a stream (WriteTo()), local file (WriteToFile()), open
+			// a stream to read the content (OpenRead()) and get its contents (GetContent()). For large files, avoid the method GetContent() to avoid
+			// memory allocation issues.
+			signatureResult.WriteToFile(Path.Combine(appDataPath, filename));
 
 			return View("SignatureInfo", new SignatureInfoModel() {
 				File = filename.Replace(".", "_"), // Note: we're passing the filename argument with "." as "_" because of limitations of ASP.NET MVC
