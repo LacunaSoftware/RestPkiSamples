@@ -20,7 +20,7 @@ function setValidationParameters(CadesSignatureExplorer $sigExplorer, $caseNumbe
         case 1:
             // By specifying a catalog of acceptable policies and omitting the default signature policy, we're telling
             // Rest PKI that only the policies in the catalog should be accepted
-            $sigExplorer->setAcceptableExplicitPolicies(StandardSignaturePolicyCatalog::getPkiBrazilCades());
+            $sigExplorer->acceptableExplicitPolicies = StandardSignaturePolicyCatalog::getPkiBrazilCades();
             break;
 
         /**
@@ -36,9 +36,9 @@ function setValidationParameters(CadesSignatureExplorer $sigExplorer, $caseNumbe
             // By omitting the accepted policies catalog and defining a default policy, we're telling Rest PKI to
             // validate all signatures in the file with the default policy -- even signatures with an explicit signature
             // policy.
-            $sigExplorer->setDefaultSignaturePolicyId(StandardSignaturePolicies::CADES_BES);
+            $sigExplorer->defaultSignaturePolicy = StandardSignaturePolicies::CADES_BES;
             // The CadesBes policy requires us to choose a security context
-            $sigExplorer->setSecurityContextId(StandardSecurityContexts::PKI_BRAZIL);
+            $sigExplorer->securityContext = StandardSecurityContexts::PKI_BRAZIL;
             break;
 
         /**
@@ -47,8 +47,8 @@ function setValidationParameters(CadesSignatureExplorer $sigExplorer, $caseNumbe
          * Same case as example #2, but using the WindowsServer trust arbitrator
          */
         case 3:
-            $sigExplorer->setDefaultSignaturePolicyId(StandardSignaturePolicies::CADES_BES);
-            $sigExplorer->setSecurityContextId(StandardSecurityContexts::WINDOWS_SERVER);
+            $sigExplorer->defaultSignaturePolicy = StandardSignaturePolicies::CADES_BES;
+            $sigExplorer->securityContext = StandardSecurityContexts::WINDOWS_SERVER;
             break;
 
         /**
@@ -58,8 +58,7 @@ function setValidationParameters(CadesSignatureExplorer $sigExplorer, $caseNumbe
          * is revoked or expires. On ICP-Brasil, this translates to policies AD-RT and up (not AD-RB).
          */
         case 4:
-            $sigExplorer->setAcceptableExplicitPolicies(
-                StandardSignaturePolicyCatalog::getPkiBrazilCadesWithSignerCertificateProtection());
+            $sigExplorer->acceptableExplicitPolicies = StandardSignaturePolicyCatalog::getPkiBrazilCadesWithSignerCertificateProtection();
             break;
 
         /**
@@ -71,8 +70,7 @@ function setValidationParameters(CadesSignatureExplorer $sigExplorer, $caseNumbe
          * translates to policies AD-RC/AD-RV and up (not AD-RB nor AD-RT).
          */
         case 5:
-            $sigExplorer->setAcceptableExplicitPolicies(
-                StandardSignaturePolicyCatalog::getPkiBrazilCadesWithCACertificateProtection());
+            $sigExplorer->acceptableExplicitPolicies = StandardSignaturePolicyCatalog::getPkiBrazilCadesWithCACertificateProtection();
             break;
     }
 }

@@ -30,7 +30,7 @@ function setValidationParameters(PadesSignatureExplorer $sigExplorer, $caseNumbe
             // By omitting the accepted policies catalog and defining a default policy, we're telling Rest PKI to
             // validate all signatures in the file with the default policy -- even signatures with an explicit signature
             // policy.
-            $sigExplorer->setDefaultSignaturePolicyId(StandardSignaturePolicies::PADES_BASIC_WITH_ICPBR_CERTS);
+            $sigExplorer->defaultSignaturePolicy = StandardSignaturePolicies::PADES_BASIC_WITH_ICPBR_CERTS;
             break;
 
         /**
@@ -45,7 +45,7 @@ function setValidationParameters(PadesSignatureExplorer $sigExplorer, $caseNumbe
             // By omitting the accepted policies catalog and defining a default policy, we're telling Rest PKI to
             // validate all signatures in the file with the default policy -- even signatures with an explicit signature
             // policy.
-            $sigExplorer->setDefaultSignaturePolicyId(StandardSignaturePolicies::PADES_T_WITH_ICPBR_CERTS);
+            $sigExplorer->defaultSignaturePolicy = StandardSignaturePolicies::PADES_T_WITH_ICPBR_CERTS;
             break;
 
 		/**
@@ -54,7 +54,7 @@ function setValidationParameters(PadesSignatureExplorer $sigExplorer, $caseNumbe
         case 3:
             // By specifying a catalog of acceptable policies and omitting the default signature policy, we're telling
             // Rest PKI that only the policies in the catalog should be accepted
-            $sigExplorer->setAcceptableExplicitPolicies(StandardSignaturePolicyCatalog::getPkiBrazilPades());
+            $sigExplorer->acceptableExplicitPolicies = StandardSignaturePolicyCatalog::getPkiBrazilPades();
             break;
 
         /**
@@ -63,8 +63,8 @@ function setValidationParameters(PadesSignatureExplorer $sigExplorer, $caseNumbe
          * Same case as example #1, but using the WindowsServer trust arbitrator
          */
         case 4:
-            $sigExplorer->setDefaultSignaturePolicyId(StandardSignaturePolicies::PADES_BASIC);
-            $sigExplorer->setSecurityContextId(StandardSecurityContexts::WINDOWS_SERVER);
+            $sigExplorer->defaultSignaturePolicy = StandardSignaturePolicies::PADES_BASIC;
+            $sigExplorer->securityContext = StandardSecurityContexts::WINDOWS_SERVER;
 			// You can use any security context above, for instance a customized security context with your private PKI root certificate
             break;
 
@@ -75,8 +75,7 @@ function setValidationParameters(PadesSignatureExplorer $sigExplorer, $caseNumbe
          * is revoked or expires. On ICP-Brasil, this translates to policies AD-RT and up (not AD-RB).
          */
         case 5:
-            $sigExplorer->setAcceptableExplicitPolicies(
-                StandardSignaturePolicyCatalog::getPkiBrazilPadesWithSignerCertificateProtection());
+            $sigExplorer->acceptableExplicitPolicies = StandardSignaturePolicyCatalog::getPkiBrazilPadesWithSignerCertificateProtection();
             break;
 
     }

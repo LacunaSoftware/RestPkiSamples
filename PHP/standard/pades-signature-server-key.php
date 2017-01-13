@@ -25,7 +25,7 @@ if (!openssl_pkcs12_read($certStore, $certObj, "1234")) {
 $signatureStarter = new PadesSignatureStarter(getRestPkiClient());
 
 // Set the signer certificate
-$signatureStarter->setSignerCertificate($certObj['cert']);
+$signatureStarter->setSignerCertificateRaw($certObj['cert']);
 
 // Set the unit of measurement used to edit the pdf marks and visual representations
 $signatureStarter->measurementUnits = PadesMeasurementUnits::CENTIMETERS;
@@ -47,7 +47,7 @@ $signatureStarter->securityContext = '803517ad-3bbc-4169-b085-60053a8f6dbf';
 //$signatureStarter->signaturePolicy = StandardSecurityContexts::WINDOWS_SERVER;
 
 // Set the visual representation for the signature
-$signatureStarter->setVisualRepresentation([
+$signatureStarter->visualRepresentation = [
 
     'text' => [
 
@@ -90,7 +90,7 @@ $signatureStarter->setVisualRepresentation([
     // code directly here.
     'position' => getVisualRepresentationPosition(1)
 
-]);
+];
 
 // If the user was redirected here by upload.php (signature with file uploaded by user), the "userfile" URL argument
 // will contain the filename under the "app-data" folder. Otherwise (signature with server file), we'll sign a sample
@@ -114,7 +114,7 @@ if (!empty($userfile)) {
 	Experiment changing the argument to see different examples of PDF marks. Once you decide which is best for your case,
 	you can place the code directly here.
 */
-//array_push($signatureStarter->pdfMarks, PadesVisualElements::getPdfMark(1));
+//array_push($signatureStarter->pdfMarks, getPdfMark(1));
 
 // Call the start() method, which initiates the signature. This yields the parameters for the signature using the
 // certificate
@@ -130,7 +130,7 @@ $signatureFinisher = new PadesSignatureFinisher2(getRestPkiClient());
 $signatureFinisher->token = $signatureParams->token;
 
 // Set the signature
-$signatureFinisher->setSignatureBinary($signature);
+$signatureFinisher->setSignatureRaw($signature);
 
 // Call the finish() method, which finalizes the signature process and returns a SignatureResult object
 $signatureResult = $signatureFinisher->finish();

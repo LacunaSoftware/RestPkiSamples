@@ -26,7 +26,7 @@ $cmsfile = isset($_GET['cmsfile']) ? $_GET['cmsfile'] : null;
 $signatureStarter = new CadesSignatureStarter(getRestPkiClient());
 
 // Set the signer certificate
-$signatureStarter->setSignerCertificate($certObj['cert']);
+$signatureStarter->setSignerCertificateRaw($certObj['cert']);
 
 if (!empty($userfile)) {
 
@@ -86,7 +86,7 @@ $signatureFinisher = new CadesSignatureFinisher2(getRestPkiClient());
 $signatureFinisher->token = $signatureParams->token;
 
 // Set the signature
-$signatureFinisher->setSignatureBinary($signature);
+$signatureFinisher->setSignatureRaw($signature);
 
 // Call the finish() method, which finalizes the signature process and returns a SignatureResult object
 $signatureResult = $signatureFinisher->finish();

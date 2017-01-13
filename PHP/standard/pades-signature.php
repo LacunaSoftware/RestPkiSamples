@@ -23,21 +23,21 @@ $signatureStarter = new PadesSignatureStarter(getRestPkiClient());
 $signatureStarter->measurementUnits = PadesMeasurementUnits::CENTIMETERS;
 
 // Set the signature policy
-$signatureStarter->setSignaturePolicy(StandardSignaturePolicies::PADES_BASIC_WITH_ICPBR_CERTS);
+$signatureStarter->signaturePolicy = StandardSignaturePolicies::PADES_BASIC_WITH_ICPBR_CERTS;
 
 // Alternative option: add a ICP-Brasil timestamp to the signature
-//$signatureStarter->setSignaturePolicy(StandardSignaturePolicies::PADES_T_WITH_ICPBR_CERTS);
+//$signatureStarter->signaturePolicy = StandardSignaturePolicies::PADES_T_WITH_ICPBR_CERTS;
 
 // Alternative option: PAdES Basic with PKIs trusted by Windows
-//$signatureStarter->setSignaturePolicy(StandardSignaturePolicies::PADES_BASIC);
-//$signatureStarter->setSecurityContext(StandardSecurityContexts::WINDOWS_SERVER);
+//$signatureStarter->signaturePolicy = StandardSignaturePolicies::PADES_BASIC;
+//$signatureStarter->securityContext = StandardSecurityContexts::WINDOWS_SERVER;
 
 // Alternative option: PAdES Basic with a custom security context containting, for instance, your private PKI certificate
-//$signatureStarter->setSignaturePolicy(StandardSignaturePolicies::PADES_BASIC);
-//$signatureStarter->setSecurityContext('ID OF YOUR CUSTOM SECURITY CONTEXT');
+//$signatureStarter->signaturePolicy = StandardSignaturePolicies::PADES_BASIC;
+//$signatureStarter->securityContext = 'ID OF YOUR CUSTOM SECURITY CONTEXT';
 
 // Set the visual representation for the signature
-$signatureStarter->setVisualRepresentation([
+$signatureStarter->visualRepresentation = [
 
     'text' => [
 
@@ -80,7 +80,7 @@ $signatureStarter->setVisualRepresentation([
     // code directly here. See file util-pades.php
     'position' => getVisualRepresentationPosition(1)
 
-]);
+];
 
 // If the user was redirected here by upload.php (signature with file uploaded by user), the "userfile" URL argument
 // will contain the filename under the "app-data" folder. Otherwise (signature with server file), we'll sign a sample

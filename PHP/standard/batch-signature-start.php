@@ -35,7 +35,7 @@ $signatureStarter->securityContext = StandardSecurityContexts::PKI_BRAZIL;
 // ICP-Brasil (\Lacuna\StandardSecurityContexts::PKI_BRAZIL).
 
 // Set the visual representation for the signature
-$signatureStarter->setVisualRepresentation([
+$signatureStarter->visualRepresentation = [
 
     'text' => [
 
@@ -77,7 +77,7 @@ $signatureStarter->setVisualRepresentation([
     // different examples of signature positioning. Once you decide which is best for your case, you can place the
     // code directly here. See file util-pades.php
     'position' => getVisualRepresentationPosition(3)
-]);
+];
 
 /*
 	Optionally, add marks to the PDF before signing. These differ from the signature visual representation in that
