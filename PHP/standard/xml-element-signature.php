@@ -16,17 +16,17 @@ use Lacuna\RestPki\StandardSignaturePolicies;
 $signatureStarter = new XmlElementSignatureStarter(getRestPkiClient());
 
 // Set the XML to be signed, a sample Brazilian fiscal invoice pre-generated
-$signatureStarter->setXmlToSignPath('content/SampleNFe.xml');
+$signatureStarter->setXmlToSignFromPath('content/SampleNFe.xml');
 
 // Set the ID of the element to be signed
-$signatureStarter->setToSignElementId('NFe35141214314050000662550010001084271182362300');
+$signatureStarter->toSignElementId = 'NFe35141214314050000662550010001084271182362300';
 
 // Set the signature policy
-$signatureStarter->setSignaturePolicy(StandardSignaturePolicies::XML_ICPBR_NFE_PADRAO_NACIONAL);
+$signatureStarter->signaturePolicy = StandardSignaturePolicies::XML_ICPBR_NFE_PADRAO_NACIONAL;
 
 // Optionally, set a SecurityContext to be used to determine trust in the certificate chain. Since we're using the
 // XML_ICPBR_NFE_PADRAO_NACIONAL policy, the security context will default to PKI Brazil (ICP-Brasil)
-//$signatureStarter->setSecurityContext(StandardSecurityContexts::PKI_BRAZIL);
+//$signatureStarter->securityContext = StandardSecurityContexts::PKI_BRAZIL;
 // Note: By changing the SecurityContext above you can accept only certificates from a custom PKI for tests.
 
 // Call the startWithWebPki() method, which initiates the signature. This yields the token, a 43-character

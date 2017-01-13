@@ -87,10 +87,10 @@ if (empty($userfile)) {
 $sigExplorer = new CadesSignatureExplorer(getRestPkiClient());
 
 // Set the CAdEs signature file to be inspected
-$sigExplorer->setSignatureFile("app-data/{$userfile}");
+$sigExplorer->setSignatureFileFromPath("app-data/{$userfile}");
 
 // Specify that we want to validate the signatures in the file, not only inspect them
-$sigExplorer->setValidate(true);
+$sigExplorer->validate = true;
 
 // Parameters for the signature validation. We have encapsulated this code in a method to include several
 // possibilities depending on the argument passed. Experiment changing the argument to see different validation

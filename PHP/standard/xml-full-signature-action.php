@@ -15,7 +15,7 @@ $token = $_POST['token'];
 $signatureFinisher = new XmlSignatureFinisher(getRestPkiClient());
 
 // Set the token
-$signatureFinisher->setToken($token);
+$signatureFinisher->token = $token;
 
 // Call the finish() method, which finalizes the signature process and returns the signed XML
 $signedXml = $signatureFinisher->finish();

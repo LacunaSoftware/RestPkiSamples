@@ -14,7 +14,6 @@ use Lacuna\RestPki\PadesSignatureStarter;
 use Lacuna\RestPki\StandardSignaturePolicies;
 use Lacuna\RestPki\PadesMeasurementUnits;
 use Lacuna\RestPki\StandardSecurityContexts;
-use Lacuna\PadesVisualElements;
 
 // Instantiate the PadesSignatureStarter class, responsible for receiving the signature elements and start the signature
 // process
@@ -88,9 +87,9 @@ $signatureStarter->setVisualRepresentation([
 // document.
 $userfile = isset($_GET['userfile']) ? $_GET['userfile'] : null;
 if (!empty($userfile)) {
-    $signatureStarter->setPdfToSignPath("app-data/{$userfile}");
+    $signatureStarter->setPdfToSignFromPath("app-data/{$userfile}");
 } else {
-    $signatureStarter->setPdfToSignPath('content/SampleDocument.pdf');
+    $signatureStarter->setPdfToSignFromPath('content/SampleDocument.pdf');
 }
 
 /*
@@ -105,7 +104,7 @@ if (!empty($userfile)) {
 	Experiment changing the argument to see different examples of PDF marks. Once you decide which is best for your case,
 	you can place the code directly here.
 */
-//array_push($signatureStarter->pdfMarks, PadesVisualElements::getPdfMark(1));
+//array_push($signatureStarter->pdfMarks, getPdfMark(1));
 
 // Call the startWithWebPki() method, which initiates the signature. This yields the token, a 43-character
 // case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the

@@ -16,7 +16,7 @@ use Lacuna\RestPki\StandardSignaturePolicies;
 $signatureStarter = new FullXmlSignatureStarter(getRestPkiClient());
 
 // Set the XML to be signed, a sample Brazilian fiscal invoice pre-generated
-$signatureStarter->setXmlToSignPath('content/SampleDocument.xml');
+$signatureStarter->setXmlToSignFromPath('content/SampleDocument.xml');
 
 // Set the location on which to insert the signature node. If the location is not specified, the signature will appended
 // to the root element (which is most usual with enveloped signatures).
@@ -27,10 +27,10 @@ $signatureStarter->setSignatureElementLocation(
 );
 
 // Set the signature policy
-$signatureStarter->setSignaturePolicy(StandardSignaturePolicies::XML_XADES_BES);
+$signatureStarter->signaturePolicy = StandardSignaturePolicies::XML_XADES_BES;
 
 // Set a SecurityContext to be used to determine trust in the certificate chain
-$signatureStarter->setSecurityContext(StandardSecurityContexts::PKI_BRAZIL);
+$signatureStarter->securityContext = StandardSecurityContexts::PKI_BRAZIL;
 // Note: By changing the SecurityContext above you can accept only certificates from a certain PKI, for instance,
 // ICP-Brasil (\Lacuna\StandardSecurityContexts::PKI_BRAZIL).
 
