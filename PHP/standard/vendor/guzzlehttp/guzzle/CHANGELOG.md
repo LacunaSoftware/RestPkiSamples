@@ -1,5 +1,56 @@
 # CHANGELOG
 
+## 6.2.2 - 2016-10-08
+
+* Allow to pass nullable Response to delay callable
+* Only add scheme when host is present
+* Fix drain case where content-length is the literal string zero
+* Obfuscate in-URL credentials in exceptions
+
+## 6.2.1 - 2016-07-18
+
+* Address HTTP_PROXY security vulnerability, CVE-2016-5385:
+  https://httpoxy.org/
+* Fixing timeout bug with StreamHandler:
+  https://github.com/guzzle/guzzle/pull/1488
+* Only read up to `Content-Length` in PHP StreamHandler to avoid timeouts when
+  a server does not honor `Connection: close`.
+* Ignore URI fragment when sending requests.
+
+## 6.2.0 - 2016-03-21
+
+* Feature: added `GuzzleHttp\json_encode` and `GuzzleHttp\json_decode`.
+  https://github.com/guzzle/guzzle/pull/1389
+* Bug fix: Fix sleep calculation when waiting for delayed requests.
+  https://github.com/guzzle/guzzle/pull/1324
+* Feature: More flexible history containers.
+  https://github.com/guzzle/guzzle/pull/1373
+* Bug fix: defer sink stream opening in StreamHandler.
+  https://github.com/guzzle/guzzle/pull/1377
+* Bug fix: do not attempt to escape cookie values.
+  https://github.com/guzzle/guzzle/pull/1406
+* Feature: report original content encoding and length on decoded responses.
+  https://github.com/guzzle/guzzle/pull/1409
+* Bug fix: rewind seekable request bodies before dispatching to cURL.
+  https://github.com/guzzle/guzzle/pull/1422
+* Bug fix: provide an empty string to `http_build_query` for HHVM workaround.
+  https://github.com/guzzle/guzzle/pull/1367
+
+## 6.1.1 - 2015-11-22
+
+* Bug fix: Proxy::wrapSync() now correctly proxies to the appropriate handler
+  https://github.com/guzzle/guzzle/commit/911bcbc8b434adce64e223a6d1d14e9a8f63e4e4
+* Feature: HandlerStack is now more generic.
+  https://github.com/guzzle/guzzle/commit/f2102941331cda544745eedd97fc8fd46e1ee33e
+* Bug fix: setting verify to false in the StreamHandler now disables peer
+  verification. https://github.com/guzzle/guzzle/issues/1256
+* Feature: Middleware now uses an exception factory, including more error
+  context. https://github.com/guzzle/guzzle/pull/1282
+* Feature: better support for disabled functions.
+  https://github.com/guzzle/guzzle/pull/1287
+* Bug fix: fixed regression where MockHandler was not using `sink`.
+  https://github.com/guzzle/guzzle/pull/1292
+
 ## 6.1.0 - 2015-09-08
 
 * Feature: Added the `on_stats` request option to provide access to transfer
@@ -702,7 +753,7 @@ interfaces.
 * Deprecating Response::getRequest() and now using a shallow clone of a request object to remove a circular reference
   to help with refcount based garbage collection of resources created by sending a request
 * Deprecating ZF1 cache and log adapters. These will be removed in the next major version.
-* Deprecating `Response::getPreviousResponse()` (method signature still exists, but it'sdeprecated). Use the
+* Deprecating `Response::getPreviousResponse()` (method signature still exists, but it's deprecated). Use the
   HistoryPlugin for a history.
 * Added a `responseBody` alias for the `response_body` location
 * Refactored internals to no longer rely on Response::getRequest()
