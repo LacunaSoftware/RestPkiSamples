@@ -53,7 +53,7 @@ The steps to execute the sample are the same as with the standard sample.
 Dependencies
 ------------
 
-The sample projects depend on the [Guzzle](http://guzzlephp.org/) library, which in turn requires **PHP 5.5** or
+The sample projects depend on [Rest PKI client lib for PHP](https://github.com/LacunaSoftware/RestPkiPhpClient) library, which in turn requires **PHP 5.5** or
 greater (with the exception of the legacy samples, which depends on other older libraries that still support
 older versions of PHP).
 
@@ -61,7 +61,7 @@ This dependency is specified in the file `composer.json`:
 
 	{
 		"require": {
-			"guzzlehttp/guzzle": "~6.0"
+			"lacuna/restpki-client": "^2.0.0"
 		}
 	}
 
