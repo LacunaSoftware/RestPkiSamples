@@ -1,6 +1,11 @@
 Lacuna Rest PKI change log
 ==========================
 
+1.11.1 (2017-01-17)
+-------------------
+
+- Fix bug on upload and download routes
+
 1.11.0 (2017-01-17)
 -------------------
 
