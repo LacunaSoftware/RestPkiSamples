@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "e699e02b47de23061abe10157247a3cc",
+    "content-hash": "fe45a9c11815de649687cba88f6b23c1",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -179,16 +179,16 @@
         },
         {
             "name": "lacuna/restpki-client",
-            "version": "dev-develop",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/LacunaSoftware/RestPkiPhpClient.git",
-                "reference": "c6bf791b789dddd9c5a7e3b6adbb23ea333479eb"
+                "reference": "007c3fd2660ef2ccb252b8f3176e8517b7fdbe1c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LacunaSoftware/RestPkiPhpClient/zipball/c6bf791b789dddd9c5a7e3b6adbb23ea333479eb",
-                "reference": "c6bf791b789dddd9c5a7e3b6adbb23ea333479eb",
+                "url": "https://api.github.com/repos/LacunaSoftware/RestPkiPhpClient/zipball/007c3fd2660ef2ccb252b8f3176e8517b7fdbe1c",
+                "reference": "007c3fd2660ef2ccb252b8f3176e8517b7fdbe1c",
                 "shasum": ""
             },
             "require": {
@@ -216,7 +216,7 @@
                 "rest pki",
                 "signature"
             ],
-            "time": "2017-01-13 17:27:14"
+            "time": "2017-01-17T01:17:00+00:00"
         },
         {
             "name": "psr/http-message",
@@ -272,9 +272,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "lacuna/restpki-client": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

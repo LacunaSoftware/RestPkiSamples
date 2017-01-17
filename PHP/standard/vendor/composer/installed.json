@@ -230,24 +230,24 @@
     },
     {
         "name": "lacuna/restpki-client",
-        "version": "dev-develop",
-        "version_normalized": "dev-develop",
+        "version": "2.0.0",
+        "version_normalized": "2.0.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/LacunaSoftware/RestPkiPhpClient.git",
-            "reference": "c6bf791b789dddd9c5a7e3b6adbb23ea333479eb"
+            "reference": "007c3fd2660ef2ccb252b8f3176e8517b7fdbe1c"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/LacunaSoftware/RestPkiPhpClient/zipball/c6bf791b789dddd9c5a7e3b6adbb23ea333479eb",
-            "reference": "c6bf791b789dddd9c5a7e3b6adbb23ea333479eb",
+            "url": "https://api.github.com/repos/LacunaSoftware/RestPkiPhpClient/zipball/007c3fd2660ef2ccb252b8f3176e8517b7fdbe1c",
+            "reference": "007c3fd2660ef2ccb252b8f3176e8517b7fdbe1c",
             "shasum": ""
         },
         "require": {
             "guzzlehttp/guzzle": "^6.0",
             "php": ">=5.5.0"
         },
-        "time": "2017-01-13T17:27:14+00:00",
+        "time": "2017-01-17T01:17:00+00:00",
         "type": "library",
         "installation-source": "source",
         "autoload": {

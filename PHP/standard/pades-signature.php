@@ -41,10 +41,13 @@ $signatureStarter->visualRepresentation = [
 
     'text' => [
 
-        // The tags {{signerName}} and {{signerNationalId}} will be substituted according to the user's certificate
-        // signerName -> full name of the signer
-        // signerNationalId -> if the certificate is ICP-Brasil, contains the signer's CPF
-        'text' => 'Signed by {{signerName}} ({{signerNationalId}})',
+        // The tags {{name}} and {{national_id}} will be substituted according to the user's certificate
+        //
+        //  name        : full name of the signer
+        //  national_id : if the certificate is ICP-Brasil, contains the signer's CPF
+        //
+        // For a full list of the supported tags, see: https://github.com/LacunaSoftware/RestPkiSamples/blob/master/PadesTags.md
+        'text' => 'Signed by {{name}} ({{national_id}})',
         // Specify that the signing time should also be rendered
         'includeSigningTime' => true,
         // Optionally set the horizontal alignment of the text ('Left' or 'Right'), if not set the default is Left
