@@ -26,10 +26,13 @@ The standard PHP sample can be found in the folder [standard](standard/). To run
 2. Generate an API access token on the [REST PKI website](https://pki.rest/)
 
 3. Paste your access token on the file `util.php`
+
+4. In a command prompt, navigate to the folder `PHP/standard` and run the command
+   `composer install` to download the dependencies (if you don't have Composer installed, get it [here](https://getcomposer.org/))
    
-4. Setup a website on your local HTTP server pointing to the PHP folder
+5. Setup a website on your local HTTP server pointing to the PHP folder
   
-5. Open the index.php file on the browser on the corresponding URL (depending on the previous step)
+6. Open the index.php file on the browser on the corresponding URL (depending on the previous step)
 
 Notice: the standard sample requires **PHP 5.5+**. If you're using another version of PHP, please see
 below.
@@ -65,7 +68,6 @@ This dependency is specified in the file `composer.json`:
 		}
 	}
 
-If you are not familiar with Composer, the PHP package manager, [click here](https://getcomposer.org/).
 
 Secure communication with REST PKI (HTTPS)
 ------------------------------------------
