@@ -1,13 +1,30 @@
 Lacuna Rest PKI change log
 ==========================
 
-1.11.0 (upcoming)
+1.11.0 (2017-01-17)
 -------------------
 
+- Add support for multipart upload of files
+- Add support for signing previously uploaded files, files from previous signatures and remote files
+- Add support for downloading the signed file on a separate HTTP request ("download link")
+- Add support for new PAdES visual representation tags (see [PadesTags.md])
 - Add support for decoding all fields in X.509 names
+- Add CAdES policy "Basic Electronic Signature (CAdES-BES) with signing-time and no CRLs"
 - Fix bug that prevented system intermediate CAs from taking effect
-- Update Lacuna PKI SDK to 1.14.3, thus:
-	- ?
+- Fix bug that resetted the storage service to local everytime the application was restarted
+- Update Lacuna PKI SDK to 1.16.0, thus:
+	- Improve ICP-Brasil filds. Fields also return null if have default padding value
+	- Improve Pades signature to load and validate adbe.pkcs7.sh1 PDF signatures
+	- Improve internal downloads
+	- Fix TSL UnderSupervision state as a valid state
+	- Fix Certificate Store loading delay due certificate chain loading attempt
+	- Fix CAdES archive timestamp encode
+	- Fix PAdES visual representation empty line
+	- Fix PDF marks and PAdES visual representation incorrect positioning in some rotated PDFs
+	- Fix exception in some ICP-Brasil fields decode
+	- Fix bug occurring in some PDF signatures
+	- Fix CAdES complete revocation references attribute order
+	- Update italian TSL uri and root
 
 1.10.1 (2016-10-01)
 -------------------
