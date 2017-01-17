@@ -11,15 +11,10 @@
  * 3. Co-signature of a previously signed CMS    : "cmsfile" filled
  */
 
-// The file RestPki.php contains the helper classes to call the REST PKI API
-require_once 'RestPki.php';
+require __DIR__ . '/vendor/autoload.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
-// initialized with the API access token
-require_once 'util.php';
-
-use Lacuna\CadesSignatureStarter;
-use Lacuna\StandardSignaturePolicies;
+use Lacuna\RestPki\CadesSignatureStarter;
+use Lacuna\RestPki\StandardSignaturePolicies;
 
 $userfile = isset($_GET['userfile']) ? $_GET['userfile'] : null;
 $cmsfile = isset($_GET['cmsfile']) ? $_GET['cmsfile'] : null;
@@ -33,35 +28,34 @@ if (!empty($userfile)) {
     // If the URL argument "userfile" is filled, it means the user was redirected here by the file upload.php (signature
     // with file uploaded by user). We'll set the path of the file to be signed, which was saved in the "app-data" folder
     // by upload.php
-    $signatureStarter->setFileToSign("app-data/{$userfile}");
+    $signatureStarter->setFileToSignFromPath("app-data/{$userfile}");
+
+} elseif (!empty($cmsfile)) {
+
+    /*
+     * If the URL argument "cmsfile" is filled, the user has asked to co-sign a previously signed CMS. We'll set the
+     * path to the CMS to be co-signed, which was previously saved in the "app-data" folder by the file
+     * cades-signature-action.php. Note two important things:
+     *
+     * 1. The CMS to be co-signed must be set using the method "setCmsToSign" or "setCmsFileToSign", not the method
+     *    "setContentToSign" nor "setFileToSign".
+     *
+     * 2. Since we're creating CMSs with encapsulated content (see call to setEncapsulateContent below), we don't need
+     *    to set the content to be signed, REST PKI will get the content from the CMS being co-signed.
+     */
+    $signatureStarter->setCmsToCoSignFromPath("app-data/{$cmsfile}");
 
 } else {
-    if (!empty($cmsfile)) {
 
-        /*
-         * If the URL argument "cmsfile" is filled, the user has asked to co-sign a previously signed CMS. We'll set the
-         * path to the CMS to be co-signed, which was previously saved in the "app-data" folder by the file
-         * cades-signature-action.php. Note two important things:
-         *
-         * 1. The CMS to be co-signed must be set using the method "setCmsToSign" or "setCmsFileToSign", not the method
-         *    "setContentToSign" nor "setFileToSign".
-         *
-         * 2. Since we're creating CMSs with encapsulated content (see call to setEncapsulateContent below), we don't need
-         *    to set the content to be signed, REST PKI will get the content from the CMS being co-signed.
-         */
-        $signatureStarter->setCmsFileToSign("app-data/{$cmsfile}");
+    // If both userfile and cmsfile are null, this is the "signature with server file" case. We'll set the path to
+    // the sample document.
+    $signatureStarter->setFileToSignFromPath('content/SampleDocument.pdf');
 
-    } else {
-
-        // If both userfile and cmsfile are null, this is the "signature with server file" case. We'll set the path to
-        // the sample document.
-        $signatureStarter->setFileToSign('content/SampleDocument.pdf');
-
-    }
 }
 
+
 // Set the signature policy
-$signatureStarter->setSignaturePolicy(StandardSignaturePolicies::CADES_ICPBR_ADR_BASICA);
+$signatureStarter->signaturePolicy = StandardSignaturePolicies::CADES_ICPBR_ADR_BASICA;
 
 // Optionally, set a SecurityContext to be used to determine trust in the certificate chain
 //$signatureStarter->setSecurityContext(\Lacuna\StandardSecurityContexts::PKI_BRAZIL);
@@ -73,7 +67,7 @@ $signatureStarter->setSignaturePolicy(StandardSignaturePolicies::CADES_ICPBR_ADR
 // - If no CmsToSign is given, the resulting CMS will include the content
 // - If a CmsToCoSign is given, the resulting CMS will include the content if and only if the CmsToCoSign also includes
 //   the content
-$signatureStarter->setEncapsulateContent(true);
+$signatureStarter->encapsulateContent = true;
 
 // Call the startWithWebPki() method, which initiates the signature. This yields the token, a 43-character
 // case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the

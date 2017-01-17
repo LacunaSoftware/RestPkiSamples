@@ -1,5 +1,11 @@
 {
+  "autoload": {
+    "files": [
+      "util.php",
+      "util-pades.php"
+    ]
+  },
   "require": {
-    "guzzlehttp/guzzle": "~6.0"
+    "lacuna/restpki-client": "^2.0.0"
   }
 }

@@ -4,22 +4,13 @@
  * This file performs a PAdES signature using REST PKI and a PKCS #12 file located on the server-side.
  */
 
-// The file RestPki.php contains the helper classes to call the REST PKI API
-require_once 'RestPki.php';
+require __DIR__ . '/vendor/autoload.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
-// initialized with the API access token
-require_once 'util.php';
-
-// The file pades-visual-elements.php contains sample settings for visual representations and PDF marks (see below)
-require_once 'pades-visual-elements.php';
-
-use Lacuna\PadesSignatureStarter;
-use Lacuna\StandardSignaturePolicies;
-use Lacuna\PadesMeasurementUnits;
-use Lacuna\PadesVisualElements;
-use Lacuna\StandardSecurityContexts;
-use Lacuna\PadesSignatureFinisher;
+use Lacuna\RestPki\PadesSignatureStarter;
+use Lacuna\RestPki\StandardSignaturePolicies;
+use Lacuna\RestPki\PadesMeasurementUnits;
+use Lacuna\RestPki\StandardSecurityContexts;
+use Lacuna\RestPki\PadesSignatureFinisher2;
 
 // Read the PKCS #12 file
 if (!$certStore = file_get_contents("content/Pierre de Fermat.pfx")) {
@@ -34,7 +25,7 @@ if (!openssl_pkcs12_read($certStore, $certObj, "1234")) {
 $signatureStarter = new PadesSignatureStarter(getRestPkiClient());
 
 // Set the signer certificate
-$signatureStarter->setSignerCertificate($certObj['cert']);
+$signatureStarter->setSignerCertificateRaw($certObj['cert']);
 
 // Set the unit of measurement used to edit the pdf marks and visual representations
 $signatureStarter->measurementUnits = PadesMeasurementUnits::CENTIMETERS;
@@ -42,21 +33,21 @@ $signatureStarter->measurementUnits = PadesMeasurementUnits::CENTIMETERS;
 // Set the signature policy. For this sample, we'll use the Lacuna Test PKI in order to accept our test certificate used
 // above ("Pierre de Fermat"). This security context should be used FOR DEVELOPMENT PUPOSES ONLY. In production, you'll
 // typically want one of the alternatives below
-$signatureStarter->setSignaturePolicy(StandardSignaturePolicies::PADES_BASIC);
-$signatureStarter->setSecurityContext('803517ad-3bbc-4169-b085-60053a8f6dbf');
+$signatureStarter->signaturePolicy = StandardSignaturePolicies::PADES_BASIC;
+$signatureStarter->securityContext = '803517ad-3bbc-4169-b085-60053a8f6dbf';
 
 // Alternative option: PAdES Basic with ICP-Brasil certificates
-//$signatureStarter->setSignaturePolicy(StandardSignaturePolicies::PADES_BASIC_WITH_ICPBR_CERTS);
+//$signatureStarter->signaturePolicy = StandardSignaturePolicies::PADES_BASIC_WITH_ICPBR_CERTS;
 
 // Alternative option: add a ICP-Brasil timestamp to the signature
-//$signatureStarter->setSignaturePolicy(StandardSignaturePolicies::PADES_T_WITH_ICPBR_CERTS);
+//$signatureStarter->signaturePolicy = StandardSignaturePolicies::PADES_T_WITH_ICPBR_CERTS;
 
 // Alternative option: PAdES Basic with PKIs trusted by Windows
-//$signatureStarter->setSignaturePolicy(StandardSignaturePolicies::PADES_BASIC);
-//$signatureStarter->setSecurityContext(StandardSecurityContexts::WINDOWS_SERVER);
+//$signatureStarter->signaturePolicy = StandardSignaturePolicies::PADES_BASIC;
+//$signatureStarter->signaturePolicy = StandardSecurityContexts::WINDOWS_SERVER;
 
 // Set the visual representation for the signature
-$signatureStarter->setVisualRepresentation([
+$signatureStarter->visualRepresentation = [
 
     'text' => [
 
@@ -97,18 +88,18 @@ $signatureStarter->setVisualRepresentation([
     // possibilities depending on the argument passed to the function. Experiment changing the argument to see
     // different examples of signature positioning. Once you decide which is best for your case, you can place the
     // code directly here.
-    'position' => PadesVisualElements::getVisualRepresentationPosition(1)
+    'position' => getVisualRepresentationPosition(1)
 
-]);
+];
 
 // If the user was redirected here by upload.php (signature with file uploaded by user), the "userfile" URL argument
 // will contain the filename under the "app-data" folder. Otherwise (signature with server file), we'll sign a sample
 // document.
 $userfile = isset($_GET['userfile']) ? $_GET['userfile'] : null;
 if (!empty($userfile)) {
-    $signatureStarter->setPdfToSignPath("app-data/{$userfile}");
+    $signatureStarter->setPdfToSignFromPath("app-data/{$userfile}");
 } else {
-    $signatureStarter->setPdfToSignPath('content/SampleDocument.pdf');
+    $signatureStarter->setPdfToSignFromPath('content/SampleDocument.pdf');
 }
 
 /*
@@ -123,7 +114,7 @@ if (!empty($userfile)) {
 	Experiment changing the argument to see different examples of PDF marks. Once you decide which is best for your case,
 	you can place the code directly here.
 */
-//array_push($signatureStarter->pdfMarks, PadesVisualElements::getPdfMark(1));
+//array_push($signatureStarter->pdfMarks, getPdfMark(1));
 
 // Call the start() method, which initiates the signature. This yields the parameters for the signature using the
 // certificate
@@ -132,28 +123,31 @@ $signatureParams = $signatureStarter->start();
 // Perform the signature using the parameters returned by Rest PKI with the key extracted from PKCS #12
 openssl_sign($signatureParams->toSignData, $signature, $certObj['pkey'], $signatureParams->openSslSignatureAlgorithm);
 
-// Instantiate the PadesSignatureFinisher class, responsible for completing the signature process
-$signatureFinisher = new PadesSignatureFinisher(getRestPkiClient());
+// Instantiate the PadesSignatureFinisher2 class, responsible for completing the signature process
+$signatureFinisher = new PadesSignatureFinisher2(getRestPkiClient());
 
 // Set the token
-$signatureFinisher->setToken($signatureParams->token);
+$signatureFinisher->token = $signatureParams->token;
 
 // Set the signature
-$signatureFinisher->setSignature($signature);
+$signatureFinisher->setSignatureRaw($signature);
 
-// Call the finish() method, which finalizes the signature process and returns the signed PDF
-$signedPdf = $signatureFinisher->finish();
+// Call the finish() method, which finalizes the signature process and returns a SignatureResult object
+$signatureResult = $signatureFinisher->finish();
 
-// Get information about the certificate used by the user to sign the file. This method must only be called after
-// calling the finish() method.
-$signerCert = $signatureFinisher->getCertificateInfo();
+// The "certificate" property of the SignatureResult object contains information about the certificate used by the user
+// to sign the file.
+$signerCert = $signatureResult->certificate;
 
 // At this point, you'd typically store the signed PDF on your database. For demonstration purposes, we'll
 // store the PDF on a temporary folder publicly accessible and render a link to it.
 
 $filename = uniqid() . ".pdf";
 createAppData(); // make sure the "app-data" folder exists (util.php)
-file_put_contents("app-data/{$filename}", $signedPdf);
+
+// The SignatureResult object has functions for writing the signature file to a local file (writeToFile()) and to get
+// its raw contents (getContent()). For large files, use writeToFile() in order to avoid memory allocation issues.
+$signatureResult->writeToFile("app-data/{$filename}");
 
 ?><!DOCTYPE html>
 <html>

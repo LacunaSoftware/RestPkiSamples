@@ -5,37 +5,32 @@
  * is posted to another file, xml-full-signature-action.php, which calls REST PKI again to complete the signature.
  */
 
-// The file RestPki.php contains the helper classes to call the REST PKI API
-require_once 'RestPki.php';
+require __DIR__ . '/vendor/autoload.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
-// initialized with the API access token
-require_once 'util.php';
-
-use Lacuna\FullXmlSignatureStarter;
-use Lacuna\StandardSecurityContexts;
-use Lacuna\StandardSignaturePolicies;
+use Lacuna\RestPki\FullXmlSignatureStarter;
+use Lacuna\RestPki\StandardSecurityContexts;
+use Lacuna\RestPki\StandardSignaturePolicies;
 
 // Instantiate the FullXmlSignatureStarter class, responsible for receiving the signature elements and start the
 // signature process
 $signatureStarter = new FullXmlSignatureStarter(getRestPkiClient());
 
 // Set the XML to be signed, a sample Brazilian fiscal invoice pre-generated
-$signatureStarter->setXmlToSignPath('content/SampleDocument.xml');
+$signatureStarter->setXmlToSignFromPath('content/SampleDocument.xml');
 
 // Set the location on which to insert the signature node. If the location is not specified, the signature will appended
 // to the root element (which is most usual with enveloped signatures).
 $signatureStarter->setSignatureElementLocation(
     '//ls:signaturePlaceholder',
-    \Lacuna\XmlInsertionOptions::APPEND_CHILD,
+    \Lacuna\RestPki\XmlInsertionOptions::APPEND_CHILD,
     array('ls' => 'http://www.lacunasoftware.com/sample')
 );
 
 // Set the signature policy
-$signatureStarter->setSignaturePolicy(StandardSignaturePolicies::XML_XADES_BES);
+$signatureStarter->signaturePolicy = StandardSignaturePolicies::XML_XADES_BES;
 
 // Set a SecurityContext to be used to determine trust in the certificate chain
-$signatureStarter->setSecurityContext(StandardSecurityContexts::PKI_BRAZIL);
+$signatureStarter->securityContext = StandardSecurityContexts::PKI_BRAZIL;
 // Note: By changing the SecurityContext above you can accept only certificates from a certain PKI, for instance,
 // ICP-Brasil (\Lacuna\StandardSecurityContexts::PKI_BRAZIL).
 

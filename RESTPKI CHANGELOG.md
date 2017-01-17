@@ -1,6 +1,14 @@
 Lacuna Rest PKI change log
 ==========================
 
+1.11.0 (upcoming)
+-------------------
+
+- Add support for decoding all fields in X.509 names
+- Fix bug that prevented system intermediate CAs from taking effect
+- Update Lacuna PKI SDK to 1.14.3, thus:
+	- ?
+
 1.10.1 (2016-10-01)
 -------------------
 
