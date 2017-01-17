@@ -38,10 +38,13 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 				// Set a visual representation for the signature
 				VisualRepresentation = new PadesVisualRepresentation() {
 
-					// The tags {{signerName}} and {{signerNationalId}} will be substituted according to the user's certificate
-					// signerName -> full name of the signer
-					// signerNationalId -> if the certificate is ICP-Brasil, contains the signer's CPF
-					Text = new PadesVisualText("name: \"{{name}}\", national_id: \"{{national_id}}\", email: \"{{email}}\", subject_cn: \"{{subject_cn}}\", issuer_cn: \"{{issuer_cn}}\", br_cpf: \"{{br_cpf}}\", br_cpf_formatted: \"{{br_cpf_formatted}}\", br_cnpj: \"{{br_cnpj}}\", br_cnpj_formatted: \"{{br_cnpj_formatted}}\", br_responsavel: \"{{br_responsavel}}\", br_company: \"{{br_company}}\", br_oab_numbero: \"{{br_oab_numbero}}\", br_oab_uf: \"{{br_oab_uf}}\", br_rg_numero: \"{{br_rg_numero}}\", br_rg_emissor: \"{{br_rg_emissor}}\", br_rg_uf: \"{{br_rg_uf}}\", signerName: \"{{signerName}}\", signerEmail: \"{{signerEmail}}\", signerNationalId: \"{{signerNationalId}}\", issuerCommonName: \"{{issuerCommonName}}\"") {
+					// The tags {{name}} and {{national_id}} will be substituted according to the user's certificate
+					//
+					//		name        : full name of the signer
+					//		national_id : if the certificate is ICP-Brasil, contains the signer's CPF
+					//
+					// For a full list of the supported tags, see: https://github.com/LacunaSoftware/RestPkiSamples/blob/master/PadesTags.md
+					Text = new PadesVisualText("Signed by {{name}} ({{national_id}})") {
 
 						// Specify that the signing time should also be rendered
 						IncludeSigningTime = true,
