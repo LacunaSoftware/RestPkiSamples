@@ -49,12 +49,12 @@
       <HintPath>..\packages\Lacuna.RestClient.1.7.0\lib\net45\Lacuna.RestClient.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Lacuna.RestPki.Api, Version=1.11.0.0, Culture=neutral, PublicKeyToken=5705bce581cd1847, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lacuna.RestPki.Client.1.7.1\lib\net45\Lacuna.RestPki.Api.dll</HintPath>
+    <Reference Include="Lacuna.RestPki.Api, Version=1.12.0.0, Culture=neutral, PublicKeyToken=5705bce581cd1847, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lacuna.RestPki.Client.1.8.0\lib\net45\Lacuna.RestPki.Api.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Lacuna.RestPki.Client, Version=1.7.1.0, Culture=neutral, PublicKeyToken=5705bce581cd1847, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lacuna.RestPki.Client.1.7.1\lib\net45\Lacuna.RestPki.Client.dll</HintPath>
+    <Reference Include="Lacuna.RestPki.Client, Version=1.8.0.0, Culture=neutral, PublicKeyToken=5705bce581cd1847, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lacuna.RestPki.Client.1.8.0\lib\net45\Lacuna.RestPki.Client.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -142,6 +142,7 @@
     <Compile Include="Controllers\BatchSignatureController.cs" />
     <Compile Include="Controllers\OpenPadesSignatureController.cs" />
     <Compile Include="Controllers\OpenCadesSignatureController.cs" />
+    <Compile Include="Controllers\OpenXmlSignatureController.cs" />
     <Compile Include="Controllers\XadesElementSignatureController.cs" />
     <Compile Include="Controllers\XmlFullSignatureController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -200,6 +201,7 @@
     <Content Include="Views\OpenCadesSignature\Index.cshtml" />
     <Content Include="Views\XadesElementSignature\Index.cshtml" />
     <Content Include="Views\XadesElementSignature\SignatureInfo.cshtml" />
+    <Content Include="Views\OpenXmlSignature\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
