@@ -84,7 +84,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers
 				case 3:
 					sigExplorer.AcceptableExplicitPolicies = null;
 					sigExplorer.DefaultSignaturePolicyId = StandardXmlSignaturePolicies.XmlDSigBasic;
-					sigExplorer.SecurityContextId = StandardSecurityContexts.WindowsServer;
+					sigExplorer.SecurityContextId = StandardSecurityContexts.PkiBrazil;
 					break;
 			}
 		}
