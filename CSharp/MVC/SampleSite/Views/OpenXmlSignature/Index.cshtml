@@ -29,7 +29,7 @@
 				<div class="panel-body">
 					<p>Signature type: @signer.Type.ToString()</p>
 					@if (signer.SignedElement != null) {
-						<p>Signed element: @signer.SignedElement.LocalName</p>
+						<p>Signed element: @signer.SignedElement.LocalName (@foreach (var a in @signer.SignedElement.Attributes) { <span>@a.LocalName = @a.Value, </span> })</p>
 					}
 					<p>Signing time: @signer.SigningTime</p>
 					@if (signer.SignaturePolicy != null) {
