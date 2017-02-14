@@ -36,6 +36,12 @@ this sample is not yet fully completed.
 
 The steps to execute the sample are the same as for the default sample.
 
+ASP.NET Core Web application sample
+-----------------------------------
+
+A sample using the new **ASP.NET Core** technology can be found in the folder [AspNetCore](AspNetCore/). See the folder's
+[README](AspNetCore/README.md) for more information.
+
 .NET client lib
 ---------------
 

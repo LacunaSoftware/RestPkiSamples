@@ -1,0 +1,133 @@
+﻿<div class="modal-header">
+	<h3 class="modal-title">Signature results</h3>
+</div>
+<div class="modal-body">
+
+	<div class="form-group">
+		<p>File signed successfully! <a href="/Download/{{filename}}" target="_blank">Click here to download the signed file</a></p>
+	</div>
+
+	<h5>Certificate details</h5>
+	<form class="form-horizontal" role="form">
+
+		<!-- Breadcrumb -->
+		<ol class="breadcrumb">
+
+			<li ng-repeat="cert in certBreadcrumb">
+				<a href="" ng-click="showIssued(cert)">
+					{{ cert.subjectName.commonName }}
+				</a>
+			</li>
+
+			<li class="active">{{ model.subjectName.commonName }}</li>
+		</ol>
+
+		<!-- Subject -->
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Subject</label>
+			<div class="col-sm-9">
+				<p class="form-control-static">
+					{{ model.subjectName.commonName }}
+					<span tooltip="{{ (subjectDetailsVisible ? 'hide details' : 'show details') }}">
+						<span ng-hide="subjectDetailsVisible" class="glyphicon glyphicon-menu-down glyphicon-btn" ng-click="subjectDetailsVisible = true"></span>
+						<span ng-show="subjectDetailsVisible" class="glyphicon glyphicon-menu-up glyphicon-btn" ng-click="subjectDetailsVisible = false"></span>
+					</span>
+				</p>
+			</div>
+
+			<div class="form-group-sm" ng-show="subjectDetailsVisible">
+				<label class="col-sm-3 control-label">Common Name</label>
+				<div class="col-sm-9">
+					<p class="form-control-static">{{ model.subjectName.commonName }}</p>
+				</div>
+
+				<label class="col-sm-3 control-label">Organization Unit</label>
+				<div class="col-sm-9">
+					<p class="form-control-static">{{ model.subjectName.organizationUnit }}</p>
+				</div>
+
+				<label class="col-sm-3 control-label">Organization</label>
+				<div class="col-sm-9">
+					<p class="form-control-static">{{ model.subjectName.organization }}</p>
+				</div>
+
+				<label class="col-sm-3 control-label">Country</label>
+				<div class="col-sm-9">
+					<p class="form-control-static">{{ model.subjectName.country }}</p>
+				</div>
+
+				<label class="col-sm-3 control-label">Email Address</label>
+				<div class="col-sm-9">
+					<p class="form-control-static">{{ model.subjectName.emailAddress }}</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- Issuer -->
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Issuer</label>
+			<div class="col-sm-9">
+				<p class="form-control-static">
+					<span ng-show="hasIssuer()">
+						<a href="" ng-click="showIssuer()">{{ model.issuerName.commonName }}</a>
+					</span>
+					<span ng-hide="hasIssuer()">{{ model.issuerName.commonName }}</span>
+					<span tooltip="{{ (issuerDetailsVisible ? 'hide details' : 'show details') }}">
+						<span ng-hide="issuerDetailsVisible" class="glyphicon glyphicon-menu-down glyphicon-btn" ng-click="issuerDetailsVisible = true"></span>
+						<span ng-show="issuerDetailsVisible" class="glyphicon glyphicon-menu-up glyphicon-btn" ng-click="issuerDetailsVisible = false"></span>
+					</span>
+				</p>
+			</div>
+
+			<div class="form-group-sm" ng-show="issuerDetailsVisible">
+				<label class="col-sm-3 control-label">Common Name</label>
+				<div class="col-sm-9">
+					<p class="form-control-static">{{ model.issuerName.commonName }}</p>
+				</div>
+
+				<label class="col-sm-3 control-label">Organization Unit</label>
+				<div class="col-sm-9">
+					<p class="form-control-static">{{ model.issuerName.organizationUnit }}</p>
+				</div>
+
+				<label class="col-sm-3 control-label">Organization</label>
+				<div class="col-sm-9">
+					<p class="form-control-static">{{ model.issuerName.organization }}</p>
+				</div>
+
+				<label class="col-sm-3 control-label">Country</label>
+				<div class="col-sm-9">
+					<p class="form-control-static">{{ model.issuerName.country }}</p>
+				</div>
+
+				<label class="col-sm-3 control-label">Email Address</label>
+				<div class="col-sm-9">
+					<p class="form-control-static">{{ model.issuerName.emailAddress }}</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- Validity -->
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Validity</label>
+			<div class="col-sm-9">
+				<p class="form-control-static">
+					{{ model.validityStart | date }} <b>to</b> {{ model.validityEnd | date }}
+				</p>
+			</div>
+		</div>
+
+		<!-- Serial Number -->
+		<div class="form-group">
+			<label class="col-sm-3 control-label">Serial Number</label>
+			<div class="col-sm-9">
+				<p class="form-control-static">{{ model.serialNumber }}</p>
+			</div>
+		</div>
+
+	</form>
+
+</div>
+<div class="modal-footer">
+	<button class="btn btn-primary" ng-click="close()">Close</button>
+</div>
