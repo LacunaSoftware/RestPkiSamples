@@ -3,7 +3,7 @@ REST PKI samples in ASP.NET Core
 
 This folder contains an ASP.NET Core web application that shows how to use the [REST PKI service](https://pki.rest/).
 The [REST PKI client package](https://www.nuget.org/packages/Lacuna.RestPki.Client/) is available for .NET Standard 1.3
-and thus is compatible with .NET Core 1.0 and 1.1.
+and thus **is compatible with .NET Core 1.0 and 1.1**.
 
 To run the samples, you will need an **API access token**. If you don't have one, register on the
 [REST PKI website](https://pki.rest/) and generate a token.
@@ -30,5 +30,5 @@ See also
 
 * [Test certificates](../TestCertificates.md)
 * [Samples in other C# technologies](../)
-* [Samples in other programming languages](../../)
+* [Samples in other programming languages](https://github.com/LacunaSoftware/RestPkiSamples/tree/feature/aspnet-core)
 * [REST PKI .NET client lib on Nuget](https://www.nuget.org/packages/Lacuna.RestPki.Client)
