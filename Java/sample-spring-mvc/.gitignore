@@ -8,3 +8,4 @@ build/
 *.iws
 .gradle/
 target/
+.idea/

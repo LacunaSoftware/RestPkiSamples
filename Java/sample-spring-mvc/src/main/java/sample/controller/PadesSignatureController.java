@@ -71,6 +71,15 @@ public class PadesSignatureController {
 		PadesVisualText text = new PadesVisualText("Assinado por {{signerName}} ({{signerNationalId}})", true);
 		// Optionally set the text horizontal alignment (Left or Right), if not set the default is Left.
 		text.setHorizontalAlign(PadesTextHorizontalAlign.Left);
+		// Optionally set the container within the signature rectangle on which to place the text. By default, the
+		// text can occupy the entire rectangle (how much of the rectangle the text will actually fill depends on the
+		// length and font size). Below, we specify that the text should respect a right margin of 1.5 cm.
+		PadesVisualRectangle container = new PadesVisualRectangle();
+		container.setLeft(0.0);
+		container.setTop(0.0);
+		container.setRight(1.5);
+		container.setBottom(0.0);
+		text.setContainer(container);
 		visualRepresentation.setText(text);
 
 		// Set a image to stamp the signature visual representation
