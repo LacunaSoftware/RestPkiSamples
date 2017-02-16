@@ -90,7 +90,7 @@ app.controller('authenticationController', ['$scope', '$http', 'blockUI', 'util'
 	};
 
 	// -------------------------------------------------------------------------------------------------
-	// Function called once the server replies with the "nonce" data for the authentication
+	// Function called once the server replies with the token for the authentication
 	// -------------------------------------------------------------------------------------------------
 	var onTokenAcquired = function (response) {
 

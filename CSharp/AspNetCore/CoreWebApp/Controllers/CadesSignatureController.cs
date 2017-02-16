@@ -71,8 +71,8 @@ namespace CoreWebApp.Controllers {
 			// to sign the file.
 			var signerCert = signatureResult.Certificate;
 
-			// At this point, you'd typically store the signed PDF on a database or storage service. For demonstration purposes, we'll
-			// store the PDF on our "storage mock", which in turn stores the PDF on the App_Data folder.
+			// At this point, you'd typically store the signed CMS on a database or storage service. For demonstration purposes, we'll
+			// store the CMS on our "storage mock", which in turn stores the CMS on the App_Data folder.
 
 			// The SignatureResult object has various methods for writing the signature file to a stream (WriteTo()), local file (WriteToFile()), open
 			// a stream to read the content (OpenRead()) and get its contents (GetContent()). For large files, avoid the method GetContent() to avoid

@@ -94,7 +94,7 @@ app.controller('cadesSignatureController', ['$scope', '$http', 'blockUI', 'util'
 	};
 
 	// -------------------------------------------------------------------------------------------------
-	// Function called once the server replies with the "to-sign-bytes"
+	// Function called once the server replies with the token for the signature process
 	// -------------------------------------------------------------------------------------------------
 	var onSignatureStartCompleted = function (token) {
 		pki.signWithRestPki({
@@ -106,7 +106,7 @@ app.controller('cadesSignatureController', ['$scope', '$http', 'blockUI', 'util'
 	};
 
 	// -------------------------------------------------------------------------------------------------
-	// Function called once the signature of the "to-sign-bytes" is completed
+	// Function called once the signature is completed
 	// -------------------------------------------------------------------------------------------------
 	var onSignCompleted = function (token) {
 		$http.post('Api/CadesSignature/' + token).then(function (completeResponse) {

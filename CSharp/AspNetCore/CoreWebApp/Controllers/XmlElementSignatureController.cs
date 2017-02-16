@@ -29,9 +29,9 @@ namespace CoreWebApp.Controllers {
 			var storage = new Storage(hostingEnvironment);
 			var client = Util.GetRestPkiClient(restPkiConfig);
 
-			// Get an instance of the CadesSignatureStarter class, responsible for receiving the signature elements and start the
-			// signature process
-			var signatureStarter = new XmlElementSignatureStarter(client) {
+            // Get an instance of the XmlElementSignatureStarter class, responsible for receiving the signature elements and start the
+            // signature process
+            var signatureStarter = new XmlElementSignatureStarter(client) {
 
 				// Set the signature policy
 				SignaturePolicyId = StandardXmlSignaturePolicies.PkiBrazil.NFePadraoNacional,
@@ -57,8 +57,8 @@ namespace CoreWebApp.Controllers {
 			var storage = new Storage(hostingEnvironment);
 			var client = Util.GetRestPkiClient(restPkiConfig);
 
-			// Get an instance of the CadesSignatureFinisher2 class, responsible for completing the signature process
-			var signatureFinisher = new XmlSignatureFinisher(client) {
+            // Get an instance of the XmlSignatureFinisher class, responsible for completing the signature process
+            var signatureFinisher = new XmlSignatureFinisher(client) {
 
 				// Set the token for this signature (rendered in a hidden input field, see the view)
 				Token = token
@@ -72,8 +72,8 @@ namespace CoreWebApp.Controllers {
 			// to sign the file.
 			var signerCert = signatureFinisher.GetCertificateInfo();
 
-			// At this point, you'd typically store the signed PDF on a database or storage service. For demonstration purposes, we'll
-			// store the PDF on our "storage mock", which in turn stores the PDF on the App_Data folder.
+			// At this point, you'd typically store the signed XML on a database or storage service. For demonstration purposes, we'll
+			// store the XML on our "storage mock", which in turn stores the XML on the App_Data folder.
 
 			// The SignatureResult object has various methods for writing the signature file to a stream (WriteTo()), local file (WriteToFile()), open
 			// a stream to read the content (OpenRead()) and get its contents (GetContent()). For large files, avoid the method GetContent() to avoid
