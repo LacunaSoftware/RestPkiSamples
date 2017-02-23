@@ -2,6 +2,11 @@
 
 <form role="form" ng-submit="sign()">
 
+    <div class="form-group">
+        <label>File to Sign</label>
+        <p>You'll are signing <a href='Download/SampleDocument.pdf' target="_blank">this sample document</a>.</p>
+    </div>
+
 	<div class="form-group">
 		<label for="certificateSelect">Choose a certificate</label>
 		<select id="certificateSelect" ng-model="selectedCertificate" class="form-control" ng-options="getCertificateDisplayName(c) for c in certificates"></select>

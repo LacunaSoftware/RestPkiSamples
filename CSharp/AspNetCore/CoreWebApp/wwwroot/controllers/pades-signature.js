@@ -1,8 +1,9 @@
 ﻿'use strict';
-app.controller('padesSignatureController', ['$scope', '$http', 'blockUI', 'util', function ($scope, $http, blockUI, util) {
+app.controller('padesSignatureController', ['$scope', '$http', '$routeParams', 'blockUI', 'util', function ($scope, $http, $routeParams, blockUI, util) {
 
 	$scope.certificates = [];
-	$scope.selectedCertificate = null;
+    $scope.selectedCertificate = null;
+    $scope.userfile = null;
 
 	// Create an instance of the LacunaWebPKI "object"
 	var pki = new LacunaWebPKI();
@@ -13,7 +14,10 @@ app.controller('padesSignatureController', ['$scope', '$http', 'blockUI', 'util'
 	var init = function () {
 
 		// Block the UI while we get things ready
-		blockUI.start();
+        blockUI.start();
+
+        // Retrive parameter "userfile"
+        $scope.userfile = $routeParams.userfile;
 
 		// Call the init() method on the LacunaWebPKI object, passing a callback for when
 		// the component is ready to be used and another to be called when an error occurrs
@@ -88,9 +92,16 @@ app.controller('padesSignatureController', ['$scope', '$http', 'blockUI', 'util'
 
 		blockUI.start();
 
-		$http.post('Api/PadesSignature').then(function (response) {
-			onSignatureStartCompleted(response.data);
-		}, util.handleServerError);
+        if ($scope.userfile) {
+            $http.post('Api/PadesSignature?userfile=' + $scope.userfile).then(function (response) {
+                onSignatureStartCompleted(response.data);
+            }, util.handleServerError);
+        } else {
+            $http.post('Api/PadesSignature').then(function (response) {
+                onSignatureStartCompleted(response.data);
+            }, util.handleServerError);
+        }
+        
 	};
 
 	// -------------------------------------------------------------------------------------------------
@@ -112,7 +123,12 @@ app.controller('padesSignatureController', ['$scope', '$http', 'blockUI', 'util'
 		$http.post('Api/PadesSignature/' + token).then(function (response) {
 			blockUI.stop();
 			util.showMessage('Signature completed successfully!', 'Click OK to see details').result.then(function () {
-				util.showSignatureResults(response.data);
+                var results = {
+                    cosignUrl: 'pades-signature', 
+                    signedfile: response.data.filename,
+                    certificate: response.data.certificate
+                };
+                util.showSignatureResults(results);
 			});
 		}, util.handleServerError);
 	};

@@ -25,9 +25,9 @@ namespace CoreWebApp.Controllers {
 		}
 
 		[HttpPost]
-		public async Task<string> Start() {
+        public async Task<string> Start(string userfile) {
 
-			var storage = new Storage(hostingEnvironment);
+            var storage = new Storage(hostingEnvironment);
 			var client = Util.GetRestPkiClient(restPkiConfig);
 
 			// Get an instance of the PadesSignatureStarter class, responsible for receiving the signature elements and start the
@@ -83,9 +83,21 @@ namespace CoreWebApp.Controllers {
 
 			};
 
-			signatureStarter.SetPdfToSign(storage.GetSampleDocPath());
+            // If the "userfile" URL argument is set, it will contain the filename under the "App_Data" folder. Otherwise 
+            // (signature with server file), we'll sign a sample document.
+            if (string.IsNullOrEmpty(userfile)) {
+                // Set the PDF to be signed as a byte array
+                signatureStarter.SetPdfToSign(storage.GetSampleDocPath());
+            } else {
+                //Set the path of the file to be signed
+                byte[] content;
+                if (!storage.TryOpenRead(userfile, out content)) {
+                    throw new Exception("File not found");
+                }
+                signatureStarter.SetPdfToSign(content);
+            }
 
-			/*
+            /*
 				Optionally, add marks to the PDF before signing. These differ from the signature visual representation in that
 				they are actually changes done to the document prior to signing, not binded to any signature. Therefore, any number
 				of marks can be added, for instance one per page, whereas there can only be one visual representation per signature.

@@ -109,10 +109,14 @@ app.controller('xmlElementSignatureController', ['$scope', '$http', 'blockUI', '
 	// Function called once the signature is completed
 	// -------------------------------------------------------------------------------------------------
 	var onSignCompleted = function (token) {
-		$http.post('Api/XmlElementSignature/' + token).then(function (completeResponse) {
+		$http.post('Api/XmlElementSignature/' + token).then(function (response) {
 			blockUI.stop();
-			util.showMessage('Signature completed successfully!', 'Click OK to see details').result.then(function () {
-				util.showSignatureResults(completeResponse.data);
+            util.showMessage('Signature completed successfully!', 'Click OK to see details').result.then(function () {
+                var results = {
+                    signedfile: response.data.filename,
+                    certificate: response.data.certificate
+                }
+                util.showSignatureResults(results);
 			});
 		}, util.handleServerError);
 	};

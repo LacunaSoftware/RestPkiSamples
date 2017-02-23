@@ -1,8 +1,10 @@
 ﻿'use strict';
-app.controller('cadesSignatureController', ['$scope', '$http', 'blockUI', 'util', function ($scope, $http, blockUI, util) {
+app.controller('cadesSignatureController', ['$scope', '$http', '$routeParams', 'blockUI', 'util', function ($scope, $http, $routeParams, blockUI, util) {
 	
 	$scope.certificates = [];
-	$scope.selectedCertificate = null;
+    $scope.selectedCertificate = null;
+    $scope.userfile = null;
+    $scope.cmsfile = null;
 
 	// Create an instance of the LacunaWebPKI "object"
 	var pki = new LacunaWebPKI();
@@ -13,7 +15,11 @@ app.controller('cadesSignatureController', ['$scope', '$http', 'blockUI', 'util'
 	var init = function () {
 
 		// Block the UI while we get things ready
-		blockUI.start();
+        blockUI.start();
+
+        // Retrive parameter "userfile" and "cmsfile"
+        $scope.userfile = $routeParams.userfile;
+        $scope.cmsfile = $routeParams.cmsfile;
 
 		// Call the init() method on the LacunaWebPKI object, passing a callback for when
 		// the component is ready to be used and another to be called when an error occurrs
@@ -88,9 +94,20 @@ app.controller('cadesSignatureController', ['$scope', '$http', 'blockUI', 'util'
 
 		blockUI.start();
 
-		$http.post('Api/CadesSignature').then(function (response) {
-			onSignatureStartCompleted(response.data);
-		}, util.handleServerError);
+        if ($scope.userfile) {
+            $http.post('Api/CadesSignature?userfile=' + $scope.userfile).then(function (response) {
+                onSignatureStartCompleted(response.data);
+            }, util.handleServerError);
+        } else if ($scope.cmsfile) {
+            $http.post('Api/CadesSignature?cmsfile=' + $scope.cmsfile).then(function (response) {
+                onSignatureStartCompleted(response.data);
+            }, util.handleServerError);
+        } else {
+            $http.post('Api/CadesSignature').then(function (response) {
+                onSignatureStartCompleted(response.data);
+            }, util.handleServerError);
+        }
+        
 	};
 
 	// -------------------------------------------------------------------------------------------------
@@ -109,10 +126,15 @@ app.controller('cadesSignatureController', ['$scope', '$http', 'blockUI', 'util'
 	// Function called once the signature is completed
 	// -------------------------------------------------------------------------------------------------
 	var onSignCompleted = function (token) {
-		$http.post('Api/CadesSignature/' + token).then(function (completeResponse) {
+		$http.post('Api/CadesSignature/' + token).then(function (response) {
 			blockUI.stop();
 			util.showMessage('Signature completed successfully!', 'Click OK to see details').result.then(function () {
-				util.showSignatureResults(completeResponse.data);
+                var results = {
+                    cosignUrl: 'cades-signature',
+                    cmsfile: response.data.filename,
+                    certificate: response.data.certificate
+                };
+                util.showSignatureResults(results);
 			});
 		}, util.handleServerError);
 	};

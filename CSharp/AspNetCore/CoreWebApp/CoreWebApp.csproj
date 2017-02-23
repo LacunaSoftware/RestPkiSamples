@@ -22,6 +22,7 @@
     <Content Include="wwwroot\controllers\home.js" />
     <Content Include="wwwroot\controllers\pades-signature.js" />
     <Content Include="wwwroot\controllers\signature-results-dialog.js" />
+    <Content Include="wwwroot\controllers\upload.js" />
     <Content Include="wwwroot\controllers\validation-results-dialog.js" />
     <Content Include="wwwroot\controllers\xml-element-signature.js" />
     <Content Include="wwwroot\js\app.js" />
@@ -33,6 +34,7 @@
     <Content Include="wwwroot\views\dialogs\validation-results.html" />
     <Content Include="wwwroot\views\home.html" />
     <Content Include="wwwroot\views\pades-signature.html" />
+    <Content Include="wwwroot\views\upload.html" />
     <Content Include="wwwroot\views\xml-element-signature.html" />
   </ItemGroup>
   <ItemGroup>

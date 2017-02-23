@@ -3,10 +3,6 @@
 </div>
 <div class="modal-body">
 
-	<div class="form-group">
-		<p>File signed successfully! <a href="/Download/{{filename}}" target="_blank">Click here to download the signed file</a></p>
-	</div>
-
 	<h5>Certificate details</h5>
 	<form class="form-horizontal" role="form">
 
@@ -126,6 +122,16 @@
 		</div>
 
 	</form>
+
+    <hr />
+    <div>
+        <h5>Actions:</h5>
+        <ul>
+            <li><a href="Download/{{filename}}" target="_blank">Download the signed file</a></li>
+            <!--<li ng-if="openUrl"><a href="{{openUrl}}?userfile={{filename}}">Open/validate the signed file</a></li>-->
+            <li ng-if="cosignUrl"><a ng-click="coSign()" href="#">Co-sign with another certificate</a></li>
+        </ul>
+    </div>
 
 </div>
 <div class="modal-footer">

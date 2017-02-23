@@ -1,11 +1,16 @@
-﻿var app = angular.module('PkiSdkWebApiSamples', ['ngRoute', 'ui.bootstrap', 'blockUI']);
+﻿var app = angular.module('PkiSdkWebApiSamples', ['ngRoute', 'ui.bootstrap', 'blockUI', 'ngFileUpload']);
 
 app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
 
 	$routeProvider.when('/', {
 		templateUrl: 'views/home.html',
 		controller: 'homeController'
-	});
+    });
+
+    $routeProvider.when('/upload/:rc', {
+        templateUrl: 'views/upload.html',
+        controller: 'uploadController'
+    });
 
 	$routeProvider.when('/authentication', {
 		templateUrl: 'views/authentication.html',
@@ -48,14 +53,13 @@ app.factory('util', ['$uibModal', 'blockUI', function ($modal, blockUI) {
 		});
 	};
 
-	var showSignatureResults = function (data) {
+    var showSignatureResults = function (results) {
 		return $modal.open({
 			templateUrl: 'views/dialogs/signature-results.html',
 			controller: 'signatureResultsDialogController',
 			size: 'lg',
-			resolve: {
-				model: function () { return data.certificate; },
-				filename: function () { return data.filename }
+            resolve: {
+                results: function () { return results; }
 			}
 		});
 	};
