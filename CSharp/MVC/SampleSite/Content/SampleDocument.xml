@@ -25,7 +25,4 @@
 			<currency>USD</currency>
 		</item>
 	</items>
-	<signaturePlaceholder>
-		<!-- The signature will be inserted here -->
-	</signaturePlaceholder>
 </invoice>

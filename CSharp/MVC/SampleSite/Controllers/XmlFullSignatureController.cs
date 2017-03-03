@@ -20,28 +20,38 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 		 * The difference is that, when the file is uploaded by the user, the action is called with a URL argument named "userfile".
 		 */
 		[HttpGet]
-		public ActionResult Index() {
+		public ActionResult Index(string userfile) {
 
 			// Instantiate the XmlElementSignatureStarter class, responsible for receiving the signature elements and start the
 			// signature process
 			var signatureStarter = new FullXmlSignatureStarter(Util.GetRestPkiClient());
 
-			// Set the XML to be signed, a sample XML Document
-			signatureStarter.SetXml(Util.GetSampleXmlDocument());
+			if (!string.IsNullOrEmpty(userfile)) {
+
+				// If the URL argument "userfile" is filled, it means the user was redirected here by UploadController (signature with file uploaded by user).
+				// We'll set the path of the file to be signed, which was saved in the App_Data folder by UploadController
+				signatureStarter.SetXml(Server.MapPath("~/App_Data/" + userfile.Replace("_", "."))); // Note: we're passing the filename argument with "." as "_" because of limitations of ASP.NET MVC
+
+			} else {
+
+				// If userfile is null, this is the "signature with server file" case. We'll set the path of the file to be signed, a sample XML document
+				signatureStarter.SetXml(Util.GetSampleXmlDocument());
+
+			}
 
 			// Set the signature policy
-			signatureStarter.SetSignaturePolicy(StandardXmlSignaturePolicies.XadesBes);
+			signatureStarter.SetSignaturePolicy(StandardXmlSignaturePolicies.XmlDSigBasic);
 
 			// Set a SecurityContext to be used to determine trust in the certificate chain
 			signatureStarter.SetSecurityContext(StandardSecurityContexts.PkiBrazil);
 			// Note: By changing the SecurityContext above you can accept only certificates from a certain PKI, for instance,
 			// ICP-Brasil (\Lacuna\StandardSecurityContexts::PKI_BRAZIL).
 
-			// Set the location on which to insert the signature node. If the location is not specified, the signature will appended
+			// Optionally, set the location on which to insert the signature node. If the location is not specified, the signature will appended
 			// to the root element (which is most usual with enveloped signatures).
-			var nsm = new NamespaceManager();
-			nsm.AddNamespace("ls", "http://www.lacunasoftware.com/sample");
-			signatureStarter.SetSignatureElementLocation("//ls:signaturePlaceholder", Api.XmlSignature.XmlInsertionOptions.AppendChild, nsm);
+			//var nsm = new NamespaceManager();
+			//nsm.AddNamespace("ls", "http://www.lacunasoftware.com/sample");
+			//signatureStarter.SetSignatureElementLocation("//ls:signaturePlaceholder", Api.XmlSignature.XmlInsertionOptions.AppendChild, nsm);
 
 			// Call the StartWithWebPki() method, which initiates the signature. This yields the token, a 43-character
 			// case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
@@ -57,7 +67,8 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 
 			// Render the signature page with the token obtained from REST PKI
 			return View(new XmlSignatureModel() {
-				Token = token
+				Token = token,
+				UserFile = userfile
 			});
 		}
 

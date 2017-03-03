@@ -23,14 +23,24 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 		 * The difference is that, when the file is uploaded by the user, the action is called with a URL argument named "userfile".
 		 */
 		[HttpGet]
-		public ActionResult Index() {
+		public ActionResult Index(string userfile) {
 
 			// Instantiate the XmlElementSignatureStarter class, responsible for receiving the signature elements and start the
 			// signature process
 			var signatureStarter = new XmlElementSignatureStarter(Util.GetRestPkiClient());
 
-			// Set the XML to be signed, a sample Brazilian fiscal invoice pre-generated
-			signatureStarter.SetXml(Util.GetSampleNFeContent());
+			if (!string.IsNullOrEmpty(userfile)) {
+
+				// If the URL argument "userfile" is filled, it means the user is trying to co-sign a previously signed XML.
+				// We'll set the path of the file to be signed, which was previously saved in the App_Data folder
+				signatureStarter.SetXml(Server.MapPath("~/App_Data/" + userfile.Replace("_", "."))); // Note: we're passing the filename argument with "." as "_" because of limitations of ASP.NET MVC
+
+			} else {
+
+				// If userfile is null, we'll set the path of the file to be signed, a sample Brazilian fiscal invoice pre-generated
+				signatureStarter.SetXml(Util.GetSampleNFeContent());
+
+			}
 
 			// Set the ID of the element to be signed
 			signatureStarter.SetToSignElementId("NFe35141214314050000662550010001084271182362300");
@@ -57,7 +67,8 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 
 			// Render the signature page with the token obtained from REST PKI
 			return View(new XmlSignatureModel() {
-				Token = token
+				Token = token,
+				UserFile = userfile
 			});
 		}
 

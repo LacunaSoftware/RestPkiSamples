@@ -10,7 +10,16 @@
 
 	<div class="form-group">
 		<label>File to sign</label>
-		<p>You are signing this <b>entire</b> <a href='~/Content/SampleDocument.xml'>sample XML</a>.</p>
+
+		<p>
+			You are signing this <b>entire</b>
+			@if (!String.IsNullOrEmpty(Model.UserFile)) {
+				<a href='/Download/File/@Model.UserFile'>XML document</a>
+			} else {
+				<a href='~/Content/SampleDocument.xml'>sample XML</a>
+			}
+		</p>
+		
 	</div>
 
 	@* Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it later on (see javascript below). *@
