@@ -1,6 +1,25 @@
 Lacuna Rest PKI change log
 ==========================
 
+1.11.4 (2017-03-16)
+-------------------
+
+Database model update: No
+
+- Update Lacuna PKI SDK to 1.16.5, thus:
+	- Updated ICP-Brasil intermediate CAs
+	- Changes on CAdES signature inspection to deal with incorrectly encoded timestamps
+
+
+1.11.3 (2017-02-13)
+-------------------
+
+Database model update: No
+
+- Alter XML policy "Nota Fiscal Eletrônica (NF-e)" to exclude signature elements IDs
+- Update Lacuna PKI SDK to 1.16.2
+	
+
 1.11.2 (2017-01-20)
 -------------------
 
