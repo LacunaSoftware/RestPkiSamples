@@ -19,13 +19,15 @@ Steps to execute the sample:
 1. [Download the project](https://github.com/LacunaSoftware/RestPkiSamples/archive/master.zip)
    or clone the repository
 
-2. Open the solution file `RestPkiCSharpSample.sln` on Visual Studio
-   
-3. Generate an API access token on the [REST PKI website](https://pki.rest/)
+2. Open the desired project folder -- [MVC](MVC/) or one of the other projects (see below)
 
-4. Paste your access token on the file `SampleSite\web.config`
+3. Open the solution file (.sln) on Visual Studio
    
-5. Run the solution. Make sure your system allows automatic Nuget package restore (if it doesn't,
+4. Generate an API access token on the [REST PKI website](https://pki.rest/)
+
+5. Paste your access token on the file `web.config`
+   
+6. Run the solution. Make sure your system allows automatic Nuget package restore (if it doesn't,
    manually restore the packages).
 
 ASP.NET Web Forms sample
