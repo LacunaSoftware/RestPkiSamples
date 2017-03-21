@@ -36,11 +36,21 @@ this sample is not yet fully completed.
 
 The steps to execute the sample are the same as for the default sample.
 
+Visual Studio 2008 sample
+-------------------------
+
+If you use an older version of Visual Studio which cannot open the MVC and the Web Forms sample, use the
+project for **Visual Studio 2008** located in the folder [VS2008](VS2008/). Please notice that
+this sample is not yet fully completed.
+
+The steps to execute the sample are the same as for the default sample.
+
 .NET client lib
 ---------------
 
-The samples use a client lib which encapsulates the API calls to REST PKI. The lib is a Nuget package
-targeting .NET Framework 4.5. If you need to support .NET Framework 4.0, please [contact us](https://webpki.lacunasoftware.com/#/Contact).
+The samples use the Nuget package [Lacuna.RestPki.Client](https://www.nuget.org/packages/Lacuna.RestPki.Client/),
+a library which encapsulates the API calls to REST PKI. It supports .NET Frameworks 3.5, 4.0 and 4.5 as well as
+.NET Standard 1.3 (for usage on .NET Core, Xamarin, Mono and UWP).
 
 See also
 --------
