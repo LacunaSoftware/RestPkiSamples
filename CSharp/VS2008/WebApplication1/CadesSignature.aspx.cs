@@ -38,7 +38,7 @@ namespace WebApplication1 {
 				// the case for ICP-Brasil policies, which will automatically use the PkiBrazil security context if none is passed)
 
 				// Optionally, set a SecurityContext to be used to determine trust in the certificate chain
-				//signatureStarter.SetSecurityContext(new Guid("..."));
+				//signatureStarter.SetSecurityContext(new Guid("ID OF YOUR CUSTOM SECURITY CONTEXT"));
 
 				// For instance, to use the test certificates on Lacuna Test PKI (for development purposes only!):
 				//signatureStarter.SetSecurityContext(new Guid("803517ad-3bbc-4169-b085-60053a8f6dbf"));
