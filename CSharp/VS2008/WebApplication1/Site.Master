@@ -19,6 +19,9 @@
 </head>
 <body>
 	<form id="Form1" runat="server">
+	
+		<asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
+	
 		<nav class="navbar navbar-inverse navbar-fixed-top">
 			<div class="container">
 				<div class="navbar-header">
@@ -54,6 +57,7 @@
 								<li><a href="/XmlElementSignature.aspx">XML element signature</a></li>
 							</ul>
 						</li>
+						<li><a href="/BatchSignature.aspx">Batch signature</a></li>
 						<%--<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Batch signature <span class="caret"></span></a>
 							<ul class="dropdown-menu">

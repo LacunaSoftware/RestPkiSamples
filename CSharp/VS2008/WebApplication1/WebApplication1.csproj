@@ -95,6 +95,13 @@
     <Compile Include="AuthenticationSuccess.aspx.designer.cs">
       <DependentUpon>AuthenticationSuccess.aspx</DependentUpon>
     </Compile>
+    <Compile Include="BatchSignature.aspx.cs">
+      <DependentUpon>BatchSignature.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BatchSignature.aspx.designer.cs">
+      <DependentUpon>BatchSignature.aspx</DependentUpon>
+    </Compile>
     <Compile Include="CadesSignature.aspx.cs">
       <DependentUpon>CadesSignature.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -165,6 +172,7 @@
   <ItemGroup>
     <Content Include="AuthenticationFail.aspx" />
     <Content Include="AuthenticationSuccess.aspx" />
+    <Content Include="BatchSignature.aspx" />
     <Content Include="CadesSignature.aspx" />
     <Content Include="CadesSignatureInfo.aspx" />
     <Content Include="Content\css\bootstrap.min.css" />
@@ -176,6 +184,7 @@
     <Content Include="favicon.ico" />
     <Content Include="PadesSignature.aspx" />
     <Content Include="PadesSignatureInfo.aspx" />
+    <Content Include="Scripts\batch-signature-form.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <Content Include="Scripts\jquery.blockUI.js" />
