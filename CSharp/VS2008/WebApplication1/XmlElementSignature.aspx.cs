@@ -37,12 +37,14 @@ namespace WebApplication1 {
 
 				// Set the signature policy
 				signatureStarter.SetSignaturePolicy(StandardXmlSignaturePolicies.PkiBrazil.NFePadraoNacional);
-				signatureStarter.SetSecurityContext(new Guid("803517ad-3bbc-4169-b085-60053a8f6dbf"));
+				// Note: Depending on the signature policy chosen above, setting the security context below may be mandatory (this is not
+				// the case for ICP-Brasil policies, which will automatically use the PkiBrazil security context if none is passed)
 
-				// Optionally, set a SecurityContext to be used to determine trust in the certificate chain. Since we're using the
-				// StandardXmlSignaturePolicies.PkiBrazil.NFePadraoNacional policy, the security context will default to PKI Brazil (ICP-Brasil)
+				// Optionally, set a SecurityContext to be used to determine trust in the certificate chain
 				//signatureStarter.SetSecurityContext(new Guid("..."));
-				// Note: By changing the SecurityContext above you can accept certificates from a custom security context
+
+				// For instance, to use the test certificates on Lacuna Test PKI (for development purposes only!):
+				//signatureStarter.SetSecurityContext(new Guid("803517ad-3bbc-4169-b085-60053a8f6dbf"));
 
 				// Call the StartWithWebPki() method, which initiates the signature. This yields the token, a 43-character
 				// case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the

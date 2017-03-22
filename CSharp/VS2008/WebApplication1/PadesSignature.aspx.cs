@@ -35,13 +35,15 @@ namespace WebApplication1 {
 				signatureStarter.SetPdfToSign(Util.GetSampleDocContent());
 
 				// Set the signature policy
-				signatureStarter.SetSignaturePolicy(StandardPadesSignaturePolicies.Basic);
+				signatureStarter.SetSignaturePolicy(StandardPadesSignaturePolicies.PkiBrazil.BasicWithPkiBrazilCerts);
+				// Note: Depending on the signature policy chosen above, setting the security context below may be mandatory (this is not
+				// the case for ICP-Brasil policies, which will automatically use the PkiBrazil security context if none is passed)
 
-				// Set a SecurityContext to be used to determine trust in the certificate chain
-				//signatureStarter.SetSecurityContext(StandardSecurityContexts.PkiBrazil);
-				signatureStarter.SetSecurityContext(new Guid("803517ad-3bbc-4169-b085-60053a8f6dbf"));
-				// Note: By changing the SecurityContext above you can accept only certificates from a certain PKI,
-				// for instance, ICP-Brasil (Lacuna.RestPki.Api.StandardSecurityContexts.PkiBrazil).
+				// Optionally, set a SecurityContext to be used to determine trust in the certificate chain
+				//signatureStarter.SetSecurityContext(new Guid("..."));
+
+				// For instance, to use the test certificates on Lacuna Test PKI (for development purposes only!):
+				//signatureStarter.SetSecurityContext(new Guid("803517ad-3bbc-4169-b085-60053a8f6dbf"));
 
 				// Set a visual representation for the signature
 				signatureStarter.SetVisualRepresentation(new PadesVisualRepresentation() {
