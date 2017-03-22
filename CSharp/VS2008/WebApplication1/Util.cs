@@ -44,8 +44,12 @@ namespace WebApplication1 {
 			return File.ReadAllBytes(Path.Combine(ImagesPath, "PdfStamp.png"));
 		}
 
-		public static byte[] GetSampleDocContent() {
-			return File.ReadAllBytes(Path.Combine(DocsPath, "01.pdf"));
+		public static string GetSampleDocPath() {
+			return Path.Combine(DocsPath, "01.pdf");
+		}
+
+		public static string GetBatchDocPath(int id) {
+			return Path.Combine(DocsPath, string.Format("{0:D2}.pdf", ((id - 1) % 10) + 1));
 		}
 
 		public static byte[] GetSampleNFeContent() {

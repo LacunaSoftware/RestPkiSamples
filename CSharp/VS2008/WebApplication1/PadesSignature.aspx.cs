@@ -32,7 +32,7 @@ namespace WebApplication1 {
 				signatureStarter.MeasurementUnits = PadesMeasurementUnits.Centimeters;
 
 				// Set the file to be signed as a byte array
-				signatureStarter.SetPdfToSign(Util.GetSampleDocContent());
+				signatureStarter.SetPdfToSign(Util.GetSampleDocPath());
 
 				// Set the signature policy
 				signatureStarter.SetSignaturePolicy(StandardPadesSignaturePolicies.PkiBrazil.BasicWithPkiBrazilCerts);

@@ -30,7 +30,7 @@ namespace WebApplication1 {
 				var signatureStarter = Util.GetRestPkiClient().GetCadesSignatureStarter();
 
 				// Set the file to be signed as a byte array
-				signatureStarter.SetContentToSign(Util.GetSampleDocContent());
+				signatureStarter.SetFileToSign(Util.GetSampleDocPath());
 
 				// Set the signature policy
 				signatureStarter.SetSignaturePolicy(StandardCadesSignaturePolicies.PkiBrazil.AdrBasica);
