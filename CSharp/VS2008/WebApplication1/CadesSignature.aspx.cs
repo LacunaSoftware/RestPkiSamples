@@ -61,18 +61,19 @@ namespace WebApplication1 {
 
 		protected void SubmitButton_Click(object sender, EventArgs e) {
 
-			// Get an instance of the PadesSignatureFinisher class, responsible for completing the signature process
-			var signatureFinisher = Util.GetRestPkiClient().GetCadesSignatureFinisher();
+			// Get an instance of the CadesSignatureFinisher2 class, responsible for completing the signature process
+			var signatureFinisher = new CadesSignatureFinisher2(Util.GetRestPkiClient()) {
 
-			// Set the token for this signature (rendered in a hidden input field, see the view)
-			signatureFinisher.SetToken((string)ViewState["Token"]);
+				// Set the token for this signature acquired previously
+				Token = (string)ViewState["Token"]
+			};
 
-			// Call the Finish() method, which finalizes the signature process and returns the CMS
-			var cms = signatureFinisher.Finish();
+			// Call the Finish() method, which finalizes the signature process and returns a SignatureResult object
+			var signatureResult = signatureFinisher.Finish();
 
-			// Get information about the certificate used by the user to sign the file. This method must only be called after
-			// calling the Finish() method.
-			var signerCertificate = signatureFinisher.GetCertificateInfo();
+			// The "Certificate" property of the SignatureResult object contains information about the certificate used by the user
+			// to sign the file.
+			var signerCert = signatureResult.Certificate;
 
 			// At this point, you'd typically store the CMS on your database. For demonstration purposes, we'll
 			// store the CMS on the App_Data folder and render a page with a link to download the CMS and with the
@@ -84,10 +85,14 @@ namespace WebApplication1 {
 			}
 			var id = Guid.NewGuid();
 			var filename = id + ".p7s";
-			File.WriteAllBytes(Path.Combine(appDataPath, filename), cms);
+
+			// The SignatureResult object has various methods for writing the signature file to a stream (WriteTo()), local file (WriteToFile()), open
+			// a stream to read the content (OpenRead()) and get its contents (GetContent()). For large files, avoid the method GetContent() to avoid
+			// memory allocation issues.
+			signatureResult.WriteToFile(Path.Combine(appDataPath, filename));
 
 			this.SignatureFilename = filename;
-			this.SignerCertificate = signerCertificate;
+			this.SignerCertificate = signerCert;
 			Server.Transfer("CadesSignatureInfo.aspx");
 		}
 	}
