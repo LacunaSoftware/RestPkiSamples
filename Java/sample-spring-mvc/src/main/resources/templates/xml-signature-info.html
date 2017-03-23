@@ -24,8 +24,8 @@
                 <li>Responsavel: <span th:text="${signerCert.getPkiBrazil().getResponsavel()}" /></li>
                 <li>Empresa: <span th:text="${signerCert.getPkiBrazil().getCompanyName()}" /></li>
                 <li>CNPJ: <span th:text="${signerCert.getPkiBrazil().getCnpj()}" /></li>
-                <li>RG: <span th:text="${userCert.getPkiBrazil().getRGNumero()}"/> <span th:text="${userCert.getPkiBrazil().getRGEmissor()}"/> <span th:text="${userCert.getPkiBrazil().getRGEmissorUF()}"/></li>
-                <li>OAB: <span th:text="${userCert.getPkiBrazil().getOabNumero()}" /> <span th:text="${userCert.getPkiBrazil().getOabUF()}"/></li>
+                <li>RG: <span th:text="${signerCert.getPkiBrazil().getRGNumero()}"/> <span th:text="${signerCert.getPkiBrazil().getRGEmissor()}"/> <span th:text="${signerCert.getPkiBrazil().getRGEmissorUF()}"/></li>
+                <li>OAB: <span th:text="${signerCert.getPkiBrazil().getOabNumero()}" /> <span th:text="${signerCert.getPkiBrazil().getOabUF()}"/></li>
             </ul>
         </li>
     </ul>

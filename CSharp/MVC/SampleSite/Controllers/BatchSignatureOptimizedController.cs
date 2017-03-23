@@ -17,6 +17,11 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 	 
 		The logic for the example is more complex than the "regular" batch signature example (controller BatchSignatureController),
 		but the performance is significantly improved (roughly 50% faster).
+
+		Notice that the optimized batch example requires a use license for the Web PKI component (every other example in this project
+		does not). The licensing is not enforced when running on localhost, but in order to run this sample outside of localhost you'll
+		need to set a license on the web.config file. If you need a trial license, please request one at
+		https://www.lacunasoftware.com/en/products/web_pki
 	 */
 	public class BatchSignatureOptimizedController : BaseController {
 
@@ -158,8 +163,8 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 		[HttpPost]
 		public ActionResult Complete(BatchSignatureCompleteRequest request) {
 
-			// Get an instance of the PadesSignatureFinisher class, responsible for completing the signature process
-			var signatureFinisher = new PadesSignatureFinisher(Util.GetRestPkiClient()) {
+			// Get an instance of the PadesSignatureFinisher2 class, responsible for completing the signature process
+			var signatureFinisher = new PadesSignatureFinisher2(Util.GetRestPkiClient()) {
 
 				// Set the token for this signature (rendered in a hidden input field, see the view)
 				Token = request.Token,
@@ -169,12 +174,12 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 
 			};
 
-			// Call the Finish() method, which finalizes the signature process and returns the signed PDF
-			var signedPdf = signatureFinisher.Finish();
+			// Call the Finish() method, which finalizes the signature process and returns a SignatureResult object
+			var signatureResult = signatureFinisher.Finish();
 
-			// Get information about the certificate used by the user to sign the file. This method must only be called after
-			// calling the Finish() method.
-			var signerCert = signatureFinisher.GetCertificateInfo();
+			// The "Certificate" property of the SignatureResult object contains information about the certificate used by the user
+			// to sign the file.
+			var signerCert = signatureResult.Certificate;
 
 			// At this point, you'd typically store the signed PDF on your database. For demonstration purposes, we'll
 			// store the PDF on the App_Data folder and render a page with a link to download the signed PDF and with the
@@ -186,7 +191,11 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 			}
 			var signedFileId = Guid.NewGuid();
 			var filename = signedFileId + ".pdf";
-			System.IO.File.WriteAllBytes(Path.Combine(appDataPath, filename), signedPdf);
+
+			// The SignatureResult object has various methods for writing the signature file to a stream (WriteTo()), local file (WriteToFile()), open
+			// a stream to read the content (OpenRead()) and get its contents (GetContent()). For large files, avoid the method GetContent() to avoid
+			// memory allocation issues.
+			signatureResult.WriteToFile(Path.Combine(appDataPath, filename));
 
 			var signedFile = filename.Replace(".", "_"); // Note: we're passing the filename argument with "." as "_" because of limitations of ASP.NET MVC
 			return Json(signedFile);

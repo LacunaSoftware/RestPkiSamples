@@ -5,21 +5,16 @@
  * another file, authentication-action.php, which calls REST PKI again to validate the data received.
  */
 
-// The file RestPki.php contains the helper classes to call the REST PKI API
-require_once 'RestPki.php';
+require __DIR__ . '/vendor/autoload.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
-// initialized with the API access token
-require_once 'util.php';
-
-// Get an instance of the Authentication class
+// Get an instance of the Authentication class (see util.php)
 $auth = getRestPkiClient()->getAuthentication();
 
 // Call the startWithWebPki() method, which initiates the authentication. This yields the "token", a 22-character
 // case-sensitive URL-safe string, which represents this authentication process. We'll use this value to call the
 // signWithRestPki() method on the Web PKI component (see javascript below) and also to call the completeWithWebPki()
 // method on the file authentication-action.php. This should not be mistaken with the API access token.
-$token = $auth->startWithWebPki(\Lacuna\StandardSecurityContexts::PKI_BRAZIL);
+$token = $auth->startWithWebPki(\Lacuna\RestPki\StandardSecurityContexts::PKI_BRAZIL);
 
 // Note: By changing the SecurityContext above you can accept only certificates from a certain PKI,
 // for instance, ICP-Brasil (\Lacuna\StandardSecurityContexts::PKI_BRAZIL).
@@ -74,7 +69,7 @@ setExpiredPage();
 // The file below contains the JS lib for accessing the Web PKI component. For more information, see:
 // https://webpki.lacunasoftware.com/#/Documentation
 ?>
-<script src="content/js/lacuna-web-pki-2.3.1.js"></script>
+<script src="content/js/lacuna-web-pki-2.5.0.js"></script>
 
 <?php
 // The file below contains the logic for calling the Web PKI component. It is only an example, feel free to alter it

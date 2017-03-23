@@ -17,6 +17,8 @@ block content
 					li Responsavel: #{certificate.pkiBrazil.responsavel}
 					li Empresa: #{certificate.pkiBrazil.companyName}
 					li CNPJ: #{certificate.pkiBrazil.cnpj}
+					li RG: #{signerCert.pkiBrazil.rgNumero} #{signerCert.pkiBrazil.rgEmissor} #{signerCert.pkiBrazil.rgEmissorUF}
+					li OAB: #{signerCert.pkiBrazil.oabNumero} #{signerCert.pkiBrazil.oabUF}
 
 	- } else {
 		//- Function to convert Validation Results to string idented

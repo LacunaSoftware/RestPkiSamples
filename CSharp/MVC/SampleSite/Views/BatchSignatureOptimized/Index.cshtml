@@ -35,7 +35,7 @@
 		The file below contains the JS lib for accessing the Web PKI component. For more information, see:
 		https://webpki.lacunasoftware.com/#/Documentation
 	*@
-	<script src="@Url.Content("~/Content/js/lacuna-web-pki-2.3.1.js")"></script>
+	<script src="@Url.Content("~/Content/js/lacuna-web-pki-2.5.0.js")"></script>
 
 	<script>
 
@@ -103,11 +103,8 @@
 		var performQueue = null;
 		var completeQueue = null;
 
-		// Create an instance of the LacunaWebPKI object. Notice that the optimized batch example requires a use license for the
-		// Web PKI component (every other example in this project does not). The licensing is not enforced when running on
-		// localhost, but in order to run this sample outside of localhost you'll need a license. If you need a trial license,
-		// please request one at https://www.lacunasoftware.com/en/products/web_pki
-		var pki = new LacunaWebPKI(/* Web PKI license goes here */);
+		// Create an instance of the LacunaWebPKI object
+		var pki = new LacunaWebPKI(_webPkiLicense);
 
 		// -------------------------------------------------------------------------------------------------
 		// Function called once the page is loaded

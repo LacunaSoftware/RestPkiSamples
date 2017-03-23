@@ -8,21 +8,12 @@
  * is that, when the file is uploaded by the user, the page is called with a URL argument named "userfile".
  */
 
-// The file RestPki.php contains the helper classes to call the REST PKI API
-require_once 'RestPki.php';
+require __DIR__ . '/vendor/autoload.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
-// initialized with the API access token
-require_once 'util.php';
-
-// The file pades-visual-elements.php contains sample settings for visual representations and PDF marks (see below)
-require_once 'pades-visual-elements.php';
-
-use Lacuna\PadesSignatureStarter;
-use Lacuna\StandardSignaturePolicies;
-use Lacuna\PadesMeasurementUnits;
-use Lacuna\PadesVisualElements;
-use Lacuna\StandardSecurityContexts;
+use Lacuna\RestPki\PadesSignatureStarter;
+use Lacuna\RestPki\StandardSignaturePolicies;
+use Lacuna\RestPki\PadesMeasurementUnits;
+use Lacuna\RestPki\StandardSecurityContexts;
 
 // Instantiate the PadesSignatureStarter class, responsible for receiving the signature elements and start the signature
 // process
@@ -32,28 +23,31 @@ $signatureStarter = new PadesSignatureStarter(getRestPkiClient());
 $signatureStarter->measurementUnits = PadesMeasurementUnits::CENTIMETERS;
 
 // Set the signature policy
-$signatureStarter->setSignaturePolicy(StandardSignaturePolicies::PADES_BASIC_WITH_ICPBR_CERTS);
+$signatureStarter->signaturePolicy = StandardSignaturePolicies::PADES_BASIC_WITH_ICPBR_CERTS;
 
 // Alternative option: add a ICP-Brasil timestamp to the signature
-//$signatureStarter->setSignaturePolicy(StandardSignaturePolicies::PADES_T_WITH_ICPBR_CERTS);
+//$signatureStarter->signaturePolicy = StandardSignaturePolicies::PADES_T_WITH_ICPBR_CERTS;
 
 // Alternative option: PAdES Basic with PKIs trusted by Windows
-//$signatureStarter->setSignaturePolicy(StandardSignaturePolicies::PADES_BASIC);
-//$signatureStarter->setSecurityContext(StandardSecurityContexts::WINDOWS_SERVER);
+//$signatureStarter->signaturePolicy = StandardSignaturePolicies::PADES_BASIC;
+//$signatureStarter->securityContext = StandardSecurityContexts::WINDOWS_SERVER;
 
 // Alternative option: PAdES Basic with a custom security context containting, for instance, your private PKI certificate
-//$signatureStarter->setSignaturePolicy(StandardSignaturePolicies::PADES_BASIC);
-//$signatureStarter->setSecurityContext('ID OF YOUR CUSTOM SECURITY CONTEXT');
+//$signatureStarter->signaturePolicy = StandardSignaturePolicies::PADES_BASIC;
+//$signatureStarter->securityContext = 'ID OF YOUR CUSTOM SECURITY CONTEXT';
 
 // Set the visual representation for the signature
-$signatureStarter->setVisualRepresentation([
+$signatureStarter->visualRepresentation = [
 
     'text' => [
 
-        // The tags {{signerName}} and {{signerNationalId}} will be substituted according to the user's certificate
-        // signerName -> full name of the signer
-        // signerNationalId -> if the certificate is ICP-Brasil, contains the signer's CPF
-        'text' => 'Signed by {{signerName}} ({{signerNationalId}})',
+        // The tags {{name}} and {{national_id}} will be substituted according to the user's certificate
+        //
+        //  name        : full name of the signer
+        //  national_id : if the certificate is ICP-Brasil, contains the signer's CPF
+        //
+        // For a full list of the supported tags, see: https://github.com/LacunaSoftware/RestPkiSamples/blob/master/PadesTags.md
+        'text' => 'Signed by {{name}} ({{national_id}})',
         // Specify that the signing time should also be rendered
         'includeSigningTime' => true,
         // Optionally set the horizontal alignment of the text ('Left' or 'Right'), if not set the default is Left
@@ -86,19 +80,19 @@ $signatureStarter->setVisualRepresentation([
     // Position of the visual representation. We have encapsulated this code in a function to include several
     // possibilities depending on the argument passed to the function. Experiment changing the argument to see
     // different examples of signature positioning. Once you decide which is best for your case, you can place the
-    // code directly here.
-    'position' => PadesVisualElements::getVisualRepresentationPosition(1)
+    // code directly here. See file util-pades.php
+    'position' => getVisualRepresentationPosition(1)
 
-]);
+];
 
 // If the user was redirected here by upload.php (signature with file uploaded by user), the "userfile" URL argument
 // will contain the filename under the "app-data" folder. Otherwise (signature with server file), we'll sign a sample
 // document.
 $userfile = isset($_GET['userfile']) ? $_GET['userfile'] : null;
 if (!empty($userfile)) {
-    $signatureStarter->setPdfToSignPath("app-data/{$userfile}");
+    $signatureStarter->setPdfToSignFromPath("app-data/{$userfile}");
 } else {
-    $signatureStarter->setPdfToSignPath('content/SampleDocument.pdf');
+    $signatureStarter->setPdfToSignFromPath('content/SampleDocument.pdf');
 }
 
 /*
@@ -113,7 +107,7 @@ if (!empty($userfile)) {
 	Experiment changing the argument to see different examples of PDF marks. Once you decide which is best for your case,
 	you can place the code directly here.
 */
-//array_push($signatureStarter->pdfMarks, PadesVisualElements::getPdfMark(1));
+//array_push($signatureStarter->pdfMarks, getPdfMark(1));
 
 // Call the startWithWebPki() method, which initiates the signature. This yields the token, a 43-character
 // case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
@@ -180,7 +174,7 @@ setExpiredPage();
 // The file below contains the JS lib for accessing the Web PKI component. For more information, see:
 // https://webpki.lacunasoftware.com/#/Documentation
 ?>
-<script src="content/js/lacuna-web-pki-2.3.1.js"></script>
+<script src="content/js/lacuna-web-pki-2.5.0.js"></script>
 
 <?php
 // The file below contains the logic for calling the Web PKI component. It is only an example, feel free to alter it

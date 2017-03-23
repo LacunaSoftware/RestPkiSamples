@@ -6,7 +6,7 @@
  * argument.
  */
 
-require_once 'util.php';
+require __DIR__ . '/vendor/autoload.php';
 
 if (isset($_FILES['userfile'])) {
 

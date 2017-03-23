@@ -3,20 +3,15 @@
  * This file submits a CAdES signature file to Rest PKI for inspection and renders the results.
  */
 
-// The file RestPki.php contains the helper classes to call the REST PKI API
-require_once 'RestPki.php';
+require __DIR__ . '/vendor/autoload.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
-// initialized with the API access token
-require_once 'util.php';
-
-use Lacuna\CadesSignatureExplorer;
-use Lacuna\StandardSignaturePolicies;
-use Lacuna\StandardSecurityContexts;
-use Lacuna\StandardSignaturePolicyCatalog;
+use Lacuna\RestPki\CadesSignatureExplorer;
+use Lacuna\RestPki\StandardSignaturePolicies;
+use Lacuna\RestPki\StandardSecurityContexts;
+use Lacuna\RestPki\StandardSignaturePolicyCatalog;
 
 // This function is called below. It encapsulates examples of signature validation parameters.
-function setValidationParameters($sigExplorer, $caseNumber)
+function setValidationParameters(CadesSignatureExplorer $sigExplorer, $caseNumber)
 {
     switch ($caseNumber) {
         /**
@@ -25,7 +20,7 @@ function setValidationParameters($sigExplorer, $caseNumber)
         case 1:
             // By specifying a catalog of acceptable policies and omitting the default signature policy, we're telling
             // Rest PKI that only the policies in the catalog should be accepted
-            $sigExplorer->setAcceptableExplicitPolicies(StandardSignaturePolicyCatalog::getPkiBrazilCades());
+            $sigExplorer->acceptableExplicitPolicies = StandardSignaturePolicyCatalog::getPkiBrazilCades();
             break;
 
         /**
@@ -41,9 +36,9 @@ function setValidationParameters($sigExplorer, $caseNumber)
             // By omitting the accepted policies catalog and defining a default policy, we're telling Rest PKI to
             // validate all signatures in the file with the default policy -- even signatures with an explicit signature
             // policy.
-            $sigExplorer->setDefaultSignaturePolicyId(StandardSignaturePolicies::CADES_BES);
+            $sigExplorer->defaultSignaturePolicy = StandardSignaturePolicies::CADES_BES;
             // The CadesBes policy requires us to choose a security context
-            $sigExplorer->setSecurityContextId(StandardSecurityContexts::PKI_BRAZIL);
+            $sigExplorer->securityContext = StandardSecurityContexts::PKI_BRAZIL;
             break;
 
         /**
@@ -52,8 +47,8 @@ function setValidationParameters($sigExplorer, $caseNumber)
          * Same case as example #2, but using the WindowsServer trust arbitrator
          */
         case 3:
-            $sigExplorer->setDefaultSignaturePolicyId(StandardSignaturePolicies::CADES_BES);
-            $sigExplorer->setSecurityContextId(StandardSecurityContexts::WINDOWS_SERVER);
+            $sigExplorer->defaultSignaturePolicy = StandardSignaturePolicies::CADES_BES;
+            $sigExplorer->securityContext = StandardSecurityContexts::WINDOWS_SERVER;
             break;
 
         /**
@@ -63,8 +58,7 @@ function setValidationParameters($sigExplorer, $caseNumber)
          * is revoked or expires. On ICP-Brasil, this translates to policies AD-RT and up (not AD-RB).
          */
         case 4:
-            $sigExplorer->setAcceptableExplicitPolicies(
-                StandardSignaturePolicyCatalog::getPkiBrazilCadesWithSignerCertificateProtection());
+            $sigExplorer->acceptableExplicitPolicies = StandardSignaturePolicyCatalog::getPkiBrazilCadesWithSignerCertificateProtection();
             break;
 
         /**
@@ -76,8 +70,7 @@ function setValidationParameters($sigExplorer, $caseNumber)
          * translates to policies AD-RC/AD-RV and up (not AD-RB nor AD-RT).
          */
         case 5:
-            $sigExplorer->setAcceptableExplicitPolicies(
-                StandardSignaturePolicyCatalog::getPkiBrazilCadesWithCACertificateProtection());
+            $sigExplorer->acceptableExplicitPolicies = StandardSignaturePolicyCatalog::getPkiBrazilCadesWithCACertificateProtection();
             break;
     }
 }
@@ -92,10 +85,10 @@ if (empty($userfile)) {
 $sigExplorer = new CadesSignatureExplorer(getRestPkiClient());
 
 // Set the CAdEs signature file to be inspected
-$sigExplorer->setSignatureFile("app-data/{$userfile}");
+$sigExplorer->setSignatureFileFromPath("app-data/{$userfile}");
 
 // Specify that we want to validate the signatures in the file, not only inspect them
-$sigExplorer->setValidate(true);
+$sigExplorer->validate = true;
 
 // Parameters for the signature validation. We have encapsulated this code in a method to include several
 // possibilities depending on the argument passed. Experiment changing the argument to see different validation

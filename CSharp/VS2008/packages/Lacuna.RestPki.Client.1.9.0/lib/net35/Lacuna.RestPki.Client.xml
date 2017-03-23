@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Lacuna.RestPki.Client</name>
+    </assembly>
+    <members>
+        <member name="M:Lacuna.RestPki.Client.DigestAlgorithm.GetSafeAlgorithms">
+            <summary>
+            Returns a list of the algorithms currently considered "safe"
+            </summary>
+        </member>
+        <member name="T:Lacuna.RestPki.Client.PadesSignatureStarter">
+            <summary>
+            Utility class to facilitate the startup of a PADeS signature process with Rest PKI
+            </summary>
+        </member>
+        <member name="M:Lacuna.RestPki.Client.PadesSignatureStarter.SetPdfToSign(System.Byte[])">
+            <summary>
+                Sets the content to sign via a byte array
+            </summary>
+            <param name="content">The byte array representing the content to be signed</param>
+        </member>
+        <member name="M:Lacuna.RestPki.Client.PadesSignatureStarter.SetPdfToSign(System.String)">
+            <summary>
+                Sets the content to sign via a file path string
+            </summary>
+            <param name="path">The path where the file will be found</param>
+            <exception cref="T:System.IO.FileNotFoundException">In case a file cannot be found with the given path string</exception>
+        </member>
+        <member name="M:Lacuna.RestPki.Client.PadesSignatureStarter.SetPdfToSign(System.IO.Stream)">
+            <summary>
+                Sets the content to sign via a stream object
+            </summary>
+            <param name="pdfStream">The stream representing thye content to be signed</param>
+        </member>
+        <member name="M:Lacuna.RestPki.Client.PadesSignatureStarter.SetPdfToSign(Lacuna.RestPki.Client.FileResult)">
+            <summary>
+            Sets the PDf to sign from a file result from a previous call to Rest PKI
+            </summary>
+            <param name="pdf"></param>
+        </member>
+        <member name="M:Lacuna.RestPki.Client.PadesSignatureStarter.SetVisualRepresentation(Lacuna.RestPki.Client.PadesVisualRepresentation)">
+            <summary>
+                Indicates that the signature created with this starter will have a visual representation indicated by <paramref name="visualRepresentation"/>
+            </summary>
+            <param name="visualRepresentation">The visual representation that should be added to the result pdf</param>
+        </member>
+        <member name="M:Lacuna.RestPki.Client.PadesSignatureStarter.Start">
+            <summary>
+                Starts the signature without the web pki support 
+            </summary>
+            <returns>The instructions to proceed with the signature</returns>
+        </member>
+        <member name="M:Lacuna.RestPki.Client.PadesSignatureStarter.StartWithWebPki">
+            <summary>
+                Starts the signature leveraging the presence of the web pki
+            </summary>
+            <returns>The signature token</returns>
+        </member>
+        <member name="P:Lacuna.RestPki.Client.PadesVisualPositioning.PageNumber">
+            <summary>
+            Page on which to insert the visual representation. Negative values denote pages counted
+            from the end of the document (-1 means last page). Zero denotes that, if no signatures are
+            present, the signature should be inserted in a new page appended to the document.
+            </summary>
+        </member>
+        <member name="M:Lacuna.RestPki.Client.SignatureAlgorithm.GetSafeAlgorithms">
+            <summary>
+            Returns a list of the algorithms currently considered "safe"
+            </summary>
+        </member>
+        <member name="P:Lacuna.RestPki.Client.SignatureExplorer.DefaultSignaturePolicyId">
+            <summary>
+            Default signature policy to be used to validate signature. This value is used to validate signatures without an
+            explicit validation policy attribute and also signatures with an explicit validation policy attribute that is not
+            among the policies specified in AcceptableExplicitPolicies. In order to accept only a certain list of explicit
+            policies, this value should be omitted.
+            </summary>
+        </member>
+        <member name="P:Lacuna.RestPki.Client.SignatureExplorer.AcceptableExplicitPolicies">
+            <summary>
+            List of explicit policies that should be accepted when validating signatures with a explicit validation policy attribute.
+            If a signature being validated has an explicit validation policy attribute which is not among the values passed, then the
+            policy specified in DefaultSignaturePolicyId is used. In order to accept only the given list of explicit policies, omit
+            the value DefaultSignaturePolicyId.
+            </summary>
+        </member>
+        <member name="M:Lacuna.RestPki.Client.XmlIdResolutionTable.AddGlobalIdAttribute(System.String,System.String)">
+            <summary>
+            Specify an attribute to be globally considered as the ID attribute. This rule has less precedence than rules set with the SetElementIdAttribute method.
+            </summary>
+            <param name="idAttributeLocalName">Name of the attribute (e.g.: "id")</param>
+            <param name="idAttributeNamespace">Namespace URI of the attribute. If null, the attribute is regarded as having no namespace. The special value "xml" may be used to represent the http://www.w3.org/XML/1998/namespace namespace.</param>
+        </member>
+        <member name="M:Lacuna.RestPki.Client.XmlIdResolutionTable.SetElementIdAttribute(System.String,System.String,System.String,System.String)">
+            <summary>
+            Specify the attribute to be considered as the ID attribute for a certain element. This rule takes precedence over a global ID attribute specified
+            with the SetGlobalIdAttribute method.
+            </summary>
+            <param name="elementLocalName"></param>
+            <param name="elementNamespace"></param>
+            <param name="idAttributeLocalName"></param>
+            <param name="idAttributeNamespace"></param>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,5 @@
+*.suo
+*.user
+bin
+obj
+WebApplication1/App_Data/

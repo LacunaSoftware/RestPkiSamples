@@ -1,41 +1,123 @@
 Lacuna Rest PKI change log
 ==========================
 
+1.11.4 (2017-03-16)
+-------------------
+
+Database model update: No
+
+- Update Lacuna PKI SDK to 1.16.5, thus:
+	- Updated ICP-Brasil intermediate CAs
+	- Changes on CAdES signature inspection to deal with incorrectly encoded timestamps
+
+
+1.11.3 (2017-02-13)
+-------------------
+
+Database model update: No
+
+- Alter XML policy "Nota Fiscal Eletrônica (NF-e)" to exclude signature elements IDs
+- Update Lacuna PKI SDK to 1.16.2
+	
+
+1.11.2 (2017-01-20)
+-------------------
+
+Database model update: No
+
+- Fix bug on database maintenance page
+
+1.11.1 (2017-01-17)
+-------------------
+
+Database model update: No
+
+- Fix bug on upload and download routes
+
+
+1.11.0 (2017-01-17)
+-------------------
+
+Database model update: **Yes**
+
+- Add support for multipart upload of files
+- Add support for signing previously uploaded files, files from previous signatures and remote files
+- Add support for downloading the signed file on a separate HTTP request ("download link")
+- Add support for new PAdES visual representation tags (see [PadesTags.md](PadesTags.md))
+- Add support for decoding all fields in X.509 names
+- Add CAdES policy "Basic Electronic Signature (CAdES-BES) with signing-time and no CRLs"
+- Fix bug that prevented system intermediate CAs from taking effect
+- Fix bug that resetted the storage service to local everytime the application was restarted
+- Update Lacuna PKI SDK to 1.16.0, thus:
+	- Improve ICP-Brasil filds. Fields also return null if have default padding value
+	- Improve Pades signature to load and validate adbe.pkcs7.sh1 PDF signatures
+	- Improve internal downloads
+	- Fix TSL UnderSupervision state as a valid state
+	- Fix Certificate Store loading delay due certificate chain loading attempt
+	- Fix CAdES archive timestamp encode
+	- Fix PAdES visual representation empty line
+	- Fix PDF marks and PAdES visual representation incorrect positioning in some rotated PDFs
+	- Fix exception in some ICP-Brasil fields decode
+	- Fix bug occurring in some PDF signatures
+	- Fix CAdES complete revocation references attribute order
+	- Update italian TSL uri and root
+
+
 1.10.1 (2016-10-01)
 -------------------
 
+Database model update: No
+
 - Add standard PAdES policies "Basic with ICP-Brasil certificates" and "PAdES-T with ICP-Brasil certificates"
+
 
 1.10.0 (2016-09-27)
 -------------------
 
+Database model update: **Yes**
+
 - Add support for performing CAdES detached signatures without uploading the data file
 - Improve user management
+
 
 1.9.1 (2016-09-22)
 ------------------
 
+Database model update: No
+
 - Fix bug preventing use of tags {{signerEmail}} and {{issuerCommonName}} on PAdES visual representation
+
 
 1.9.0 (2016-08-25)
 ------------------
 
+Database model update: **Yes**
+
 - Add support for PDF marks
 - Improve billing report
+
 
 1.8.2 (2016-07-19)
 ------------------
 
+Database model update: No
+
 - Fix bug on CAdES co-signatures with timestamp
+
 
 1.8.1 (2016-07-11)
 ------------------
 
+Database model update: No
+
 - Fix bug affecting some signatures of large PDFs
 - Update Lacuna PKI SDK to 1.13.1
 
+
 1.8.0 (2016-07-05)
 ------------------
+
+Database model update: No
 
 - Add new API to open/validate CAdES and PAdES signatures
 - Add support for new ICP-Brasil PAdES signature policies AD-RB and AD-RT
@@ -49,8 +131,11 @@ Lacuna Rest PKI change log
 - Fix authorization bug on the download route for the security contexts' trusted root certificates
 - Update Lacuna PKI SDK to 1.13.0
 
+
 1.7.2 (2016-06-10)
 ------------------
+
+Database model update: No
 
 - Add detection of bad data passed by client applications:
 	- Invalid/corrupt PDFs
@@ -60,13 +145,19 @@ Lacuna Rest PKI change log
 - Fix bug that prevented admin users from viewing details of other users' events
 - Update Lacuna PKI SDK to 1.12.2 (no bug fixes)
 
+
 1.7.1 (2016-06-03)
 ------------------
 
+Database model update: No
+
 - Fix bug on download of a security context's trusted root certificate
+
 
 1.7.0 (2016-06-03)
 ------------------
+
+Database model update: **Yes**
 
 - Add support for timestamping
 - Add support for system-wide security contexts
@@ -84,11 +175,16 @@ Lacuna Rest PKI change log
 1.6.4 (2016-05-05)
 ------------------
 
+Database model update: **Yes**
+
 - Store temporary encrypted files on local temp directory instead of storing on binary columns in the database
 	- This change was done due to performance issues. The next release will add support for other storage options.
 
+
 1.6.3 (2016-05-02)
 ------------------
+
+Database model update: **Yes**
 
 - Add support for customization of culture, format and time zone of the signing time in PAdES visual representation
 - Update Lacuna PKI SDK to 1.12.0, thus:
@@ -106,17 +202,23 @@ Lacuna Rest PKI change log
 1.6.2 (2016-04-18)
 ------------------
 
+Database model update: No
+
 - Add support on PAdES visual representation for specifying a container inside the signature rectangle on which to place the text
 
 
 1.6.1 (2016-02-22)
 ------------------
 
+Database model update: No
+
 - Fix bug causing delay on database access when running on Microsoft Azure
 
 
 1.6.0 (2016-01-21)
 ------------------
+
+Database model update: **Yes**
 
 - Add support for XML signatures (XmlDSig/XAdES)
 - Update Lacuna PKI SDK to 1.9.0, thus:
@@ -126,11 +228,15 @@ Lacuna Rest PKI change log
 1.5.1 (2015-11-24)
 ------------------
 
+Database model update: No
+
 - Aesthetic changes only
 
 
 1.5.0 (2015-11-23)
 ------------------
+
+Database model update: **Yes**
 
 - Add support for CAdES signatures
 - Add transaction register (for future billing)
@@ -147,11 +253,15 @@ Lacuna Rest PKI change log
 1.4.3 (2015-11-06)
 ------------------
 
+Database model update: No
+
 - Aesthetic changes only
 
 
 1.4.2 (2015-11-06)
 ------------------
+
+Database model update: No
 
 - Aesthetic changes only
 
@@ -159,11 +269,15 @@ Lacuna Rest PKI change log
 1.4.1 (2015-10-21)
 ------------------
 
+Database model update: No
+
 - Aesthetic changes only
 
 
 1.4.0 (2015-10-21)
 ------------------
+
+Database model update: No
 
 - Add support on PAdES visual representation for horizontal text alignment to the right
 - Set site culture to pt-BR (affects PAdES visual representation)
@@ -172,6 +286,8 @@ Lacuna Rest PKI change log
 
 1.3.1 (2015-10-14)
 ------------------
+
+Database model update: No
 
 - Improve logging to file so as to prevent indefinite file growth
 - Add information about the Lacuna PKI SDK license on the system status screen

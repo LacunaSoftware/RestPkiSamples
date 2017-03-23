@@ -5,33 +5,28 @@
  * is posted to another file, xml-element-signature-action.php, which calls REST PKI again to complete the signature.
  */
 
-// The file RestPki.php contains the helper classes to call the REST PKI API
-require_once 'RestPki.php';
+require __DIR__ . '/vendor/autoload.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
-// initialized with the API access token
-require_once 'util.php';
-
-use Lacuna\XmlElementSignatureStarter;
-use Lacuna\StandardSecurityContexts;
-use Lacuna\StandardSignaturePolicies;
+use Lacuna\RestPki\XmlElementSignatureStarter;
+use Lacuna\RestPki\StandardSecurityContexts;
+use Lacuna\RestPki\StandardSignaturePolicies;
 
 // Instantiate the XmlElementSignatureStarter class, responsible for receiving the signature elements and start the
 // signature process
 $signatureStarter = new XmlElementSignatureStarter(getRestPkiClient());
 
 // Set the XML to be signed, a sample Brazilian fiscal invoice pre-generated
-$signatureStarter->setXmlToSignPath('content/SampleNFe.xml');
+$signatureStarter->setXmlToSignFromPath('content/SampleNFe.xml');
 
 // Set the ID of the element to be signed
-$signatureStarter->setToSignElementId('NFe35141214314050000662550010001084271182362300');
+$signatureStarter->toSignElementId = 'NFe35141214314050000662550010001084271182362300';
 
 // Set the signature policy
-$signatureStarter->setSignaturePolicy(StandardSignaturePolicies::XML_ICPBR_NFE_PADRAO_NACIONAL);
+$signatureStarter->signaturePolicy = StandardSignaturePolicies::XML_ICPBR_NFE_PADRAO_NACIONAL;
 
 // Optionally, set a SecurityContext to be used to determine trust in the certificate chain. Since we're using the
 // XML_ICPBR_NFE_PADRAO_NACIONAL policy, the security context will default to PKI Brazil (ICP-Brasil)
-//$signatureStarter->setSecurityContext(StandardSecurityContexts::PKI_BRAZIL);
+//$signatureStarter->securityContext = StandardSecurityContexts::PKI_BRAZIL;
 // Note: By changing the SecurityContext above you can accept only certificates from a custom PKI for tests.
 
 // Call the startWithWebPki() method, which initiates the signature. This yields the token, a 43-character
@@ -96,7 +91,7 @@ setExpiredPage();
 // The file below contains the JS lib for accessing the Web PKI component. For more information, see:
 // https://webpki.lacunasoftware.com/#/Documentation
 ?>
-<script src="content/js/lacuna-web-pki-2.3.1.js"></script>
+<script src="content/js/lacuna-web-pki-2.5.0.js"></script>
 
 <?php
 // The file below contains the logic for calling the Web PKI component. It is only an example, feel free to alter it
