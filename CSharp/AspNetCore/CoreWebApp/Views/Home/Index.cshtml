@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@model CoreWebApp.Models.SpaModel
+<!DOCTYPE html>
 <html ng-app="PkiSdkWebApiSamples">
 <head>
 	<meta charset="utf-8" />
@@ -73,6 +74,11 @@
 		<div data-ng-view="">
 		</div>
 	</div>
+
+	<script>
+		var _webPkiLicense = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.RestPkiConfig.WebPkiLicense));
+		var _restPkiEndpoint = @Html.Raw(@Newtonsoft.Json.JsonConvert.SerializeObject(Model.RestPkiConfig.Endpoint));
+	</script>
 
 	<environment names="Development">
 		<script src="~/lib/jquery/dist/jquery.js"></script>

@@ -9,7 +9,7 @@ namespace CoreWebApp.Classes {
 	public static class Util {
 
 		public static RestPkiClient GetRestPkiClient(RestPkiConfig config) {
-			return new RestPkiClient(config.Endpoint, config.AccessToken);
+			return new RestPkiClient(!string.IsNullOrEmpty(config.Endpoint) ? config.Endpoint : "https://pki.rest/", config.AccessToken);
 		}
 
 	}

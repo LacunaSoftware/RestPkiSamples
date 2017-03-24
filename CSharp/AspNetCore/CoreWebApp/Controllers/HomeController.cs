@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using CoreWebApp.Classes;
+using CoreWebApp.Models;
 
 namespace CoreWebApp.Controllers {
 
@@ -24,7 +25,9 @@ namespace CoreWebApp.Controllers {
 				throw new Exception("The API access token was not set! Hint: to run this sample you must generate an API access token on the REST PKI website and paste it on the appsettings.json file");
 			}
 
-			return View();
+			return View(new SpaModel() {
+				RestPkiConfig = restPkiConfig
+			});
 		}
 	}
 }

@@ -5,7 +5,7 @@ app.controller('authenticationController', ['$scope', '$http', 'blockUI', 'util'
 	$scope.selectedCertificate = null;
 
 	// Create an instance of the LacunaWebPKI "object"
-	var pki = new LacunaWebPKI();
+	var pki = new LacunaWebPKI(_webPkiLicense);
 
 	// -------------------------------------------------------------------------------------------------
 	// Function that initializes the Web PKI component
@@ -23,6 +23,7 @@ app.controller('authenticationController', ['$scope', '$http', 'blockUI', 'util'
 		pki.init({
 			ready: loadCertificates,
 			defaultError: onWebPkiError,
+			restPkiUrl: _restPkiEndpoint, // URL of the Rest PKI instance to be used
 			angularScope: $scope
 		});
 

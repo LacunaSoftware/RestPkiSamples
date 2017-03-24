@@ -9,6 +9,7 @@ namespace CoreWebApp.Classes {
 
 		public string Endpoint { get; set; }
 		public string AccessToken { get; set; }
+		public string WebPkiLicense { get; set; }
 
 	}
 }

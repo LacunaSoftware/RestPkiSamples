@@ -7,7 +7,7 @@ app.controller('cadesSignatureController', ['$scope', '$http', '$routeParams', '
 	$scope.cmsfile = null;
 
 	// Create an instance of the LacunaWebPKI "object"
-	var pki = new LacunaWebPKI();
+	var pki = new LacunaWebPKI(_webPkiLicense);
 
 	// -------------------------------------------------------------------------------------------------
 	// Function that initializes the Web PKI component
@@ -29,6 +29,7 @@ app.controller('cadesSignatureController', ['$scope', '$http', '$routeParams', '
 		pki.init({
 			ready: loadCertificates,
 			defaultError: onWebPkiError, // generic error callback
+			restPkiUrl: _restPkiEndpoint, // URL of the Rest PKI instance to be used
 			angularScope: $scope // Pass Angularjs scope for WebPKI
 		});
 
