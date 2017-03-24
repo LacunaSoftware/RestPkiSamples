@@ -46,7 +46,7 @@ namespace CoreWebApp.Classes {
 			using (var fileStream = File.Create(path)) {
 				await stream.CopyToAsync(fileStream);
 			}
-			return filename.Replace('.', '_');
+			return filename;
 		}
 
 		public bool TryOpenRead(string fileId, out byte[] content) {
@@ -56,7 +56,7 @@ namespace CoreWebApp.Classes {
 
 		public bool TryOpenRead(string fileId, out byte[] content, out string extension) {
 			string path;
-			if (!DoesFileExist(fileId, out path, out extension)) {
+			if (!CheckFileExists(fileId, out path, out extension)) {
 				content = null;
 				return false;
 			}
@@ -71,7 +71,7 @@ namespace CoreWebApp.Classes {
 
 		public bool TryOpenRead(string fileId, out Stream stream, out string extension) {
 			string path;
-			if (!DoesFileExist(fileId, out path, out extension)) {
+			if (!CheckFileExists(fileId, out path, out extension)) {
 				stream = null;
 				return false;
 			}
@@ -79,8 +79,8 @@ namespace CoreWebApp.Classes {
 			return true;
 		}
 
-		public bool DoesFileExist(string fileId, out string path, out string extension) {
-			var filename = fileId.Replace('_', '.');
+		public bool CheckFileExists(string fileId, out string path, out string extension) {
+			var filename = fileId;
 			path = Path.Combine(AppDataPath, filename);
 			var fileInfo = new FileInfo(path);
 			if (!fileInfo.Exists) {
