@@ -33,25 +33,21 @@ Steps to execute the sample:
 ASP.NET Web Forms sample
 ------------------------
 
-A sample using **ASP.NET Web Forms** can be found in the folder [WebForms](WebForms/). Please notice that
-this sample is not yet fully completed.
-
+A sample using **ASP.NET Web Forms** can be found in the folder [WebForms](WebForms/).
 The steps to execute the sample are the same as for the default sample.
 
 ASP.NET Core Web application sample
 -----------------------------------
 
-A sample using the new **ASP.NET Core** technology can be found in the folder [AspNetCore](AspNetCore/). See the folder's
-[README](AspNetCore/README.md) for more information.
+A sample using the new **ASP.NET Core** technology can be found in the folder [AspNetCore](AspNetCore/).
+See the folder's [README](AspNetCore/README.md) for more information.
 
 Visual Studio 2008 sample
 -------------------------
 
 If you use an older version of Visual Studio which cannot open the MVC and the Web Forms sample, use the
-project for **Visual Studio 2008** located in the folder [VS2008](VS2008/). Please notice that
-this sample is not yet fully completed.
-
-The steps to execute the sample are the same as for the default sample.
+project for **Visual Studio 2008** located in the folder [VS2008](VS2008/). The steps to execute the sample
+are the same as for the default sample.
 
 .NET client lib
 ---------------
