@@ -1,0 +1,237 @@
+﻿<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{987964DE-79C9-4969-9A5A-A08D505921A4}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WebApplication1</RootNamespace>
+    <AssemblyName>WebApplication1</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Lacuna.RestClient, Version=1.9.0.0, Culture=neutral, PublicKeyToken=bf845f78aead27bc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Lacuna.RestClient.1.9.0\lib\net35\Lacuna.RestClient.dll</HintPath>
+    </Reference>
+    <Reference Include="Lacuna.RestPki.Api, Version=1.11.3.0, Culture=neutral, PublicKeyToken=5705bce581cd1847, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Lacuna.RestPki.Api.1.11.3\lib\net35\Lacuna.RestPki.Api.dll</HintPath>
+    </Reference>
+    <Reference Include="Lacuna.RestPki.Client, Version=1.9.0.0, Culture=neutral, PublicKeyToken=5705bce581cd1847, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Lacuna.RestPki.Client.1.9.0\lib\net35\Lacuna.RestPki.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.10.0.1\lib\net35\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web.Extensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Web.Mobile" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Authentication.aspx" />
+    <Content Include="Default.aspx" />
+    <Content Include="Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Authentication.aspx.cs">
+      <DependentUpon>Authentication.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Authentication.aspx.designer.cs">
+      <DependentUpon>Authentication.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="AuthenticationFail.aspx.cs">
+      <DependentUpon>AuthenticationFail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AuthenticationFail.aspx.designer.cs">
+      <DependentUpon>AuthenticationFail.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="AuthenticationSuccess.aspx.cs">
+      <DependentUpon>AuthenticationSuccess.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AuthenticationSuccess.aspx.designer.cs">
+      <DependentUpon>AuthenticationSuccess.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="BatchSignature.aspx.cs">
+      <DependentUpon>BatchSignature.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BatchSignature.aspx.designer.cs">
+      <DependentUpon>BatchSignature.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="CadesSignature.aspx.cs">
+      <DependentUpon>CadesSignature.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CadesSignature.aspx.designer.cs">
+      <DependentUpon>CadesSignature.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="CadesSignatureInfo.aspx.cs">
+      <DependentUpon>CadesSignatureInfo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CadesSignatureInfo.aspx.designer.cs">
+      <DependentUpon>CadesSignatureInfo.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Default.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Download.aspx.cs">
+      <DependentUpon>Download.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Download.aspx.designer.cs">
+      <DependentUpon>Download.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PadesSignature.aspx.cs">
+      <DependentUpon>PadesSignature.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PadesSignature.aspx.designer.cs">
+      <DependentUpon>PadesSignature.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PadesSignatureInfo.aspx.cs">
+      <DependentUpon>PadesSignatureInfo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PadesSignatureInfo.aspx.designer.cs">
+      <DependentUpon>PadesSignatureInfo.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PadesVisualElements.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Site.Master.cs">
+      <DependentUpon>Site.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Site.Master.designer.cs">
+      <DependentUpon>Site.Master</DependentUpon>
+    </Compile>
+    <Compile Include="Util.cs" />
+    <Compile Include="XmlElementSignature.aspx.cs">
+      <DependentUpon>XmlElementSignature.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="XmlElementSignature.aspx.designer.cs">
+      <DependentUpon>XmlElementSignature.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="XmlElementSignatureInfo.aspx.cs">
+      <DependentUpon>XmlElementSignatureInfo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="XmlElementSignatureInfo.aspx.designer.cs">
+      <DependentUpon>XmlElementSignatureInfo.aspx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="AuthenticationFail.aspx" />
+    <Content Include="AuthenticationSuccess.aspx" />
+    <Content Include="BatchSignature.aspx" />
+    <Content Include="CadesSignature.aspx" />
+    <Content Include="CadesSignatureInfo.aspx" />
+    <Content Include="Content\css\bootstrap.min.css" />
+    <Content Include="Content\css\site.css" />
+    <Content Include="Content\docs\SampleDocument.xml" />
+    <Content Include="Content\docs\SampleNFe.xml" />
+    <Content Include="Content\images\PdfStamp.png" />
+    <Content Include="Download.aspx" />
+    <Content Include="favicon.ico" />
+    <Content Include="PadesSignature.aspx" />
+    <Content Include="PadesSignatureInfo.aspx" />
+    <Content Include="Scripts\batch-signature-form.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\jquery-1.10.2.min.js" />
+    <Content Include="Scripts\jquery.blockUI.js" />
+    <Content Include="Scripts\lacuna-web-pki-2.5.0.js" />
+    <Content Include="Scripts\signature-form.js" />
+    <Content Include="Site.Master" />
+    <Content Include="XmlElementSignature.aspx" />
+    <Content Include="XmlElementSignatureInfo.aspx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Content\docs\01.pdf" />
+    <None Include="Content\docs\02.pdf" />
+    <None Include="Content\docs\03.pdf" />
+    <None Include="Content\docs\04.pdf" />
+    <None Include="Content\docs\05.pdf" />
+    <None Include="Content\docs\06.pdf" />
+    <None Include="Content\docs\07.pdf" />
+    <None Include="Content\docs\08.pdf" />
+    <None Include="Content\docs\09.pdf" />
+    <None Include="Content\docs\10.pdf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v9.0\WebApplications\Microsoft.WebApplication.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>49165</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>
+          </IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

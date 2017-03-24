@@ -3,17 +3,29 @@
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 	
 	<h2>CAdES Signature</h2>
+
+    <label>File to sign</label>
+    <%if (!String.IsNullOrEmpty(UserFile)) { %>
+        <p>You'll be signing <a href='/Download?file=<%= UserFile %>'>this document</a>.</p>
+    <% } else if (!String.IsNullOrEmpty(CmsFile)) { %>
+        <p>You'll be signing <a href='/Download?file=<%= CmsFile %>'>this CMS</a>.</p>
+    <% } else { %>
+        <p>You'll be signing <a href='/Download?file=SampleDocument_pdf&from=content'>this sample document</a>.</p>
+    <% } %>
 	
 	<%-- Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it later on (see javascript below). --%>
-	<select id="certificateSelect"></select>
+	<div class="form-group">
+		<label for="certificateSelect">Choose a certificate</label>
+		<select id="certificateSelect" class="form-control"></select>
+	</div>
 	
 	<%--
 		Action buttons. Notice that both buttons have a OnClientClick attribute, which calls the
 		client-side javascript functions "sign" and "refresh" below. Both functions return false,
 		which prevents the postback.
 	--%>
-	<asp:Button ID="SignButton" runat="server" Text="Sign File" OnClientClick="return sign();" />
-	<asp:Button ID="RefreshButton" runat="server" Text="Refresh" OnClientClick="return refresh();" />
+	<asp:Button ID="SignButton" runat="server" class="btn btn-primary" Text="Sign File" OnClientClick="return sign();" />
+	<asp:Button ID="RefreshButton" runat="server" class="btn btn-default" Text="Refresh" OnClientClick="return refresh();" />
 
 	<%--
 		Hidden button whose click event is fired by the "signature form" javascript upon completion

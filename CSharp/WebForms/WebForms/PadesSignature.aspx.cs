@@ -13,6 +13,7 @@ namespace WebForms {
 
 	public partial class PadesSignature : System.Web.UI.Page {
 
+		protected string UserFile { get; private set; }
 		public string SignatureFilename { get; private set; }
 		public PKCertificate SignerCertificate { get; private set; }
 
@@ -24,9 +25,6 @@ namespace WebForms {
 
 				// Set the unit of measurement used to edit the pdf marks and visual representations
 				signatureStarter.MeasurementUnits = PadesMeasurementUnits.Centimeters;
-
-				// Set the file to be signed as a byte array
-				signatureStarter.SetPdfToSign(Util.GetSampleDocContent());
 
 				// Set the signature policy
 				signatureStarter.SetSignaturePolicy(StandardPadesSignaturePolicies.Basic);
@@ -68,6 +66,18 @@ namespace WebForms {
 					// of signature positioning. Once you decide which is best for your case, you can place the code directly here.
 					Position = PadesVisualElements.GetVisualPositioning(1)
 				});
+
+				// If the user was redirected here by Upload (signature with file uploaded by user), the "userfile" URL argument
+				// will contain the filename under the "App_Data" folder. Otherwise (signature with server file), we'll sign a sample
+				// document.
+				UserFile = Request.QueryString["userfile"];
+				if (string.IsNullOrEmpty(UserFile)) {
+					// Set the PDF to be signed as a byte array
+					signatureStarter.SetPdfToSign(Util.GetSampleDocContent());
+				} else {
+					// Set the path of the file to be signed
+					signatureStarter.SetPdfToSign(Server.MapPath("~/App_Data/" + UserFile.Replace("_", ".")));
+				}
 
 				/*
 					Optionally, add marks to the PDF before signing. These differ from the signature visual representation in that
@@ -120,8 +130,9 @@ namespace WebForms {
 			var filename = id + ".pdf";
 			System.IO.File.WriteAllBytes(Path.Combine(appDataPath, filename), signedPdf);
 
-			this.SignatureFilename = filename;
+			this.SignatureFilename = filename.Replace(".", "_"); // Note: we're passing the filename argument with "." as "_" because of limitations of ASP.NET MVC
 			this.SignerCertificate = signerCert;
+
 			Server.Transfer("PadesSignatureInfo.aspx");
 
 		}

@@ -17,6 +17,11 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 	 
 		The logic for the example is more complex than the "regular" batch signature example (controller BatchSignatureController),
 		but the performance is significantly improved (roughly 50% faster).
+
+		Notice that the optimized batch example requires a use license for the Web PKI component (every other example in this project
+		does not). The licensing is not enforced when running on localhost, but in order to run this sample outside of localhost you'll
+		need to set a license on the web.config file. If you need a trial license, please request one at
+		https://www.lacunasoftware.com/en/products/web_pki
 	 */
 	public class BatchSignatureOptimizedController : BaseController {
 

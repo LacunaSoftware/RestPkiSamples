@@ -17,6 +17,8 @@
 				<li>Responsavel: <%= certificate.PkiBrazil.Responsavel %></li>
 				<li>Empresa: <%= certificate.PkiBrazil.CompanyName %></li>
 				<li>CNPJ: <%= certificate.PkiBrazil.Cnpj %></li>
+                <li>RG: <%= certificate.PkiBrazil.RGNumero %> <%= certificate.PkiBrazil.RGEmissor %> <%= certificate.PkiBrazil.RGEmissorUF %></li>
+                <li>OAB: <%= certificate.PkiBrazil.OabNumero %> <%= certificate.PkiBrazil.OabUF %></li>
 			</ul>
 		</li>
 	</ul>

@@ -30,7 +30,11 @@ namespace WebForms {
 		}
 
 		public static byte[] GetSampleDocContent() {
-			return File.ReadAllBytes(Path.Combine(ContentPath, "01.pdf"));
+			return File.ReadAllBytes(Path.Combine(ContentPath, "SampleDocument.pdf"));
+		}
+
+		public static string GetSampleDocPath() {
+			return Path.Combine(ContentPath, "SampleDocument.pdf");
 		}
 
 		public static byte[] GetBatchDocContent(int id) {

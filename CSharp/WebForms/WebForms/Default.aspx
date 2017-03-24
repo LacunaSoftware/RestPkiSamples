@@ -7,24 +7,26 @@
 	<ul>
 		<li><a href="/Authentication">Authentication with digital certificate</a></li>
 		<li>
-			Create a PAdES signature
+			PAdES signature
 			<ul>
-				<li><a href="/PadesSignature">With a file already on server</a></li>
-				<%--<li><a href="/Upload?rc=PadesSignature">With a file uploaded by user</a></li>--%>
+				<li><a href="/PadesSignature">Create a signature with a file already on server</a></li>
+				<li><a href="/Upload?rc=PadesSignature">Create a signature with a file uploaded by user</a></li>
+			    <%--<li><a href="/Upload?rc=OpenPadesSignature">Open/validate an existing signature</a></li>--%>
 			</ul>
 		</li>
 		<li>
-			Create a CAdES signature
+			CAdES signature
 			<ul>
-				<li><a href="/CadesSignature">With a file already on server</a></li>
-				<%--<li><a href="/Upload?rc=CadesSignature">With a file uploaded by user</a></li>--%>
+				<li><a href="/CadesSignature">Create a signature with a file already on server</a></li>
+				<li><a href="/Upload?rc=CadesSignature">Create a signature with a file uploaded by user</a></li>
+			    <%--<li><a href="/Upload?rc=OpenCadesSignature">Open/validate an existing CAdES signature</a></li>--%>
 			</ul>
 		</li>
 		<li>
-			Create a XML signature
+			XML signature
 			<ul>
-				<%--<li><a href="/XmlFullSignature">Full XML signature (enveloped signature)</a></li>--%>
-				<li><a href="/XmlElementSignature">XML element signature</a></li>
+				<%--<li><a href="/XmlFullSignature">Create a full XML signature (enveloped signature)</a></li>--%>
+				<li><a href="/XmlElementSignature">Create a XML element signature</a></li>
 			</ul>
 		</li>
 		<%--<li>
