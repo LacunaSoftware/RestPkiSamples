@@ -35,17 +35,26 @@ namespace CoreWebApp.Controllers {
 
 				// Set the signature policy
 				SignaturePolicyId = StandardXmlSignaturePolicies.PkiBrazil.NFePadraoNacional,
+				// Note: Depending on the signature policy chosen above, setting the security context below may be mandatory (this is not
+				// the case for ICP-Brasil policies, which will automatically use the PkiBrazil security context if none is passed)
 
 				// Optionally, set a SecurityContext to be used to determine trust in the certificate chain
-				//SecurityContextId = StandardSecurityContexts.PkiBrazil,
-				// Note: Depending on the signature policy chosen above, setting the security context may be mandatory (this is not
-				// the case for ICP-Brasil policies, which will automatically use the PkiBrazil security context if none is passed)
+				//SecurityContextId = new Guid("ID OF YOUR CUSTOM SECURITY CONTEXT"),
+				// For instance, to use the test certificates on Lacuna Test PKI (for development purposes only!):
+				//SecurityContextId = new Guid("803517ad-3bbc-4169-b085-60053a8f6dbf"),
 
 			};
 
+			// Set the XML to be signed, a sample Brazilian fiscal invoice pre-generated
 			signatureStarter.SetXml(storage.GetSampleNFePath());
+
+			// Set the ID of the element to be signed
 			signatureStarter.SetToSignElementId("NFe35141214314050000662550010001084271182362300");
 
+			// Call the StartWithWebPkiAsync() method, which initiates the signature. This yields the token, a 43-character
+			// case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
+			// signWithRestPki() method on the Web PKI component (see javascript on the angular controller) and also to complete
+			// the signature on the POST action below (this should not be mistaken with the API access token).
 			var token = await signatureStarter.StartWithWebPkiAsync();
 
 			return token;
@@ -60,7 +69,7 @@ namespace CoreWebApp.Controllers {
 			// Get an instance of the XmlSignatureFinisher class, responsible for completing the signature process
 			var signatureFinisher = new XmlSignatureFinisher(client) {
 
-				// Set the token for this signature (rendered in a hidden input field, see the view)
+				// Set the token for this signature (acquired previously and passed back here by the angular controller)
 				Token = token
 
 			};
@@ -75,9 +84,9 @@ namespace CoreWebApp.Controllers {
 			// At this point, you'd typically store the signed XML on a database or storage service. For demonstration purposes, we'll
 			// store the XML on our "storage mock", which in turn stores the XML on the App_Data folder.
 
-			// The SignatureResult object has various methods for writing the signature file to a stream (WriteTo()), local file (WriteToFile()), open
-			// a stream to read the content (OpenRead()) and get its contents (GetContent()). For large files, avoid the method GetContent() to avoid
-			// memory allocation issues.
+			// The SignatureResult object has various methods for writing the signature file to a stream (WriteToAsync()), local file (WriteToFileAsync()),
+			// open a stream to read the content (OpenReadAsync()) and get its contents (GetContentAsync()). Avoid the method GetContentAsync() to prevent
+			// memory allocation issues with large files.
 			var filename = await storage.StoreAsync(signedXmlBytes, ".xml");
 
 			// Pass the following fields to be used on signature-results template:

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -35,40 +36,43 @@ namespace CoreWebApp.Controllers {
 
 				// Set the signature policy
 				SignaturePolicyId = StandardCadesSignaturePolicies.PkiBrazil.AdrBasica,
-
-				// Optionally, set a SecurityContext to be used to determine trust in the certificate chain
-				//SecurityContextId = StandardSecurityContexts.PkiBrazil,
-				// Note: Depending on the signature policy chosen above, setting the security context may be mandatory (this is not
+				// Note: Depending on the signature policy chosen above, setting the security context below may be mandatory (this is not
 				// the case for ICP-Brasil policies, which will automatically use the PkiBrazil security context if none is passed)
 
+				// Optionally, set a SecurityContext to be used to determine trust in the certificate chain
+				//SecurityContextId = new Guid("ID OF YOUR CUSTOM SECURITY CONTEXT"),
+				// For instance, to use the test certificates on Lacuna Test PKI (for development purposes only!):
+				//SecurityContextId = new Guid("803517ad-3bbc-4169-b085-60053a8f6dbf"),
 			};
+
+			// Below we'll either set the file to be signed or the CMS to be co-signed. Prefer passing a path or a stream instead of
+			// the file's contents as a byte array to prevent memory allocation issues with large files.
 
 			if (!string.IsNullOrEmpty(userfile)) {
 
-				// If the URL argument "userfile" is filled (signature with file uploaded by user). We'll set the path of the file 
-				// to be signed
-				byte[] content;
-				if (!storage.TryOpenRead(userfile, out content)) {
+				// If the URL argument "userfile" is filled (signature with file uploaded by user). We'll set the file to be signed
+				Stream userFileStream;
+				if (!storage.TryOpenRead(userfile, out userFileStream)) {
 					throw new Exception("File not found");
 				}
-				signatureStarter.SetContentToSign(content);
+				signatureStarter.SetContentToSign(userFileStream);
 
 			} else if (!string.IsNullOrEmpty(cmsfile)) {
 
 				/*
-			* If the URL argument "cmsfile" is filled, the user has asked to co-sign a previously signed CMS. We'll set the path to the CMS
-			* to be co-signed, which was perviously saved in the App_Data folder by the POST action on this controller. Note two important things:
-			* 
-			* 1. The CMS to be co-signed must be set using the method "SetCmsToCoSign", not the method "SetContentToSign" nor "SetFileToSign"
-			*
-			* 2. Since we're creating CMSs with encapsulated content (see call to SetEncapsulateContent below), we don't need to set the content
-			*    to be signed, REST PKI will get the content from the CMS being co-signed.
-			*/
-				byte[] content;
-				if (!storage.TryOpenRead(cmsfile, out content)) {
+				 * If the URL argument "cmsfile" is filled, the user has asked to co-sign a previously signed CMS. We'll set the CMS
+				 * to be co-signed, which was perviously saved in the App_Data folder by the POST action on this controller. Note two important things:
+				 * 
+				 * 1. The CMS to be co-signed must be set using the method "SetCmsToCoSign", not the method "SetContentToSign" nor "SetFileToSign"
+				 *
+				 * 2. Since we're creating CMSs with encapsulated content (see call to SetEncapsulateContent below), we don't need to set the content
+				 *    to be signed, REST PKI will get the content from the CMS being co-signed.
+				 */
+				Stream cmsFileStream;
+				if (!storage.TryOpenRead(cmsfile, out cmsFileStream)) {
 					throw new Exception("File not found");
 				}
-				signatureStarter.SetCmsToCoSign(content);
+				signatureStarter.SetCmsToCoSign(cmsFileStream);
 
 			} else {
 
@@ -77,6 +81,10 @@ namespace CoreWebApp.Controllers {
 
 			}
 
+			// Call the StartWithWebPkiAsync() method, which initiates the signature. This yields the token, a 43-character
+			// case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
+			// signWithRestPki() method on the Web PKI component (see javascript on the angular controller) and also to complete
+			// the signature on the POST action below (this should not be mistaken with the API access token).
 			var token = await signatureStarter.StartWithWebPkiAsync();
 
 			return token;
@@ -91,7 +99,7 @@ namespace CoreWebApp.Controllers {
 			// Get an instance of the CadesSignatureFinisher2 class, responsible for completing the signature process
 			var signatureFinisher = new CadesSignatureFinisher2(client) {
 
-				// Set the token for this signature (rendered in a hidden input field, see the view)
+				// Set the token for this signature (acquired previously and passed back here by the angular controller)
 				Token = token
 
 			};
@@ -106,9 +114,9 @@ namespace CoreWebApp.Controllers {
 			// At this point, you'd typically store the signed CMS on a database or storage service. For demonstration purposes, we'll
 			// store the CMS on our "storage mock", which in turn stores the CMS on the App_Data folder.
 
-			// The SignatureResult object has various methods for writing the signature file to a stream (WriteTo()), local file (WriteToFile()), open
-			// a stream to read the content (OpenRead()) and get its contents (GetContent()). For large files, avoid the method GetContent() to avoid
-			// memory allocation issues.
+			// The SignatureResult object has various methods for writing the signature file to a stream (WriteToAsync()), local file (WriteToFileAsync()),
+			// open a stream to read the content (OpenReadAsync()) and get its contents (GetContentAsync()). Avoid the method GetContentAsync() to prevent
+			// memory allocation issues with large files.
 			string filename;
 			using (var signatureStream = await signatureResult.OpenReadAsync()) {
 				filename = await storage.StoreAsync(signatureStream, ".p7s");

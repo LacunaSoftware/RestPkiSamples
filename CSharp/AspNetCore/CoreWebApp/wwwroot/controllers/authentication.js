@@ -106,8 +106,7 @@ app.controller('authenticationController', ['$scope', '$http', 'blockUI', 'util'
 	};
 
 	// -------------------------------------------------------------------------------------------------
-	// Function called once the server replies with the certificate of who 
-	// is authenticating.
+	// Function called once the server replies with the user certificate
 	// -------------------------------------------------------------------------------------------------
 	var onAuthSuccess = function (response) {
 		blockUI.stop();
