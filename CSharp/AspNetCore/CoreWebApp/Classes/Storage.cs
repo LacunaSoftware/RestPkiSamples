@@ -49,20 +49,20 @@ namespace CoreWebApp.Classes {
 			return filename.Replace('.', '_');
 		}
 
-        public bool TryOpenRead(string fileId, out byte[] content) {
-            string extension;
-            return TryOpenRead(fileId, out content, out extension);
-        }
+		public bool TryOpenRead(string fileId, out byte[] content) {
+			string extension;
+			return TryOpenRead(fileId, out content, out extension);
+		}
 
-        public bool TryOpenRead(string fileId, out byte[] content, out string extension) {
-            string path;
-            if (!DoesFileExist(fileId, out path, out extension)) {
-                content = null;
-                return false;
-            }
-            content = File.ReadAllBytes(path);
-            return true;
-        }
+		public bool TryOpenRead(string fileId, out byte[] content, out string extension) {
+			string path;
+			if (!DoesFileExist(fileId, out path, out extension)) {
+				content = null;
+				return false;
+			}
+			content = File.ReadAllBytes(path);
+			return true;
+		}
 
 		public bool TryOpenRead(string fileId, out Stream stream) {
 			string extension;
@@ -70,25 +70,25 @@ namespace CoreWebApp.Classes {
 		}
 
 		public bool TryOpenRead(string fileId, out Stream stream, out string extension) {
-            string path;
-            if (!DoesFileExist(fileId, out path, out extension)) {
-                stream = null;
-                return false;
-            }
+			string path;
+			if (!DoesFileExist(fileId, out path, out extension)) {
+				stream = null;
+				return false;
+			}
 			stream = File.OpenRead(path);
-            return true;
+			return true;
 		}
 
-        public bool DoesFileExist(string fileId, out string path, out string extension) {
-            var filename = fileId.Replace('_', '.');
-            path = Path.Combine(AppDataPath, filename);
-            var fileInfo = new FileInfo(path);
-            if (!fileInfo.Exists) {
-                extension = null;
-                return false;
-            }
-            extension = fileInfo.Extension;
-            return true;
-        }
+		public bool DoesFileExist(string fileId, out string path, out string extension) {
+			var filename = fileId.Replace('_', '.');
+			path = Path.Combine(AppDataPath, filename);
+			var fileInfo = new FileInfo(path);
+			if (!fileInfo.Exists) {
+				extension = null;
+				return false;
+			}
+			extension = fileInfo.Extension;
+			return true;
+		}
 	}
 }

@@ -36,46 +36,46 @@ namespace CoreWebApp.Controllers {
 				// Set the signature policy
 				SignaturePolicyId = StandardCadesSignaturePolicies.PkiBrazil.AdrBasica,
 
-                // Optionally, set a SecurityContext to be used to determine trust in the certificate chain
-                //SecurityContextId = StandardSecurityContexts.PkiBrazil,
-                // Note: Depending on the signature policy chosen above, setting the security context may be mandatory (this is not
-                // the case for ICP-Brasil policies, which will automatically use the PkiBrazil security context if none is passed)
+				// Optionally, set a SecurityContext to be used to determine trust in the certificate chain
+				//SecurityContextId = StandardSecurityContexts.PkiBrazil,
+				// Note: Depending on the signature policy chosen above, setting the security context may be mandatory (this is not
+				// the case for ICP-Brasil policies, which will automatically use the PkiBrazil security context if none is passed)
 
-            };
+			};
 
-            if (!string.IsNullOrEmpty(userfile)) {
+			if (!string.IsNullOrEmpty(userfile)) {
 
-                // If the URL argument "userfile" is filled (signature with file uploaded by user). We'll set the path of the file 
-                // to be signed
-                byte[] content;
-                if (!storage.TryOpenRead(userfile, out content)) {
-                    throw new Exception("File not found");
-                }
-                signatureStarter.SetContentToSign(content);
+				// If the URL argument "userfile" is filled (signature with file uploaded by user). We'll set the path of the file 
+				// to be signed
+				byte[] content;
+				if (!storage.TryOpenRead(userfile, out content)) {
+					throw new Exception("File not found");
+				}
+				signatureStarter.SetContentToSign(content);
 
-            } else if (!string.IsNullOrEmpty(cmsfile)) {
+			} else if (!string.IsNullOrEmpty(cmsfile)) {
 
-                /*
-				 * If the URL argument "cmsfile" is filled, the user has asked to co-sign a previously signed CMS. We'll set the path to the CMS
-				 * to be co-signed, which was perviously saved in the App_Data folder by the POST action on this controller. Note two important things:
-				 * 
-				 * 1. The CMS to be co-signed must be set using the method "SetCmsToCoSign", not the method "SetContentToSign" nor "SetFileToSign"
-				 *
-				 * 2. Since we're creating CMSs with encapsulated content (see call to SetEncapsulateContent below), we don't need to set the content
-				 *    to be signed, REST PKI will get the content from the CMS being co-signed.
-				 */
-                byte[] content;
-                if (!storage.TryOpenRead(cmsfile, out content)) {
-                    throw new Exception("File not found");
-                }
-                signatureStarter.SetCmsToCoSign(content);
+				/*
+			* If the URL argument "cmsfile" is filled, the user has asked to co-sign a previously signed CMS. We'll set the path to the CMS
+			* to be co-signed, which was perviously saved in the App_Data folder by the POST action on this controller. Note two important things:
+			* 
+			* 1. The CMS to be co-signed must be set using the method "SetCmsToCoSign", not the method "SetContentToSign" nor "SetFileToSign"
+			*
+			* 2. Since we're creating CMSs with encapsulated content (see call to SetEncapsulateContent below), we don't need to set the content
+			*    to be signed, REST PKI will get the content from the CMS being co-signed.
+			*/
+				byte[] content;
+				if (!storage.TryOpenRead(cmsfile, out content)) {
+					throw new Exception("File not found");
+				}
+				signatureStarter.SetCmsToCoSign(content);
 
-            } else {
+			} else {
 
-                // If both userfile and cmsfile are null, this is the "signature with server file" case. We'll set the path of the file to be signed
-                signatureStarter.SetFileToSign(storage.GetSampleDocPath());
+				// If both userfile and cmsfile are null, this is the "signature with server file" case. We'll set the path of the file to be signed
+				signatureStarter.SetFileToSign(storage.GetSampleDocPath());
 
-            }
+			}
 
 			var token = await signatureStarter.StartWithWebPkiAsync();
 

@@ -12,7 +12,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace CoreWebApp {
+
 	public class Startup {
+
 		public Startup(IHostingEnvironment env) {
 			var builder = new ConfigurationBuilder()
 				 .SetBasePath(env.ContentRootPath)
@@ -53,7 +55,7 @@ namespace CoreWebApp {
 			if (env.IsDevelopment()) {
 				app.UseDeveloperExceptionPage();
 			}
-			
+
 			app.UseStaticFiles();
 
 			app.UseMvc(routes => {

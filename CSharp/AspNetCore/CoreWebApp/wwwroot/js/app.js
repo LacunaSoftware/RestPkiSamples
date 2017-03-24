@@ -5,12 +5,12 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
 	$routeProvider.when('/', {
 		templateUrl: 'views/home.html',
 		controller: 'homeController'
-    });
+	});
 
-    $routeProvider.when('/upload/:rc', {
-        templateUrl: 'views/upload.html',
-        controller: 'uploadController'
-    });
+	$routeProvider.when('/upload/:rc', {
+		templateUrl: 'views/upload.html',
+		controller: 'uploadController'
+	});
 
 	$routeProvider.when('/authentication', {
 		templateUrl: 'views/authentication.html',
@@ -53,13 +53,13 @@ app.factory('util', ['$uibModal', 'blockUI', function ($modal, blockUI) {
 		});
 	};
 
-    var showSignatureResults = function (results) {
+	var showSignatureResults = function (results) {
 		return $modal.open({
 			templateUrl: 'views/dialogs/signature-results.html',
 			controller: 'signatureResultsDialogController',
 			size: 'lg',
-            resolve: {
-                results: function () { return results; }
+			resolve: {
+				results: function () { return results; }
 			}
 		});
 	};

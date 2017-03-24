@@ -29,9 +29,9 @@ namespace CoreWebApp.Controllers {
 			var storage = new Storage(hostingEnvironment);
 			var client = Util.GetRestPkiClient(restPkiConfig);
 
-            // Get an instance of the XmlElementSignatureStarter class, responsible for receiving the signature elements and start the
-            // signature process
-            var signatureStarter = new XmlElementSignatureStarter(client) {
+			// Get an instance of the XmlElementSignatureStarter class, responsible for receiving the signature elements and start the
+			// signature process
+			var signatureStarter = new XmlElementSignatureStarter(client) {
 
 				// Set the signature policy
 				SignaturePolicyId = StandardXmlSignaturePolicies.PkiBrazil.NFePadraoNacional,
@@ -57,8 +57,8 @@ namespace CoreWebApp.Controllers {
 			var storage = new Storage(hostingEnvironment);
 			var client = Util.GetRestPkiClient(restPkiConfig);
 
-            // Get an instance of the XmlSignatureFinisher class, responsible for completing the signature process
-            var signatureFinisher = new XmlSignatureFinisher(client) {
+			// Get an instance of the XmlSignatureFinisher class, responsible for completing the signature process
+			var signatureFinisher = new XmlSignatureFinisher(client) {
 
 				// Set the token for this signature (rendered in a hidden input field, see the view)
 				Token = token

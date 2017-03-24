@@ -1,33 +1,33 @@
 ﻿'use strict';
 app.controller('uploadController', ['$scope', '$routeParams', '$location', 'Upload', 'util', function ($scope, $routeParams, $location, Upload, util) {
 
-    var returnController = null;
-    
-    $scope.file = null;
+	var returnController = null;
 
-    var init = function () {
-        returnController = $routeParams.rc;
-    };
+	$scope.file = null;
 
-    $scope.upload = function () {
+	var init = function () {
+		returnController = $routeParams.rc;
+	};
 
-        if (!$scope.file) {
-            util.showMessage('Message', 'Please upload some file.');
-            return;
-        }
+	$scope.upload = function () {
 
-        Upload.upload({
-            url: 'Api/Upload',
-            method: 'POST',
-            file: $scope.file
-        }).then(function (response) {
+		if (!$scope.file) {
+			util.showMessage('Message', 'Please upload some file.');
+			return;
+		}
 
-            var userfile = response.data;
-            $location.path('/' + returnController).search('userfile=' + userfile);
+		Upload.upload({
+			url: 'Api/Upload',
+			method: 'POST',
+			file: $scope.file
+		}).then(function (response) {
 
-        }, util.handleServerError);
-    };
+			var userfile = response.data;
+			$location.path('/' + returnController).search('userfile=' + userfile);
 
-    init();
+		}, util.handleServerError);
+	};
+
+	init();
 
 }]);
