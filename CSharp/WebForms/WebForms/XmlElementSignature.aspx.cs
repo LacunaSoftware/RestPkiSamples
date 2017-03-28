@@ -31,17 +31,20 @@ namespace WebForms {
 
 				// Set the signature policy
 				signatureStarter.SetSignaturePolicy(StandardXmlSignaturePolicies.PkiBrazil.NFePadraoNacional);
+                // Note: Depending on the signature policy chosen above, setting the security context below may be mandatory (this is not
+                // the case for ICP-Brasil policies, which will automatically use the PkiBrazil security context if none is passed)
 
-				// Optionally, set a SecurityContext to be used to determine trust in the certificate chain. Since we're using the
-				// StandardXmlSignaturePolicies.PkiBrazil.NFePadraoNacional policy, the security context will default to PKI Brazil (ICP-Brasil)
-				//signatureStarter.SetSecurityContext(new Guid("..."));
-				// Note: By changing the SecurityContext above you can accept certificates from a custom security context
+                // Optionally, set a SecurityContext to be used to determine trust in the certificate chain
+                //signatureStarter.SetSecurityContext(new Guid("ID OF YOUR CUSTOM SECURITY CONTEXT"));
 
-				// Call the StartWithWebPki() method, which initiates the signature. This yields the token, a 43-character
-				// case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
-				// signWithRestPki() method on the Web PKI component (see javascript on the view) and also to complete the signature
-				// on the POST action below (this should not be mistaken with the API access token).
-				var token = signatureStarter.StartWithWebPki();
+                // For instance, to use the test certificates on Lacuna Test PKI (for development purposes only!):
+                //signatureStarter.SetSecurityContext(new Guid("803517ad-3bbc-4169-b085-60053a8f6dbf"));
+
+                // Call the StartWithWebPki() method, which initiates the signature. This yields the token, a 43-character
+                // case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
+                // signWithRestPki() method on the Web PKI component (see javascript on the view) and also to complete the signature
+                // on the POST action below (this should not be mistaken with the API access token).
+                var token = signatureStarter.StartWithWebPki();
 
 				ViewState["Token"] = token;
 			}
@@ -50,18 +53,19 @@ namespace WebForms {
 
 		protected void SubmitButton_Click(object sender, EventArgs e) {
 
-			// Get an instance of the XmlSignatureFinisher class, responsible for completing the signature process
-			var signatureFinisher = new XmlSignatureFinisher(Util.GetRestPkiClient());
+            // Get an instance of the XmlSignatureFinisher class, responsible for completing the signature process
+            var signatureFinisher = new XmlSignatureFinisher(Util.GetRestPkiClient()) {
 
-			// Set the token for this signature (rendered in a hidden input field, see the view)
-			signatureFinisher.SetToken((string)ViewState["Token"]);
+                // Set the token for this signature (rendered in a hidden input field, see the view)
+                Token = (string)ViewState["Token"]
+            };
 
 			// Call the Finish() method, which finalizes the signature process and returns the signed XML
-			var cms = signatureFinisher.Finish();
+			var signedXml = signatureFinisher.Finish();
 
 			// Get information about the certificate used by the user to sign the file. This method must only be called after
 			// calling the Finish() method.
-			var signerCertificate = signatureFinisher.GetCertificateInfo();
+			var signerCert = signatureFinisher.GetCertificateInfo();
 
 			// At this point, you'd typically store the XML on your database. For demonstration purposes, we'll
 			// store the XML on the App_Data folder and render a page with a link to download the CMS and with the
@@ -73,10 +77,10 @@ namespace WebForms {
 			}
 			var id = Guid.NewGuid();
 			var filename = id + ".xml";
-			File.WriteAllBytes(Path.Combine(appDataPath, filename), cms);
+			File.WriteAllBytes(Path.Combine(appDataPath, filename), signedXml);
 
 			this.SignatureFilename = filename;
-			this.SignerCertificate = signerCertificate;
+			this.SignerCertificate = signerCert;
 			Server.Transfer("XmlElementSignatureInfo.aspx");
 		}
 	}

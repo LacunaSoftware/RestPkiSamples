@@ -4,7 +4,7 @@
 // -----------------------------------------------------------------------------------------------------
 var signatureForm = (function () {
 
-	var pki = new LacunaWebPKI();
+	var pki = new LacunaWebPKI(_webPkiLicense);
 	var token = null;
 	var selectElement = null;
 	var submitButtonElement = null;
@@ -21,14 +21,15 @@ var signatureForm = (function () {
 		// Block the UI while we get things ready
 		$.blockUI();
 
-		// Call the init() method on the LacunaWebPKI object, passing a callback for when
-		// the component is ready to be used and another to be called when an error occurs
-		// on any of the subsequent operations. For more information, see:
+        // Call the init() method on the LacunaWebPKI object, passing a callback for when the component
+        // is ready to be used and another to be called when an error occurs on any of the subsequent
+        // operations.For more information, see:
 		// https://webpki.lacunasoftware.com/#/Documentation#coding-the-first-lines
 		// http://webpki.lacunasoftware.com/Help/classes/LacunaWebPKI.html#method_init
 		pki.init({
 			ready: loadCertificates, // as soon as the component is ready we'll load the certificates
-			defaultError: onWebPkiError
+            defaultError: onWebPkiError,
+            restPkiUrl: _restPkiEndpoint
 		});
 	}
 
@@ -43,8 +44,8 @@ var signatureForm = (function () {
 	}
 
 	// -------------------------------------------------------------------------------------------------
-	// Function that loads the certificates, either on startup or when the user
-	// clicks the "Refresh" button. At this point, the UI is already blocked.
+    // Function that loads the certificates, either on startup or when the user clicks the "Refresh"
+    // button.At this point, the UI is already blocked.
 	// -------------------------------------------------------------------------------------------------
 	function loadCertificates() {
 
@@ -54,7 +55,8 @@ var signatureForm = (function () {
 			// specify that expired certificates should be ignored
 			filter: pki.filters.isWithinValidity,
 
-			// in order to list only certificates within validity period and having a CPF (ICP-Brasil), use this instead:
+            // in order to list only certificates within validity period and having a CPF (ICP-Brasil),
+            // use this instead:
 			//filter: pki.filters.all(pki.filters.hasPkiBrazilCpf, pki.filters.isWithinValidity),
 
 			// id of the select to be populated with the certificates
@@ -84,13 +86,14 @@ var signatureForm = (function () {
 		// Get the thumbprint of the selected certificate
 		var selectedCertThumbprint = selectElement.val();
 
-		// Call signWithRestPki() on the Web PKI component passing the token received from REST PKI and the certificate
-		// selected by the user.
+        // Call signWithRestPki() on the Web PKI component passing the token received from REST PKI and
+        // the certificate selected by the user.
 		pki.signWithRestPki({
 			token: token,
 			thumbprint: selectedCertThumbprint
 		}).success(function () {
-			// Once the operation is completed, we programatically click the hidden button on the signature page, which will trigger the postback
+            // Once the operation is completed, we programatically click the hidden button on the 
+            // signature page, which will trigger the postback
 			submitButtonElement.click();
 		});
 	}
@@ -105,8 +108,8 @@ var signatureForm = (function () {
 		if (console) {
 			console.log('An error has occurred on the signature browser component: ' + message, error);
 		}
-		// Show the message to the user. You might want to substitute the alert below with a more user-friendly UI
-		// component to show the error.
+        // Show the message to the user. You might want to substitute the alert below with a more
+        // user-friendly UI component to show the error.
 		alert(message);
 	}
 

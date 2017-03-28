@@ -29,6 +29,7 @@
 				<li><a href="/XmlElementSignature">Create a XML element signature</a></li>
 			</ul>
 		</li>
+        <li><a href="BatchSignature.aspx">Batch Signature</a></li>
 		<%--<li>
 			Sign a batch of files
 			<ul>

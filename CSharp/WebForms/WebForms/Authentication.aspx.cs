@@ -23,23 +23,26 @@ namespace WebForms {
 				// Get an instance of the Authentication class
 				var auth = Util.GetRestPkiClient().GetAuthentication();
 
-				// Call the StartWithWebPki() method, which initiates the authentication. This yields the "token", a 22-character
-				// case-sensitive URL-safe string, which represents this authentication process. We'll use this value to call the
-				// signWithRestPki() method on the Web PKI component (see javascript on the view) and also to call the
-				// CompleteWithWebPki() method on the POST action below (this should not be mistaken with the API access token).
-				var token = auth.StartWithWebPki(StandardSecurityContexts.PkiBrazil);
+                // Call the StartWithWebPki() method, which initiates the authentication. This yields the "token", a 22-character
+                // case-sensitive URL-safe string, which represents this authentication process. We'll use this value to call the
+                // signWithRestPki() method on the Web PKI component (see signature-form.js) and also to call the
+                // CompleteWithWebPki() method on the Click-event handler below (this should not be mistaken with the API access token).
+                var token = auth.StartWithWebPki(StandardSecurityContexts.PkiBrazil);
 
-				// Alternative option: authenticate the user with a custom security context containting, for instance, your private PKI certificate
-				//var token = auth.StartWithWebPki(new Guid("ID OF YOUR CUSTOM SECURITY CONTEXT"));
+                // Alternative option: authenticate the user with a custom security context containting, for instance, your private PKI certificate
+                //var token = auth.StartWithWebPki(new Guid("ID OF YOUR CUSTOM SECURITY CONTEXT"));
 
-				// We'll need the token later, so we'll put it on ViewState and we'll render a hidden field on the page with it
-				ViewState["Token"] = token;
+                // For instance, to use the test certificates on Lacuna Test PKI (for development purposes only!):
+                //var token = auth.StartWithWebPki(new Guid("803517ad-3bbc-4169-b085-60053a8f6dbf"));
+
+                // We'll need the token later, so we'll put it on ViewState and we'll render a hidden field on the page with it
+                ViewState["Token"] = token;
 			}
 		}
 
 		protected void SubmitButton_Click(object sender, EventArgs e) {
 
-			// Get the token for this authentication process (rendered in a hidden input field, see the view)
+			// Get the token for this authentication process from ViewState (rendered in a hidden input field, see the view)
 			var token = (string)ViewState["Token"];
 
 			// Get an instance of the Authentication class

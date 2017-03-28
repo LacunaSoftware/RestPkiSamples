@@ -18,6 +18,8 @@
 				<li>Responsavel: <%= signerCertificate.PkiBrazil.Responsavel %></li>
 				<li>Empresa: <%= signerCertificate.PkiBrazil.CompanyName %></li>
 				<li>CNPJ: <%= signerCertificate.PkiBrazil.Cnpj %></li>
+                <li>RG: <%= signerCertificate.PkiBrazil.RGNumero %> <%= signerCertificate.PkiBrazil.RGEmissor %> <%= signerCertificate.PkiBrazil.RGEmissorUF %></li>
+                <li>OAB: <%= signerCertificate.PkiBrazil.OabNumero %> <%= signerCertificate.PkiBrazil.OabUF %></li>
 			</ul>
 		</li>
 	</ul>

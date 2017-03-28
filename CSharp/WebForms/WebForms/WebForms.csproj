@@ -43,17 +43,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Lacuna.RestClient, Version=1.7.0.0, Culture=neutral, PublicKeyToken=bf845f78aead27bc, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lacuna.RestClient.1.7.0\lib\net45\Lacuna.RestClient.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Lacuna.RestClient, Version=1.9.0.0, Culture=neutral, PublicKeyToken=bf845f78aead27bc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lacuna.RestClient.1.9.0\lib\net45\Lacuna.RestClient.dll</HintPath>
     </Reference>
-    <Reference Include="Lacuna.RestPki.Api, Version=1.10.0.0, Culture=neutral, PublicKeyToken=5705bce581cd1847, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lacuna.RestPki.Client.1.6.0\lib\net45\Lacuna.RestPki.Api.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Lacuna.RestPki.Api, Version=1.11.3.0, Culture=neutral, PublicKeyToken=5705bce581cd1847, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lacuna.RestPki.Api.1.11.3\lib\net40\Lacuna.RestPki.Api.dll</HintPath>
     </Reference>
-    <Reference Include="Lacuna.RestPki.Client, Version=1.6.0.0, Culture=neutral, PublicKeyToken=5705bce581cd1847, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lacuna.RestPki.Client.1.6.0\lib\net45\Lacuna.RestPki.Client.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Lacuna.RestPki.Client, Version=1.9.0.0, Culture=neutral, PublicKeyToken=5705bce581cd1847, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lacuna.RestPki.Client.1.9.0\lib\net45\Lacuna.RestPki.Client.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
@@ -141,6 +138,7 @@
     <Content Include="Authentication.aspx" />
     <Content Include="AuthenticationFail.aspx" />
     <Content Include="AuthenticationSuccess.aspx" />
+    <Content Include="BatchSignature.aspx" />
     <Content Include="CadesSignatureInfo.aspx" />
     <Content Include="CadesSignature.aspx" />
     <Content Include="Content\bootstrap.css" />
@@ -164,6 +162,7 @@
     <Content Include="Content\08.pdf" />
     <Content Include="Content\09.pdf" />
     <Content Include="Content\10.pdf" />
+    <Content Include="Scripts\batch-signature-form.js" />
     <Content Include="Scripts\lacuna-web-pki-2.5.0.js" />
     <Content Include="Upload.aspx" />
     <Content Include="XmlElementSignature.aspx" />
@@ -243,6 +242,13 @@
     </Compile>
     <Compile Include="AuthenticationSuccess.aspx.designer.cs">
       <DependentUpon>AuthenticationSuccess.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="BatchSignature.aspx.cs">
+      <DependentUpon>BatchSignature.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BatchSignature.aspx.designer.cs">
+      <DependentUpon>BatchSignature.aspx</DependentUpon>
     </Compile>
     <Compile Include="CadesSignatureInfo.aspx.cs">
       <DependentUpon>CadesSignatureInfo.aspx</DependentUpon>

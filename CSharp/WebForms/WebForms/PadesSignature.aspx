@@ -11,7 +11,7 @@
         <p>You'll be signing <a href='Download?file=<%= UserFile %>'>this document</a>.</p>
     <% } %> 
 	
-	<%-- Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it later on (see javascript below). --%>
+	<%-- Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it later on (see signature-form.js). --%>
 	<div class="form-group">
 		<label for="certificateSelect">Choose a certificate</label>
 		<select id="certificateSelect" class="form-control"></select>

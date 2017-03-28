@@ -37,7 +37,13 @@ namespace WebForms {
 				"~/Scripts/signature-form.js"
 			));
 
-			ScriptManager.ScriptResourceMapping.AddDefinition(
+            bundles.Add(new ScriptBundle("~/bundles/webpki-batch").Include(
+                "~/Scripts/jquery.blockUI.js",
+                "~/Scripts/lacuna-web-pki-*",
+                "~/Scripts/batch-signature-form.js"
+            ));
+
+            ScriptManager.ScriptResourceMapping.AddDefinition(
 				 "respond",
 				 new ScriptResourceDefinition {
 					 Path = "~/Scripts/respond.min.js",
