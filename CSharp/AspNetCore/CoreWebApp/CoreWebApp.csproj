@@ -20,6 +20,8 @@
     <Content Include="wwwroot\controllers\cades-signature.js" />
     <Content Include="wwwroot\controllers\certificate-dialog.js" />
     <Content Include="wwwroot\controllers\home.js" />
+    <Content Include="wwwroot\controllers\open-cades-signature.js" />
+    <Content Include="wwwroot\controllers\open-pades-signature.js" />
     <Content Include="wwwroot\controllers\pades-signature.js" />
     <Content Include="wwwroot\controllers\signature-results-dialog.js" />
     <Content Include="wwwroot\controllers\upload.js" />
@@ -33,6 +35,7 @@
     <Content Include="wwwroot\views\dialogs\signature-results.html" />
     <Content Include="wwwroot\views\dialogs\validation-results.html" />
     <Content Include="wwwroot\views\home.html" />
+    <Content Include="wwwroot\views\open-signature.html" />
     <Content Include="wwwroot\views\pades-signature.html" />
     <Content Include="wwwroot\views\upload.html" />
     <Content Include="wwwroot\views\xml-element-signature.html" />

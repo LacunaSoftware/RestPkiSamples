@@ -22,10 +22,20 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
 		controller: 'padesSignatureController'
 	});
 
+    $routeProvider.when('/open-pades-signature', {
+        templateUrl: 'views/open-signature.html',
+        controller: 'openPadesSignatureController'
+    });
+
 	$routeProvider.when('/cades-signature', {
 		templateUrl: 'views/cades-signature.html',
 		controller: 'cadesSignatureController'
 	});
+
+    $routeProvider.when('/open-cades-signature', {
+        templateUrl: 'views/open-signature.html',
+        controller: 'openCadesSignatureController'
+    });
 
 	$routeProvider.when('/xml-element-signature', {
 		templateUrl: 'views/xml-element-signature.html',
@@ -105,3 +115,9 @@ app.factory('util', ['$uibModal', 'blockUI', function ($modal, blockUI) {
 		handleServerError: handleServerError
 	};
 }]);
+
+app.filter('hexString', function () {
+    return function (input) {
+        return Number(input).toString(16);
+    };
+});

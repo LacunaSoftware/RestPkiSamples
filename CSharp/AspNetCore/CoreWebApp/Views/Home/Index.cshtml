@@ -9,11 +9,13 @@
 
 	<environment names="Development">
 		<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-theme.css" />
 		<link rel="stylesheet" href="~/lib/angular-block-ui/dist/angular-block-ui.css" />
 		<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 	</environment>
 	<environment names="Staging,Production">
 		<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-theme.min.css" asp-append-version="true" />
 		<link rel="stylesheet" href="~/lib/angular-block-ui/dist/angular-block-ui.min.css" asp-append-version="true" />
 		<link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
 	</environment>
@@ -40,7 +42,7 @@
 						<ul class="dropdown-menu">
 							<li><a href="/pades-signature">With file already on server</a></li>
 							<li><a href="/upload/pades-signature">With file uploaded by user</a></li>
-							@*<li><a href="/upload/open-pades-signature">Open/validate existing signature</a></li>*@
+						    <li><a href="/upload/open-pades-signature">Open/validate existing signature</a></li>
 						</ul>
 					</li>
 					<li class="dropdown">
@@ -48,7 +50,7 @@
 						<ul class="dropdown-menu">
 							<li><a href="/cades-signature">With file already on server</a></li>
 							<li><a href="/upload/cades-signature">With file uploaded by user</a></li>
-							@*<li><a href="/upload/open-cades-signature">Open/validate existing signature</a></li>*@
+							<li><a href="/upload/open-cades-signature">Open/validate existing signature</a></li>
 						</ul>
 					</li>
 					<li class="dropdown">
@@ -93,10 +95,12 @@
 		<script src="~/js/app.js" asp-append-version="true"></script>
 		<script src="~/controllers/authentication.js" asp-append-version="true"></script>
 		<script src="~/controllers/cades-signature.js" asp-append-version="true"></script>
+        <script src="~/controllers/open-cades-signature.js" asp-append-version="true"></script>
 		<script src="~/controllers/certificate-dialog.js" asp-append-version="true"></script>
 		<script src="~/controllers/home.js" asp-append-version="true"></script>
 		<script src="~/controllers/upload.js" asp-append-version="true"></script>
 		<script src="~/controllers/pades-signature.js" asp-append-version="true"></script>
+        <script src="~/controllers/open-pades-signature.js" asp-append-version="true"></script>
 		<script src="~/controllers/signature-results-dialog.js" asp-append-version="true"></script>
 		<script src="~/controllers/validation-results-dialog.js" asp-append-version="true"></script>
 		<script src="~/controllers/xml-element-signature.js" asp-append-version="true"></script>
@@ -114,10 +118,12 @@
 		<script src="~/js/app.min.js" asp-append-version="true"></script>
 		<script src="~/controllers/authentication.min.js" asp-append-version="true"></script>
 		<script src="~/controllers/cades-signature.min.js" asp-append-version="true"></script>
+        <script src="~/controllers/open-cades-signature.min.js" asp-append-version="true"></script>
 		<script src="~/controllers/certificate-dialog.min.js" asp-append-version="true"></script>
 		<script src="~/controllers/home.min.js" asp-append-version="true"></script>
 		<script src="~/controllers/upload.min.js" asp-append-version="true"></script>
 		<script src="~/controllers/pades-signature.min.js" asp-append-version="true"></script>
+        <script src="~/controllers/open-pades-signature.min.js" asp-append-version="true"></script>
 		<script src="~/controllers/signature-results-dialog.min.js" asp-append-version="true"></script>
 		<script src="~/controllers/validation-results-dialog.min.js" asp-append-version="true"></script>
 		<script src="~/controllers/xml-element-signature.min.js" asp-append-version="true"></script>
