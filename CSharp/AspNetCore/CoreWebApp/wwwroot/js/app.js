@@ -115,9 +115,3 @@ app.factory('util', ['$uibModal', 'blockUI', function ($modal, blockUI) {
 		handleServerError: handleServerError
 	};
 }]);
-
-app.filter('hexString', function () {
-    return function (input) {
-        return Number(input).toString(16);
-    };
-});
