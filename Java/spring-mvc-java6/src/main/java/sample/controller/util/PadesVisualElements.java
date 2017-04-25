@@ -71,9 +71,10 @@ public class PadesVisualElements {
         }
     }
 
-    // This function is called by pades-signature.php. It contains examples of PDF marks, visual elements of arbitrary
-    // content placed in every page. This code is only in a separate function in order to organize the various examples,
-    // you can pick the one that best suits your needs and use it below directly without an encapsulating function.
+    // This function is called by PadesSignatureController and BatchSignatureController. It contains examples of PDF
+    // marks, visual elements of arbitrary content placed in every page. This code is only in a separate function in
+    // order to organize the various examples, you can pick the one that best suits your needs and use it below directly
+    // without an encapsulating function.
     public static PdfMark getPdfMark(int sampleNumber) {
         PdfMark mark;
         PdfMarkImageElement elementImage;
