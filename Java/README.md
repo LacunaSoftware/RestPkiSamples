@@ -53,7 +53,7 @@ Java 6 sample
 
 If you want to use a older version than Java 7, there is a sample of use of REST PKI on Java 6, that can be found 
 in the folder [spring-mvc-java6](spring-mvc-java6/). This sample use another library exclusively made to work 
-at Java 6. (see "Client lib for Java 6" section below)
+at Java 6. (see [Client lib for Java 6](#client-lib-for-java-6) section below)
    
 Opening the samples on Eclipse or IDEA
 --------------------------------------
@@ -64,7 +64,7 @@ then import the project from Eclipse.
 To open one of the samples on IntelliJ IDEA, run `gradlew idea` on the sample's folder
 and then use the "Open" funcionality inside IDEA (works better than "Import").
 
-Client lib for Java 7 and Greater
+Client lib for Java 7 or greater
 ---------------------------------
 
 The samples use a client lib which encapsulates the API calls to REST PKI.
