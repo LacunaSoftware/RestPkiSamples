@@ -47,6 +47,13 @@ your code based on the default sample (see above).
 However, if your REST PKI installation must have restricted access, please write your code based on the
 sample contained in the folder [on-premises-restricted](on-premises-restricted/). The steps to execute the
 sample are the same as for the default sample.
+
+Java 6 sample
+-------------
+
+If you want to use a older version than Java 7, there is a sample of use of REST PKI on Java 6, that can be found 
+in the folder [spring-mvc-java6](spring-mvc-java6/). This sample use another library exclusively made to work 
+at Java 6. (see "Client lib for Java 6" section below)
    
 Opening the samples on Eclipse or IDEA
 --------------------------------------
@@ -57,8 +64,8 @@ then import the project from Eclipse.
 To open one of the samples on IntelliJ IDEA, run `gradlew idea` on the sample's folder
 and then use the "Open" funcionality inside IDEA (works better than "Import").
 
-Java client lib
----------------
+Client lib for Java 7 and Greater
+---------------------------------
 
 The samples use a client lib which encapsulates the API calls to REST PKI.
 The lib should be **referenced as a dependency**, as can be seen in the file [build.gradle](sample-spring-mvc/build.gradle)
@@ -97,6 +104,48 @@ If you project uses Maven, please refer to the file [pom.xml](sample-spring-mvc/
 
 If your project uses another tool for dependency resolution (e.g. Ivy), please visit the
 [package page on BinTray](https://bintray.com/lacunasoftware/maven/restpki-client) and click on
+the link "SET ME UP!".
+
+Client lib for Java 6
+---------------------
+
+The samples use a client lib which encapsulates the API calls to REST PKI.
+The lib should be **referenced as a dependency**, as can be seen in the file [build.gradle](spring-mvc-java6/build.gradle)
+of each sample:
+
+	repositories {
+		mavenCentral()
+		maven {
+			url  "http://dl.bintray.com/lacunasoftware/maven" 
+		}
+	}
+
+	dependencies {
+		compile("com.lacunasoftware.restpki:restpki-client-java6:1.8.0")
+	}
+
+If you project uses Maven, please refer to the file [pom.xml](spring-mvc-java6/pom.xml) instead:
+
+	<dependencies>
+		...
+		<dependency>
+			<groupId>com.lacunasoftware.restpki</groupId>
+			<artifactId>restpki-client-java6</artifactId>
+			<version>1.8.0</version>
+		</dependency>
+		...
+	</dependencies>
+	...
+	<repositories>
+		<repository>
+			<id>lacuna.repository</id>
+			<name>lacuna repository</name>
+			<url>http://dl.bintray.com/lacunasoftware/maven</url>
+		</repository>
+	</repositories>
+
+If your project uses another tool for dependency resolution (e.g. Ivy), please visit the
+[package page on BinTray](https://bintray.com/lacunasoftware/maven/restpki-client-java6) and click on
 the link "SET ME UP!".
 
 Using a proxy server

@@ -1,0 +1,35 @@
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:1.1.12.RELEASE")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+
+repositories {
+	mavenCentral()
+	maven {
+		url  "http://dl.bintray.com/lacunasoftware/maven"
+	}
+}
+
+jar {
+	baseName = 'restpki-sample-spring-mvc'
+	version =  '1.0.0'
+}
+
+dependencies {
+	compile("com.lacunasoftware.restpki:restpki-client-java6:1.8.0")
+	compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+	compile("commons-io:commons-io:2.4")
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.6'
+}
