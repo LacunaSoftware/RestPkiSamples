@@ -19,5 +19,6 @@ See also
 --------
 
 * [Rest PKI website](https://pki.rest/)
+* [Rest PKI changelog](RESTPKI CHANGELOG.md)
 * [Lacuna Software website](https://www.lacunasoftware.com/)
 * [Test certificates](TestCertificates.md)
