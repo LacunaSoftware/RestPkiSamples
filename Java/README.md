@@ -51,10 +51,10 @@ sample are the same as for the default sample.
 Java 6 sample
 -------------
 
-If you want to use a older version than Java 7, there is a sample of use of REST PKI on Java 6, that can be found 
-in the folder [spring-mvc-java6](spring-mvc-java6/). This sample use another library exclusively made to work 
+If you want to use an older version than Java 7, please use the sample project for Java 6, which can be found 
+in the folder [spring-mvc-java6](spring-mvc-java6/). This sample uses another library exclusively made to work 
 with Java 6 (see [Client lib for Java 6](#client-lib-for-java-6) section below). The steps to execute the sample are
-the same as for the default sample. If you want to use Java 7 or greater, we recommend to use [Default sample](#default-sample).
+the same as for the default sample. If you want to use Java 7 or greater, we recommend using the [Default sample](#default-sample).
    
 Opening the samples on Eclipse or IDEA
 --------------------------------------
