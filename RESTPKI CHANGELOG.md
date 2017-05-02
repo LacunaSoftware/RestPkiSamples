@@ -1,6 +1,22 @@
 Lacuna Rest PKI change log
 ==========================
 
+1.12.2 (2017-04-26)
+-------------------
+
+Database model update: No
+
+- Fix bug on certification authentication with Web PKI
+
+
+1.12.1 (2017-04-26)
+-------------------
+
+Database model update: No
+
+- Fix bug on application startup that could cause double processing of background jobs
+
+
 1.12.0 (2017-04-25)
 -------------------
 
