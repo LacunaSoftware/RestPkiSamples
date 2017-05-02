@@ -122,7 +122,7 @@ of each sample:
 	}
 
 	dependencies {
-		compile("com.lacunasoftware.restpki:restpki-client-java6:1.8.0")
+		compile("com.lacunasoftware.restpki:restpki-client-java6:1.8.1")
 	}
 
 If you project uses Maven, please refer to the file [pom.xml](spring-mvc-java6/pom.xml) instead:
@@ -132,7 +132,7 @@ If you project uses Maven, please refer to the file [pom.xml](spring-mvc-java6/p
 		<dependency>
 			<groupId>com.lacunasoftware.restpki</groupId>
 			<artifactId>restpki-client-java6</artifactId>
-			<version>1.8.0</version>
+			<version>1.8.1</version>
 		</dependency>
 		...
 	</dependencies>
