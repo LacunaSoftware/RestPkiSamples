@@ -1,12 +1,22 @@
 Lacuna Rest PKI change log
 ==========================
 
+1.12.3 (2017-05-04)
+-------------------
+
+Database model update: No
+
+- Fix bug on configuration of setting "Is on premises"
+- Fix bug on hint of setting "Cryptographic keys"
+- Fix bug on open/validate XML signatures API
+
+
 1.12.2 (2017-04-26)
 -------------------
 
 Database model update: No
 
-- Fix bug on certification authentication with Web PKI
+- Fix bug on certificate authentication with Web PKI
 
 
 1.12.1 (2017-04-26)
@@ -23,6 +33,7 @@ Database model update: No
 Database model update: **Yes**
 
 - Add support for issuing timestamps through the REST API
+- Add new API to open/validate XML signatures
 - Add optional instrumentation with Application Insights
 - Add optional app setting "AutoUpdateDatabase" to control whether the application will attempt to auto-update the database
 - Add optional app setting "AllowInsecureMaintenance" to allow remote access to maintenance pages through HTTP
