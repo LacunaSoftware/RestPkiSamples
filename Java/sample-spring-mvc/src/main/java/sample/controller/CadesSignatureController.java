@@ -17,15 +17,15 @@ import java.util.UUID;
 @Controller
 public class CadesSignatureController {
 
-	/*
+	/**
 	 * This action initiates a CAdES signature using REST PKI and renders the signature page.
-    *
-    * All CAdES signature examples converge to this action, but with different URL arguments:
-    *
-    * 1. Signature with a server file               : no arguments filled
-    * 2. Signature with a file uploaded by the user : "userfile" filled
-    * 3. Co-signature of a previously signed CMS    : "cmsfile" filled
-    */
+     *
+     * All CAdES signature examples converge to this action, but with different URL arguments:
+     *
+     * 1. Signature with a server file               : no arguments filled
+     * 2. Signature with a file uploaded by the user : "userfile" filled
+     * 3. Co-signature of a previously signed CMS    : "cmsfile" filled
+     */
 	@RequestMapping(value = "/cades-signature", method = {RequestMethod.GET})
 	public String get(
 		@RequestParam(value = "userfile", required = false) String userfile,
@@ -34,16 +34,27 @@ public class CadesSignatureController {
 		HttpServletResponse response
 	) throws IOException, RestException {
 
-		// Instantiate the CadesSignatureStarter class, responsible for receiving the signature elements and start the
-		// signature process. For more information, see:
-		// https://pki.rest/Content/docs/java-client/index.html?com/lacunasoftware/restpki/CadesSignatureStarter.html
-		CadesSignatureStarter signatureStarter = new CadesSignatureStarter(Util.getRestPkiClient());
+		// Instantiate the CadesSignatureStarter2 class, responsible for receiving the signature elements and start the
+		// signature process.
+		CadesSignatureStarter2 signatureStarter = new CadesSignatureStarter2(Util.getRestPkiClient());
 
+		// Set the signature policy
+		signatureStarter.setSignaturePolicy(SignaturePolicy.PkiBrazilAdrBasica);
+		// Note: Depending on the signature policy chosen above, setting the security context below may be
+		// mandatory (this is not the case for ICP-Brasil policies, which will automatically use the PkiBrazil security
+		// context if none is passed).
+
+		// Optionally, set a security context to be used to determine trust in the certificate chain.
+		//signatureStarter.setSecurityContext(new SecurityContext("ID OF YOUR CUSTOM SECURITY CONTEXT"));
+
+		// Below we'll either set the file to be signed or the CMS to be co-signed. Prefer passing a path or a stream
+		// instead of the file's contents as a byte array to prevent memory allocation issues with large files.
 		if (userfile != null && !userfile.isEmpty()) {
 
 			// If the URL argument "userfile" is filled, it means the user was redirected here by UploadController
-			// (signature with file uploaded by user). We'll set the path of the file to be signed, which was saved in the
-			// temporary folder by UploadController (such a file would normally come from your application's database)
+			// (signature with file uploaded by user). We'll set the path of the file to be signed, which was saved in
+			// the temporary folder by UploadController (such a file would normally come from your application's
+			// database)
 			signatureStarter.setFileToSign(Application.getTempFolderPath().resolve(userfile));
 
 		} else if (cmsfile != null && !cmsfile.isEmpty()) {
@@ -63,20 +74,11 @@ public class CadesSignatureController {
 
 		} else {
 
-			// If both userfile and cmsfile are null, this is the "signature with server file" case. We'll set the file to
-			// be signed as a byte array
-			signatureStarter.setContentToSign(Util.getSampleDocContent());
+			// If both userfile and cmsfile are null, this is the "signature with server file" case. We'll set the file
+			// to be signed as a byte array
+			signatureStarter.setFileToSign(Util.getSampleDocPath());
 
 		}
-
-		// Set the signature policy
-		signatureStarter.setSignaturePolicy(SignaturePolicy.PkiBrazilAdrBasica);
-
-		// Optionally, set a SecurityContext to be used to determine trust in the certificate chain
-		//signatureStarter.setSecurityContext(SecurityContext.pkiBrazil);
-		// Note: Depending on the signature policy chosen above, setting the security context may be mandatory (this is
-		// not the case for ICP-Brasil policies, which will automatically use the ICP-Brasil security context
-		// ("pkiBrazil") if none is passed)
 
 		// Optionally, set whether the content should be encapsulated in the resulting CMS. If this parameter is omitted
 		// or set to null, the following rules apply:
@@ -85,27 +87,28 @@ public class CadesSignatureController {
 		//   includes the content
 		signatureStarter.setEncapsulateContent(true);
 
-		// Call the startWithWebPki() method, which initiates the signature. This yields the token, a 43-character
-		// case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
-		// signWithRestPki() method on the Web PKI component (see file signature-form.js) and also to complete the
-		// signature after the form is submitted (see method post() below). This should not be mistaken with the API
-		// access token.
-		String token = signatureStarter.startWithWebPki();
+		// Call the startWithWebPki() method, which initiates the signature. This yields a SignatureStartWithWebPkiResult
+		// object containing the signer certificate and the token, a 43-character case-sensitive URL-safe string, which
+		// identifies this signature process. We'll use this value to call the signWithRestPki() method on the Web PKI
+		// component (see file static/js/signature-form.js) and also to complete the signature after the form
+		// is submitted (see method complete() below). This should not be mistaken with the API access token.
+		SignatureStartWithWebPkiResult result = signatureStarter.startWithWebPki();
 
-		// The token acquired above can only be used for a single signature attempt. In order to retry the signature it is
-		// necessary to get a new token. This can be a problem if the user uses the back button of the browser, since the
-		// browser might show a cached page that we rendered previously, with a now stale token. To prevent this from
-		// happening, we call the method Util.setNoCacheHeaders(), which sets HTTP headers to prevent caching of the page.
+		// The token acquired above can only be used for a single signature attempt. In order to retry the signature it
+		// is necessary to get a new token. This can be a problem if the user uses the back button of the browser, since
+		// the browser might show a cached page that we rendered previously, with a now stale token. To prevent this
+		// from happening, we call the method Util.setNoCacheHeaders(), which sets HTTP headers to prevent caching of
+		// the page.
 		Util.setNoCacheHeaders(response);
 
 		// Render the signature page (templates/cades-signature.html)
-		model.addAttribute("token", token);
+		model.addAttribute("token", result.getToken());
 		model.addAttribute("userfile", userfile);
 		model.addAttribute("cmsfile", cmsfile);
 		return "cades-signature";
 	}
 
-	/*
+	/**
 	 * This action receives the form submission from the signature page. We'll call REST PKI to complete the signature.
 	 */
 	@RequestMapping(value = "/cades-signature", method = {RequestMethod.POST})
@@ -114,26 +117,29 @@ public class CadesSignatureController {
 		Model model
 	) throws IOException, RestException {
 
-		// Instantiate the PadesSignatureFinisher class, responsible for completing the signature process. For more
-		// information, see:
-		// https://pki.rest/Content/docs/java-client/index.html?com/lacunasoftware/restpki/CadesSignatureFinisher.html
-		CadesSignatureFinisher signatureFinisher = new CadesSignatureFinisher(Util.getRestPkiClient());
+		// Instantiate the PadesSignatureFinisher2 class, responsible for completing the signature process.
+		CadesSignatureFinisher2 signatureFinisher = new CadesSignatureFinisher2(Util.getRestPkiClient());
 
-		// Set the token for this signature (rendered in a hidden input field, see file templates/cades-signature.html)
+		// Set the token for this signature (rendered in a hidden input field, see file templates/cades-signature.html).
 		signatureFinisher.setToken(token);
 
-		// Call the finish() method, which finalizes the signature process and returns the CMS
-		byte[] cms = signatureFinisher.finish();
+		// Call the finish() method, which finalizes the signature process and returns a SignatureResult object.
+		SignatureResult signatureResult = signatureFinisher.finish();
 
-		// Get information about the certificate used by the user to sign the file. This method must only be called after
-		// calling the finish() method.
-		PKCertificate signerCert = signatureFinisher.getCertificateInfo();
+		// The "Certificate" property of the SignatureResult object contains information about the certificate used by
+		// the user to sign the file.
+		PKCertificate signerCert = signatureResult.getCertificate();
 
 		// At this point, you'd typically store the CMS on your database. For demonstration purposes, we'll
 		// store the CMS on a temporary folder and return to the page an identifier that can be used to download it.
 
 		String filename = UUID.randomUUID() + ".p7s";
-		Files.write(Application.getTempFolderPath().resolve(filename), cms);
+		// The SignatureResult object has various methods for writing the signature file to a stream (writeTo()), local
+		// file (writeToFile()), open a stream to read the content (openRead()) and get its contents (getContent()). For
+		// large files, avoid the method GetContent() to avoid memory allocation issues.
+		signatureResult.writeToFile(Application.getTempFolderPath().resolve(filename));
+
+		// Render the signature page (templates/cades-signature-info.html)
 		model.addAttribute("signerCert", signerCert);
 		model.addAttribute("filename", filename);
 		return "cades-signature-info";
