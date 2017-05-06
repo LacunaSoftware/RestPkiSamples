@@ -1,6 +1,14 @@
 Lacuna Rest PKI change log
 ==========================
 
+1.12.4 (2017-05-05)
+-------------------
+
+Database model update: No
+
+- Fix bug that caused execution privileges over the site's folder to be required from the application
+
+
 1.12.3 (2017-05-04)
 -------------------
 
