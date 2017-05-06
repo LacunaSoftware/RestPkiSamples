@@ -122,8 +122,8 @@ public class BatchSignatureController {
              problem does not occurr with signature visual representations.
 
              We have encapsulated this code in a method to include several possibilities depending on the argument
-             passed. Experiment changing the argument to see different examples of PDF marks. Once you decide which is
-             best for your case, you can place the code directly here.
+             passed. Experiment changing the argument to see different examples of PDF marks (valid values are 1-4).
+             Once you decide which is best for your case, you can place the code directly here.
          */
         //signatureStarter.addPdfMark(PadesVisualElements.getPdfMark(1));
 

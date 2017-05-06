@@ -17,7 +17,7 @@ import java.util.List;
 public class OpenXmlSignatureController {
 
     /**
-     * This action submits a Xml file to Rest PKI for inspection of its signatures.
+     * This action submits a XML file to Rest PKI for inspection of its signatures.
      */
     @RequestMapping(value = "/open-xml-signature", method = {RequestMethod.GET})
     public String get(
@@ -26,7 +26,7 @@ public class OpenXmlSignatureController {
             HttpServletResponse response
     ) throws IOException, RestException {
 
-        // Get an instance of the PadesSignatureExplorer class, used to open/validate XML signatures
+        // Get an instance of the XmlSignatureExplorer class, used to open/validate XML signatures
         XmlSignatureExplorer sigExplorer = new XmlSignatureExplorer(Util.getRestPkiClient());
 
         // Set the XML file

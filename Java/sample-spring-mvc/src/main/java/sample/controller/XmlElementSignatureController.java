@@ -39,7 +39,7 @@ public class XmlElementSignatureController {
         // Optionally, set a security context to be used to determine trust in the certificate chain.
         //signatureStarter.setSecurityContext(new SecurityContext("ID OF YOUR CUSTOM SECURITY CONTEXT"));
 
-        // Set the XML to be signed, a sample Brazilian fiscal invoice pre-generated.
+        // Set the path of the XML to be signed, a sample Brazilian fiscal invoice pre-generated.
         signatureStarter.setXml(Util.getSampleNFePath());
 
         // Set the ID of the element to be signed

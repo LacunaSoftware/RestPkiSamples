@@ -101,7 +101,7 @@ public class PadesSignatureController {
 		} else {
 
 			// If both userfile is null, this is the "signature with server file" case. We'll set the file to be signed
-			// as a byte array
+			// by passing its path.
 			signatureStarter.setPdfToSign(Util.getSampleDocPath());
 
 		}
@@ -116,10 +116,10 @@ public class PadesSignatureController {
 			occur with signature visual representations.
 
 			We have encapsulated this code in a method to include several possibilities depending on the argument
-			passed. Experiment changing the argument to see different examples of PDF marks. Once you decide which is
-			best for your case, you can place the code directly here.
+			passed. Experiment changing the argument to see different examples of PDF marks (valid values are 1-4). Once
+			you decide which is best for your case, you can place the code directly here.
 		 */
-		// signatureStarter.addPdfMark(PadesVisualElements.getPdfMark(1));
+		//signatureStarter.addPdfMark(PadesVisualElements.getPdfMark(1));
 
 		// Call the startWithWebPki() method, which initiates the signature. This yields a SignatureStartWithWebPkiResult
 		// object containing the signer certificate and the token, a 43-character case-sensitive URL-safe string, which
