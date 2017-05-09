@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <Content Include="wwwroot\controllers\authentication.js" />
+    <Content Include="wwwroot\controllers\batch-signature.js" />
     <Content Include="wwwroot\controllers\cades-signature.js" />
     <Content Include="wwwroot\controllers\certificate-dialog.js" />
     <Content Include="wwwroot\controllers\home.js" />
@@ -29,6 +30,7 @@
     <Content Include="wwwroot\controllers\xml-element-signature.js" />
     <Content Include="wwwroot\js\app.js" />
     <Content Include="wwwroot\views\authentication.html" />
+    <Content Include="wwwroot\views\batch-signature.html" />
     <Content Include="wwwroot\views\cades-signature.html" />
     <Content Include="wwwroot\views\dialogs\certificate.html" />
     <Content Include="wwwroot\views\dialogs\message.html" />

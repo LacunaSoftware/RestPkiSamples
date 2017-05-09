@@ -30,7 +30,11 @@ namespace CoreWebApp.Classes {
 			return Path.Combine(AppDataPath, "SampleNFe.xml");
 		}
 
-		public byte[] GetPdfStampContent() {
+        public string GetBatchDocPath(int id) {
+            return Path.Combine(AppDataPath, string.Format("{0:D2}.pdf", id));
+        }
+
+        public byte[] GetPdfStampContent() {
 			return File.ReadAllBytes(Path.Combine(AppDataPath, "PdfStamp.png"));
 		}
 

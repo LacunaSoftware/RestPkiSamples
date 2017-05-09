@@ -1,0 +1,30 @@
+﻿<div id="messagesPanel"></div>
+
+<h2>Batch Signature</h2>
+
+<form role="form" ng-submit="signBatch()">
+
+    <div class="form-group">
+        <label>File to sign</label>
+        <p>
+            You'll be signing the following files:
+            <!-- UL element to hold the batch's documents (we'll render these programatically) -->
+            <ul>
+                <li ng-repeat="elem in batch">
+                    <a href="Download/{{ elem.docId | digits: 2 }}.pdf" target="_blank">Document {{ elem.docId }}</a>
+                    <span ng-if="elem.done && elem.success"> <span class="glyphicon glyphicon-arrow-right"></span> <a href="Download/{{elem.signedFileId}}" target="_blank">{{elem.signedFileId.replace('_', '.')}}</a></span>
+                    <span ng-if="elem.done && !elem.success"> <span class="glyphicon glyphicon-remove"></span></span>
+                </li>
+            </ul>
+        </p>
+    </div>
+
+    <div class="form-group">
+        <label for="certificateSelect">Choose a certificate</label>
+        <select id="certificateSelect" ng-model="selectedCertificate" class="form-control" ng-options="getCertificateDisplayName(c) for c in certificates"></select>
+    </div>
+
+    <button type="submit" class="btn btn-primary" ng-disabled="completed">Sign Batch</button>
+    <button type="button" class="btn btn-default" ng-click="refresh()">Refresh Certificates</button>
+
+</form>

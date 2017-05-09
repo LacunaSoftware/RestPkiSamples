@@ -40,7 +40,12 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
 	$routeProvider.when('/xml-element-signature', {
 		templateUrl: 'views/xml-element-signature.html',
 		controller: 'xmlElementSignatureController'
-	});
+    });
+
+    $routeProvider.when('/batch-signature', {
+        templateUrl: 'views/batch-signature.html',
+        controller: 'batchSignatureController'
+    });
 
 	$routeProvider.otherwise({ redirectTo: "/" });
 	$locationProvider.html5Mode(true);
@@ -105,13 +110,34 @@ app.factory('util', ['$uibModal', 'blockUI', function ($modal, blockUI) {
 		} else {
 			showMessage('An error has occurred', response.data.message || 'HTTP error ' + response.status);
 		}
-	};
+    };
+
+    var addAlert = function (type, message) {
+        $('#messagesPanel').append(
+            '<div class="alert alert-' + type + ' alert-dismissible">' +
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+            '<span>' + message + '</span>' +
+            '</div>');
+    };
 
 	return {
 		showMessage: showMessage,
 		showSignatureResults: showSignatureResults,
 		showCertificate: showCertificate,
 		showValidationResults: showValidationResults,
-		handleServerError: handleServerError
+        handleServerError: handleServerError,
+        addAlert: addAlert
 	};
 }]);
+
+app.filter('digits', function() {
+    return function(input, digits) {
+        var zeros = '';
+        for (var i = digits - 1; i > 0; i--) {
+            if (input < Math.pow(10, i)) {
+                zeros += 0;
+            }
+        }
+        return zeros + input;
+    };
+});
