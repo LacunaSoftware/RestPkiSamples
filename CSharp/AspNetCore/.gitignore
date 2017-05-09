@@ -5,6 +5,7 @@ lib
 *.user
 CoreWebApp/App_Data/*
 !CoreWebApp/App_Data/SampleDocument.pdf
+!CoreWebApp/App_Data/SampleDocument.xml
 !CoreWebApp/App_Data/SampleNFe.xml
 !CoreWebApp/App_Data/PdfStamp.png
 !CoreWebApp/App_Data/01.pdf

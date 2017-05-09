@@ -42,6 +42,11 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
 		controller: 'xmlElementSignatureController'
     });
 
+    $routeProvider.when('/xml-full-signature', {
+        templateUrl: 'views/xml-full-signature.html',
+        controller: 'xmlFullSignatureController'
+    });
+
     $routeProvider.when('/batch-signature', {
         templateUrl: 'views/batch-signature.html',
         controller: 'batchSignatureController'

@@ -28,6 +28,7 @@
     <Content Include="wwwroot\controllers\upload.js" />
     <Content Include="wwwroot\controllers\validation-results-dialog.js" />
     <Content Include="wwwroot\controllers\xml-element-signature.js" />
+    <Content Include="wwwroot\controllers\xml-full-signature.js" />
     <Content Include="wwwroot\js\app.js" />
     <Content Include="wwwroot\views\authentication.html" />
     <Content Include="wwwroot\views\batch-signature.html" />
@@ -41,6 +42,7 @@
     <Content Include="wwwroot\views\pades-signature.html" />
     <Content Include="wwwroot\views\upload.html" />
     <Content Include="wwwroot\views\xml-element-signature.html" />
+    <Content Include="wwwroot\views\xml-full-signature.html" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Lacuna.RestPki.Client" Version="1.8.0" />

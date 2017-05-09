@@ -26,7 +26,11 @@ namespace CoreWebApp.Classes {
 			return Path.Combine(AppDataPath, "SampleDocument.pdf");
 		}
 
-		public string GetSampleNFePath() {
+        public string GetSampleXmlPath() {
+            return Path.Combine(AppDataPath, "SampleDocument.xml");
+        }
+
+        public string GetSampleNFePath() {
 			return Path.Combine(AppDataPath, "SampleNFe.xml");
 		}
 
