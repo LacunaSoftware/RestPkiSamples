@@ -1,0 +1,75 @@
+﻿@model List<Lacuna.RestPki.Client.XmlSignature>
+
+<h2>Open/validate signatures on an existing XML file</h2>
+
+<h3>The given file contains @Model.Count signatures:</h3>
+
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
+	@for (var i = 0; i < Model.Count; i++) {
+
+		var signature = Model[i];
+		var collapseId = string.Format("signer_{0}_collapse", i);
+		var headingId = string.Format("signer_{0}_heading", i);
+
+		<div class="panel panel-default">
+			<div class="panel-heading" role="tab" id="@headingId">
+				<h4 class="panel-title">
+					<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#@collapseId" aria-expanded="true" aria-controls="@collapseId">
+						@signature.Certificate.SubjectName.CommonName
+						@if (signature.ValidationResults != null) {
+							<text>- </text>
+							if (signature.ValidationResults.IsValid) {
+								<span style="color: green; font-weight: bold;">valid</span>
+							} else {
+								<span style="color: red; font-weight: bold;">invalid</span>
+							}
+						}
+					</a>
+				</h4>
+			</div>
+			<div id="@collapseId" class="panel-collapse collapse" role="tabpanel" aria-labelledby="@headingId">
+				<div class="panel-body">
+					<p>Type: @signature.Type</p>
+					@if (signature.SignedElement != null) {
+						<p>
+							Signed element: @signature.SignedElement.LocalName
+							@if (!string.IsNullOrEmpty(signature.SignedElement.NameSpaceUri)) {
+								<text>(xmlns: @signature.SignedElement.NameSpaceUri)</text>
+							}
+						</p>
+					}
+					<p>Signing time: @signature.SigningTime</p>
+					@if (signature.SignaturePolicy != null) {
+						<p>Signature policy: @signature.SignaturePolicy.Oid</p>
+					}
+					<p>
+						Signer information:
+						<ul>
+							<li>Subject: @signature.Certificate.SubjectName.CommonName</li>
+							<li>Email: @signature.Certificate.EmailAddress</li>
+							<li>
+								ICP-Brasil fields
+								<ul>
+									<li>Tipo de certificado: @signature.Certificate.PkiBrazil.CertificateType</li>
+									<li>CPF: @signature.Certificate.PkiBrazil.Cpf</li>
+									<li>Responsavel: @signature.Certificate.PkiBrazil.Responsavel</li>
+									<li>Empresa: @signature.Certificate.PkiBrazil.CompanyName</li>
+									<li>CNPJ: @signature.Certificate.PkiBrazil.Cnpj</li>
+									<li>RG: @signature.Certificate.PkiBrazil.RGNumero @signature.Certificate.PkiBrazil.RGEmissor @signature.Certificate.PkiBrazil.RGEmissorUF</li>
+									<li>OAB: @signature.Certificate.PkiBrazil.OabNumero @signature.Certificate.PkiBrazil.OabUF</li>
+								</ul>
+							</li>
+						</ul>
+					</p>
+					@if (signature.ValidationResults != null) {
+						<p>
+								Validation results:<br/>
+								<textarea style="width: 100%" rows="20">@signature.ValidationResults.ToString()</textarea>
+						</p>
+					}
+				</div>
+			</div>
+		</div>
+	}
+</div>
