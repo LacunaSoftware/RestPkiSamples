@@ -27,7 +27,7 @@ class AuthenticationController < ApplicationController
             # @token = auth.start_with_webpki('ID OF YOUR CUSTOM SECURITY CONTEXT')
 
         rescue => ex
-            @errors = ex.error.to_hash
+            @error = ex
             render 'layouts/_error'
         end
     end
@@ -59,7 +59,7 @@ class AuthenticationController < ApplicationController
             end
 
         rescue => ex
-            @errors = ex.error.to_hash
+            @error = ex
             render 'layouts/_error'
         end
     end

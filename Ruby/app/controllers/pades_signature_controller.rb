@@ -114,8 +114,8 @@ class PadesSignatureController < ApplicationController
             @token = signature_starter.start_with_webpki
 
         rescue => ex
-            @errors = ex.error.to_hash
-            render 'layouts/error'
+            @error = ex
+            render 'layouts/_error'
         end
     end
 
@@ -149,8 +149,8 @@ class PadesSignatureController < ApplicationController
             end
 
         rescue => ex
-            @errors = ex.error.to_hash
-            render 'layouts/error'
+            @error = ex
+            render 'layouts/_error'
         end
     end
 end
