@@ -13,10 +13,15 @@ Running the sample
 To run the sample:
 1. [Download the project](https://github.com/LacunaSoftware/RestPkiSamples/archive/master.zip)
     or clone the repository
+
 2. Generate an API access token on the [REST PKI website](https://pki.rest/)
-3. Paste your access token on the file `restpki.rb` on Rails initializers folder
-4. Install dependencies: `bundle intall`
+
+3. Paste your access token on the initializer file [restpki.rb](config/initializers/restpki.rb)
+
+4. Install dependencies: `bundle install`
+
 5. Run application: `rails server`
+
 6. Access the URL [http://localhost:3000](http://localhost:3000)
 
 See also
