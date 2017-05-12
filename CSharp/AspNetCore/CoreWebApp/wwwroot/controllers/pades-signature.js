@@ -125,7 +125,8 @@ app.controller('padesSignatureController', ['$scope', '$http', '$routeParams', '
 			blockUI.stop();
 			util.showMessage('Signature completed successfully!', 'Click OK to see details').result.then(function () {
 				var results = {
-					cosignUrl: 'pades-signature',
+                    cosignUrl: 'pades-signature',
+                    openSignatureUrl: 'open-pades-signature',
 					signedfile: response.data.filename,
 					certificate: response.data.certificate
 				};

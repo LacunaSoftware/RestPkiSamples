@@ -1,7 +1,7 @@
 ﻿'use strict';
-app.controller('openPadesSignatureController', ['$scope', '$http', '$routeParams', 'blockUI', 'util', function ($scope, $http, $routeParams, blockUI, util) {
+app.controller('openXmlSignatureController', ['$scope', '$http', '$routeParams', 'blockUI', 'util', function ($scope, $http, $routeParams, blockUI, util) {
 
-    $scope.signatureType = 'PAdES';
+    $scope.signatureType = 'XML';
     $scope.model = null;
 
     // -------------------------------------------------------------------------------------------------
@@ -12,7 +12,7 @@ app.controller('openPadesSignatureController', ['$scope', '$http', '$routeParams
         // Block the UI
         blockUI.start();
 
-        $http.get('Api/OpenPadesSignature/' + $routeParams.userfile).then(function (response) {
+        $http.get('Api/OpenXmlSignature/' + $routeParams.userfile).then(function (response) {
             $scope.model = response.data;
 
             // Unblock the UI

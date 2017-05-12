@@ -19,33 +19,12 @@ namespace CoreWebApp.Models {
         }
     }
 
-    public class CadesSignerModel {
+    public class CadesSignerModel : CommonSignatureSignerModel {
 
         public DigestAlgorithmAndValue MessageDigest { get; private set; }
-        public SignatureAlgorithmAndValue Signature { get; private set; }
-        public SignaturePolicyIdentifier SignaturePolicy { get; private set; }
-        public CertificateModel Certificate { get; private set; }
-        public DateTimeOffset? SigningTime { get; private set; }
-        public DateTimeOffset? CertifiedDateReference { get; private set; }
-        public List<CadesTimestamp> Timestamps { get; private set; }
-        public ValidationResultsModel ValidationResults { get; private set; }
 
-        public CadesSignerModel(CadesSignerInfo signer) {
+        public CadesSignerModel(CadesSignerInfo signer) : base(signer) {
             this.MessageDigest = signer.MessageDigest;
-            this.Signature = signer.Signature;
-            if (signer.SignaturePolicy != null) {
-                this.SignaturePolicy = signer.SignaturePolicy;
-            }
-            this.Certificate = new CertificateModel(signer.Certificate);
-            this.SigningTime = signer.SigningTime;
-            this.CertifiedDateReference = signer.CertifiedDateReference;
-            this.Timestamps = new List<CadesTimestamp>();
-            if (signer.Timestamps != null) {
-                this.Timestamps.AddRange(signer.Timestamps);
-            }
-            if (signer.ValidationResults != null) {
-                this.ValidationResults = new ValidationResultsModel(signer.ValidationResults);
-            }
         }
     }
 }

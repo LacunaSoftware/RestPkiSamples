@@ -131,7 +131,8 @@ app.controller('cadesSignatureController', ['$scope', '$http', '$routeParams', '
 			blockUI.stop();
 			util.showMessage('Signature completed successfully!', 'Click OK to see details').result.then(function () {
 				var results = {
-					cosignUrl: 'cades-signature',
+                    cosignUrl: 'cades-signature',
+                    openSignatureUrl: 'open-cades-signature',
 					cmsfile: response.data.filename,
 					certificate: response.data.certificate
 				};

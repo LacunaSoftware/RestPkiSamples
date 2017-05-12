@@ -3,18 +3,20 @@ app.controller('signatureResultsDialogController', ['$scope', '$http', '$uibModa
 
 	$scope.certBreadcrumb = [];
 	$scope.model = results.certificate;
-	$scope.cosignUrl = results.cosignUrl;
+    $scope.cosignUrl = results.cosignUrl;
+    $scope.openSignatureUrl = results.openSignatureUrl;
+    $scope.signedFile = results.signedfile;
+    $scope.cmsfile = results.cmsfile;
 	$scope.filename = null;
 
 	var init = function () {
-
-		if (results.signedfile) {
-			$scope.filename = results.signedfile;
-		} else if (results.cmsfile) {
-			$scope.filename = results.cmsfile;
-		} else {
-			$modalInstance.close();
-		}
+        if (results.signedfile) {
+            $scope.filename = results.signedfile;
+        } else if (results.cmsfile) {
+            $scope.filename = results.cmsfile;
+        } else {
+            $modalInstance.close();
+        }
 	};
 
 	$scope.hasIssuer = function () {
@@ -36,16 +38,13 @@ app.controller('signatureResultsDialogController', ['$scope', '$http', '$uibModa
 		$scope.model = cert;
 	};
 
-	$scope.coSign = function () {
-
-		if (results.signedfile) {
-			$location.path('/' + $scope.cosignUrl).search('userfile=' + $scope.filename);
-		} else if (results.cmsfile) {
-			$location.path('/' + $scope.cosignUrl).search('cmsfile=' + $scope.filename);
-		}
-
+	$scope.cosign = function () {
 		$modalInstance.close();
-	}
+    }
+
+    $scope.openSignature = function () {
+        $modalInstance.close();
+    };
 
 	$scope.close = function () {
 		$modalInstance.close();

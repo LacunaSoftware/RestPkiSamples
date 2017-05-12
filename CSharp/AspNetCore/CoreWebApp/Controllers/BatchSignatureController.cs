@@ -13,9 +13,6 @@ using Microsoft.Extensions.Options;
 
 namespace CoreWebApp.Controllers {
 
-    /**
-     * This controller contains the server-side logic for the batch signature example.
-     */
     [Route("api/[controller]")]
     public class BatchSignatureController : Controller {
 
@@ -82,7 +79,8 @@ namespace CoreWebApp.Controllers {
 
                     // Position of the visual representation. We have encapsulated this code in a method to include several
                     // possibilities depending on the argument passed. Experiment changing the argument to see different examples
-                    // of signature positioning. Once you decide which is best for your case, you can place the code directly here.
+                    // of signature positioning (valid values are 1-6). Once you decide which is best for your case, you can place 
+                    // the code directly here.
                     Position = PadesVisualElements.GetVisualPositioning(client, 1)
 
                 }
@@ -101,8 +99,8 @@ namespace CoreWebApp.Controllers {
 				PadesSignatureStarter.BypassMarksIfSigned). This problem does not occurr with signature visual representations.
 
 				We have encapsulated this code in a method to include several possibilities depending on the argument passed.
-				Experiment changing the argument to see different examples of PDF marks. Once you decide which is best for your case,
-				you can place the code directly here.
+				Experiment changing the argument to see different examples of PDF marks (valid values are 1-3). Once you decide which 
+                is best for your case, you can place the code directly here.
 			*/
             //signatureStarter.PdfMarks.Add(PadesVisualElements.GetPdfMark(storage, 1));
 

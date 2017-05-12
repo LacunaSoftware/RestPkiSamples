@@ -20,11 +20,13 @@ namespace CoreWebApp.Models {
 		public List<ValidationItemModel> PassedChecks { get; set; }
 		public List<ValidationItemModel> Errors { get; set; }
 		public List<ValidationItemModel> Warnings { get; set; }
+        public bool IsValid { get; set; }
 
 		public ValidationResultsModel(ValidationResults vr) {
 			PassedChecks = vr.PassedChecks.Select(i => new ValidationItemModel(i)).ToList();
 			Warnings = vr.Warnings.Select(i => new ValidationItemModel(i)).ToList();
 			Errors = vr.Errors.Select(i => new ValidationItemModel(i)).ToList();
+            IsValid = Errors.Count == 0;
 		}
 	}
 

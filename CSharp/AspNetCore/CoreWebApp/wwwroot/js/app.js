@@ -27,6 +27,11 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
         controller: 'openPadesSignatureController'
     });
 
+    $routeProvider.when('/open-xml-signature', {
+        templateUrl: 'views/open-xml-signature.html',
+        controller: 'openXmlSignatureController'
+    });
+
 	$routeProvider.when('/cades-signature', {
 		templateUrl: 'views/cades-signature.html',
 		controller: 'cadesSignatureController'

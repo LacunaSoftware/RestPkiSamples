@@ -114,6 +114,7 @@ app.controller('xmlFullSignatureController', ['$scope', '$http', 'blockUI', 'uti
             blockUI.stop();
             util.showMessage('Signature completed successfully!', 'Click OK to see details').result.then(function () {
                 var results = {
+                    openSignatureUrl: 'open-xml-signature',
                     signedfile: response.data.filename,
                     certificate: response.data.certificate
                 }

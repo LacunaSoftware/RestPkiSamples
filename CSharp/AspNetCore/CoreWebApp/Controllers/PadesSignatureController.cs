@@ -78,10 +78,11 @@ namespace CoreWebApp.Controllers {
 
 					},
 
-					// Position of the visual representation. We have encapsulated this code in a method to include several
-					// possibilities depending on the argument passed. Experiment changing the argument to see different examples
-					// of signature positioning. Once you decide which is best for your case, you can place the code directly here.
-					Position = PadesVisualElements.GetVisualPositioning(client, 1)
+                    // Position of the visual representation. We have encapsulated this code in a method to include several
+                    // possibilities depending on the argument passed. Experiment changing the argument to see different examples
+                    // of signature positioning (valid values are 1-6). Once you decide which is best for your case, you can place
+                    // the code directly here.
+                    Position = PadesVisualElements.GetVisualPositioning(client, 1)
 
 				}
 
@@ -102,7 +103,7 @@ namespace CoreWebApp.Controllers {
 				signatureStarter.SetPdfToSign(userFileStream);
 			}
 
-			/*
+            /*
 				Optionally, add marks to the PDF before signing. These differ from the signature visual representation in that
 				they are actually changes done to the document prior to signing, not binded to any signature. Therefore, any number
 				of marks can be added, for instance one per page, whereas there can only be one visual representation per signature.
@@ -111,16 +112,16 @@ namespace CoreWebApp.Controllers {
 				PadesSignatureStarter.BypassMarksIfSigned). This problem does not occurr with signature visual representations.
 
 				We have encapsulated this code in a method to include several possibilities depending on the argument passed.
-				Experiment changing the argument to see different examples of PDF marks. Once you decide which is best for your case,
-				you can place the code directly here.
+				Experiment changing the argument to see different examples of PDF marks (valid values are 1-3). Once you decide which 
+                is best for your case, you can place the code directly here.
 			*/
-			//signatureStarter.PdfMarks.Add(PadesVisualElements.GetPdfMark(storage, 1));
+            //signatureStarter.PdfMarks.Add(PadesVisualElements.GetPdfMark(storage, 1));
 
-			// Call the StartWithWebPkiAsync() method, which initiates the signature. This yields the token, a 43-character
-			// case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
-			// signWithRestPki() method on the Web PKI component (see javascript on the angular controller) and also to complete
-			// the signature on the POST action below (this should not be mistaken with the API access token).
-			var token = await signatureStarter.StartWithWebPkiAsync();
+            // Call the StartWithWebPkiAsync() method, which initiates the signature. This yields the token, a 43-character
+            // case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
+            // signWithRestPki() method on the Web PKI component (see javascript on the angular controller) and also to complete
+            // the signature on the POST action below (this should not be mistaken with the API access token).
+            var token = await signatureStarter.StartWithWebPkiAsync();
 
 			return token;
 		}

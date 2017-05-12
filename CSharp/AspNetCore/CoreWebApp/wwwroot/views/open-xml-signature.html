@@ -1,0 +1,32 @@
+﻿<h2>Open/validate signatures on an existing XML file</h2>
+
+<h3>The given file contains {{ model.signatures.length }} signatures:</h3>
+
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
+    <div ng-repeat="signature in model.signatures track by $index" class="panel panel-default"> 
+        <div class="panel-heading" role="tab" id="signature_{{$index}}_heading">
+            <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#signature_{{$index}}_collapse" aria-expanded="true" aria-controls="signature_{{$index}}_collapse" target="_self">
+                    {{signature.certificate.subjectName.commonName + ' - '}}
+                    <span ng-if="signature.validationResults.isValid" style="color: green; font-weight: bold;">valid</span>
+                    <span ng-if="!signature.validationResults.isValid" style="color: red; font-weight: bold;">invalid</span>
+                </a>
+            </h4>
+        </div>
+        <div id="signature_{{$index}}_collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="signature_{{$index}}_heading">
+            <div class="panel-body">
+                <p>Type: {{signature.type}}</p>
+                <p ng-if="sinature.signedElement">
+                    Signed element: {{signature.signedElement.localName}}
+                    <text ng-if="signature.signedElement.namespaceUri">(xmlns: {{signature.signedElement.namespaceUri}})</text>
+                </p>
+                <p>Signing time: {{signature.signingTime}}</p>
+                <p ng-if="signature.signaturePolicy">Signature Policy: {{signature.signaturePolicy.oid}}</p>
+                <p><a href="#" ng-click="showCertificate(signature.certificate)">View certificate</a></p>
+                <p ng-if="signature.validationResults"><a href="#" ng-click="showValidationResults(signature.validationResults)">View validation results</a></p>
+            </div>
+        </div>
+    </div>
+
+</div>

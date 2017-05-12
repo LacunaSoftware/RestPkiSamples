@@ -2,22 +2,27 @@
 
 <h3>The given file contains {{ model.signers.length }} signatures:</h3>
 
-<table ng-if="model.signers.length > 0" class="table table-striped table-bordered" style="width: 50%">
-    <tr>
-        <th>#</th>
-        <th>Signer</th>
-        <th>Validation</th>
-    </tr>
-    <tr ng-repeat="signer in model.signers track by $index">
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 
-        <td>{{ $index + 1 }}</td>
-        <td><a href="#" ng-click="showCertificate(signer.certificate)">{{ signer.certificate.subjectName.commonName }}</a></td>
-        <td>
-            <a href="#" ng-click="showValidationResults(signer.validationResults)" ng-if="signer.validationResults">
-                <span ng-if="signer.validationResults.isValid" style="color: green; font-weight: bold;">valid</span>
-                <span ng-if="!signer.validationResults.isValid" style="color: red; font-weight: bold;">invalid</span>
-            </a>
-        </td>
+    <div ng-repeat="signer in model.signers track by $index" class="panel panel-default">
+        <div class="panel-heading" role="tab" id="signature_{{$index}}_heading">
+            <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#signature_{{$index}}_collapse" aria-expanded="true" aria-controls="signature_{{$index}}_collapse" target="_self">
+                    {{signer.certificate.subjectName.commonName + ' - '}}
+                    <span ng-if="signer.validationResults.isValid" style="color: green; font-weight: bold;">valid</span>
+                    <span ng-if="!signer.validationResults.isValid" style="color: red; font-weight: bold;">invalid</span>
+                </a>
+            </h4>
+        </div>
+        <div id="signature_{{$index}}_collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="signature_{{$index}}_heading">
+            <div class="panel-body">
+                <p>Signing time: {{signer.signingTime}}</p>
+                <p>Message digest: {{signer.messageDigest.algorithm.name}} {{atob(signer.messageDigest.value)}}</p>
+                <p ng-if="signer.signaturePolicy">Signature Policy: {{signer.signaturePolicy.oid}}</p>
+                <p><a href="#" ng-click="showCertificate(signer.certificate)">View certificate</a></p>
+                <p ng-if="signer.validationResults"><a href="#" ng-click="showValidationResults(signer.validationResults)">View validation results</a></p>
+            </div>
+        </div>
+    </div>
 
-    </tr>
-</table>
+</div>

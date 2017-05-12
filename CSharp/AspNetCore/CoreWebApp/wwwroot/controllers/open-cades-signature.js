@@ -4,6 +4,9 @@ app.controller('openCadesSignatureController', ['$scope', '$http', '$routeParams
     $scope.signatureType = 'CAdES';
     $scope.model = null;
 
+    // -------------------------------------------------------------------------------------------------
+	// Function that performs the signature opening
+	// -------------------------------------------------------------------------------------------------
     var init = function () {
 
         // Block the UI
@@ -17,10 +20,16 @@ app.controller('openCadesSignatureController', ['$scope', '$http', '$routeParams
         }, util.handleServerError);
     };
 
+    // -------------------------------------------------------------------------------------------------
+	// Function that shows certificate information
+	// -------------------------------------------------------------------------------------------------
     $scope.showCertificate = function (certificate) {
         util.showCertificate(certificate);
     };
 
+    // -------------------------------------------------------------------------------------------------
+	// Function that shows validation results
+	// -------------------------------------------------------------------------------------------------
     $scope.showValidationResults = function (vr) {
         if (vr == null) {
             return;

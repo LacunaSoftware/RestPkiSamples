@@ -21,6 +21,7 @@
     <Content Include="wwwroot\controllers\cades-signature.js" />
     <Content Include="wwwroot\controllers\certificate-dialog.js" />
     <Content Include="wwwroot\controllers\home.js" />
+    <Content Include="wwwroot\controllers\open-xml-signature.js" />
     <Content Include="wwwroot\controllers\open-cades-signature.js" />
     <Content Include="wwwroot\controllers\open-pades-signature.js" />
     <Content Include="wwwroot\controllers\pades-signature.js" />
@@ -39,13 +40,14 @@
     <Content Include="wwwroot\views\dialogs\validation-results.html" />
     <Content Include="wwwroot\views\home.html" />
     <Content Include="wwwroot\views\open-signature.html" />
+    <Content Include="wwwroot\views\open-xml-signature.html" />
     <Content Include="wwwroot\views\pades-signature.html" />
     <Content Include="wwwroot\views\upload.html" />
     <Content Include="wwwroot\views\xml-element-signature.html" />
     <Content Include="wwwroot\views\xml-full-signature.html" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Lacuna.RestPki.Client" Version="1.8.0" />
+    <PackageReference Include="Lacuna.RestPki.Client" Version="1.11.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.1" />

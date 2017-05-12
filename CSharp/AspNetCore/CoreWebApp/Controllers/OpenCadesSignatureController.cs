@@ -29,17 +29,17 @@ namespace CoreWebApp.Controllers {
             var storage = new Storage(hostingEnvironment);
             var client = Util.GetRestPkiClient(restPkiConfig);
 
-            // Our action only works if a userfile is given to work with
+            // Our action only works if a userfile is given to work with.
             if (string.IsNullOrEmpty(userfile)) {
                 throw new Exception("No file provided");
             }
 
-            // Get an instance of the CadesSignatureExplorer class, used to open/validate CAdES signatures
+            // Get an instance of the CadesSignatureExplorer class, used to open/validate CAdES signatures.
             var sigExplorer = new CadesSignatureExplorer(client) {
-                Validate = true // Specify that we want to validate the signatures in the file, not only inspect them
+                Validate = true // Specify that we want to validate the signatures in the file, not only inspect them.
             };
 
-            // Set the PDF file
+            // Set the CAdES signature file
             byte[] content;
             if (!storage.TryOpenRead(userfile, out content)) {
                 throw new Exception("File not found");
@@ -48,14 +48,14 @@ namespace CoreWebApp.Controllers {
 
             // Parameters for the signature validation. We have encapsulated this code in a method to include several
             // possibilities depending on the argument passed. Experiment changing the argument to see different validation
-            // configurations. Once you decide which is best for your case, you can place the code directly here.
+            // configurations (valid values are 1-5). Once you decide which is best for your case, you can place the code directly here.
             setValidationParameters(sigExplorer, 1);
-            // try changing this number ---------^ for different validation parameters
+            // try changing this number ---------^ for different validation parameters.
 
-            // Call the Open() method, which returns the signature file's information
+            // Call the OpenAsync() method, which returns the signature file's information.
             var signature = await sigExplorer.OpenAsync();
 
-            // Render the information (see file wwwroot/views/open-cades-signature.html for more information on the information returned)
+            // Render the information. (see file wwwroot/views/open-cades-signature.html for more information on the information returned)
             return new OpenCadesSignatureResponse(signature);
         }
 
@@ -65,39 +65,39 @@ namespace CoreWebApp.Controllers {
             switch (caseNumber) {
 
                 /*
-					Example #1: accept only 100%-compliant ICP-Brasil signatures
+					Example #1: accept only 100%-compliant ICP-Brasil signatures.
 				 */
                 case 1:
                     // By specifying a catalog of acceptable policies and omitting the default signature policy, we're telling Rest PKI
-                    // that only the policies in the catalog should be accepted
+                    // that only the policies in the catalog should be accepted.
                     sigExplorer.AcceptableExplicitPolicies = SignaturePolicyCatalog.GetPkiBrazilCades();
                     sigExplorer.DefaultSignaturePolicyId = null;
                     break;
 
 
                 /*
-					Example #2: accept any CAdES signature as long as the signer has an ICP-Brasil certificate
+					Example #2: accept any CAdES signature as long as the signer has an ICP-Brasil certificate.
 
 					These parameters will only accept signatures made with ICP-Brasil certificates that comply with the
 					minimal security features defined in the CAdES standard (ETSI TS 101 733). The signatures need not, however,
 					follow the extra requirements defined in the ICP-Brasil signature policy documentation (DOC-ICP-15.03).
 
-					These parameters are less restrictive than the parameters from example #1
+					These parameters are less restrictive than the parameters from example #1.
 				 */
                 case 2:
                     // By omitting the accepted policies catalog and defining a default policy, we're telling Rest PKI to validate
                     // all signatures in the file with the default policy -- even signatures with an explicit signature policy.
                     sigExplorer.AcceptableExplicitPolicies = null;
                     sigExplorer.DefaultSignaturePolicyId = StandardCadesSignaturePolicies.CadesBes;
-                    // The CadesBes policy requires us to choose a security context
+                    // The CadesBes policy requires us to choose a security context.
                     sigExplorer.SecurityContextId = StandardSecurityContexts.PkiBrazil;
                     break;
 
 
                 /*
-					Example #3: accept any CAdES signature as long as the signer is trusted by Windows
+					Example #3: accept any CAdES signature as long as the signer is trusted by Windows.
 
-					Same case as example #2, but using the WindowsServer trust arbitrator	
+					Same case as example #2, but using the WindowsServer trust arbitrator.
 				 */
                 case 3:
                     sigExplorer.AcceptableExplicitPolicies = null;

@@ -128,8 +128,11 @@
         <h5>Actions:</h5>
         <ul>
             <li><a href="Download/{{filename}}" target="_blank">Download the signed file</a></li>
-            <!--<li ng-if="openUrl"><a href="{{openUrl}}?userfile={{filename}}">Open/validate the signed file</a></li>-->
-            <li ng-if="cosignUrl"><a ng-click="coSign()" href="#">Co-sign with another certificate</a></li>
+            <li ng-if="openSignatureUrl"><a ng-click="openSignature()" href="/{{openSignatureUrl}}?userfile={{filename}}">Open/validate the signed file</a></li>
+            <li ng-if="cosignUrl">
+                <a ng-if="signedFile" ng-click="cosign()" href="/{{cosignUrl}}?userfile={{signedFile}}">Co-sign with another certificate</a>
+                <a ng-if="!signedFile && cmsfile" ng-click="cosign()" href="/{{cosignUrl}}?cmsfile={{cmsfile}}">Co-sign with another certificate</a>
+            </li>
         </ul>
     </div>
 
