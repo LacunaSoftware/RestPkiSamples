@@ -1,6 +1,16 @@
 Lacuna Rest PKI change log
 ==========================
 
+1.12.5 (2017-05-11)
+-------------------
+
+Database model update: No
+
+- Add optional app setting DefaultTimestampTimeout to customize the default timeout when requesting timestamps
+- Improve performance logs
+- Update Lacuna PKI SDK to 1.16.7 to improve download logs
+
+
 1.12.4 (2017-05-05)
 -------------------
 
