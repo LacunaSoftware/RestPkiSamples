@@ -1,6 +1,23 @@
 Lacuna Rest PKI change log
 ==========================
 
+1.12.7 (2017-06-05)
+-------------------
+
+Database model update: **Yes**
+
+- Fix bug that caused database deadlocks on high load scenarios
+- Fix bug that caused errors on recently-created timestampers
+
+
+1.12.6 (2017-06-01)
+-------------------
+
+Database model update: No
+
+- Create app settings TimeToCompleteSignatures and TimeToCompleteAuthentications
+
+
 1.12.5 (2017-05-11)
 -------------------
 
