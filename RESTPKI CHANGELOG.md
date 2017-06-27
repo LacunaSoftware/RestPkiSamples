@@ -1,6 +1,14 @@
 Lacuna Rest PKI change log
 ==========================
 
+1.12.8 (2017-06-27)
+-------------------
+
+Database model update: No
+
+- Fix bug that caused intermediate CAs to be ignored on open/validate signature APIs
+
+
 1.12.7 (2017-06-05)
 -------------------
 
