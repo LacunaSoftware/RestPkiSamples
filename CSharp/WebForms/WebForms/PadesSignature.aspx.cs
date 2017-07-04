@@ -105,36 +105,31 @@ namespace WebForms {
 		}
 
 		protected void SubmitButton_Click(object sender, EventArgs e) {
-			// Get an instance of the PadesSignatureFinisher class, responsible for completing the signature process
-			var signatureFinisher = Util.GetRestPkiClient().GetPadesSignatureFinisher();
+			
+			// Get an instance of the PadesSignatureFinisher2 class, responsible for completing the signature process
+			var signatureFinisher = new PadesSignatureFinisher2(Util.GetRestPkiClient()) {
 
-			// Set the token for this signature (rendered in a hidden input field, see the view)
-			signatureFinisher.SetToken((string)ViewState["Token"]);
+				// Set the token for this signature (rendered in a hidden input field, see the view)
+				Token = (string)ViewState["Token"]
+			};
 
-			// Call the Finish() method, which finalizes the signature process and returns the signed PDF
-			var signedPdf = signatureFinisher.Finish();
-
-			// Get information about the certificate used by the user to sign the file. This method must only be called after
-			// calling the Finish() method.
-			var signerCert = signatureFinisher.GetCertificateInfo();
+			// Call the Finish() method, which finalizes the signature process and returns an object to access the signed PDF
+			var result = signatureFinisher.Finish();
 
 			// At this point, you'd typically store the signed PDF on your database. For demonstration purposes, we'll
-			// store the PDF on the App_Data folder and render a page with a link to download the signed PDF and with the
-			// signer's certificate details.
-
-			var appDataPath = Server.MapPath("~/App_Data");
-			if (!Directory.Exists(appDataPath)) {
-				Directory.CreateDirectory(appDataPath);
+			// store the PDF on our mock Storage class
+			string fileId;
+			using (var resultStream = result.OpenRead()) {
+				fileId = Storage.Store(resultStream, ".pdf");
 			}
-			var id = Guid.NewGuid();
-			var filename = id + ".pdf";
-			System.IO.File.WriteAllBytes(Path.Combine(appDataPath, filename), signedPdf);
+			// If you prefer a simpler approach without streams, simply do:
+			// fileId = Storage.Store(result.GetContent(), ".pdf");
 
-			this.SignatureFilename = filename.Replace(".", "_"); // Note: we're passing the filename argument with "." as "_" because of limitations of ASP.NET MVC
-			this.SignerCertificate = signerCert;
-
+			// What you do at this point is up to you. For demonstration purposes, we'll render a page with a link to
+			// download the signed PDF and with the signer's certificate details.
+			this.SignatureFilename = fileId;
+			this.SignerCertificate = result.Certificate;
 			Server.Transfer("PadesSignatureInfo.aspx");
-
 		}
 
 	}
