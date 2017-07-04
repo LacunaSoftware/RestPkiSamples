@@ -1,6 +1,16 @@
 Lacuna Rest PKI change log
 ==========================
 
+1.13.0 (2017-07-03)
+-------------------
+
+Database model update: No
+
+- Add new API to add marks to PDFs
+- Add support for admins to manage users' custom security contexts
+- Improve transactions and events screens
+
+
 1.12.8 (2017-06-27)
 -------------------
 
@@ -81,7 +91,7 @@ Database model update: **Yes**
 - Add optional app setting "AutoUpdateDatabase" to control whether the application will attempt to auto-update the database
 - Add optional app setting "AllowInsecureMaintenance" to allow remote access to maintenance pages through HTTP
 - Fix various issues occurring when running multiple instances of the application (high availability scenarios)
-- Fix database concurrency issues occurring on high load situations
+- ~~Fix database concurrency issues occurring on high load situations~~ (only really fixed on 1.12.7)
 - Fix bug that occurred when the license for the Lacuna PKI SDK was changed
 - Update Lacuna PKI SDK to 1.16.6
 
