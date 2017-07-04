@@ -97,7 +97,7 @@ namespace WebForms {
 
 			// Build string with joined names of signers (see method getDisplayName below)
 			var signerNames = Util.JoinStringsPt(signature.Signers.Select(s => getDisplayName(s.Certificate)));
-			var allPagesMessage = $"Este documento foi assinado digitalmente por {signerNames}.\nPara verificar a validade das assinaturas acesse {VerificationSiteNameWithArticle} em {VerificationSite} e informe o código {verificationCode}";
+			var allPagesMessage = string.Format("Este documento foi assinado digitalmente por {0}.\nPara verificar a validade das assinaturas acesse {1} em {2} e informe o código {3}", signerNames, VerificationSiteNameWithArticle, VerificationSite, verificationCode);
 
 			// PdfHelper is a class from the Rest PKI Client "fluent API" that helps to create elements and parameters for the PdfMarker
 			var pdf = new PdfHelper();
@@ -182,7 +182,7 @@ namespace WebForms {
 				pdf.TextElement()
 				.OnContainer(pdf.Container().Height(elementHeight).AnchorTop(verticalOffset).FullWidth())
 				.AlignTextCenter()
-				.AddSection(pdf.TextSection().WithFontSize(NormalFontSize * 1.2).WithText($"Código para verificação: {verificationCode}"))
+				.AddSection(pdf.TextSection().WithFontSize(NormalFontSize * 1.2).WithText(string.Format("Código para verificação: {0}", verificationCode)))
 			);
 			verticalOffset += elementHeight;
 
@@ -191,7 +191,7 @@ namespace WebForms {
 			manifestMark.AddElement(
 				pdf.TextElement()
 				.OnContainer(pdf.Container().Height(elementHeight).AnchorTop(verticalOffset).FullWidth())
-				.AddSection(pdf.TextSection().WithFontSize(NormalFontSize).WithText($"Este documento foi assinado digitalmente pelos seguintes signatários nas datas indicadas ({TimeZoneDisplayName}):"))
+				.AddSection(pdf.TextSection().WithFontSize(NormalFontSize).WithText(string.Format("Este documento foi assinado digitalmente pelos seguintes signatários nas datas indicadas ({0}):", TimeZoneDisplayName)))
 			);
 			verticalOffset += elementHeight;
 
@@ -225,7 +225,7 @@ namespace WebForms {
 			manifestMark.AddElement(
 				pdf.TextElement()
 				.OnContainer(pdf.Container().Height(elementHeight).AnchorTop(verticalOffset).FullWidth())
-				.AddSection(pdf.TextSection().WithFontSize(NormalFontSize).WithText($"Para verificar a validade das assinaturas, acesse {VerificationSiteNameWithArticle} em "))
+				.AddSection(pdf.TextSection().WithFontSize(NormalFontSize).WithText(string.Format("Para verificar a validade das assinaturas, acesse {0} em ", VerificationSiteNameWithArticle)))
 				.AddSection(pdf.TextSection().WithFontSize(NormalFontSize).WithColor(Color.Blue).WithText(VerificationSite))
 				.AddSection(pdf.TextSection().WithFontSize(NormalFontSize).WithText(" e informe o código acima ou acesse o link abaixo:"))
 			);
@@ -259,10 +259,10 @@ namespace WebForms {
 			var text = new StringBuilder();
 			text.Append(getDisplayName(c));
 			if (!string.IsNullOrEmpty(c.PkiBrazil.Cpf)) {
-				text.Append($" (CPF {c.PkiBrazil.CpfFormatted})");
+				text.AppendFormat(" (CPF {0})", c.PkiBrazil.CpfFormatted);
 			}
 			if (!string.IsNullOrEmpty(c.PkiBrazil.Cnpj)) {
-				text.Append($", empresa {c.PkiBrazil.CompanyName} (CNPJ {c.PkiBrazil.CnpjFormatted})");
+				text.AppendFormat(", empresa {0} (CNPJ {1})", c.PkiBrazil.CompanyName, c.PkiBrazil.CnpjFormatted);
 			}
 			return text.ToString();
 		}
@@ -272,7 +272,7 @@ namespace WebForms {
 			text.Append(getDescription(signer.Certificate));
 			if (signer.SigningTime != null) {
 				var dateStr = TimeZoneInfo.ConvertTime(signer.SigningTime.Value, TimeZone).ToString(DateFormat, CultureInfo);
-				text.Append($" em {dateStr}");
+				text.AppendFormat(" em {0}", dateStr);
 			}
 			return text.ToString();
 		}
