@@ -7,7 +7,7 @@ using System.Web.SessionState;
 
 namespace WebForms {
 
-	public static class Storage {
+	public static class StorageMock {
 
 		public static string Store(Stream stream, string extension = "") {
 			var appDataPath = HttpContext.Current.Server.MapPath("~/App_Data");

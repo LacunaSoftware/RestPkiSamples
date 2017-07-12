@@ -53,14 +53,14 @@ namespace WebForms {
 			var fileId = Request.QueryString["file"];
 
 			// Locate document and read content from storage
-			var fileContent = Storage.Read(fileId);
+			var fileContent = StorageMock.Read(fileId);
 
 			// Check if doc already has a verification code registered on storage
-			var verificationCode = Storage.GetVerificationCode(fileId);
+			var verificationCode = StorageMock.GetVerificationCode(fileId);
 			if (verificationCode == null) {
 				// If not, generate a code and register it
 				verificationCode = Util.GenerateVerificationCode();
-				Storage.SetVerificationCode(fileId, verificationCode);
+				StorageMock.SetVerificationCode(fileId, verificationCode);
 			}
 
 			// Generate the printer-friendly version
