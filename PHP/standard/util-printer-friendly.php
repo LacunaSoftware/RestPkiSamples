@@ -14,6 +14,7 @@ use Lacuna\RestPki\Color;
 
 require __DIR__ . '/vendor/autoload.php';
 
+// Recover verification code from session using fileId
 function getVerificationCode($fileId)
 {
     // Initialize or resume session
@@ -27,6 +28,7 @@ function getVerificationCode($fileId)
     return null;
 }
 
+// Store verification code and fileId on session
 function setVerificationCode($fileId, $code)
 {
     // Initialize or resume session
@@ -38,9 +40,9 @@ function setVerificationCode($fileId, $code)
     $_SESSION['Codes/' . $code] = $fileId;
 }
 
+// Recover fileId from session using the verification code
 function lookupVerificationCode($code)
 {
-
     if (empty($code)) {
         return null;
     }
@@ -56,6 +58,8 @@ function lookupVerificationCode($code)
     return null;
 }
 
+// This function is called by printer-friendly-version.php. It contains the logic to generate a printer-friendly version
+// of a signature file using the Rest PKI.
 function generatePrinterFriendlyVersion($pdfPath, $verificationCode)
 {
     // Set the parameters used on the printer-friendly version
@@ -127,7 +131,7 @@ function generatePrinterFriendlyVersion($pdfPath, $verificationCode)
     array_push($pdfMarker->marks, $pdfMark);
 
     // Summary on right margin of every page (except on the page which wil be created at the end of the document),
-    // rotated 90 degrees counterclockwise (text goes up)
+    // rotated 270 degrees clockwise (or 90 degrees counterclockwise) (text goes up)
     $pdfMark = new PdfMark();
     $pdfMark->pageOption = 'AllPages';
     $pdfMark->container = [
@@ -164,7 +168,7 @@ function generatePrinterFriendlyVersion($pdfPath, $verificationCode)
     $element->relativeContainer = [
         'height' => $elementHeight,
         'top' => $verticalOffset,
-        'width' => $elementHeight, // using elementHeight as width because the image has square shape
+        'width' => $elementHeight, // using elementHeight as width because the image has square format
         'left' => 0
     ];
     $element->image = new PdfMarkImage(getIcpBrasilLogoContent(), "image/png");
@@ -175,7 +179,7 @@ function generatePrinterFriendlyVersion($pdfPath, $verificationCode)
     $element->relativeContainer = [
         'height' => $elementHeight,
         'top' => $verticalOffset,
-        'width' => $elementHeight, // using elementHeight as width because the image has square shape
+        'width' => $elementHeight, // using elementHeight as width because the image has square format
         'right' => 0
     ];
     $element->qrCodeData = $verificationLink;
@@ -193,7 +197,7 @@ function generatePrinterFriendlyVersion($pdfPath, $verificationCode)
     $element->align = 'Center';
     $textSection = new PdfTextSection();
     $textSection->fontSize = $normalFontSize * 1.6;
-    $textSection->text = 'VERIFICAÇÃO DAS' . $breakline . 'ASSINATURAS'; // Using PHP global break-line variable PHP_EOL
+    $textSection->text = 'VERIFICAÇÃO DAS' . $breakline . 'ASSINATURAS';
     array_push($element->textSections, $textSection);
     array_push($manifestMark->elements, $element);
     $verticalOffset += $elementHeight;

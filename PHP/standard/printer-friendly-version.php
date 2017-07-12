@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file generates a printer-friendly version from a signature file
+ * This file generates a printer-friendly version from a signature file using Rest PKI.
  */
 
 require __DIR__ . '/vendor/autoload.php';
