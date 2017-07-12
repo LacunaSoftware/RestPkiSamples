@@ -7,6 +7,6 @@
     ]
   },
   "require": {
-    "lacuna/restpki-client": "^2.1.0"
+    "lacuna/restpki-client": "dev-feature/printer-friendly"
   }
 }
