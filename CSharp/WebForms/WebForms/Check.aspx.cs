@@ -27,7 +27,11 @@ namespace WebForms {
 		protected void Page_Load(object sender, EventArgs e) {
 
 			// Get verification code from query string
-			var verificationCode = Request.QueryString["code"];
+			var formattedVerificationCode = Request.QueryString["code"];
+
+			// On PrinterFriendlyVersion.aspx, we stored the unformatted version of the verification code (without hyphens) but
+			// used the formatted version (with hyphens) on the printer-friendly PDF. Now, we remove the hyphens before looking it up.
+			var verificationCode = Util.ParseVerificationCode(formattedVerificationCode);
 
 			// Get document associated with verification code
 			var fileId = Storage.LookupVerificationCode(verificationCode);

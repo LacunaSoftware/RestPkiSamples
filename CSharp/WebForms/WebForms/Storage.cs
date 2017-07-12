@@ -64,6 +64,7 @@ namespace WebForms {
 		/// Returns the verification code associated with the given document, or null if no verification code has been associated with it
 		/// </summary>
 		public static string GetVerificationCode(string fileId) {
+			// >>>>> NOTICE <<<<<
 			// This should be implemented on your application as a SELECT on your "document table" by the
 			// ID of the document, returning the value of the verification code column
 			return HttpContext.Current.Session[string.Format("Files/{0}/Code", fileId)] as string;
@@ -73,6 +74,7 @@ namespace WebForms {
 		/// Registers the verification code for a given document.
 		/// </summary>
 		public static void SetVerificationCode(string fileId, string code) {
+			// >>>>> NOTICE <<<<<
 			// This should be implemented on your application as an UPDATE on your "document table" filling
 			// the verification code column, which should be an indexed column
 			HttpContext.Current.Session[string.Format("Files/{0}/Code", fileId)] = code;
@@ -86,6 +88,7 @@ namespace WebForms {
 			if (string.IsNullOrEmpty(code)) {
 				return null;
 			}
+			// >>>>> NOTICE <<<<<
 			// This should be implemented on your application as a SELECT on your "document table" by the
 			// verification code column, which should be an indexed column
 			return HttpContext.Current.Session[string.Format("Codes/{0}", code)] as string;
