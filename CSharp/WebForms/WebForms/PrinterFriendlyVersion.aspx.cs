@@ -33,16 +33,16 @@ namespace WebForms {
 		private const int NormalFontSize = 12;
 
 		// CultureInfo to be used when converting dates to string
-		private static readonly CultureInfo CultureInfo = new CultureInfo("pt-BR");
+		public static readonly CultureInfo CultureInfo = new CultureInfo("pt-BR");
 
 		// Date format to be used when converting dates to string (for other formats, see https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings)
-		private const string DateFormat = "g"; // short date with short time
+		public const string DateFormat = "g"; // short date with short time
 
 		// Time zone to be used when converting dates to string (for other time zones, see https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/default-time-zones)
-		private static readonly TimeZoneInfo TimeZone = TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
+		public static readonly TimeZoneInfo TimeZone = TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
 
 		// Display name of the time zone chosen above
-		private const string TimeZoneDisplayName = "horário de Brasília";
+		public const string TimeZoneDisplayName = "horário de Brasília";
 
 		// You may also change texts, positions and more by editing directly the method generatePrinterFriendlyVersion below
 		// ##################################################################################################################

@@ -32,7 +32,9 @@
 				</div>
 				<div id="<%= collapseId %>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="<%= headingId %>">
 					<div class="panel-body">
-						<p>Signing time: <%= signer.SigningTime %></p>
+						<% if (signer.SigningTime.HasValue) { %>
+							<p>Signing time: <%= TimeZoneInfo.ConvertTime(signer.SigningTime.Value, WebForms.PrinterFriendlyVersion.TimeZone).ToString(WebForms.PrinterFriendlyVersion.DateFormat, WebForms.PrinterFriendlyVersion.CultureInfo) %> (<%= WebForms.PrinterFriendlyVersion.TimeZoneDisplayName %>)</p>
+						<% } %>
 						<p>Message digest: <%= signer.MessageDigest.Algorithm.Name %> <%= BitConverter.ToString(signer.MessageDigest.Value) %></p>
 						<% if (signer.SignaturePolicy != null) { %>
 							<p>Signature policy: <%= signer.SignaturePolicy.Oid %></p>
