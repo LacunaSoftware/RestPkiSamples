@@ -327,7 +327,7 @@
       <DependentUpon>Site.Mobile.Master</DependentUpon>
     </Compile>
     <Compile Include="Startup.cs" />
-    <Compile Include="Storage.cs" />
+    <Compile Include="StorageMock.cs" />
     <Compile Include="Upload.aspx.cs">
       <DependentUpon>Upload.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
