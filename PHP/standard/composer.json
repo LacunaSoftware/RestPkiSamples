@@ -2,7 +2,8 @@
   "autoload": {
     "files": [
       "util.php",
-      "util-pades.php"
+      "util-pades.php",
+      "util-printer-friendly.php"
     ]
   },
   "require": {
