@@ -7,7 +7,7 @@ use Lacuna\RestPki\StandardSignaturePolicies;
 use Lacuna\RestPki\StandardSecurityContexts;
 
 // Get document ID from query string
-$formattedCode = isset($_GET['code']) ? $_GET['code'] : null;
+$formattedCode = isset($_GET['c']) ? $_GET['c'] : null;
 if (!isset($formattedCode)) {
     throw new \Exception("No code was provided");
 }

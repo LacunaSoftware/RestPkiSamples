@@ -31,13 +31,10 @@ $verificationSite = 'http://localhost:8000';
 
 // Format of the verification link, without the verification code, that is added on generatePrinterFriendlyVersion()
 // method.
-$verificationLinkFormat = 'http://localhost:8000/check.php?code=';
+$verificationLinkFormat = 'http://localhost:8000/check.php?c=';
 
 // "Normal" font size. Sizes of header fonts are defined based on this size.
 $normalFontSize = 12;
-
-// Display name of the time zone chosen above.
-$timeZoneDisplayName = 'horário de Brasília';
 
 // You may also change texts, positions and more by editing directly the method generatePrinterFriendlyVersion() below.
 // #####################################################################################################################
@@ -77,7 +74,6 @@ function generatePrinterFriendlyVersion($pdfPath, $verificationCode)
     global $verificationSite;
     global $verificationLinkFormat;
     global $normalFontSize;
-    global $timeZoneDisplayName;
 
     // Use PHP's global variable PHP_EOL that returns a OS independent break-line
     $breakline = PHP_EOL;
@@ -172,8 +168,8 @@ function generatePrinterFriendlyVersion($pdfPath, $verificationCode)
     $manifestMark->pageOption = PdfMarkPageOptions::NEW_PAGE;
     // This mark's container is the whole page with 1-inch margins
     $manifestMark->container = [
-        'top' => 2.54,
-        'bottom' => 2.54,
+        'top' => 1.5,
+        'bottom' => 1.5,
         'left' => 1.5,
         'right' => 1.5
     ];
@@ -256,8 +252,7 @@ function generatePrinterFriendlyVersion($pdfPath, $verificationCode)
     ];
     $textSection = new PdfTextSection();
     $textSection->fontSize = $normalFontSize;
-    $textSection->text = 'Este documento foi assinado digitalmente pelos seguintes signatários nas datas indicadas ('
-        . $timeZoneDisplayName . ')';
+    $textSection->text = 'Este documento foi assinado digitalmente pelos seguintes signatários nas datas indicadas';
     array_push($element->textSections, $textSection);
     array_push($manifestMark->elements, $element);
     $verticalOffset += $elementHeight;
