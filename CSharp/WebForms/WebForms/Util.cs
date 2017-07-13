@@ -6,6 +6,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using System.Web;
 
 namespace WebForms {
@@ -81,42 +82,42 @@ namespace WebForms {
 			return text.ToString();
 		}
 
+		/*
+		 * ------------------------------------
+		 * Configuration of the code generation
+		 * 
+		 * - CodeSize   : size of the code in characters
+		 * - CodeGroups : number of groups to separate the code (must be a proper divisor of the code size)
+		 * 
+		 * Examples
+		 * --------
+		 * 
+		 * - CodeSize = 12, CodeGroups = 3 : XXXX-XXXX-XXXX
+		 * - CodeSize = 12, CodeGroups = 4 : XXX-XXX-XXX-XXX
+		 * - CodeSize = 16, CodeGroups = 4 : XXXX-XXXX-XXXX-XXXX
+		 * - CodeSize = 20, CodeGroups = 4 : XXXXX-XXXXX-XXXXX-XXXXX
+		 * - CodeSize = 20, CodeGroups = 5 : XXXX-XXXX-XXXX-XXXX-XXXX
+		 * - CodeSize = 25, CodeGroups = 5 : XXXXX-XXXXX-XXXXX-XXXXX-XXXXX
+		 * 
+		 * Entropy
+		 * -------
+		 * 
+		 * The resulting entropy of the code in bits is the size of the code times 5. Here are some suggestions:
+		 * 
+		 * - 12 characters = 60 bits
+		 * - 16 characters = 80 bits
+		 * - 20 characters = 100 bits
+		 * - 25 characters = 125 bits
+		 */
+		private const int VerificationCodeSize = 16;
+		private const int VerificationCodeGroups = 4;
+
+		// This method generates a verification code, without dashes
 		public static string GenerateVerificationCode() {
-
-			/*
-			 * Configuration of the code generation
-			 * ------------------------------------
-			 * 
-			 * - CodeSize   : size of the code in characters
-			 * - CodeGroups : number of groups to separate the code (must be a proper divisor of the code size)
-			 * 
-			 * Examples
-			 * --------
-			 * 
-			 * - CodeSize = 12, CodeGroups = 3 : XXXX-XXXX-XXXX
-			 * - CodeSize = 12, CodeGroups = 4 : XXX-XXX-XXX-XXX
-			 * - CodeSize = 16, CodeGroups = 4 : XXXX-XXXX-XXXX-XXXX
-			 * - CodeSize = 20, CodeGroups = 4 : XXXXX-XXXXX-XXXXX-XXXXX
-			 * - CodeSize = 20, CodeGroups = 5 : XXXX-XXXX-XXXX-XXXX-XXXX
-			 * - CodeSize = 25, CodeGroups = 5 : XXXXX-XXXXX-XXXXX-XXXXX-XXXXX
-			 * 
-			 * Entropy
-			 * -------
-			 * 
-			 * The resulting entropy of the code in bits is the size of the code times 5. Here are some suggestions:
-			 * 
-			 * - 12 characters = 60 bits
-			 * - 16 characters = 80 bits
-			 * - 20 characters = 100 bits
-			 * - 25 characters = 125 bits
-			 */
-			const int CodeSize = 16;
-			const int CodeGroups = 4;
-
 			// String with exactly 32 letters and numbers to be used on the codes. We recommend leaving this value as is.
 			const string Alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 			// Allocate a byte array large enough to receive the necessary entropy
-			var bytes = new byte[(int)Math.Ceiling(CodeSize * 5 / 8.0)];
+			var bytes = new byte[(int)Math.Ceiling(VerificationCodeSize * 5 / 8.0)];
 			// Generate the entropy with a cryptographic number generator
 			using (var rng = RandomNumberGenerator.Create()) {
 				rng.GetBytes(bytes);
@@ -125,7 +126,7 @@ namespace WebForms {
 			var bits = new BitArray(bytes);
 			// Iterate bits 5-by-5 converting into characters in our alphabet
 			var sb = new System.Text.StringBuilder();
-			for (int i = 0; i < CodeSize; i++) {
+			for (int i = 0; i < VerificationCodeSize; i++) {
 				int n = (bits[i] ? 1 : 0) << 4
 					| (bits[i + 1] ? 1 : 0) << 3
 					| (bits[i + 2] ? 1 : 0) << 2
@@ -133,10 +134,20 @@ namespace WebForms {
 					| (bits[i + 4] ? 1 : 0);
 				sb.Append(Alphabet[n]);
 			}
-			var code = sb.ToString();
+			return sb.ToString();
+		}
+
+		public static string FormatVerificationCode(string code) {
 			// Return the code separated in groups
-			var charsPerGroup = CodeSize / CodeGroups;
-			return string.Join("-", Enumerable.Range(0, CodeGroups).Select(g => code.Substring(g * charsPerGroup, charsPerGroup)));
+			var charsPerGroup = VerificationCodeSize / VerificationCodeGroups;
+			return string.Join("-", Enumerable.Range(0, VerificationCodeGroups).Select(g => code.Substring(g * charsPerGroup, charsPerGroup)));
+		}
+
+		public static string ParseVerificationCode(string formattedCode) {
+			if (string.IsNullOrEmpty(formattedCode)) {
+				return formattedCode;
+			}
+			return Regex.Replace(formattedCode, "[^A-Za-z0-9]", "");
 		}
 
 	}

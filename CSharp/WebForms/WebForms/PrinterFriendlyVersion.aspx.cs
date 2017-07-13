@@ -53,14 +53,14 @@ namespace WebForms {
 			var fileId = Request.QueryString["file"];
 
 			// Locate document and read content from storage
-			var fileContent = Storage.Read(fileId);
+			var fileContent = StorageMock.Read(fileId);
 
 			// Check if doc already has a verification code registered on storage
-			var verificationCode = Storage.GetVerificationCode(fileId);
+			var verificationCode = StorageMock.GetVerificationCode(fileId);
 			if (verificationCode == null) {
 				// If not, generate a code and register it
 				verificationCode = Util.GenerateVerificationCode();
-				Storage.SetVerificationCode(fileId, verificationCode);
+				StorageMock.SetVerificationCode(fileId, verificationCode);
 			}
 
 			// Generate the printer-friendly version
@@ -76,7 +76,13 @@ namespace WebForms {
 		private byte[] generatePrinterFriendlyVersion(byte[] pdfContent, string verificationCode) {
 
 			var client = Util.GetRestPkiClient();
-			var verificationLink = string.Format(VerificationLinkFormat, verificationCode);
+			
+			// The verification code is generated without hyphens to save storage space and avoid copy-and-paste problems. On the PDF generation,
+			// we use the "formatted" version, with hyphens (which will later be discarded on the verification page)
+			var formattedVerificationCode = Util.FormatVerificationCode(verificationCode);
+
+			// Build the verification link from the constant "VerificationLinkFormat" (see above) and the formatted verification code
+			var verificationLink = string.Format(VerificationLinkFormat, formattedVerificationCode);
 
 			// 1. Upload the PDF
 			var blob = client.UploadFile(pdfContent);
@@ -97,7 +103,7 @@ namespace WebForms {
 
 			// Build string with joined names of signers (see method getDisplayName below)
 			var signerNames = Util.JoinStringsPt(signature.Signers.Select(s => getDisplayName(s.Certificate)));
-			var allPagesMessage = string.Format("Este documento foi assinado digitalmente por {0}.\nPara verificar a validade das assinaturas acesse {1} em {2} e informe o código {3}", signerNames, VerificationSiteNameWithArticle, VerificationSite, verificationCode);
+			var allPagesMessage = string.Format("Este documento foi assinado digitalmente por {0}.\nPara verificar a validade das assinaturas acesse {1} em {2} e informe o código {3}", signerNames, VerificationSiteNameWithArticle, VerificationSite, formattedVerificationCode);
 
 			// PdfHelper is a class from the Rest PKI Client "fluent API" that helps to create elements and parameters for the PdfMarker
 			var pdf = new PdfHelper();
@@ -182,7 +188,7 @@ namespace WebForms {
 				pdf.TextElement()
 				.OnContainer(pdf.Container().Height(elementHeight).AnchorTop(verticalOffset).FullWidth())
 				.AlignTextCenter()
-				.AddSection(pdf.TextSection().WithFontSize(NormalFontSize * 1.2).WithText(string.Format("Código para verificação: {0}", verificationCode)))
+				.AddSection(pdf.TextSection().WithFontSize(NormalFontSize * 1.2).WithText(string.Format("Código para verificação: {0}", formattedVerificationCode)))
 			);
 			verticalOffset += elementHeight;
 

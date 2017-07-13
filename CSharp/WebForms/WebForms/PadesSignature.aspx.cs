@@ -120,7 +120,7 @@ namespace WebForms {
 			// store the PDF on our mock Storage class
 			string fileId;
 			using (var resultStream = result.OpenRead()) {
-				fileId = Storage.Store(resultStream, ".pdf");
+				fileId = StorageMock.Store(resultStream, ".pdf");
 			}
 			// If you prefer a simpler approach without streams, simply do:
 			// fileId = Storage.Store(result.GetContent(), ".pdf");

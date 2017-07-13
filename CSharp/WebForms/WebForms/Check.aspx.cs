@@ -27,10 +27,14 @@ namespace WebForms {
 		protected void Page_Load(object sender, EventArgs e) {
 
 			// Get verification code from query string
-			var verificationCode = Request.QueryString["code"];
+			var formattedVerificationCode = Request.QueryString["code"];
+
+			// On PrinterFriendlyVersion.aspx, we stored the unformatted version of the verification code (without hyphens) but
+			// used the formatted version (with hyphens) on the printer-friendly PDF. Now, we remove the hyphens before looking it up.
+			var verificationCode = Util.ParseVerificationCode(formattedVerificationCode);
 
 			// Get document associated with verification code
-			var fileId = Storage.LookupVerificationCode(verificationCode);
+			var fileId = StorageMock.LookupVerificationCode(verificationCode);
 			if (fileId == null) {
 				// Invalid code given!
 				// Small delay to slow down brute-force attacks (if you want to be extra careful you might want to add a CAPTCHA to the process)
@@ -42,7 +46,7 @@ namespace WebForms {
 			}
 
 			// Read document from storage
-			var fileContent = Storage.Read(fileId);
+			var fileContent = StorageMock.Read(fileId);
 
 			// Open and validate signatures with Rest PKI
 			var client = Util.GetRestPkiClient();
