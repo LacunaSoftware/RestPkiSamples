@@ -103,7 +103,7 @@ function generateVerificationCode()
     $numBytes = floor($codeSize / 2);
     $randInt = openssl_random_pseudo_bytes($numBytes);
 
-    return bin2hex($randInt);
+    return strtoupper(bin2hex($randInt));
 }
 
 function formatVerificationCode($code)
@@ -134,7 +134,7 @@ function formatVerificationCode($code)
     return $text;
 }
 
-function removeFormattingFromCode($code)
+function parseVerificationCode($code)
 {
     $text = '';
     for ($ind = 0; $ind < strlen($code); $ind++) {

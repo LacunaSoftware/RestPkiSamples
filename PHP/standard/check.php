@@ -11,11 +11,21 @@ $formattedCode = isset($_GET['code']) ? $_GET['code'] : null;
 if (!isset($formattedCode)) {
     throw new \Exception("No code was provided");
 }
-$code = removeFormattingFromCode($formattedCode);
+
+// On printer-friendly-version.php, we stored the unformatted version of the verification code (without hyphens) but
+// used the formatted version (with hyphens) on the printer-friendly PDF. Now, we remove the hyphen before looking it
+// up.
+$verificationCode = parseVerificationCode($formattedCode);
 
 // Get document associated with verification code
-$fileId = lookupVerificationCode($code);
+$fileId = lookupVerificationCode($verificationCode);
 if ($fileId == null) {
+    // Invalid code given!
+    // Small delay to slow down brute-force attacks (if you want to be extra careful you might want to add a CAPTCHA to
+    // the process).
+    sleep(2);
+
+    // Inform that the file was not found
     die('File not found');
 }
 

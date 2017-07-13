@@ -3,7 +3,7 @@
     "files": [
       "util.php",
       "util-pades.php",
-      "util-printer-friendly.php"
+      "storage-mock.php"
     ]
   },
   "require": {

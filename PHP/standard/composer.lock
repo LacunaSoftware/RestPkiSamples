@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "401502c87f1aca68c0604b08e7683e00",
+    "hash": "fb23a4c96a8860f70af533075e015760",
     "content-hash": "db6317b0b0064f896ccc265fae101fef",
     "packages": [
         {
@@ -194,12 +194,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/LacunaSoftware/RestPkiPhpClient.git",
-                "reference": "6ed6dafc82050874dc879fded23d2b467411c4b0"
+                "reference": "39982c9ae9c8f2ec77a2ad8917ef5d7cc33f2c11"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LacunaSoftware/RestPkiPhpClient/zipball/6ed6dafc82050874dc879fded23d2b467411c4b0",
-                "reference": "6ed6dafc82050874dc879fded23d2b467411c4b0",
+                "url": "https://api.github.com/repos/LacunaSoftware/RestPkiPhpClient/zipball/39982c9ae9c8f2ec77a2ad8917ef5d7cc33f2c11",
+                "reference": "39982c9ae9c8f2ec77a2ad8917ef5d7cc33f2c11",
                 "shasum": ""
             },
             "require": {
@@ -231,7 +231,7 @@
                 "rest pki",
                 "signature"
             ],
-            "time": "2017-07-12 19:35:43"
+            "time": "2017-07-13 18:38:22"
         },
         {
             "name": "psr/http-message",
