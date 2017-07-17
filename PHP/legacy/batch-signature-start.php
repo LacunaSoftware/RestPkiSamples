@@ -109,7 +109,7 @@ $signatureStarter->setVisualRepresentation(array(
 	Experiment changing the argument to see different examples of PDF marks. Once you decide which is best for your
     case, you can place the code directly here.
 */
-// array_push($signatureStarter->pdfMarks, PadesVisualElements::getPdfMark(1));
+//array_push($signatureStarter->pdfMarks, PadesVisualElements::getPdfMark(1));
 
 // Call the startWithWebPki() method, which initiates the signature. This yields the token, a 43-character
 // case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the

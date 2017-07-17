@@ -78,6 +78,7 @@ file_put_contents("app-data/{$filename}", $signedPdf);
     <h3>Actions:</h3>
     <ul>
         <li><a href="app-data/<?php echo $filename ?>">Download the signed file</a></li>
+        <li><a href="printer-friendly-version.php?file=<?php echo $filename ?>">Download a printer-friendly version of the signed file</a></li>
         <li><a href="open-pades-signature.php?userfile=<?php echo $filename ?>">Open/validate the signed file</a></li>
         <li><a href="pades-signature.php?userfile=<?php echo $filename ?>">Co-sign with another certificate</a></li>
     </ul>

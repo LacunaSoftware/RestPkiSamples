@@ -7,7 +7,7 @@ namespace Lacuna;
 class PadesVisualElements
 {
 
-    // This function is called by pades-signature.php and batch-signature-start. It contains examples of signature
+    // This function is called by pades-signature.php and batch-signature-start.php. It contains examples of signature
     // visual representation positionings. This code is only in a separate function in order to organize the various
     // examples, you can pick the one that best suits your needs and use it below directly without an encapsulating
     // function.

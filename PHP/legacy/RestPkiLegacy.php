@@ -853,6 +853,26 @@ class PadesSignatureExplorer extends SignatureExplorer
                 if (isset($signer->signingTime)) {
                     $signer->signingTime = date("d/m/Y H:i:s P", strtotime($signer->signingTime));
                 }
+                if (isset($signer->certificate)) {
+                    if (isset($signer->certificate->pkiBrazil)) {
+
+                        if (isset($signer->certificate->pkiBrazil->cpf)) {
+                            $cpf = $signer->certificate->pkiBrazil->cpf;
+                            $signer->certificate->pkiBrazil->cpfFormatted = substr($cpf, 0, 3) . '.' . substr($cpf, 3, 3)
+                                . '.' . substr($cpf, 6, 3) . '-' . substr($cpf, 9);
+                        } else {
+                            $signer->certificate->pkiBrazil->cpfFormatted = '';
+                        }
+
+                        if (isset($signer->certificate->pkiBrazil->cnpj)) {
+                            $cnpj = $signer->certificate->pkiBrazil->cnpj;
+                            $signer->certificate->pkiBrazil->cnpjFormatted = substr($cnpj, 0, 2) . '.' . substr($cnpj, 2, 3)
+                                . '.' . substr($cnpj, 5, 3) . '/' . substr($cnpj, 8, 4) . '-' . substr($cnpj, 12);
+                        } else {
+                            $signer->certificate->pkiBrazil->cnpjFormatted = '';
+                        }
+                    }
+                }
             }
 
             return $response;
@@ -902,6 +922,26 @@ class CadesSignatureExplorer extends SignatureExplorer
 
             if (isset($signer->signingTime)) {
                 $signer->signingTime = date("d/m/Y H:i:s P", strtotime($signer->signingTime));
+            }
+            if (isset($signer->certificate)) {
+                if (isset($signer->certificate->pkiBrazil)) {
+
+                    if (isset($signer->certificate->pkiBrazil->cpf)) {
+                        $cpf = $signer->certificate->pkiBrazil->cpf;
+                        $signer->certificate->pkiBrazil->cpfFormatted = substr($cpf, 0, 3) . '.' . substr($cpf, 3, 3)
+                            . '.' . substr($cpf, 6, 3) . '-' . substr($cpf, 9);
+                    } else {
+                        $signer->certificate->pkiBrazil->cpfFormatted = '';
+                    }
+
+                    if (isset($signer->certificate->pkiBrazil->cnpj)) {
+                        $cnpj = $signer->certificate->pkiBrazil->cnpj;
+                        $signer->certificate->pkiBrazil->cnpjFormatted = substr($cnpj, 0, 2) . '.' . substr($cnpj, 2, 3)
+                            . '.' . substr($cnpj, 5, 3) . '/' . substr($cnpj, 8, 4) . '-' . substr($cnpj, 12);
+                    } else {
+                        $signer->certificate->pkiBrazil->cnpjFormatted = '';
+                    }
+                }
             }
         }
 
@@ -1374,6 +1414,55 @@ class Color
     }
 }
 
+class PdfMarker
+{
+    /** @var RestPkiClient */
+    private $client;
+
+    public $measurementUnits;
+    public $pageOptimization;
+    public $abortIfSigned;
+    public $marks;
+    public $fileContent;
+
+    public function __construct($client)
+    {
+        $this->client = $client;
+        $this->marks = array();
+        $this->measurementUnits = PadesMeasurementUnits::CENTIMETERS;
+    }
+
+    public function setFileFromPath($path)
+    {
+        $this->fileContent = file_get_contents($path);
+    }
+
+    public function setFileFromContentRaw($contentRaw)
+    {
+        $this->fileContent = $contentRaw;
+    }
+
+    public function setFileFromContentBase64($contentBase64)
+    {
+        $this->fileContent = base64_decode($contentBase64);
+    }
+
+    public function apply()
+    {
+        $request = array(
+            'marks' => $this->marks,
+            'measurementUnits' => $this->measurementUnits,
+            'pageOptimization' => $this->pageOptimization,
+            'abortIfSigned' => $this->abortIfSigned
+        );
+        $request['file'] = array(
+            'content' => base64_encode($this->fileContent)
+        );
+        $response = $this->client->post('Api/Pdf/AddMarks', $request);
+        return $response->file;
+    }
+}
+
 class PdfTextStyle
 {
     const NORMAL = "Normal";
@@ -1385,6 +1474,15 @@ class PdfMarkElementType
 {
     const TEXT = "Text";
     const IMAGE = "Image";
+    const QRCODE = "QRCode";
+}
+
+class PdfMarkPageOptions
+{
+    const ALL_PAGES = 'AllPages';
+    const SINGLE_PAGE = 'SinglePage';
+    const SINGLE_PAGE_FROM_END = 'SinglePageFromEnd';
+    const NEW_PAGE = 'NewPage';
 }
 
 class PdfMark
@@ -1394,6 +1492,8 @@ class PdfMark
     public $borderColor;
     public $backgroundColor;
     public $elements;
+    public $pageOption;
+    public $pageOptionNumber;
 
     public function __construct()
     {
@@ -1401,6 +1501,7 @@ class PdfMark
         $this->borderColor = new Color("#000000"); // Black
         $this->backgroundColor = new Color("#FFFFFF", 0); // Transparent
         $this->elements = array();
+        $this->pageOption = PdfMarkPageOptions::ALL_PAGES;
     }
 }
 
@@ -1409,39 +1510,31 @@ class PdfMarkElement
     public $elementType;
     public $relativeContainer;
     public $rotation;
+    public $opacity;
 
-    public function __construct()
+    public function __construct($elementType, $relativeContainer = null)
     {
-        $args = func_get_args();
-        if (sizeof($args) == 1) { // Case (elementType)
-            $this->elementType = $args[0];
-            $this->rotation = 0;
-        } elseif (sizeof($args) == 2) { // Case (elementType, relativeContainer)
-            $this->rotation = 0;
-            $this->elementType = $args[0];
-            $this->relativeContainer = $args[1];
-        } else {
-            throw new \InvalidArgumentException("Invalid parameters passed to the PdfMarkElement's Constructor.");
-        }
+        $this->rotation = 0;
+        $this->elementType = $elementType;
+        $this->relativeContainer = $relativeContainer;
+        $this->opacity = 100;
     }
 }
 
 class PdfMarkTextElement extends PdfMarkElement
 {
     public $textSections;
+    public $align;
 
-    public function __construct()
+    public function __construct($relativeContainer = null, $textSections = null)
     {
-        $args = func_get_args();
-        if (sizeof($args) == 0) { // Case ()
+        parent::__construct(PdfMarkElementType::TEXT, $relativeContainer);
+        if (empty($textSections)) {
             $this->textSections = array();
-            parent::__construct(PdfMarkElementType::TEXT);
-        } elseif (sizeof($args) == 2) {
-            $this->textSections = $args[1];
-            parent::__construct(PdfMarkElementType::TEXT, $args[0]);
         } else {
-            throw new \InvalidArgumentException("Invalid parameters passed to the PdfMarkTextElement's Constructor.");
+            $this->textSections = $textSections;
         }
+        $this->align = 'Left';
     }
 }
 
@@ -1449,17 +1542,22 @@ class PdfMarkImageElement extends PdfMarkElement
 {
     public $image;
 
-    public function __construct()
+    public function __construct($relativeContainer = null, $image = null)
     {
-        $args = func_get_args();
-        if (sizeof($args) == 0) { // Case ()
-            parent::__construct(PdfMarkElementType::IMAGE);
-        } elseif (sizeof($args) == 2) { // Case (relativeContainer, image)
-            $this->image = $args[1];
-            parent::__construct(PdfMarkElementType::IMAGE, $args[0]);
-        } else {
-            throw new \InvalidArgumentException("Invalid parameters to the PdfMarkImageElement's Constructor.");
-        }
+        parent::__construct(PdfMarkElementType::IMAGE, $relativeContainer);
+        $this->image = $image;
+    }
+}
+
+class PdfMarkQRCodeElement extends PdfMarkElement
+{
+    public $qrCodeData;
+    public $drawQuietZones;
+
+    public function __construct($relativeContainer = null, $qrCodeData = null)
+    {
+        parent::__construct(PdfMarkElementType::QRCODE, $relativeContainer);
+        $this->qrCodeData = $qrCodeData;
     }
 }
 
@@ -1470,22 +1568,15 @@ class PdfTextSection
     public $color;
     public $fontSize;
 
-    public function __construct()
+    public function __construct($text = null, $color = null, $fontSize = null)
     {
-        $args = func_get_args();
-        if (sizeof($args) == 0) {
-            $this->style = PdfTextStyle::NORMAL;
-            $this->color = new Color('#000000');
-        } elseif (sizeof($args) == 2) { // Case (text, color)
-            $this->text = $args[0];
-            $this->color = $args[1];
-            $this->fontSize = null;
-        } elseif (sizeof($args) == 3) { // Case (text, color, fontSize)
-            $this->text = $args[0];
-            $this->color = $args[1];
-            $this->fontSize = $args[2];
+        $this->style = PdfTextStyle::NORMAL;
+        $this->text = $text;
+        $this->fontSize = $fontSize;
+        if (empty($color)) {
+            $this->color = new Color('#000000'); // Black
         } else {
-            throw new \InvalidArgumentException("Invalid parameters passed to the PdfMarkText's Constructor.");
+            $this->color = $color;
         }
     }
 }
@@ -1495,18 +1586,14 @@ class PdfMarkImage
     public $resource;
     public $opacity;
 
-    public function __construct()
+    public function __construct($imageContent = null, $mimeType = null)
     {
-        $args = func_get_args();
-        if (sizeof($args) == 0) { // Case ()
-            $this->opacity = 100;
-            $this->resource = new ResourceContentOrReference();
-        } elseif (sizeof($args) == 2) { // Case (imageContent, mimeType)
-            $this->resource = new ResourceContentOrReference();
-            $this->resource->content = base64_encode($args[0]);
-            $this->resource->mimeType = $args[1];
-        } else {
-            throw new \InvalidArgumentException("Invalid parameters passed to the PdfMarkImage's Constructor.");
+        $this->resource = new ResourceContentOrReference();
+        if (!empty($imageContent)) {
+            $this->resource->content = base64_encode($imageContent);
+        }
+        if (!empty($mimeType)) {
+            $this->resource->mimeType = $mimeType;
         }
     }
 }
