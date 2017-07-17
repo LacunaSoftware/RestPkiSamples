@@ -12,11 +12,14 @@ namespace SampleSite.Classes {
 
 		public static RestPkiClient GetRestPkiClient() {
 			var accessToken = ConfigurationManager.AppSettings["RestPkiAccessToken"];
-			// Throw exception if token is not set (this check is here just for the sake of newcomers, you can remove it)
 			if (string.IsNullOrEmpty(accessToken) || accessToken.Contains(" API ")) {
 				throw new Exception("The API access token was not set! Hint: to run this sample you must generate an API access token on the REST PKI website and paste it on the web.config file");
 			}
-			return new RestPkiClient("https://pki.rest/", ConfigurationManager.AppSettings["RestPkiAccessToken"]);
+			var endpoint = ConfigurationManager.AppSettings["RestPkiEndpoint"];
+			if (string.IsNullOrEmpty(endpoint)) {
+				endpoint = "https://pki.rest/";
+			}
+			return new RestPkiClient(endpoint, accessToken);
 		}
 
 		public static string ContentPath {
@@ -30,7 +33,11 @@ namespace SampleSite.Classes {
 		}
 
 		public static byte[] GetSampleDocContent() {
-			return File.ReadAllBytes(Path.Combine(ContentPath, "01.pdf"));
+			return File.ReadAllBytes(GetSampleDocPath());
+		}
+
+		public static string GetSampleDocPath() {
+			return Path.Combine(ContentPath, "01.pdf");
 		}
 
 		public static byte[] GetBatchDocContent(int id) {
@@ -45,5 +52,8 @@ namespace SampleSite.Classes {
 			return File.ReadAllBytes(Path.Combine(ContentPath, "SampleDocument.xml"));
 		}
 
+		public static byte[] GetXmlInvoiceWithSigs() {
+			return File.ReadAllBytes(Path.Combine(ContentPath, "InvoiceWithSigs.xml"));
+		}
 	}
 }

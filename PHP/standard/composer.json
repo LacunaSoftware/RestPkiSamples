@@ -1,5 +1,12 @@
 {
-    "require": {
-        "guzzlehttp/guzzle": "~6.0"
-    }
+  "autoload": {
+    "files": [
+      "util.php",
+      "util-pades.php",
+      "storage-mock.php"
+    ]
+  },
+  "require": {
+    "lacuna/restpki-client": "^2.2.0"
+  }
 }

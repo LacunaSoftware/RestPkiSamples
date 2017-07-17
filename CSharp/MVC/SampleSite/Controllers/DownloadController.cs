@@ -53,5 +53,12 @@ namespace SampleSite.Controllers {
 			var fileContent = Util.GetSampleNFeContent();
 			return File(fileContent, "text/xml", "SampleNFe.xml");
 		}
+
+		// GET Download/SampleInvoice
+		[HttpGet]
+		public ActionResult SampleInvoice() {
+			var fileContent = Util.GetXmlInvoiceWithSigs();
+			return File(fileContent, "text/xml", "InvoiceWithSigs.xml");
+		}
 	}
 }

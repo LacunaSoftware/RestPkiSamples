@@ -1,0 +1,55 @@
+﻿<div class="modal-header">
+	<h3 class="modal-title">Validation Results</h3>
+</div>
+<div class="modal-body">
+
+	<!-- Breadcrumb -->
+	<ol class="breadcrumb" ng-if="itemStack.length > 1">
+		<li ng-repeat="item in itemStack" ng-if="$index < itemStack.length - 1">
+			<a href="" ng-click="showParent(item)">
+				{{ item.message }}
+				<span ng-show="item.detail">({{ item.detail }})</span>
+			</a>
+		</li>
+		<li class="active">
+				{{ itemStack[itemStack.length-1].message }}
+			<span ng-show="itemStack[itemStack.length-1].detail">({{ itemStack[itemStack.length-1].detail }})</span>
+		</li>
+	</ol>
+
+	<div ng-show="model.errors.length > 0">
+		<h4>Errors</h4>
+		<ul class="text-danger">
+			<li ng-repeat="item in model.errors">
+				{{ item.message }}
+				<span ng-show="item.detail">({{ item.detail }})</span>
+				<a ng-show="item.innerValidationResults != null" href="" ng-click="showDetails(item)">details</a>
+			</li>
+		</ul>
+	</div>
+
+	<div ng-show="model.warnings.length > 0">
+		<h4>Warnings</h4>
+		<ul class="text-warning">
+			<li ng-repeat="item in model.warnings">
+				{{ item.message }}
+				<span ng-show="item.detail">({{ item.detail }})</span>
+				<a ng-show="item.innerValidationResults != null" href="" ng-click="showDetails(item)">details</a>
+			</li>
+		</ul>
+	</div>
+
+	<div ng-show="model.passedChecks.length > 0">
+		<h4>Passed checks</h4>
+		<ul class="text-success">
+			<li ng-repeat="item in model.passedChecks">
+				{{ item.detail }}
+				<a ng-show="item.innerValidationResults != null" href="" ng-click="showDetails(item)">details</a>
+			</li>
+		</ul>
+	</div>
+
+</div>
+<div class="modal-footer">
+	<button class="btn btn-primary" ng-click="close()">Close</button>
+</div>

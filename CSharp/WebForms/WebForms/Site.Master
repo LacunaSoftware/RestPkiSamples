@@ -15,6 +15,10 @@
 </head>
 <body>
 	<form runat="server">
+		<script>
+			var _webPkiLicense = '<%= System.Configuration.ConfigurationManager.AppSettings["WebPkiLicense"] %>';
+			var _restPkiEndpoint = '<%= System.Configuration.ConfigurationManager.AppSettings["RestPkiEndpoint"] %>';
+		</script>
 		<asp:ScriptManager runat="server">
 			<Scripts>
 				<%--To learn more about bundling scripts in ScriptManager see http://go.microsoft.com/fwlink/?LinkID=301884 --%>
@@ -49,29 +53,31 @@
 				</div>
 				<div id="navbar" class="collapse navbar-collapse">
 					<ul class="nav navbar-nav">
-						<%--<li><a href="/Authentication">Authentication</a></li>--%>
+						<li><a href="/Authentication">Authentication</a></li>
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">PAdES signature <span class="caret"></span></a>
 							<ul class="dropdown-menu">
 								<li><a href="/PadesSignature">With file already on server</a></li>
-								<%--<li><a href="/Upload?rc=PadesSignature">With file uploaded by user</a></li>--%>
+								<li><a href="/Upload?rc=PadesSignature">With file uploaded by user</a></li>
+							    <%--<li><a href="/Upload?rc=OpenPadesSignature">Open/validate existing signature</a></li>--%>
 							</ul>
 						</li>
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">CAdES signature <span class="caret"></span></a>
 							<ul class="dropdown-menu">
 								<li><a href="/CadesSignature">With file already on server</a></li>
-								<%--<li><a href="/Upload?rc=CadesSignature">With file uploaded by user</a></li>--%>
-							</ul>
-						</li>
-						<%--<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">XML signature <span class="caret"></span></a>
-							<ul class="dropdown-menu">
-								<li><a href="/XmlFullSignature">Full XML signature (enveloped signature)</a></li>
-								<li><a href="/XmlElementSignature">XML element signature</a></li>
+								<li><a href="/Upload?rc=CadesSignature">With file uploaded by user</a></li>
+							    <%--<li><a href="/Upload?rc=OpenCadesSignature">Open/validate existing signature</a></li>--%>
 							</ul>
 						</li>
 						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">XML signature <span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<%--<li><a href="/XmlFullSignature">Full XML signature (enveloped signature)</a></li>--%>
+								<li><a href="/XmlElementSignature">XML element signature</a></li>
+							</ul>
+						</li>
+						<%--<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Batch signature <span class="caret"></span></a>
 							<ul class="dropdown-menu">
 								<li><a href="/BatchSignature">Simple batch signature</a></li>

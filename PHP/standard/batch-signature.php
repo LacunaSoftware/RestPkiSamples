@@ -8,8 +8,12 @@
  * start and complete each signature.
  */
 
+require __DIR__ . '/vendor/autoload.php';
+
 // It is up to your application's business logic to determine which documents will compose the batch
-$documentsIds = array_map( function($id) { return sprintf("%02d", $id); }, range(1,30) );
+$documentsIds = array_map(function ($id) {
+    return sprintf("%02d", $id);
+}, range(1, 30));
 
 ?>
 <!DOCTYPE html>
@@ -35,13 +39,14 @@ $documentsIds = array_map( function($id) { return sprintf("%02d", $id); }, range
 
         <div class="form-group">
             <label>File to sign</label>
+
             <p>
                 You'll be signing the following files:
                 <?php
                 // UL element to hold the batch's documents (we'll render these programatically,
                 // see batch-signature-form.js)
                 ?>
-                <ul id="docList" />
+            <ul id="docList"/>
             </p>
         </div>
 
@@ -61,7 +66,7 @@ $documentsIds = array_map( function($id) { return sprintf("%02d", $id); }, range
         ?>
         <button id="signButton" type="button" class="btn btn-primary">Sign Batch</button>
         <button id="refreshButton" type="button" class="btn btn-default">Refresh Certificates</button>
-        
+
     </form>
 
 </div>
@@ -71,7 +76,7 @@ $documentsIds = array_map( function($id) { return sprintf("%02d", $id); }, range
 // The file below contains the JS lib for accessing the Web PKI component. For more information, see:
 // https://webpki.lacunasoftware.com/#/Documentation
 ?>
-<script src="content/js/lacuna-web-pki-2.3.1.js"></script>
+<script src="content/js/lacuna-web-pki-2.6.1.js"></script>
 
 <?php
 // The file below contains the logic for calling the Web PKI component. It is only an example, feel free to alter it

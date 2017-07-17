@@ -96,7 +96,7 @@ setNoCacheHeaders();
 // The file below contains the JS lib for accessing the Web PKI component. For more information, see:
 // https://webpki.lacunasoftware.com/#/Documentation
 ?>
-<script src="content/js/lacuna-web-pki-2.3.1.js"></script>
+<script src="content/js/lacuna-web-pki-2.5.0.js"></script>
 <script>
 
 	var pki = new LacunaWebPKI();

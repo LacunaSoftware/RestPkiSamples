@@ -6,7 +6,7 @@
 
 	<h2>CAdES Signature</h2>
 
-	<p>File signed successfully! <a href="Download?file=<%= signatureFilename.Replace(".", "_") %>">Click here to download the signed file</a></p>
+	<p>File signed successfully!</p>
 
 	<p>Signer information:</p>
 	<ul>
@@ -19,7 +19,16 @@
 				<li>Responsavel: <%= signerCertificate.PkiBrazil.Responsavel %></li>
 				<li>Empresa: <%= signerCertificate.PkiBrazil.CompanyName %></li>
 				<li>CNPJ: <%= signerCertificate.PkiBrazil.Cnpj %></li>
+                <li>RG: <%= signerCertificate.PkiBrazil.RGNumero %> <%= signerCertificate.PkiBrazil.RGEmissor %> <%= signerCertificate.PkiBrazil.RGEmissor %></li>
+                <li>OAB: <%= signerCertificate.PkiBrazil.OabNumero %> <%= signerCertificate.PkiBrazil.OabUF %></li>
 			</ul>
 		</li>
 	</ul>
+
+    <h3>Actions:</h3>
+    <ul>
+        <li><a href='Download?file=<%= signatureFilename %>'>Download the signed file</a></li>
+        <%--<li><a href='OpenCadesSignature?userfile=<%= signatureFilename %>'>Open/validate the signed file</a></li>--%>
+        <li><a href='/CadesSignature?cmsfile=<%= signatureFilename %>'>Co-sign with another certificate</a></li>
+    </ul>
 </asp:Content>

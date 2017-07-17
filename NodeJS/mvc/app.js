@@ -7,7 +7,9 @@ var routes = require('./routes/index');
 var upload = require('./routes/upload');
 var authentication = require('./routes/authentication');
 var padesSignature = require('./routes/pades-signature');
+var padesSignatureServerKey = require('./routes/pades-signature-server-key');
 var cadesSignature = require('./routes/cades-signature');
+var cadesSignatureServerKey = require('./routes/cades-signature-server-key');
 var fullXmlSignature = require('./routes/xml-full-signature');
 var xmlElementSignature = require('./routes/xml-element-signature');
 
@@ -26,7 +28,9 @@ app.use('/', routes);
 app.use('/upload', upload);
 app.use('/authentication', authentication);
 app.use('/pades-signature', padesSignature);
+app.use('/pades-signature-server-key', padesSignatureServerKey);
 app.use('/cades-signature', cadesSignature);
+app.use('/cades-signature-server-key', cadesSignatureServerKey);
 app.use('/xml-full-signature', fullXmlSignature);
 app.use('/xml-element-signature', xmlElementSignature);
 

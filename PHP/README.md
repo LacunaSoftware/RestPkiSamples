@@ -4,7 +4,7 @@ REST PKI PHP Samples
 This folder contains web applications written in PHP that show how to use the
 [REST PKI service](https://pki.rest/).
 
-For other languages, please visit the [project root](https://github.com/LacunaSoftware/RestPkiSamples).
+For other languages, please visit the [repository root](https://github.com/LacunaSoftware/RestPkiSamples).
 
 To run the samples, you will need an **API access token**. If you don't have one, register on the
 [REST PKI website](https://pki.rest/) and generate a token.
@@ -14,8 +14,6 @@ You should choose between one of the sample projects in this folder based on you
 * PHP 5.5+: [Standard sample](#standard-sample)
 * PHP 5.3 and 5.4: [Legacy sample for PHP 5.3 and 5.4](#legacy-sample-for-php-53-and-54)
 * PHP 5.2: [Legacy sample for PHP 5.2](#legacy-sample-for-php-52)
-
-If you need test certificates for development or staging environments, [click here](https://github.com/LacunaSoftware/RestPkiSamples#test-certificates).
 
 Standard sample
 ---------------
@@ -28,10 +26,13 @@ The standard PHP sample can be found in the folder [standard](standard/). To run
 2. Generate an API access token on the [REST PKI website](https://pki.rest/)
 
 3. Paste your access token on the file `util.php`
+
+4. In a command prompt, navigate to the folder `PHP/standard` and run the command
+   `composer install` to download the dependencies (if you don't have Composer installed, get it [here](https://getcomposer.org/))
    
-4. Setup a website on your local HTTP server pointing to the PHP folder
+5. Setup a website on your local HTTP server pointing to the PHP folder
   
-5. Open the index.php file on the browser on the corresponding URL (depending on the previous step)
+6. Open the index.php file on the browser on the corresponding URL (depending on the previous step)
 
 Notice: the standard sample requires **PHP 5.5+**. If you're using another version of PHP, please see
 below.
@@ -55,7 +56,7 @@ The steps to execute the sample are the same as with the standard sample.
 Dependencies
 ------------
 
-The sample projects depend on the [Guzzle](http://guzzlephp.org/) library, which in turn requires **PHP 5.5** or
+The sample projects depend on [Rest PKI client lib for PHP](https://github.com/LacunaSoftware/RestPkiPhpClient) library, which in turn requires **PHP 5.5** or
 greater (with the exception of the legacy samples, which depends on other older libraries that still support
 older versions of PHP).
 
@@ -63,11 +64,10 @@ This dependency is specified in the file `composer.json`:
 
 	{
 		"require": {
-			"guzzlehttp/guzzle": "~6.0"
+			"lacuna/restpki-client": "^2.2.0"
 		}
 	}
 
-If you are not familiar with Composer, the PHP package manager, [click here](https://getcomposer.org/).
 
 Secure communication with REST PKI (HTTPS)
 ------------------------------------------
@@ -105,3 +105,9 @@ establish a secure SSL connection with REST PKI. To fix this, follow these steps
 You don't necessarily need to use the PEM file specified on step 1, there are other options such as
 [generating a PEM file yourself](http://www.swiftsoftwaregroup.com/configuring-phpcurl-root-certificates-windows-server/)
 based on the OS's trusted certificate roots.
+
+See also
+--------
+
+* [Test certificates](../TestCertificates.md)
+* [Samples in other programming languages](https://github.com/LacunaSoftware/RestPkiSamples)

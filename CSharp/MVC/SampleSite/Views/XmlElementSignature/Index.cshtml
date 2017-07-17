@@ -35,7 +35,7 @@
 		The file below contains the JS lib for accessing the Web PKI component. For more information, see:
 		https://webpki.lacunasoftware.com/#/Documentation
 	*@
-	<script src="@Url.Content("~/Content/js/lacuna-web-pki-2.3.1.js")"></script>
+	<script src="@Url.Content("~/Content/js/lacuna-web-pki-2.5.0.js")"></script>
 
 	<script>
 
@@ -43,7 +43,7 @@
 		var token = '@Model.Token';
 
 		// Create an instance of the LacunaWebPKI object
-		var pki = new LacunaWebPKI();
+		var pki = new LacunaWebPKI(_webPkiLicense);
 
 		// -------------------------------------------------------------------------------------------------
 		// Function called once the page is loaded
@@ -64,7 +64,8 @@
 			// http://webpki.lacunasoftware.com/Help/classes/LacunaWebPKI.html#method_init
 			pki.init({
 				ready: loadCertificates, // as soon as the component is ready we'll load the certificates
-				defaultError: onWebPkiError // generic error callback on Content/js/app/site.js
+				defaultError: onWebPkiError, // generic error callback on Content/js/app/site.js
+				restPkiUrl: _restPkiEndpoint
 			});
 		}
 

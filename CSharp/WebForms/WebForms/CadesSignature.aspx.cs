@@ -12,6 +12,8 @@ namespace WebForms {
 
 	public partial class CadesSignature : System.Web.UI.Page {
 
+		protected string UserFile { get; private set; }
+		protected string CmsFile { get; private set; }
 		public string SignatureFilename { get; private set; }
 		public PKCertificate SignerCertificate { get; private set; }
 
@@ -22,9 +24,6 @@ namespace WebForms {
 				// Get an instance of the CadesSignatureStarter class, responsible for receiving the signature elements and start the
 				// signature process
 				var signatureStarter = Util.GetRestPkiClient().GetCadesSignatureStarter();
-
-				// Set the file to be signed as a byte array
-				signatureStarter.SetContentToSign(Util.GetSampleDocContent());
 
 				// Set the signature policy
 				signatureStarter.SetSignaturePolicy(StandardCadesSignaturePolicies.PkiBrazil.AdrBasica);
@@ -39,6 +38,28 @@ namespace WebForms {
 				// - If no CmsToSign is given, the resulting CMS will include the content
 				// - If a CmsToCoSign is given, the resulting CMS will include the content if and only if the CmsToCoSign also includes the content
 				signatureStarter.SetEncapsulateContent(true);
+
+				UserFile = Request.QueryString["userfile"];
+				CmsFile = Request.QueryString["cmsfile"];
+				if (!String.IsNullOrEmpty(UserFile)) {
+					// If the user was redirected here by Upload (signature with file uploaded by user), the "userfile" URL argument
+					// will contain the filename under the "App_Data" folder. 
+					signatureStarter.SetFileToSign(Server.MapPath("~/App_Data/" + UserFile.Replace("_", ".")));
+				} else if (!String.IsNullOrEmpty(CmsFile)) {
+					/*
+					 * If the URL argument "cmsfile" is filled, the user has asked to co-sign a previously signed CMS. We'll set the path to the CMS
+					 * to be co-signed, which was perviously saved in the App_Data folder by the POST action on this controller. Note two important things:
+					 * 
+					 * 1. The CMS to be co-signed must be set using the method "SetCmsToCoSign", not the method "SetContentToSign" nor "SetFileToSign"
+					 *
+					 * 2. Since we're creating CMSs with encapsulated content (see call to SetEncapsulateContent above), we don't need to set the content
+					 *    to be signed, REST PKI will get the content from the CMS being co-signed.
+					 */
+					signatureStarter.SetCmsToCoSign(Server.MapPath("~/App_Data/" + CmsFile.Replace("_", ".")));
+				} else {
+					// If both userfile and cmsfile are null, this is the "signature with server file" case. We'll set the path of the file to be signed
+					signatureStarter.SetFileToSign(Util.GetSampleDocPath());
+				}
 
 				// Call the StartWithWebPki() method, which initiates the signature. This yields the token, a 43-character
 				// case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
@@ -77,8 +98,9 @@ namespace WebForms {
 			var filename = id + ".p7s";
 			File.WriteAllBytes(Path.Combine(appDataPath, filename), cms);
 
-			this.SignatureFilename = filename;
+			this.SignatureFilename = filename.Replace(".", "_");
 			this.SignerCertificate = signerCertificate;
+
 			Server.Transfer("CadesSignatureInfo.aspx");
 		}
 	}

@@ -1,0 +1,83 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="WebApplication1.Site" %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head id="Head1" runat="server">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>Rest PKI Web Forms sample</title>
+    <link rel="stylesheet" type="text/css" href="Content/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="Content/css/site.css">
+    <script type="text/javascript" src="Scripts/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="Scripts/bootstrap.min.js"></script>
+    <link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <script>
+			var _webPkiLicense = "<%= System.Configuration.ConfigurationManager.AppSettings["WebPkiLicense"] %>";
+			var _restPkiEndpoint = "<%= System.Configuration.ConfigurationManager.AppSettings["RestPkiEndpoint"] %>";
+    </script>
+    <asp:ContentPlaceHolder ID="HeadContent" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+	<form id="Form1" runat="server">
+	
+		<asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
+	
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="/">REST PKI Samples</a>
+				</div>
+				<div id="navbar" class="collapse navbar-collapse">
+					<ul class="nav navbar-nav">
+						<li><a href="/Authentication.aspx">Authentication</a></li>
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">PAdES signature <span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="/PadesSignature.aspx">With file already on server</a></li>
+								<%--<li><a href="/Upload?rc=PadesSignature">With file uploaded by user</a></li>--%>
+							</ul>
+						</li>
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">CAdES signature <span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="/CadesSignature.aspx">With file already on server</a></li>
+								<%--<li><a href="/Upload?rc=CadesSignature">With file uploaded by user</a></li>--%>
+							</ul>
+						</li>
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">XML signature <span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<%--<li><a href="/XmlFullSignature">Full XML signature (enveloped signature)</a></li>--%>
+								<li><a href="/XmlElementSignature.aspx">XML element signature</a></li>
+							</ul>
+						</li>
+						<li><a href="/BatchSignature.aspx">Batch signature</a></li>
+						<%--<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Batch signature <span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="/BatchSignature">Simple batch signature</a></li>
+								<li><a href="/BatchSignatureOptimized">Optimized batch signature</a></li>
+							</ul>
+						</li>--%>
+					</ul>
+				</div>
+				<!--/.nav-collapse -->
+			</div>
+		</nav>
+		<div class="container body-content">
+			<asp:ContentPlaceHolder ID="MainContent" runat="server">
+			</asp:ContentPlaceHolder>
+			<hr />
+			<footer>
+				<p>&copy; <%= DateTime.Now.Year %> - Lacuna Rest PKI samples</p>
+			</footer>
+		</div>
+	</form>
+</body>
+</html>

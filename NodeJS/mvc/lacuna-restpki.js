@@ -1,11 +1,15 @@
 module.exports = {
     standardSignaturePolicies: {
-        padesBes: '78d20b33-014d-440e-ad07-929f05d00cdf',
-        cadesBes: 'a4522485-c9e5-46c3-950b-0d6e951e17d1',
+        padesBasic: '78d20b33-014d-440e-ad07-929f05d00cdf',
+        padesBasicWithPkiBrazilCerts: '3fec800c-366c-49bf-82c5-2e72154e70f6',
+        padesPadesTWithPkiBrazilCerts: '6a39aeea-a2d0-4754-bf8c-19da15296ddb',
+        pkiBrazilPadesAdrBasica: '531d5012-4c0d-4b6f-89e8-ebdcc605d7c2',
+        pkiBrazilPadesAdrTempo: '10f0d9a5-a0a9-42e9-9523-e181ce05a25b',
 
+        cadesBes: 'a4522485-c9e5-46c3-950b-0d6e951e17d1',
+        cadesBesWithSigningTimeAndNoCrls: '8108539d-c137-4f45-a1f2-de5305bc0a37',
         pkiBrazilCadesAdrBasica:'3ddd8001-1672-4eb5-a4a2-6e32b17ddc46',
         pkiBrazilCadesAdrTempo: 'a5332ad1-d105-447c-a4bb-b5d02177e439',
-        pkiBrazilCadesAdrValidacao: '92378630-dddf-45eb-8296-8fee0b73d5bb',
         pkiBrazilCadesAdrCompleta: '30d881e7-924a-4a14-b5cc-d5a1717d92f6',
 
         xadesBes: '1beba282-d1b6-4458-8e46-bd8ad6800b54',

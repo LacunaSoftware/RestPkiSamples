@@ -1,0 +1,13 @@
+﻿<h2>Certificate Authentication</h2>
+
+<form role="form" ng-submit="signIn()">
+
+	<div class="form-group">
+		<label for="certificateSelect">Choose a certificate</label>
+		<select id="certificateSelect" ng-model="selectedCertificate" class="form-control" ng-options="getCertificateDisplayName(c) for c in certificates"></select>
+	</div>
+
+	<button type="submit" class="btn btn-primary">Sign In</button>
+	<button type="button" class="btn btn-default" ng-click="refresh()">Refresh Certificates</button>
+
+</form>

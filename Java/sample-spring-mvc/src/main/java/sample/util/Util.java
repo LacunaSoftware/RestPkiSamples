@@ -71,6 +71,10 @@ public class Util {
 		return buffer.toByteArray();
 	}
 
+	public static Path getSampleDocPath() throws IOException {
+		return new ClassPathResource("/static/SampleDocument.pdf").getFile().toPath();
+	}
+
     public static byte[] getSampleXml() throws IOException {
         Resource resource = new ClassPathResource("/static/SampleDocument.xml");
         InputStream fileStream = resource.getInputStream();
@@ -80,6 +84,10 @@ public class Util {
         buffer.flush();
         return buffer.toByteArray();
     }
+
+	public static Path getSampleXmlPath() throws IOException {
+		return new ClassPathResource("/static/SampleDocument.xml").getFile().toPath();
+	}
 
     public static byte[] getSampleNFe() throws IOException {
         Resource resource = new ClassPathResource("/static/SampleNFe.xml");
@@ -91,6 +99,10 @@ public class Util {
         return buffer.toByteArray();
     }
 
+	public static Path getSampleNFePath() throws IOException {
+		return new ClassPathResource("/static/SampleNFe.xml").getFile().toPath();
+	}
+
 	public static byte[] getPdfStampContent() throws IOException {
 		Resource resource = new ClassPathResource("/static/PdfStamp.png");
 		InputStream fileStream = resource.getInputStream();
@@ -99,6 +111,20 @@ public class Util {
 		fileStream.close();
 		buffer.flush();
 		return buffer.toByteArray();
+	}
+
+	public static byte[] getBatchDocContent(int id) throws IOException {
+		Resource resource = new ClassPathResource("/static/" + String.format("%02d", id) + ".pdf");
+		InputStream fileStream = resource.getInputStream();
+		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		org.apache.commons.io.IOUtils.copy(fileStream, buffer);
+		fileStream.close();
+		buffer.flush();
+		return buffer.toByteArray();
+	}
+
+	public static Path getBatchDocPath(int id) throws IOException {
+		return new ClassPathResource("/static/" + String.format("%02d", id) + ".pdf").getFile().toPath();
 	}
 
 }

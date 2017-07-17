@@ -9,9 +9,7 @@
  */
 
 // It is up to your application's business logic to determine which documents will compose the batch
-$documentsIds = array_map(function ($id) {
-    return sprintf("%02d", $id);
-}, range(1, 30));
+$documentsIds = array_map( function($id) { return sprintf("%02d", $id); }, range(1,30) );
 
 ?>
 <!DOCTYPE html>
@@ -27,9 +25,9 @@ $documentsIds = array_map(function ($id) {
 
 <div class="container">
 
-    <?php // Messages about the signature process will be rendered in here ?>
-    <div id="messagesPanel"></div>
-
+	<?php // Messages about the signature process will be rendered in here ?>
+    <div id="messagesPanel"></div> 
+	
     <h2>Batch Signature</h2>
 
     <form id="signForm" method="POST">
@@ -43,7 +41,7 @@ $documentsIds = array_map(function ($id) {
                 // UL element to hold the batch's documents (we'll render these programatically,
                 // see batch-signature-form.js)
                 ?>
-            <ul id="docList"/>
+                <ul id="docList" />
             </p>
         </div>
 
@@ -63,7 +61,7 @@ $documentsIds = array_map(function ($id) {
         ?>
         <button id="signButton" type="button" class="btn btn-primary">Sign Batch</button>
         <button id="refreshButton" type="button" class="btn btn-default">Refresh Certificates</button>
-
+        
     </form>
 
 </div>
@@ -73,7 +71,7 @@ $documentsIds = array_map(function ($id) {
 // The file below contains the JS lib for accessing the Web PKI component. For more information, see:
 // https://webpki.lacunasoftware.com/#/Documentation
 ?>
-<script src="content/js/lacuna-web-pki-2.3.1.js"></script>
+<script src="content/js/lacuna-web-pki-2.5.0.js"></script>
 
 <?php
 // The file below contains the logic for calling the Web PKI component. It is only an example, feel free to alter it
@@ -83,7 +81,7 @@ $documentsIds = array_map(function ($id) {
 <script>
     $(document).ready(function () {
         // Once the page is ready, we call the init() function on the javascript code (see batch-signature-form.js)
-        batchSignatureForm.init({
+        batchSignatureForm.init({                    	
             documentsIds: <?php echo json_encode($documentsIds); ?>, // ids of documents
             certificateSelect: $('#certificateSelect'), // the select element (combo box) to list the certificates
             refreshButton: $('#refreshButton'),         // the "refresh" button
