@@ -1,23 +1,12 @@
 <?php
 
-// Initialize or resume a session, and setting the path where this session will be stored.
-function initSession()
-{
-    $path = 'app-data';
-    if (!file_exists($path)) {
-        mkdir($path);
-    }
-    session_save_path($path);
-    session_start();
-}
-
 
 // Returns the verification code associated with the given document, or null if no verification code has been associated
 // with it.
 function getVerificationCode($fileId)
 {
     // Initialize or resume session
-    initSession();
+    session_start();
 
     // >>>>> NOTICE <<<<<
     // This should be implemented on your application as a SELECT on your "document table" by the ID of the document,
@@ -32,7 +21,7 @@ function getVerificationCode($fileId)
 function setVerificationCode($fileId, $code)
 {
     // Initialize or resume session
-    initSession();
+    session_start();
 
     // >>>>> NOTICE <<<<<
     // This should be implemented on your application as a UPDATE on your "document table" filling the verification
@@ -50,7 +39,7 @@ function lookupVerificationCode($code)
     }
 
     // Initialize or resume session
-    initSession();
+    session_start();
 
     // >>>>> NOTICE <<<<<
     // This should be implemented on your application as a SELECT on your "document table" by the verification code
