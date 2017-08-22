@@ -2,10 +2,11 @@
   "autoload": {
     "files": [
       "util.php",
-      "util-pades.php"
+      "util-pades.php",
+      "storage-mock.php"
     ]
   },
   "require": {
-    "lacuna/restpki-client": "^2.0.1"
+    "lacuna/restpki-client": "^2.2.1"
   }
 }

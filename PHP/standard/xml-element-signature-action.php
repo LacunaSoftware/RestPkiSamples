@@ -45,7 +45,7 @@ file_put_contents("app-data/{$filename}", $signedXml);
 
     <h2>XML element signature</h2>
 
-    <p>File signed successfully! <a href="app-data/<?= $filename ?>">Click here to download the signed file</a></p>
+    <p>File signed successfully!</p>
 
     <p>
         Signer information:
@@ -67,6 +67,12 @@ file_put_contents("app-data/{$filename}", $signedXml);
         </li>
     </ul>
     </p>
+
+    <h3>Actions:</h3>
+    <ul>
+        <li><a href="app-data/<?= $filename ?>">Download the signed file</a></li>
+        <li><a href="open-xml-signature.php?userfile=<?= $filename ?>">Open/validate the signed file</a></li>
+    </ul>
 
 </div>
 

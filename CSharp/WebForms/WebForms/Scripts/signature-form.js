@@ -4,7 +4,7 @@
 // -----------------------------------------------------------------------------------------------------
 var signatureForm = (function () {
 
-	var pki = new LacunaWebPKI();
+	var pki = new LacunaWebPKI(_webPkiLicense);
 	var token = null;
 	var selectElement = null;
 	var submitButtonElement = null;
@@ -28,7 +28,8 @@ var signatureForm = (function () {
 		// http://webpki.lacunasoftware.com/Help/classes/LacunaWebPKI.html#method_init
 		pki.init({
 			ready: loadCertificates, // as soon as the component is ready we'll load the certificates
-			defaultError: onWebPkiError
+			defaultError: onWebPkiError,
+			restPkiUrl: _restPkiEndpoint
 		});
 	}
 
