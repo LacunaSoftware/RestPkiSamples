@@ -80,7 +80,7 @@ of each sample:
 	} 
 
 	dependencies {
-		compile("com.lacunasoftware.restpki:restpki-client:1.8.1")
+		compile("com.lacunasoftware.restpki:restpki-client:1.8.3")
 	}
 
 If you project uses Maven, please refer to the file [pom.xml](sample-spring-mvc/pom.xml) instead:
