@@ -4,14 +4,9 @@
  * This file receives the form submission from xml-full-signature.php. We'll call REST PKI to complete the signature.
  */
 
-// The file RestPki.php contains the helper classes to call the REST PKI API
-require_once 'RestPki.php';
+require __DIR__ . '/vendor/autoload.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
-// initialized with the API access token
-require_once 'util.php';
-
-use Lacuna\XmlSignatureFinisher;
+use Lacuna\RestPki\XmlSignatureFinisher;
 
 // Get the token for this signature (rendered in a hidden input field, see xml-full-signature.php)
 $token = $_POST['token'];
@@ -20,7 +15,7 @@ $token = $_POST['token'];
 $signatureFinisher = new XmlSignatureFinisher(getRestPkiClient());
 
 // Set the token
-$signatureFinisher->setToken($token);
+$signatureFinisher->token = $token;
 
 // Call the finish() method, which finalizes the signature process and returns the signed XML
 $signedXml = $signatureFinisher->finish();
@@ -50,7 +45,7 @@ file_put_contents("app-data/{$filename}", $signedXml);
 
     <h2>Full XML signature (enveloped signature)</h2>
 
-    <p>File signed successfully! <a href="app-data/<?= $filename ?>">Click here to download the signed file</a></p>
+    <p>File signed successfully!</p>
 
     <p>
         Signer information:
@@ -72,6 +67,12 @@ file_put_contents("app-data/{$filename}", $signedXml);
         </li>
     </ul>
     </p>
+
+    <h3>Actions:</h3>
+    <ul>
+        <li><a href="app-data/<?= $filename ?>">Download the signed file</a></li>
+        <li><a href="open-xml-signature.php?userfile=<?= $filename ?>">Open/validate the signed file</a></li>
+    </ul>
 
 </div>
 

@@ -9,8 +9,6 @@ For other languages, please visit the [project root](https://github.com/LacunaSo
 To run the samples, you will need an **API access token**. If you don't have one, register on the
 [REST PKI website](https://pki.rest/) and generate a token.
 
-If you need test certificates for development or staging environments, [click here](https://github.com/LacunaSoftware/RestPkiSamples#test-certificates).
-
 Running the sample
 ------------------
 
@@ -28,3 +26,9 @@ To run the sample:
 5. Run application: `npm start`
 
 6. Access the URL [http://localhost:3000](http://localhost:3000)
+
+See also
+--------
+
+* [Test certificates](../TestCertificates.md)
+* [Samples in other programming languages](https://github.com/LacunaSoftware/RestPkiSamples)

@@ -8,6 +8,8 @@
  * start and complete each signature.
  */
 
+require __DIR__ . '/vendor/autoload.php';
+
 // It is up to your application's business logic to determine which documents will compose the batch
 $documentsIds = array_map(function ($id) {
     return sprintf("%02d", $id);
@@ -74,7 +76,7 @@ $documentsIds = array_map(function ($id) {
 // The file below contains the JS lib for accessing the Web PKI component. For more information, see:
 // https://webpki.lacunasoftware.com/#/Documentation
 ?>
-<script src="content/js/lacuna-web-pki-2.5.0.js"></script>
+<script src="content/js/lacuna-web-pki-2.6.1.js"></script>
 
 <?php
 // The file below contains the logic for calling the Web PKI component. It is only an example, feel free to alter it

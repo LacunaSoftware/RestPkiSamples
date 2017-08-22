@@ -3,20 +3,15 @@
  * This file submits a PDF file to Rest PKI for inspection of its signatures and renders the results.
  */
 
-// The file RestPki.php contains the helper classes to call the REST PKI API
-require_once 'RestPki.php';
+require __DIR__ . '/vendor/autoload.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
-// initialized with the API access token
-require_once 'util.php';
-
-use Lacuna\PadesSignatureExplorer;
-use Lacuna\StandardSignaturePolicies;
-use Lacuna\StandardSecurityContexts;
-use Lacuna\StandardSignaturePolicyCatalog;
+use Lacuna\RestPki\PadesSignatureExplorer;
+use Lacuna\RestPki\StandardSignaturePolicies;
+use Lacuna\RestPki\StandardSecurityContexts;
+use Lacuna\RestPki\StandardSignaturePolicyCatalog;
 
 // This function is called below. It encapsulates examples of signature validation parameters.
-function setValidationParameters($sigExplorer, $caseNumber)
+function setValidationParameters(PadesSignatureExplorer $sigExplorer, $caseNumber)
 {
 
     switch ($caseNumber) {
@@ -35,7 +30,7 @@ function setValidationParameters($sigExplorer, $caseNumber)
             // By omitting the accepted policies catalog and defining a default policy, we're telling Rest PKI to
             // validate all signatures in the file with the default policy -- even signatures with an explicit signature
             // policy.
-            $sigExplorer->setDefaultSignaturePolicyId(StandardSignaturePolicies::PADES_BASIC_WITH_ICPBR_CERTS);
+            $sigExplorer->defaultSignaturePolicy = StandardSignaturePolicies::PADES_BASIC_WITH_ICPBR_CERTS;
             break;
 
         /**
@@ -50,7 +45,7 @@ function setValidationParameters($sigExplorer, $caseNumber)
             // By omitting the accepted policies catalog and defining a default policy, we're telling Rest PKI to
             // validate all signatures in the file with the default policy -- even signatures with an explicit signature
             // policy.
-            $sigExplorer->setDefaultSignaturePolicyId(StandardSignaturePolicies::PADES_T_WITH_ICPBR_CERTS);
+            $sigExplorer->defaultSignaturePolicy = StandardSignaturePolicies::PADES_T_WITH_ICPBR_CERTS;
             break;
 
 		/**
@@ -59,7 +54,7 @@ function setValidationParameters($sigExplorer, $caseNumber)
         case 3:
             // By specifying a catalog of acceptable policies and omitting the default signature policy, we're telling
             // Rest PKI that only the policies in the catalog should be accepted
-            $sigExplorer->setAcceptableExplicitPolicies(StandardSignaturePolicyCatalog::getPkiBrazilPades());
+            $sigExplorer->acceptableExplicitPolicies = StandardSignaturePolicyCatalog::getPkiBrazilPades();
             break;
 
         /**
@@ -68,8 +63,8 @@ function setValidationParameters($sigExplorer, $caseNumber)
          * Same case as example #1, but using the WindowsServer trust arbitrator
          */
         case 4:
-            $sigExplorer->setDefaultSignaturePolicyId(StandardSignaturePolicies::PADES_BASIC);
-            $sigExplorer->setSecurityContextId(StandardSecurityContexts::WINDOWS_SERVER);
+            $sigExplorer->defaultSignaturePolicy = StandardSignaturePolicies::PADES_BASIC;
+            $sigExplorer->securityContext = StandardSecurityContexts::WINDOWS_SERVER;
 			// You can use any security context above, for instance a customized security context with your private PKI root certificate
             break;
 
@@ -80,8 +75,7 @@ function setValidationParameters($sigExplorer, $caseNumber)
          * is revoked or expires. On ICP-Brasil, this translates to policies AD-RT and up (not AD-RB).
          */
         case 5:
-            $sigExplorer->setAcceptableExplicitPolicies(
-                StandardSignaturePolicyCatalog::getPkiBrazilPadesWithSignerCertificateProtection());
+            $sigExplorer->acceptableExplicitPolicies = StandardSignaturePolicyCatalog::getPkiBrazilPadesWithSignerCertificateProtection();
             break;
 
     }
@@ -97,10 +91,10 @@ if (empty($userfile)) {
 $sigExplorer = new PadesSignatureExplorer(getRestPkiClient());
 
 // Set the PDF file to be inspected
-$sigExplorer->setSignatureFile("app-data/{$userfile}");
+$sigExplorer->setSignatureFileFromPath("app-data/{$userfile}");
 
 // Specify that we want to validate the signatures in the file, not only inspect them
-$sigExplorer->setValidate(true);
+$sigExplorer->validate = true;
 
 // Parameters for the signature validation. We have encapsulated this code in a method to include several
 // possibilities depending on the argument passed. Experiment changing the argument to see different validation

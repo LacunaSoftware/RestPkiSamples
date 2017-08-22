@@ -1,0 +1,10 @@
+<div class="container">
+
+  <h2>Upload a file</h2>
+
+  <%= form_for :upload_form do |f| %>
+      <p>Select file: <%= f.file_field :userfile %></p>
+      <p><%= f.submit 'Upload' %></p>
+  <% end %>
+
+</div>

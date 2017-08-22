@@ -49,7 +49,7 @@
 		var token = '@Model.Token';
 
 		// Create an instance of the LacunaWebPKI object
-		var pki = new LacunaWebPKI();
+		var pki = new LacunaWebPKI(_webPkiLicense);
 
 		// -------------------------------------------------------------------------------------------------
 		// Function called once the page is loaded
@@ -70,7 +70,8 @@
 			// http://webpki.lacunasoftware.com/Help/classes/LacunaWebPKI.html#method_init
 			pki.init({
 				ready: loadCertificates, // as soon as the component is ready we'll load the certificates
-				defaultError: onWebPkiError // generic error callback on Content/js/app/site.js
+				defaultError: onWebPkiError, // generic error callback on Content/js/app/site.js
+				restPkiUrl: _restPkiEndpoint
 			});
 		}
 

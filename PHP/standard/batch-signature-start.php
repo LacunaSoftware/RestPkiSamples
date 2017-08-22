@@ -6,22 +6,12 @@
  * identifies this signature process, to be used in the next signature steps (see batch-signature-form.js).
  */
 
-// The file RestPki.php contains the helper classes to call the REST PKI API
-require_once 'RestPki.php';
+require __DIR__ . '/vendor/autoload.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
-// initialized with the API access token
-require_once 'util.php';
-
-// The file pades-visual-elements.php contains sample settings for visual representations and PDF marks (see below)
-require_once 'pades-visual-elements.php';
-
-use Lacuna\PadesSignatureStarter;
-use Lacuna\StandardSignaturePolicies;
-use Lacuna\PadesMeasurementUnits;
-use Lacuna\PadesVisualElements;
-use Lacuna\StandardSecurityContexts;
-
+use Lacuna\RestPki\PadesSignatureStarter;
+use Lacuna\RestPki\StandardSignaturePolicies;
+use Lacuna\RestPki\PadesMeasurementUnits;
+use Lacuna\RestPki\StandardSecurityContexts;
 
 // Get the document id for this signature (received from the POST call, see batch-signature-form.js)
 $id = $_POST['id'];
@@ -30,22 +20,22 @@ $id = $_POST['id'];
 // signature process
 $signatureStarter = new PadesSignatureStarter(getRestPkiClient());
 
+// Set the document to be signed based on its ID
+$signatureStarter->setPdfToSignFromPath("content/{$id}.pdf");
+
 // Set the unit of measurement used to edit the pdf marks and visual representations
 $signatureStarter->measurementUnits = PadesMeasurementUnits::CENTIMETERS;
 
-// Set the document to be signed based on its ID
-$signatureStarter->setPdfToSignPath("content/{$id}.pdf");
-
 // Set the signature policy
-$signatureStarter->setSignaturePolicy(StandardSignaturePolicies::PADES_BASIC);
+$signatureStarter->signaturePolicy = StandardSignaturePolicies::PADES_BASIC;
 
 // Set a SecurityContext to be used to determine trust in the certificate chain
-$signatureStarter->setSecurityContext(StandardSecurityContexts::PKI_BRAZIL);
+$signatureStarter->securityContext = StandardSecurityContexts::PKI_BRAZIL;
 // Note: By changing the SecurityContext above you can accept only certificates from a certain PKI, for instance,
 // ICP-Brasil (\Lacuna\StandardSecurityContexts::PKI_BRAZIL).
 
 // Set the visual representation for the signature
-$signatureStarter->setVisualRepresentation([
+$signatureStarter->visualRepresentation = [
 
     'text' => [
 
@@ -85,9 +75,9 @@ $signatureStarter->setVisualRepresentation([
     // Position of the visual representation. We have encapsulated this code in a function to include several
     // possibilities depending on the argument passed to the function. Experiment changing the argument to see
     // different examples of signature positioning. Once you decide which is best for your case, you can place the
-    // code directly here.
-    'position' => PadesVisualElements::getVisualRepresentationPosition(3)
-]);
+    // code directly here. See file util-pades.php
+    'position' => getVisualRepresentationPosition(3)
+];
 
 /*
 	Optionally, add marks to the PDF before signing. These differ from the signature visual representation in that
@@ -101,7 +91,7 @@ $signatureStarter->setVisualRepresentation([
 	Experiment changing the argument to see different examples of PDF marks. Once you decide which is best for your case,
 	you can place the code directly here.
 */
-//array_push($signatureStarter->pdfMarks, PadesVisualElements::GetPdfMark(1));
+//array_push($signatureStarter->pdfMarks, getPdfMark(1));
 
 // Call the startWithWebPki() method, which initiates the signature. This yields the token, a 43-character
 // case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the

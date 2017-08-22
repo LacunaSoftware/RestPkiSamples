@@ -1,0 +1,127 @@
+﻿@model CoreWebApp.Models.SpaModel
+<!DOCTYPE html>
+<html ng-app="PkiSdkWebApiSamples">
+<head>
+	<meta charset="utf-8" />
+	<base href="/">
+	<meta name="viewport" content="width=device-width" />
+	<title>PKI SDK Samples</title>
+
+	<environment names="Development">
+		<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+		<link rel="stylesheet" href="~/lib/angular-block-ui/dist/angular-block-ui.css" />
+		<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	</environment>
+	<environment names="Staging,Production">
+		<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+		<link rel="stylesheet" href="~/lib/angular-block-ui/dist/angular-block-ui.min.css" asp-append-version="true" />
+		<link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+	</environment>
+
+</head>
+<body>
+
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/">REST PKI Samples</a>
+			</div>
+			<div id="navbar" class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li><a href="/authentication">Authentication</a></li>
+					<li class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">PAdES signature <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="/pades-signature">With file already on server</a></li>
+							<li><a href="/upload/pades-signature">With file uploaded by user</a></li>
+							@*<li><a href="/upload/open-pades-signature">Open/validate existing signature</a></li>*@
+						</ul>
+					</li>
+					<li class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">CAdES signature <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="/cades-signature">With file already on server</a></li>
+							<li><a href="/upload/cades-signature">With file uploaded by user</a></li>
+							@*<li><a href="/upload/open-cades-signature">Open/validate existing signature</a></li>*@
+						</ul>
+					</li>
+					<li class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">XML signature <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							@*<li><a href="#/xml-full-signature">Full XML signature (enveloped signature)</a></li>*@
+							<li><a href="/xml-element-signature">XML element signature</a></li>
+						</ul>
+					</li>
+					@*<li class="dropdown">
+							<a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Batch signature <span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="#/batch-signature">Simple batch signature</a></li>
+								<li><a href="#/batch-signature-optimized">Optimized batch signature</a></li>
+							</ul>
+						</li>*@
+				</ul>
+			</div><!--/.nav-collapse -->
+		</div>
+	</nav>
+
+	<div class="container">
+		<div data-ng-view="">
+		</div>
+	</div>
+
+	<script>
+		var _webPkiLicense = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.RestPkiConfig.WebPkiLicense));
+		var _restPkiEndpoint = @Html.Raw(@Newtonsoft.Json.JsonConvert.SerializeObject(Model.RestPkiConfig.Endpoint));
+	</script>
+
+	<environment names="Development">
+		<script src="~/lib/jquery/dist/jquery.js"></script>
+		<script src="~/lib/angular/angular.js"></script>
+		<script src="~/lib/angular-route/angular-route.js"></script>
+		<script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+		<script src="~/lib/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+		<script src="~/lib/angular-block-ui/dist/angular-block-ui.js"></script>
+		<script src="~/lib/ng-file-upload/ng-file-upload-shim.js"></script>
+		<script src="~/lib/ng-file-upload/ng-file-upload.js"></script>
+		<script src="~/js/lacuna-web-pki-2.5.0.js"></script>
+		<script src="~/js/app.js" asp-append-version="true"></script>
+		<script src="~/controllers/authentication.js" asp-append-version="true"></script>
+		<script src="~/controllers/cades-signature.js" asp-append-version="true"></script>
+		<script src="~/controllers/certificate-dialog.js" asp-append-version="true"></script>
+		<script src="~/controllers/home.js" asp-append-version="true"></script>
+		<script src="~/controllers/upload.js" asp-append-version="true"></script>
+		<script src="~/controllers/pades-signature.js" asp-append-version="true"></script>
+		<script src="~/controllers/signature-results-dialog.js" asp-append-version="true"></script>
+		<script src="~/controllers/validation-results-dialog.js" asp-append-version="true"></script>
+		<script src="~/controllers/xml-element-signature.js" asp-append-version="true"></script>
+	</environment>
+	<environment names="Staging,Production">
+		<script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+		<script src="~/lib/angular/angular.min.js" asp-append-version="true"></script>
+		<script src="~/lib/angular-route/angular-route.min.js" asp-append-version="true"></script>
+		<script src="~/lib/bootstrap/dist/js/bootstrap.min.js" asp-append-version="true"></script>
+		<script src="~/lib/angular-bootstrap/ui-bootstrap-tpls.min.js" asp-append-version="true"></script>
+		<script src="~/lib/angular-block-ui/dist/angular-block-ui.min.js" asp-append-version="true"></script>
+		<script src="~/lib/ng-file-upload/ng-file-upload-shim.min.js"></script>
+		<script src="~/lib/ng-file-upload/ng-file-upload.min.js"></script>
+		<script src="~/js/lacuna-web-pki-2.5.0.js"></script>
+		<script src="~/js/app.min.js" asp-append-version="true"></script>
+		<script src="~/controllers/authentication.min.js" asp-append-version="true"></script>
+		<script src="~/controllers/cades-signature.min.js" asp-append-version="true"></script>
+		<script src="~/controllers/certificate-dialog.min.js" asp-append-version="true"></script>
+		<script src="~/controllers/home.min.js" asp-append-version="true"></script>
+		<script src="~/controllers/upload.min.js" asp-append-version="true"></script>
+		<script src="~/controllers/pades-signature.min.js" asp-append-version="true"></script>
+		<script src="~/controllers/signature-results-dialog.min.js" asp-append-version="true"></script>
+		<script src="~/controllers/validation-results-dialog.min.js" asp-append-version="true"></script>
+		<script src="~/controllers/xml-element-signature.min.js" asp-append-version="true"></script>
+	</environment>
+
+</body>
+</html>

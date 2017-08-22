@@ -40,7 +40,7 @@ router.get('/', function(req, res, next) {
 		pdfToSign: new Buffer(pdfToSignContent).toString('base64'),
 		
 		// Signature policy (the ID below corresponds to the PAdES basic policy)
-		signaturePolicyId: restPki.standardSignaturePolicies.padesBes,
+		signaturePolicyId: restPki.standardSignaturePolicies.padesBasic,
 		
 		// Set a SecurityContext to be used to determine trust in the certificate chain
 		securityContextId: restPki.standardSecurityContexts.pkiBrazil,
