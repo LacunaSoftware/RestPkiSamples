@@ -11,13 +11,11 @@ using System.Windows;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 
-namespace Signer
-{
+namespace Signer {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
-	public partial class MainWindow
-	{
+	public partial class MainWindow {
 		public string FileToSign { get; private set; }
 		public string SignedFile { get; private set; }
 		public ClientSideSignatureInstructions Token { get; set; }
@@ -280,8 +278,7 @@ namespace Signer
 		}
 	}
 
-	public class Cert
-	{
+	public class Cert {
 		public string Name { get; set; }
 		public string Thumbprint { get; set; }
 		public override string ToString() => Name;

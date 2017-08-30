@@ -6,8 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 
-namespace Signer
-{
+namespace Signer {
 
 	public class Util {
 

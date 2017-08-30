@@ -2,7 +2,7 @@
 using Lacuna.RestPki.Client;
 using System.Drawing;
 
-namespace Signer { 
+namespace Signer {
 	public class PadesVisualElements {
 
 		// This function is called by the Pades Signature Starter action (see PadesSignatureController.cs).
@@ -54,7 +54,7 @@ namespace Signer {
 					// Example #6: custom auto positioning
 					return new PadesVisualAutoPositioning() {
 						PageNumber = -1, // negative values represent pages counted from the end of the document (-1 is last page)
-						// Specification of the container where the signatures will be placed, one after the other
+											  // Specification of the container where the signatures will be placed, one after the other
 						Container = new PadesVisualRectangle() {
 							// Specifying left and right (but no width) results in a variable-width container with the given margins
 							Left = 2.54,
