@@ -10,3 +10,6 @@ x64/
 build/
 [Bb]in/
 [Oo]bj/
+
+# Nuget packages
+packages/
