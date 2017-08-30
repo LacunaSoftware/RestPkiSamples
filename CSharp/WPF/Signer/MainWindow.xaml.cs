@@ -22,6 +22,7 @@ namespace Signer
 		public string SignedFile { get; private set; }
 		public ClientSideSignatureInstructions Token { get; set; }
 		private bool init = false;
+		private RestPkiClient restPkiClient;
 
 		public MainWindow() {
 			InitializeComponent();
@@ -48,14 +49,14 @@ namespace Signer
 		protected override async void OnActivated(EventArgs e) {
 			base.OnActivated(e);
 			if (!init) {
-				var accessToken = ConfigurationManager.AppSettings["RestPkiAccessToken"];
-				if (string.IsNullOrEmpty(accessToken) || accessToken.ToUpper().Contains("RESTPKI")) {
-					await this.ShowMessageAsync("Configuration Error", "Add RestPKI access token in App.config. Signer will close!",MessageDialogStyle.Affirmative);
+				try {
+					restPkiClient = Util.GetRestPkiClient();
+				} catch (Exception ex) {
+					await this.ShowMessageAsync("Configuration Error", $"{ex.Message}\r\n\r\nSigner will close.", MessageDialogStyle.Affirmative);
 					addLog($"RestPKI token not found");
 					Application.Current.Shutdown();
-				} else {
-					addLog($"RestPKI token found");
 				}
+				addLog($"RestPKI token found");
 				init = true;
 			}
 		}
@@ -105,7 +106,7 @@ namespace Signer
 			addLog($"Signature started");
 			progressDialog.SetProgress(0.10);
 			try {
-				var signatureStarter = new PadesSignatureStarter(Util.GetRestPkiClient()) {
+				var signatureStarter = new PadesSignatureStarter(restPkiClient) {
 					// Set the unit of measurement used to edit the pdf marks and visual representations
 					MeasurementUnits = PadesMeasurementUnits.Centimeters,
 					// Set the signature policy
@@ -148,7 +149,7 @@ namespace Signer
 						// Position of the visual representation. We have encapsulated this code in a method to include several
 						// possibilities depending on the argument passed. Experiment changing the argument to see different examples
 						// of signature positioning. Once you decide which is best for your case, you can place the code directly here.
-						Position = PadesVisualElements.GetVisualPositioning(1)
+						Position = PadesVisualElements.GetVisualPositioning(restPkiClient, 1)
 					},
 				};
 
@@ -221,7 +222,7 @@ namespace Signer
 					}
 					signature = rsa.SignData(Token.ToSignData, hashAlgorithm, RSASignaturePadding.Pkcs1);
 
-					var signatureFinisher = new PadesSignatureFinisher2(Util.GetRestPkiClient()) {
+					var signatureFinisher = new PadesSignatureFinisher2(restPkiClient) {
 						Token = Token.Token,
 						Signature = signature
 					};

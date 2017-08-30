@@ -7,18 +7,18 @@ namespace Signer {
 
 		// This function is called by the Pades Signature Starter action (see PadesSignatureController.cs).
 		// It contains examples of signature visual representation positionings.
-		public static PadesVisualPositioning GetVisualPositioning(int sampleNumber) {
+		public static PadesVisualPositioning GetVisualPositioning(RestPkiClient restPkiClient, int sampleNumber) {
 
 			switch (sampleNumber) {
 
 				case 1:
 					// Example #1: automatic positioning on footnote. This will insert the signature, and future signatures,
 					// ordered as a footnote of the last page of the document
-					return PadesVisualPositioning.GetFootnote(Util.GetRestPkiClient());
+					return PadesVisualPositioning.GetFootnote(restPkiClient);
 
 				case 2:
 					// Example #2: get the footnote positioning preset and customize it
-					var footnotePosition = PadesVisualPositioning.GetFootnote(Util.GetRestPkiClient());
+					var footnotePosition = PadesVisualPositioning.GetFootnote(restPkiClient);
 					footnotePosition.Container.Left = 2.54;
 					footnotePosition.Container.Bottom = 2.54;
 					footnotePosition.Container.Right = 2.54;
@@ -27,11 +27,11 @@ namespace Signer {
 				case 3:
 					// Example #3: automatic positioning on new page. This will insert the signature, and future signatures,
 					// in a new page appended to the end of the document.
-					return PadesVisualPositioning.GetNewPage(Util.GetRestPkiClient());
+					return PadesVisualPositioning.GetNewPage(restPkiClient);
 
 				case 4:
 					// Example #4: get the "new page" positioning preset and customize it
-					var newPagePos = PadesVisualPositioning.GetNewPage(Util.GetRestPkiClient());
+					var newPagePos = PadesVisualPositioning.GetNewPage(restPkiClient);
 					newPagePos.Container.Left = 2.54;
 					newPagePos.Container.Top = 2.54;
 					newPagePos.Container.Right = 2.54;
