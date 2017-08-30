@@ -108,10 +108,9 @@ namespace Signer {
 							Bottom = 0
 						},
 						// We'll use the image at 'Content/PdfStamp.png'.
-						Image = new PdfMarkImage(Util.GetPdfStampContent(), "image/png") {
-							// Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is completely opaque).
-							Opacity = 75,
-						}
+						Image = new PdfMarkImage(Resources.PdfStamp_png, "image/png"),
+						// Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is completely opaque).
+						Opacity = 75,
 					});
 
 					// Then, the text.
@@ -181,10 +180,9 @@ namespace Signer {
 							Bottom = 0.1
 						},
 						// We'll use the 'Content/PdfStamp.png' as background.
-						Image = new PdfMarkImage(Util.GetPdfStampContent(), "image/png") {
-							// Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is completely opaque).
-							Opacity = 50,
-						}
+						Image = new PdfMarkImage(Resources.PdfStamp_png, "image/png"),
+						// Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is completely opaque).
+						Opacity = 50,
 					});
 
 					return mark;

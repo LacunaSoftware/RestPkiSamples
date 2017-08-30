@@ -23,38 +23,5 @@ namespace Signer
 			return new RestPkiClient(endpoint, accessToken);
 		}
 
-		public static string ContentPath {
-			get {
-				return System.AppDomain.CurrentDomain.BaseDirectory;
-			}
-		}
-
-		public static byte[] GetPdfStampContent() {
-			return File.ReadAllBytes(Path.Combine(ContentPath, "PdfStamp.png"));
-		}
-
-		public static byte[] GetSampleDocContent() {
-			return File.ReadAllBytes(GetSampleDocPath());
-		}
-
-		public static string GetSampleDocPath() {
-			return Path.Combine(ContentPath, "SampleDocument.pdf");
-		}
-
-		public static byte[] GetBatchDocContent(int id) {
-			return File.ReadAllBytes(Path.Combine(ContentPath, string.Format("{0:D2}.pdf", ((id - 1) % 10) + 1)));
-		}
-
-		public static byte[] GetSampleNFeContent() {
-			return File.ReadAllBytes(Path.Combine(ContentPath, "SampleNFe.xml"));
-		}
-
-		public static byte[] GetSampleXmlDocument() {
-			return File.ReadAllBytes(Path.Combine(ContentPath, "SampleDocument.xml"));
-		}
-
-		public static byte[] GetXmlInvoiceWithSigs() {
-			return File.ReadAllBytes(Path.Combine(ContentPath, "InvoiceWithSigs.xml"));
-		}
 	}
 }

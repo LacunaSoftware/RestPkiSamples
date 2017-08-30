@@ -135,7 +135,7 @@ namespace Signer
 						},
 
 						// We'll use as background the image in Content/PdfStamp.png
-						Image = new PadesVisualImage(Util.GetPdfStampContent(), "image/png") {
+						Image = new PadesVisualImage(Signer.Resources.PdfStamp_png, "image/png") {
 
 							// Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is completely opaque).
 							Opacity = 50,
@@ -163,7 +163,7 @@ namespace Signer
 				// document.
 				if (string.IsNullOrEmpty(FileToSign)) {
 					// Set the PDF to be signed as a byte array
-					signatureStarter.SetPdfToSign(Util.GetSampleDocContent());
+					signatureStarter.SetPdfToSign(Signer.Resources.SampleDocument);
 				} else {
 					// Set the path of the file to be signed
 					addLog($"file size {new FileInfo(FileToSign).Length / 1024}kBytes");
