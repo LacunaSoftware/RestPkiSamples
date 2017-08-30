@@ -49,6 +49,13 @@ If you use an older version of Visual Studio which cannot open the MVC and the W
 project for **Visual Studio 2008** located in the folder [VS2008](VS2008/). The steps to execute the sample
 are the same as for the default sample.
 
+Windows Presentation Foundation (WPF) sample
+--------------------------------------------
+
+A sample .NET desktop application using the Windows Presentation Foundation (WPF) technology is available
+on the folder [WPF](WPF/). The steps to execute the sample are similar to the default sample, with the
+difference that the API access token is located on the file `Util.cs`.
+
 .NET client lib
 ---------------
 
