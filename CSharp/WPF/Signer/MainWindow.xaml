@@ -21,7 +21,7 @@
 			<RowDefinition Height="Auto" />
 			<RowDefinition />
 		</Grid.RowDefinitions>
-		<Button  Grid.Row="1" Grid.Column="1" Content="Open File to Sign" HorizontalAlignment="Left" VerticalAlignment="Top" Width="145" Click="fileButtonClick" FontSize="14"/>
+		<Button  Grid.Row="1" Grid.Column="1" Content="Select File to Sign" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Click="fileButtonClick" FontSize="14"/>
 		<ComboBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" x:Name="CertificatesCB" VerticalAlignment="Center" Controls:TextBoxHelper.AutoWatermark="True" Controls:TextBoxHelper.Watermark="Select a certificate ..." Margin="0,5,15,0" SelectionChanged="CertificatesCB_SelectionChanged" FontSize="14" />
 		<Label  Grid.Row="1" Grid.Column="2" Content=""  HorizontalAlignment="Left"  VerticalAlignment="Center" Name="FileNameL" />
 		<Button Grid.Row="3" Grid.Column="1" Content="Sign" HorizontalAlignment="Left" VerticalAlignment="Top" Width="104" Click="signButtonClick" IsEnabled="False"  ToolTip="Chose a file and a certificate first"

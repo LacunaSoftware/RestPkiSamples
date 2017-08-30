@@ -240,13 +240,13 @@ namespace Signer
 					signatureResult.WriteToFile(SignedFile);
 					//BusyIndicator.IsBusy = false;
 					progressDialog.SetProgress(0.99);
-					await progressDialog.CloseAsync();
 					OpenFileSignedBt.IsEnabled = true;
 					addLog($"Signarure finished");
 				}
 			} catch (Exception ex) {
 				addLog(ex.ToString());
 			}
+			await progressDialog.CloseAsync();
 		}
 
 		private void CertificatesCB_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e) {
