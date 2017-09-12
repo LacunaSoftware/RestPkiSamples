@@ -40,6 +40,7 @@
                         <li><a href="xml-full-signature.php">Full XML signature (enveloped signature)</a></li>
                         <li><a href="xml-element-signature.php">XML element signature</a></li>
                         <li><a href="upload.php?goto=open-xml-signature">Open/validate signatures on an existing XML file</a></li>
+                        <li><a href="batch-xml-signature.php">Simple batch signature of XML elements</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
