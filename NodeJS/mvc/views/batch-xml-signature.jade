@@ -1,0 +1,57 @@
+extends layout
+
+block content
+
+    //- This section will show the errors occurred on the batch signature. It will be filled using jQuery.
+    div(id='errorPanel')
+
+    h2 Batch Signature of XML Elements
+
+    //- This section will be only shown when the batch signature is complete successfully, in other cases, the signature
+    //- form will be visible.
+    div(id='signatureResults', class='form-group', style='display: none;')
+        h3 File signed successfully!
+        label(for='actions') Actions:
+        ul(id='actions')
+            li
+                a(id='signedFileLink') Download the signed file
+
+    form(id='signForm', method='POST')
+
+        //- link to the file being signed
+        .form-group
+            label File to sign
+            p
+                | You are signing a batch of nodes of&nbsp;
+                a(href='/EventoManifesto.xml', target='_blank') this sample XML
+                | .
+
+        //- Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it
+        //- later on (see javascript below).
+        .form-group
+            label(for='certificateSelect') Choose a certificate
+            select(id='certificateSelect', class='form-control')
+
+        //- Action buttons. Notice that the "Sign File" button is NOT a submit button. When the user clicks the button,
+        //- we must first use the Web PKI component to perform the client-side computation necessary and only when
+        //- that computation is finished we'll submit the form programmatically (see javascript below).
+        button(id='signButton', type='button', class='btn btn-primary') Sign Batch
+        | &nbsp;
+        button(id='refreshButton', type='button', class='btn btn-default') Refresh Certificates
+
+    //- The file below contains the logic for calling the Web PKI component. It is only an example, feel free to alter
+    //- it to meet your application's needs. You can also bring the code into the javascript block below if you prefer.
+    script(src='/javascripts/batch-xml-signature-form.js')
+
+    script.
+        $(document).ready(function () {
+            // Once the page is ready, we call the init() function on the javascript code
+            // (see batch-xml-signature-form.js)
+            batchXmlSignatureForm.init({
+                elementsIds: !{JSON.stringify(elementsIds)},  // elements' ids of the sample XML, defined on server-side
+                errorPanel: $('#errorPanel'),              // the panel, where will be shown a error, when it occurs
+                certificateSelect: $('#certificateSelect'),   // the select element (combo box) to list the certificates
+                refreshButton: $('#refreshButton'),           // the "refresh" button
+                signButton: $('#signButton')                  // the button that initiates the operation
+            });
+        });

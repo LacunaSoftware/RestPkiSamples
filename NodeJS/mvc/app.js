@@ -12,6 +12,7 @@ var cadesSignature = require('./routes/cades-signature');
 var cadesSignatureServerKey = require('./routes/cades-signature-server-key');
 var fullXmlSignature = require('./routes/xml-full-signature');
 var xmlElementSignature = require('./routes/xml-element-signature');
+var batchXmlSignature = require('./routes/batch-xml-signature');
 
 var app = express();
 
@@ -33,6 +34,7 @@ app.use('/cades-signature', cadesSignature);
 app.use('/cades-signature-server-key', cadesSignatureServerKey);
 app.use('/xml-full-signature', fullXmlSignature);
 app.use('/xml-element-signature', xmlElementSignature);
+app.use('/batch-xml-signature', batchXmlSignature);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
