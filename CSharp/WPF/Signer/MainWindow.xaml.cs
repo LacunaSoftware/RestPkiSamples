@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.RegularExpressions;
 using System.Windows;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
@@ -59,30 +60,12 @@ namespace Signer {
 			}
 		}
 
-		private byte[] getCertificateBytes(string thumbprint) {
-			X509Store store = new X509Store("My");
-
-			store.Open(OpenFlags.ReadOnly);
-
-			foreach (X509Certificate2 mCert in store.Certificates) {
-				if (mCert.Thumbprint == thumbprint) {
-					return mCert.GetRawCertData();
-				}
-
-			}
-			return null;
-		}
 		private X509Certificate2 getCertificate(string thumbprint) {
 			var store = new X509Store("My");
-
 			store.Open(OpenFlags.ReadOnly);
-
-			foreach (X509Certificate2 mCert in store.Certificates) {
-				if (mCert.Thumbprint == thumbprint) {
-					return mCert;
-				}
-			}
-			return null;
+			thumbprint = Regex.Replace(thumbprint, @"[^\da-fA-F]", string.Empty).ToUpper();
+			var cert = store.Certificates.Find(X509FindType.FindByThumbprint, thumbprint,false); 
+			return cert?[0];
 		}
 
 		private void fileButtonClick(object sender, RoutedEventArgs e) {
@@ -152,9 +135,8 @@ namespace Signer {
 				};
 
 				var cert = CertificatesCB.SelectedItem as Cert;
-				var certBytes = getCertificateBytes(cert.Thumbprint);
 				var certificate = getCertificate(cert.Thumbprint);
-				signatureStarter.SetSignerCertificate(certBytes);
+				signatureStarter.SetSignerCertificate(certificate.GetRawCertData());
 				progressDialog.SetProgress(0.15);
 
 				// If the user was redirected here by UploadController (signature with file uploaded by user), the "userfile" URL argument
