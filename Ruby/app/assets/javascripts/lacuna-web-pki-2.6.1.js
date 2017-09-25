@@ -197,7 +197,7 @@ LacunaWebPKI = function (license) {
 	$._chromeNativeWinRequiredVersion = '2.2.8';
 	$._chromeNativeLinuxRequiredVersion = '2.4.1';
 	$._chromeNativeMacRequiredVersion = '2.4.1';
-	$._ieAddonRequiredVersion = '2.0.6';
+	$._ieAddonRequiredVersion = '2.2.4';
 
     $._chromeInstallationStates = {
         INSTALLED: 0,
@@ -218,6 +218,9 @@ LacunaWebPKI = function (license) {
         keyEncipherment: 32,
         nonRepudiation: 64
     };
+
+	// populated after init
+    $._nativeInfo = {};
 
     $.installationStates = {
         INSTALLED: 0,
@@ -330,6 +333,19 @@ LacunaWebPKI = function (license) {
 	    italic: 2
 	};
 
+	// password policies
+	$.passwordPolicies = {
+		lettersAndNumbers: 1,
+		upperAndLowerCase: 2,
+		specialCharacters: 4
+	};
+
+	// standard pkcs11 modules
+	$.pkcs11Modules = {
+		safeSign: { win: 'aetpkss1.dll', linux: 'libaetpkss.so.3', mac: 'libaetpkss.dylib' },
+		safeNet: { win: 'eTPKCS11.dll', linux: 'libeToken.so', mac: 'libeToken.dylib' }
+	};
+
 	// -------------------- "Private" static functions (no reference to 'this') --------------------
 
 	$._compareVersions = function (v1, v2) {
@@ -412,6 +428,23 @@ LacunaWebPKI = function (license) {
 	        responseReader.readAsDataURL(xhr.response);
 	    };
 	    xhr.send();
+	};
+
+	$._getRequestOsP11Modules = function (p11Modules) {
+		if (!p11Modules || !p11Modules.length) {
+			return null;
+		}
+		osModules = [];
+		for (var i=0; i<p11Modules.length; i++) {
+			if ($._nativeInfo.os === 'Windows') {
+				osModules.push(p11Modules[i].win);
+			} else if ($._nativeInfo.os === 'Linux') {
+				osModules.push(p11Modules[i].linux);
+			} else if ($._nativeInfo.os === 'Darwin') {
+				osModules.push(p11Modules[i].mac);
+			}
+		}
+		return osModules;
 	};
 
 	// -------------------- "Private" instance functions (with references to 'this') --------------------
@@ -1089,7 +1122,7 @@ LacunaWebPKI = function (license) {
 	 * @exampleurl https://jsfiddle.net/LacunaSoftware/6zk6c91u/embedded/
 	 */
 	$.redirectToInstallPage = function () {
-		document.location.href = $._installUrl + (this.brand || '') + '?returnUrl=' + encodeURIComponent(document.URL) + '&jslib=2.5.0';
+		document.location.href = $._installUrl + (this.brand || '') + '?returnUrl=' + encodeURIComponent(document.URL) + '&jslib=2.6.1';
 	};
 
 	$.updateExtension = function (args) {
@@ -1263,6 +1296,62 @@ LacunaWebPKI = function (license) {
 	    return context.promise;
 	};
 
+	$.listTokens = function(args) {
+		var context = this._createContext(args);
+		var request = {
+			pkcs11Modules: $._getRequestOsP11Modules(args.pkcs11Modules)
+		};
+		$._requestHandler.sendCommand(context, 'listTokens', request);
+		return context.promise;
+	};
+
+	$.generateTokenRsaKeyPair = function(args) {
+		var context = this._createContext(args);
+		var request = {
+			pkcs11Modules: $._getRequestOsP11Modules(args.pkcs11Modules),
+            subjectName: args.subjectName,
+			tokenSerialNumber: args.tokenSerialNumber,
+			keyLabel: args.keyLabel,
+			keySize: args.keySize
+		};
+		$._requestHandler.sendCommand(context, 'generateTokenRsaKeyPair', request);
+		return context.promise;
+	};
+
+	$.generateSoftwareRsaKeyPair = function(args) {
+		var context = this._createContext(args);
+		var request = {
+		    subjectName: args.subjectName,
+			keySize: args.keySize
+		};
+		$._requestHandler.sendCommand(context, 'generateSoftwareRsaKeyPair', request);
+		return context.promise;
+	};
+
+	$.importTokenCertificate = function(args) {
+		var context = this._createContext(args);
+		var request = {
+			pkcs11Modules: $._getRequestOsP11Modules(args.pkcs11Modules),
+			tokenSerialNumber: args.tokenSerialNumber,
+			certificateContent: args.certificateContent,
+			certificateLabel: args.certificateLabel
+		};
+		$._requestHandler.sendCommand(context, 'importTokenCertificate', request);
+		return context.promise;
+	};
+
+	$.importCertificate = function(args) {
+		var context = this._createContext(args);
+		var request = {
+			certificateContent: args.certificateContent,
+			passwordPolicies: args.passwordPolicies,
+			passwordMinLength: args.passwordMinLength,
+			savePkcs12: args.savePkcs12
+		};
+		$._requestHandler.sendCommand(context, 'importCertificate', request);
+		return context.promise;
+	};
+
 	// -------------------- Browser-dependent singleton --------------------
 
 	if ($._requestHandler === undefined) {
@@ -1382,6 +1471,7 @@ LacunaWebPKI = function (license) {
 					var subPromise = new $.Promise(null);
 					subPromise.success(function (response) {
 						if (response.isReady) {
+							$._nativeInfo = response.nativeInfo;
 							if (response.nativeInfo.os === 'Windows' && $._compareVersions(response.nativeInfo.installedVersion, $._chromeNativeWinRequiredVersion) < 0) {
 								context.promise._invokeSuccess({
 									isInstalled: false,
@@ -1575,6 +1665,7 @@ LacunaWebPKI = function (license) {
 					}
 					var subPromise = new $.Promise(null);
 					subPromise.success(function (version) {
+						$._nativeInfo = { os: 'Windows', installedVersion: version };
 						if ($._compareVersions(version, $._ieAddonRequiredVersion) < 0) {
 							context.promise._invokeSuccess({
 								isInstalled: false,
