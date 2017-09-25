@@ -15,6 +15,10 @@
 </head>
 <body>
 	<form runat="server">
+		<script>
+			var _webPkiLicense = '<%= System.Configuration.ConfigurationManager.AppSettings["WebPkiLicense"] %>';
+			var _restPkiEndpoint = '<%= System.Configuration.ConfigurationManager.AppSettings["RestPkiEndpoint"] %>';
+		</script>
 		<asp:ScriptManager runat="server">
 			<Scripts>
 				<%--To learn more about bundling scripts in ScriptManager see http://go.microsoft.com/fwlink/?LinkID=301884 --%>

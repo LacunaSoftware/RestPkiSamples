@@ -74,6 +74,7 @@ $signatureResult->writeToFile("app-data/{$filename}");
     <h3>Actions:</h3>
     <ul>
         <li><a href="app-data/<?= $filename ?>">Download the signed file</a></li>
+        <li><a href="printer-friendly-version.php?file=<?= $filename ?>">Download a printer-friendly version of the signed file</a></li>
         <li><a href="open-pades-signature.php?userfile=<?= $filename ?>">Open/validate the signed file</a></li>
         <li><a href="pades-signature.php?userfile=<?= $filename ?>">Co-sign with another certificate</a></li>
     </ul>
