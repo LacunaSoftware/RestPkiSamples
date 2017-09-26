@@ -12,6 +12,10 @@ module ApplicationHelper
         Rails.root.join('public', 'uploads', 'SampleNFe.xml')
     end
 
+    def get_sample_doc_path_from_id(id)
+        Rails.root.join('public', 'uploads', "#{id}.pdf")
+    end
+
     def get_pdf_stamp_content
         content = nil
         File.open(Rails.root.join('app/assets', 'images', 'PdfStamp.png'), 'rb') do |file|

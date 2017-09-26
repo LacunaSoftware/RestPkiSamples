@@ -11,3 +11,4 @@ Rails.application.config.assets.version = '1.0'
 # Rails.application.config.assets.precompile += %w( search.js )
 Rails.application.config.assets.precompile += %w( lacuna-web-pki-2.6.1.js )
 Rails.application.config.assets.precompile += %w( signature-form.js )
+Rails.application.config.assets.precompile += %w( cades-batch-signature-form.js )
