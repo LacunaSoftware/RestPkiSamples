@@ -1,10 +1,10 @@
 class AuthenticationController < ApplicationController
-    before_action :set_expired_page_headers
     # The token acquired below can only be used for a single authentication attempt. In order to retry the signature it
     # is necessary to get a new token. This can be a problem if the user uses the back button of the browser, since the
     # browser might show a cached page that we rendered previously, with a now stale token. To prevent this from
     # happening, we call the method :set_expired_page_headers, located in application_controller.rb, which sets HTTP
     # headers to prevent caching of the page.
+    before_action :set_expired_page_headers
 
     # This action initiates an authentication with REST PKI and renders the authentication page.
     def index

@@ -12,7 +12,7 @@ module ApplicationHelper
         Rails.root.join('public', 'uploads', 'SampleNFe.xml')
     end
 
-    def get_sample_doc_path_from_id(id)
+    def get_batch_doc_path(id)
         Rails.root.join('public', 'uploads', "#{id}.pdf")
     end
 
