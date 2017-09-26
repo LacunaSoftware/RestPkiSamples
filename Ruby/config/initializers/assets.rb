@@ -9,5 +9,5 @@ Rails.application.config.assets.version = '1.0'
 # Precompile additional assets.
 # application.js, application.css, and all non-JS/CSS in app/assets folder are already added.
 # Rails.application.config.assets.precompile += %w( search.js )
-Rails.application.config.assets.precompile += %w( lacuna-web-pki-2.5.0.js )
+Rails.application.config.assets.precompile += %w( lacuna-web-pki-2.6.1.js )
 Rails.application.config.assets.precompile += %w( signature-form.js )

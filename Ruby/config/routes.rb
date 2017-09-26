@@ -11,6 +11,9 @@ Rails.application.routes.draw do
     get 'pades_signature', to: 'pades_signature#index'
     post 'pades_signature', to: 'pades_signature#action'
 
+    get 'cades_signature', to: 'cades_signature#index'
+    post 'cades_signature', to: 'cades_signature#action'
+
     get 'full_xml_signature', to: 'full_xml_signature#index'
     post 'full_xml_signature', to: 'full_xml_signature#action'
 

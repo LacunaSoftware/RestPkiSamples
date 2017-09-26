@@ -21,14 +21,14 @@
             <li><%= link_to 'With file uploaded by user', upload_path(rc: 'pades_signature') %></li>
           </ul>
         </li>
-        <!--<li class="dropdown">-->
-          <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"-->
-             <!--aria-expanded="false">CAdES signature <span class="caret"></span></a>-->
-          <!--<ul class="dropdown-menu">-->
-            <!--<li><a href="/cades-signature">With file already on server</a></li>-->
-            <!--<li><a href="/upload/cades-signature">With file uploaded by user</a></li>-->
-          <!--</ul>-->
-        <!--</li>-->
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+             aria-expanded="false">CAdES signature <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><%= link_to 'With file already on server', cades_signature_path %></li>
+            <li><%= link_to 'With file uploaded by user', upload_path(rc: 'cades_signature') %></li>
+          </ul>
+        </li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">XML signature <span class="caret"></span></a>
           <ul class="dropdown-menu">
