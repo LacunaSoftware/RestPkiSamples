@@ -19,32 +19,39 @@ namespace WebForms {
             public string DownloadLink { get; set; }
         }
 
-        // We store the IDs of the batch's documents in the ViewState
+        /*
+            We store the IDs of the batch's documents in the hidden field "DocumentIdsField". Since we don't need this data
+            on the Javascript, we could alternatively store it on the Session dictionary
+         */
         private List<int> _documentIds;
         protected List<int> DocumentIds {
             get {
                 if (_documentIds == null) {
-                    _documentIds = ViewState["DocumentIds"] as List<int>;
+                    _documentIds = DocumentIdsField.Value.Split(',').Select(i => int.Parse(i)).ToList();
                 }
                 return _documentIds;
             }
             set {
-                ViewState["DocumentIds"] = value;
+                DocumentIdsField.Value = string.Join(",", value);
                 _documentIds = value;
             }
         }
 
-        // We store the index of the document currently being signed on the ViewState
+        /*
+            We store the index of the document currently being signed on the hidden field "DocumentIndexField". Since we don't need
+            this data on the Javascript, we could alternatively store it on the Session dictionary
+         */
         private int? _documentIndex;
         protected int DocumentIndex {
             get {
-                if (_documentIndex == null) {
-                    _documentIndex = (int)ViewState["DocumentIndex"];
+                int index;
+                if (!int.TryParse(DocumentIndexField.Value, out index)) {
+                    index = -1;
                 }
-                return _documentIndex.Value;
+                return index;
             }
             set {
-                ViewState["DocumentIndex"] = value;
+                DocumentIndexField.Value = value.ToString();
                 _documentIndex = value;
             }
         }
@@ -74,9 +81,9 @@ namespace WebForms {
             startNextSignature();
         }
 
-        // The button "DocSignedButton" is programmatically clicked by the Javascript on batch-signature-form.js when the
-        // current document has been signed with the certificate's private key
-        protected void DocSignedButton_Click(object sender, EventArgs e) {
+        // The button "CompleteSignatureAndStartNextButton" is programmatically clicked by the Javascript on batch-signature-form.js when the
+        // current document has been signed with the certificate's private key using the Web PKI component
+        protected void CompleteSignatureAndStartNextButton_Click(object sender, EventArgs e) {
 
             // Complete the signature
             completeSignature();
@@ -119,9 +126,6 @@ namespace WebForms {
                     // Optionally, set a SecurityContext to be used to determine trust in the certificate chain
                     //SecurityContextId = new Guid("ID OF YOUR CUSTOM SECURITY CONTEXT"),
 
-                    // For instance, to use the test certificates on Lacuna Test PKI (for development purposes only!):
-                    //SecurityContextId = new Guid("803517ad-3bbc-4169-b085-60053a8f6dbf"),
-
                     // Set a visual representation for the signature (see function below)
                     VisualRepresentation = getVisualRepresentation(),
                 };
@@ -140,7 +144,7 @@ namespace WebForms {
 				*/
                 //signatureStarter.PdfMarks.Add(PadesVisualElements.GetPdfMark(1));
 
-                // Set the PDF to sign
+                // Set the PDF to be signed
                 signatureStarter.SetPdfToSign(Util.GetBatchDocContent(docId));
 
                 // Call the StartWithWebPki() method, which initiates the signature.
@@ -149,7 +153,6 @@ namespace WebForms {
             } catch (ValidationException ex) {
 
                 // One or more validations failed. We log the error, update the page with a summary of what happened to this document and start the next signature
-                //logger.Error(ex, "Validation error starting the signature of a batch document");
                 setValidationError(ex.ValidationResults);
                 startNextSignature();
                 return;
@@ -157,7 +160,6 @@ namespace WebForms {
             } catch (Exception ex) {
 
                 // An error has occurred. We log the error, update the page with a summary of what happened to this document and start the next signature
-                //logger.Error(ex, "Error starting the signature of a batch document");
                 setError(ex.Message);
                 startNextSignature();
                 return;
@@ -170,46 +172,43 @@ namespace WebForms {
 
         private void completeSignature() {
 
-            string filename;
+            string fileId;
 
             try {
 
                 // Get an instance of the PadesSignatureFinisher2 class, responsible for completing the signature process
                 var signatureFinisher = new PadesSignatureFinisher2(Util.GetRestPkiClient()) {
 
-                    // Retrieve the token for this signature stored on the initial step (see method startNextSignature())
+                    // Retrieve the token for this signature stored as hidden field on the initial step (see method startNextSignature())
                     Token = TokenField.Value
                 };
 
-                // Call the Finish() method, which finalizes the signature process and returns a SignatureResult object
-                var signatureResult = signatureFinisher.Finish();
+                // Call the Finish() method, which finalizes the signature process and returns an SignatureResult object to access 
+                // the signed PDF
+                var result = signatureFinisher.Finish();
 
                 // At this point, you'd typically store the signed PDF on your database. For demonstration purposes, we'll
                 // store the PDF on the App_Data folder.
 
-                var appDataPath = Server.MapPath("~/App_Data");
-                if (!Directory.Exists(appDataPath)) {
-                    Directory.CreateDirectory(appDataPath);
-                }
-                var id = Guid.NewGuid();
-                filename = id + ".pdf";
 
                 // The SignatureResult object has various methods for writing the signature file to a stream (WriteTo()), local file (WriteToFile()), open
                 // a stream to read the content (OpenRead()) and get its contents (GetContent()). For large files, avoid the method GetContent() to avoid
                 // memory allocation issues.
-                signatureResult.WriteToFile(Path.Combine(appDataPath, filename));
+                using (var resultStream = result.OpenRead()) {
+                    fileId = StorageMock.Store(resultStream, ".pdf");
+                    // If you prefer a simpler approach without streams, simply do:
+                    //fileId = StorageMock.Store(result.GetContent(), ".pdf");
+                }
 
             } catch (ValidationException ex) {
 
                 // One or more validations failed. We log the error and update the page with a summary of what happened to this document
-                // logger.Error(ex, "Validation error completing the signature of a batch document");
                 setValidationError(ex.ValidationResults);
                 return;
 
             } catch (Exception ex) {
 
                 // An error has occurred. We log the error and update the page with a summary of what happened to this document
-                // logger.Error(ex, "Error completing the signature of a batch document");
                 setError(ex.Message);
                 return;
 
@@ -219,13 +218,13 @@ namespace WebForms {
             var docItem = DocumentsListView.Items[DocumentIndex];
             docItem.DataItem = new DocumentItem() {
                 Id = DocumentIds[DocumentIndex],
-                DownloadLink = "Download.aspx?file=" + filename
+                DownloadLink = "Download.aspx?file=" + fileId
             };
             docItem.DataBind();
         }
 
         private void setValidationError(ValidationResults vr) {
-            var message = "One or more validations failed: " + string.Join("; ", vr.Errors.Select(e => getDisplayText(e)).ToArray());
+            var message = "One or more validations failed: " + string.Join("; ", vr.Errors.Select(e => getDisplayText(e)));
             setError(message);
         }
 
@@ -264,7 +263,7 @@ namespace WebForms {
 
                 },
 
-                // We'll use as background the image in Content/images/PdfStamp.png
+                // We'll use as background the image in Content/PdfStamp.png
                 Image = new PadesVisualImage(Util.GetPdfStampContent(), "image/png") {
 
                     // Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is completely opaque).

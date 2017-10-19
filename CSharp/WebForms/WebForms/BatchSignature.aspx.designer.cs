@@ -13,15 +13,6 @@ namespace WebForms {
     public partial class BatchSignature {
         
         /// <summary>
-        /// UpdatePanel1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel UpdatePanel1;
-        
-        /// <summary>
         /// DocumentsListView control.
         /// </summary>
         /// <remarks>
@@ -67,6 +58,24 @@ namespace WebForms {
         protected global::System.Web.UI.WebControls.HiddenField TokenField;
         
         /// <summary>
+        /// DocumentIdsField control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField DocumentIdsField;
+        
+        /// <summary>
+        /// DocumentIndexField control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField DocumentIndexField;
+        
+        /// <summary>
         /// StartBatchButton control.
         /// </summary>
         /// <remarks>
@@ -76,12 +85,12 @@ namespace WebForms {
         protected global::System.Web.UI.WebControls.Button StartBatchButton;
         
         /// <summary>
-        /// DocSignedButton control.
+        /// CompleteSignatureAndStartNextButton control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button DocSignedButton;
+        protected global::System.Web.UI.WebControls.Button CompleteSignatureAndStartNextButton;
     }
 }

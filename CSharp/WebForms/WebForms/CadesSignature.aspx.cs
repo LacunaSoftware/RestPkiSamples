@@ -33,9 +33,6 @@ namespace WebForms {
                 // Optionally, set a SecurityContext to be used to determine trust in the certificate chain
                 //signatureStarter.SetSecurityContext(new Guid("ID OF YOUR CUSTOM SECURITY CONTEXT"));
 
-                // For instance, to use the test certificates on Lacuna Test PKI (for development purposes only!):
-                //signatureStarter.SetSecurityContext(new Guid("803517ad-3bbc-4169-b085-60053a8f6dbf"));
-
                 // Optionally, set whether the content should be encapsulated in the resulting CMS. If this parameter is ommitted,
                 // the following rules apply:
                 // - If no CmsToSign is given, the resulting CMS will include the content

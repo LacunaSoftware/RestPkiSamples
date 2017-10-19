@@ -8,7 +8,7 @@
 		UpdatePanel used to refresh only this part of the page. This is needed because if we did a complete postback of the page,
 		the Web PKI component would ask for user authorization to sign each document in the batch.
 	--%>
-	<asp:UpdatePanel ID="UpdatePanel1" runat="server">
+	<asp:UpdatePanel runat="server">
 		<ContentTemplate>
 
 			<%--
@@ -22,9 +22,9 @@
 				</LayoutTemplate>
 				<ItemTemplate>
 					<li>
-						Document <asp:Label ID="Label1" runat="server" Text='<%# Eval("Id") %>' />
-						<asp:Label ID="Label2" runat="server" Visible='<%# Eval("Error") != null %>' Text='<%# Eval("Error") %>' CssClass="text-danger" />
-						<asp:HyperLink ID="HyperLink1" runat="server" Visible='<%# Eval("DownloadLink") != null %>' NavigateUrl='<%# Eval("DownloadLink") %>' Text="download" />
+						Document <asp:Label runat="server" Text='<%# Eval("Id") %>' />
+						<asp:Label runat="server" Visible='<%# Eval("Error") != null %>' Text='<%# Eval("Error") %>' CssClass="text-danger" />
+						<asp:HyperLink runat="server" Visible='<%# Eval("DownloadLink") != null %>' NavigateUrl='<%# Eval("DownloadLink") %>' Text="download" />
 					</li>
 				</ItemTemplate>
 			</asp:ListView>
@@ -34,7 +34,7 @@
 			--%>
 			<asp:Panel ID="SignatureControlsPanel" runat="server">
 
-				<%-- Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it later on (see javascript). --%>
+				<%-- Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it later on (see batch-signature-form.js). --%>
 				<div class="form-group">
 					<label for="certificateSelect">Choose a certificate</label>
 					<select id="certificateSelect" class="form-control"></select>
@@ -51,9 +51,16 @@
 			</asp:Panel>
 
 			<%--
-				Hidden field used to pass data from the code-behind to the javascript and vice-versa 
+				Hidden fields used to pass data from the code-behind to the javascript and vice-versa 
 			--%>
 			<asp:HiddenField runat="server" ID="TokenField" />
+
+            <%--
+                Hidden fields used by the code-behind to save state between signature steps. These could be alternatively stored on server-side session,
+                since we don't need their values on the javascript
+            --%>
+            <asp:HiddenField runat="server" ID="DocumentIdsField" />
+            <asp:HiddenField runat="server" ID="DocumentIndexField" />
 
 			<%--
 				Hidden buttons whose click event is fired programmatically by the javascript upon completion of each step in the batch. Notice that
@@ -61,7 +68,7 @@
 				programatically "click" it.
 			--%>
 			<asp:Button ID="StartBatchButton" runat="server" OnClick="StartBatchButton_Click" Style="display: none;" />
-			<asp:Button ID="DocSignedButton" runat="server" OnClick="DocSignedButton_Click" Style="display: none;" />
+			<asp:Button ID="CompleteSignatureAndStartNextButton" runat="server" OnClick="CompleteSignatureAndStartNextButton_Click" Style="display: none;" />
 
 		</ContentTemplate>
 	</asp:UpdatePanel>
@@ -69,8 +76,8 @@
     <%--
 		Include the "webpki-batch" bundle, which includes the following javascript files (see App_Start\BundleConfig.cs):
 		- jquery.blockUI.js       : jQuery plugin to block the UI
-		- lacuna-web-pki-2.5.0.js : Javascript library to access the Web PKI component (client-side component used to access the user's certificates)
-		- batch-signature-form.js : Javascript code to call the Web PKI component (merely a sample, you are encouraged to adapt it)
+		- lacuna-web-pki-2.6.1.js : Javascript library to access the Web PKI component (client-side component used to access the user's certificates)
+		- batch-signature-form.js : Javascript code to call the Web PKI component and to do the batch signature (merely a sample, you are encouraged to adapt it)
 	--%>
 	<asp:PlaceHolder runat="server">
         <%: Scripts.Render("~/bundles/webpki-batch") %>
@@ -99,7 +106,7 @@
 
 				<%-- Hidden buttons to transfer the execution back to the code-behind --%>
 				startBatchButton: $('#<%= StartBatchButton.ClientID %>'),
-				docSignedButton: $('#<%= DocSignedButton.ClientID %>'),
+                completeSignatureAndStartNextButton: $('#<%= CompleteSignatureAndStartNextButton.ClientID %>'),
 
 				<%-- Hidden fields to pass data to and from the code-behind --%>
 				tokenField: $('#<%= TokenField.ClientID %>')

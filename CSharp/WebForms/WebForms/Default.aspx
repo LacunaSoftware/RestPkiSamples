@@ -29,14 +29,13 @@
 				<li><a href="/XmlElementSignature">Create a XML element signature</a></li>
 			</ul>
 		</li>
-        <li><a href="BatchSignature.aspx">Batch Signature</a></li>
-		<%--<li>
+		<li>
 			Sign a batch of files
 			<ul>
 				<li><a href="/BatchSignature">Simple batch signature</a></li>
-				<li><a href="/BatchSignatureOptimized">Optimized batch signature</a> (better performance but more complex Javascript)</li>
+				<%--<li><a href="/BatchSignatureOptimized">Optimized batch signature</a> (better performance but more complex Javascript)</li>--%>
 			</ul>
-		</li>--%>
+		</li>
 	</ul>
 
 </asp:Content>

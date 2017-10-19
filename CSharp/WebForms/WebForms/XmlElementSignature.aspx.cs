@@ -37,9 +37,6 @@ namespace WebForms {
                 // Optionally, set a SecurityContext to be used to determine trust in the certificate chain
                 //signatureStarter.SetSecurityContext(new Guid("ID OF YOUR CUSTOM SECURITY CONTEXT"));
 
-                // For instance, to use the test certificates on Lacuna Test PKI (for development purposes only!):
-                //signatureStarter.SetSecurityContext(new Guid("803517ad-3bbc-4169-b085-60053a8f6dbf"));
-
                 // Call the StartWithWebPki() method, which initiates the signature. This yields the token, a 43-character
                 // case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
                 // signWithRestPki() method on the Web PKI component (see javascript on the view) and also to complete the signature

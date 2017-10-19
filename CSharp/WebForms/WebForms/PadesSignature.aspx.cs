@@ -34,10 +34,7 @@ namespace WebForms {
                     // Optionally, set a SecurityContext to be used to determine trust in the certificate chain
                     //SecurityContextId = new Guid("ID OF YOUR CUSTOM SECURITY CONTEXT"),
 
-                    // For instance, to use the test certificates on Lacuna Test PKI (for development purposes only!):
-                    //SecurityContextId = new Guid("803517ad-3bbc-4169-b085-60053a8f6dbf"),
-
-                    // Set a visual representation for the signature
+                    // Set a visual representation for the signature (see function below)
                     VisualRepresentation = getVisualRepresentation(),
                 };
 
@@ -94,13 +91,13 @@ namespace WebForms {
 			string fileId;
 			using (var resultStream = result.OpenRead()) {
 				fileId = StorageMock.Store(resultStream, ".pdf");
-			}
-			// If you prefer a simpler approach without streams, simply do:
-			// fileId = Storage.Store(result.GetContent(), ".pdf");
+                // If you prefer a simpler approach without streams, simply do:
+                fileId = StorageMock.Store(result.GetContent(), ".pdf");
+            }
 
-			// What you do at this point is up to you. For demonstration purposes, we'll render a page with a link to
-			// download the signed PDF and with the signer's certificate details.
-			this.SignatureFilename = fileId;
+            // What you do at this point is up to you. For demonstration purposes, we'll render a page with a link to
+            // download the signed PDF and with the signer's certificate details.
+            this.SignatureFilename = fileId;
 			this.SignerCertificate = result.Certificate;
 			Server.Transfer("PadesSignatureInfo.aspx");
 		}

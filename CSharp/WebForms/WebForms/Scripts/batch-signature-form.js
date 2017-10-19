@@ -28,17 +28,17 @@ var batchSignatureForm = (function () {
 
 		if (pki === null) {
             // If the Web PKI component is not initialized that means this is the initial load of the 
-            // page(not a refresh of the update panel).Therefore, we initialize the Web PKI component 
+            // page (not a refresh of the update panel).Therefore, we initialize the Web PKI component 
             // and list the user's certificates.
 			initPki();
 		} else if (formElements.tokenField.val() !== '(end)') {
             // If the Web PKI is already initialized, this is a refresh of the update panel. If the 
-            // hidden field "tokenField" was filled by the code- behind with any value except "(end)",
+            // hidden field "tokenField" was filled by the code-behind with any value except "(end)",
             // we go ahead and sign the current document.
 			sign();
 		} else {
             // If the hidden field "tokenField" is filled with the value "(end)", it means that the last
-            // document in the batch was processed.We simply unblock the UI and return.
+            // document in the batch was processed. We simply unblock the UI and return.
 			$.unblockUI();
 		}
 	}
@@ -56,7 +56,7 @@ var batchSignatureForm = (function () {
 
         // Call the init() method on the LacunaWebPKI object, passing a callback for when the component
         // is ready to be used and another to be called when an error occurrs on any of the subsequent
-        // operations.For more information, see:
+        // operations. For more information, see:
 		// https://webpki.lacunasoftware.com/#/Documentation#coding-the-first-lines
 		// http://webpki.lacunasoftware.com/Help/classes/LacunaWebPKI.html#method_init
 		pki.init({
@@ -108,7 +108,7 @@ var batchSignatureForm = (function () {
 	}
 
 	// -------------------------------------------------------------------------------------------------
-	// Function called when the user clicks the "Sign" button
+	// Function called when the user clicks the "Sign Batch" button
 	// -------------------------------------------------------------------------------------------------
 	function start() {
 
@@ -128,7 +128,7 @@ var batchSignatureForm = (function () {
 		}).success(function () {
 
             // Fire up the click event of the button "StartBatchButton" on BatchSignature.aspx's
-            // code-behind(server-side)
+            // code-behind (server-side)
 			formElements.startBatchButton.click();
 			
 		});
@@ -140,8 +140,8 @@ var batchSignatureForm = (function () {
 	// -------------------------------------------------------------------------------------------------
 	function sign() {
 
-        // Call Web PKI passing the selected certificate, the document's "to sign hash" and the digest
-        // algorithm to be used during the signature algorithm
+        // Call Web PKI passing the selected certificate, the token that identifies the signature 
+        // process
 		pki.signWithRestPki({
 
 			thumbprint: selectedCertThumbprint,
@@ -149,9 +149,9 @@ var batchSignatureForm = (function () {
 
 		}).success(function () {
 
-            // Fire up the click event of the button "DocSignedButton" on BatchSignature.aspx's 
-            // code-behind(server-side)
-			formElements.docSignedButton.click();
+            // Fire up the click event of the button "CompleteSignatureAndStartNextButton" on 
+            // BatchSignature.aspx's code-behind (server-side)
+            formElements.completeSignatureAndStartNextButton.click();
 
 		});
 	}

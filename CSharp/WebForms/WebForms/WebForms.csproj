@@ -140,6 +140,7 @@
     <Content Include="Authentication.aspx" />
     <Content Include="AuthenticationFail.aspx" />
     <Content Include="AuthenticationSuccess.aspx" />
+    <Content Include="BatchSignature.aspx" />
     <Content Include="CadesSignatureInfo.aspx" />
     <Content Include="CadesSignature.aspx" />
     <Content Include="Check.aspx" />
@@ -168,6 +169,7 @@
     <Content Include="Content\09.pdf" />
     <Content Include="Content\10.pdf" />
     <Content Include="PrinterFriendlyVersion.aspx" />
+    <Content Include="Scripts\batch-signature-form.js" />
     <Content Include="Scripts\lacuna-web-pki-2.5.0.js" />
     <Content Include="Upload.aspx" />
     <Content Include="XmlElementSignature.aspx" />
@@ -250,6 +252,13 @@
     </Compile>
     <Compile Include="AuthenticationSuccess.aspx.designer.cs">
       <DependentUpon>AuthenticationSuccess.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="BatchSignature.aspx.cs">
+      <DependentUpon>BatchSignature.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BatchSignature.aspx.designer.cs">
+      <DependentUpon>BatchSignature.aspx</DependentUpon>
     </Compile>
     <Compile Include="CadesSignatureInfo.aspx.cs">
       <DependentUpon>CadesSignatureInfo.aspx</DependentUpon>
