@@ -1,0 +1,36 @@
+<div class="container">
+
+  <h2>REST PKI Samples</h2>
+  Choose one of the following:
+  <ul>
+    <li><%= link_to 'Authentication with digital certificate', authentication_path %></li>
+    <li>
+      PAdES signature
+      <ul>
+        <li><%= link_to 'Create a signature with a file already on server', pades_signature_path %></li>
+        <li><%= link_to 'Create a signature with a file uploaded by user', upload_path(rc: 'pades_signature') %></li>
+      </ul>
+    </li>
+    <li>
+      CAdES signature
+      <ul>
+        <li><%= link_to 'Create a signature with a file already on server', cades_signature_path %></li>
+        <li><%= link_to 'Create a signature with a file uploaded by user', upload_path(rc: 'cades_signature') %></li>
+      </ul>
+    </li>
+    <li>
+      XML signature
+      <ul>
+        <li><%= link_to 'Full XML signature (enveloped signature)', full_xml_signature_path %></li>
+        <li><%= link_to 'XML element signature', xml_element_signature_path %></li>
+      </ul>
+    </li>
+    <li>
+      Sign a batch of files
+      <ul>
+        <li><%= link_to 'CAdES signature of a batch of files', cades_batch_signature_path %></li>
+      </ul>
+    </li>
+  </ul>
+
+</div>

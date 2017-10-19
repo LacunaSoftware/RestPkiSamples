@@ -1,0 +1,20 @@
+﻿body {
+  padding-top: 50px;
+}
+
+.vr-panel {
+	display: none;
+}
+
+.vr-panel textarea {
+	width: 100%;
+}
+
+.message-panel {
+	display: none;
+	border: solid 1px black;
+}
+
+#messagesPanel > div:first-child {
+	margin-top: 20px;
+}

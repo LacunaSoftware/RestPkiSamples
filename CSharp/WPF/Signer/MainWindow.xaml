@@ -1,0 +1,35 @@
+﻿<Controls:MetroWindow x:Class="Signer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+	xmlns:local="clr-namespace:Signer"
+        mc:Ignorable="d"
+        Title="Signer" Height="350" Width="725" FontSize="14">
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition MinWidth="19" Width="Auto" />
+			<ColumnDefinition Width="150"/>
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" MinHeight="10" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition />
+		</Grid.RowDefinitions>
+		<Button  Grid.Row="1" Grid.Column="1" Content="Select File to Sign" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Click="fileButtonClick" FontSize="14"/>
+		<ComboBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" x:Name="CertificatesCB" VerticalAlignment="Center" Controls:TextBoxHelper.AutoWatermark="True" Controls:TextBoxHelper.Watermark="Select a certificate ..." Margin="0,5,15,0" SelectionChanged="CertificatesCB_SelectionChanged" FontSize="14" />
+		<Label  Grid.Row="1" Grid.Column="2" Content=""  HorizontalAlignment="Left"  VerticalAlignment="Center" Name="FileNameL" />
+		<Button Grid.Row="3" Grid.Column="1" Content="Sign" HorizontalAlignment="Left" VerticalAlignment="Top" Width="104" Click="signButtonClick" IsEnabled="False"  ToolTip="Chose a file and a certificate first"
+					ToolTipService.ShowOnDisabled="True" Name="SignBt" Margin="0,5,0,0" FontSize="14">
+		</Button>
+		<Button Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Content="Open Signed File" HorizontalAlignment="Left" VerticalAlignment="Top" Width="230"  IsEnabled="False"  ToolTip="Chose a file and a certificate first"
+					ToolTipService.ShowOnDisabled="True" Name="OpenFileSignedBt" Margin="0,5,0,0" FontSize="14" Click="OpenFileSignedBt_Click">
+		</Button>
+		<TextBox Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" Margin="5" Name="LogTB"/>
+	</Grid>
+</Controls:MetroWindow>

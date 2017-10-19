@@ -37,6 +37,7 @@
             <ul>
                 <li><a href="xml-full-signature.php">Create a full XML signature (enveloped signature)</a></li>
                 <li><a href="xml-element-signature.php">Create a XML element signature</a></li>
+                <li><a href="upload.php?goto=open-xml-signature">Open/validate signatures on an existing XML file</a></li>
             </ul>
         </li>
         <li>

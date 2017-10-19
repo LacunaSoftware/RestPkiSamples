@@ -25,8 +25,8 @@ public class OpenCadesSignatureController {
             HttpServletResponse response
     ) throws IOException, RestException {
 
-        // Get an instance of the CadesSignatureExplorer class, used to open/validate CAdES signatures
-        CadesSignatureExplorer sigExplorer = new CadesSignatureExplorer(Util.getRestPkiClient());
+        // Get an instance of the CadesSignatureExplorer2 class, used to open/validate CAdES signatures.
+        CadesSignatureExplorer2 sigExplorer = new CadesSignatureExplorer2(Util.getRestPkiClient());
 
         // Set the CAdES signature file
         sigExplorer.setSignatureFile(Application.getTempFolderPath().resolve(userfile));
@@ -36,53 +36,57 @@ public class OpenCadesSignatureController {
 
         // Parameters for the signature validation. We have encapsulated this code in a method to include several
         // possibilities depending on the argument passed. Experiment changing the argument to see different validation
-        // configurations. Once you decide which is best for your case, you can place the code directly here.
+        // configurations (valid values are 1-5). Once you decide which is best for your case, you can place the code
+        // directly here.
         setValidationParameters(sigExplorer, 1);
         // try changing this number ---------^ for different validation parameters
 
         // Call the open() method, which returns the signature file's information
         CadesSignature signature = sigExplorer.open();
 
-        // Render the information (see file resources/templates/open-cades-signature.html for more information on the information returned)
+        // Render the information (see file resources/templates/open-cades-signature.html for more information on the
+        // information returned)
         model.addAttribute("signature", signature);
 
         return "open-cades-signature";
     }
 
-    private static void setValidationParameters(CadesSignatureExplorer sigExplorer, int caseNumber) {
+    private static void setValidationParameters(CadesSignatureExplorer2 sigExplorer, int caseNumber) {
 
         switch (caseNumber) {
 
             /**
-             * Example #1: accept only 100%-compliant ICP-Brasil signatures
+             * Example #1: accept only 100%-compliant ICP-Brasil signatures.
              */
             case 1:
-                // By specifying a catalog of acceptable policies and omitting the default signature policy, we're telling Rest PKI
-                // that only the policies in the catalog should be accepted
+                // By specifying a catalog of acceptable policies and omitting the default signature policy, we're
+                // telling Rest PKI that only the policies in the catalog should be accepted.
                 sigExplorer.setAcceptableExplicitPolicies(SignaturePolicyCatalog.getPkiBrazilCades());
                 break;
 
             /**
-             * Example #2: accept any CAdES signature as long as the signer has an ICP-Brasil certificate
+             * Example #2: accept any CAdES signature as long as the signer has an ICP-Brasil certificate.
              *
              * These parameters will only accept signatures made with ICP-Brasil certificates that comply with the
-             * minimal security features defined in the CAdES standard (ETSI TS 101 733). The signatures need not, however,
-             * follow the extra requirements defined in the ICP-Brasil signature policy documentation (DOC-ICP-15.03).
+             * minimal security features defined in the CAdES standard (ETSI TS 101 733). The signatures need not,
+             * however, follow the extra requirements defined in the ICP-Brasil signature policy
+             * documentation (DOC-ICP-15.03).
              *
-             * These parameters are less restrictive than the parameters from example #1
+             * These parameters are less restrictive than the parameters from example #1.
              */
             case 2:
-                // By omitting the accepted policies catalog and defining a default policy, we're telling Rest PKI to validate
-                // all signatures in the file with the default policy -- even signatures with an explicit signature policy.
+                // By omitting the accepted policies catalog and defining a default policy, we're telling Rest PKI to
+                // validate all signatures in the file with the default policy -- even signatures with an explicit
+                // signature policy.
                 sigExplorer.setDefaultSignaturePolicy(SignaturePolicy.CadesBes);
-                // The CadesBes policy requires us to choose a security context
+                // The CadesBes policy requires us to choose a security context.
                 sigExplorer.setSecurityContext(SecurityContext.pkiBrazil);
                 break;
 
             /**
-             * Example #3: accept any CAdES signature as long as the signer is trusted by Windows
+             * Example #3: accept any CAdES signature as long as the signer is trusted by Windows.
              *
-             * Same case as example #2, but using the WindowsServer trust arbitrator
+             * Same case as example #2, but using the WindowsServer trust arbitrator.
              */
             case 3:
                 sigExplorer.setDefaultSignaturePolicy(SignaturePolicy.CadesBes);
@@ -92,19 +96,20 @@ public class OpenCadesSignatureController {
             /**
              * Example #4: accept only 100%-compliant ICP-Brasil signatures that provide signer certificate protection.
              *
-             * "Signer certificate protection" means that a signature keeps its validity even after the signer certificate
-             * is revoked or expires. On ICP-Brasil, this translates to policies AD-RT and up (not AD-RB).
+             * "Signer certificate protection" means that a signature keeps its validity even after the signer
+             * certificate is revoked or expires. On ICP-Brasil, this translates to policies AD-RT and up (not AD-RB).
              */
             case 4:
                 sigExplorer.setAcceptableExplicitPolicies(SignaturePolicyCatalog.getPkiBrazilCadesWithSignerCertificateProtection());
                 break;
 
             /**
-             * Example #5: accept only 100%-compliant ICP-Brasil signatures that provide CA certificate protection (besides signer certificate protection).
+             * Example #5: accept only 100%-compliant ICP-Brasil signatures that provide CA certificate
+             * protection (besides signer certificate protection).
              *
-             * "CA certificate protection" means that a signature keeps its validity even after either the signer certificate or
-             * its Certification Authority (CA) certificate expires or is revoked. On ICP-Brasil, this translates to policies
-             * AD-RC/AD-RV and up (not AD-RB nor AD-RT).
+             * "CA certificate protection" means that a signature keeps its validity even after either the signer
+             * certificate or its Certification Authority (CA) certificate expires or is revoked. On ICP-Brasil, this
+             * translates to policies AD-RC/AD-RV and up (not AD-RB nor AD-RT).
              */
             case 5:
                 sigExplorer.setAcceptableExplicitPolicies(SignaturePolicyCatalog.getPkiBrazilCadesWithCACertificateProtection());

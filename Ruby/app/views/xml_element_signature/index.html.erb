@@ -1,0 +1,57 @@
+<div class="container">
+
+  <h2>XML element signature</h2>
+
+  <form id="signForm" action="/xml_element_signature" method="post">
+
+    <!-- Render the @token in a hidden input field -->
+    <input type="hidden" id="token" name="token" value="<%= @token %>">
+
+    <div class="form-group">
+      <label>File to sign</label>
+      <p>You are signing the <i>infNFe</i> node of <a href='/uploads/SampleNFe.xml'>this sample XML</a>.</p>
+    </div>
+
+    <!--
+      Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it
+      later on (see assets/javascripts/signature-form.js).
+    -->
+    <div class="form-group">
+      <label for="certificateSelect">Choose a certificate</label>
+      <select id="certificateSelect" class="form-control"></select>
+    </div>
+
+    <!--
+      Action buttons. Notice that the "Sign File" button is NOT a submit button. When the user clicks the button,
+      we must first use the Web PKI component to perform the client-side computation necessary and only when
+      that computation is finished we'll submit the form programmatically (see assets/javascripts/signature-form.js).
+    -->
+    <button id="signButton" type="button" class="btn btn-primary">Sign File</button>
+    <button id="refreshButton" type="button" class="btn btn-default">Refresh Certificates</button>
+  </form>
+
+</div>
+
+<!--
+  The file below contains the JS lib for accessing the Web PKI component. For more information, see:
+  https://webpki.lacunasoftware.com/#/Documentation
+-->
+<%= javascript_include_tag 'lacuna-web-pki-2.6.1' %>
+
+<!--
+  The file below contains the logic for calling the Web PKI component. It is only an example, feel free to alter it
+  to meet your application's needs. You can also bring the code into the javascript block below if you prefer.
+-->
+<%= javascript_include_tag 'signature-form' %>
+<script type="text/javascript" charset="utf-8">
+  $(document).ready(function () {
+    // Once the page is ready, we call the init() function on the javascript code (see signature-form.js)
+    signatureForm.init({
+      token: '<%= @token %>',                     // token acquired from REST PKI
+      form: $('#signForm'),                       // the form that should be submitted when the operation is complete
+      certificateSelect: $('#certificateSelect'), // the select element (combo box) to list the certificates
+      refreshButton: $('#refreshButton'),         // the "refresh" button
+      signButton: $('#signButton')              // the button that initiates the operation
+    });
+  });
+</script>
