@@ -35,7 +35,7 @@ namespace WebForms {
 
                 // Optionally, set whether the content should be encapsulated in the resulting CMS. If this parameter is ommitted,
                 // the following rules apply:
-                // - If no CmsToSign is given, the resulting CMS will include the content
+                // - If no CmsToCoSign is given, the resulting CMS will include the content
                 // - If a CmsToCoSign is given, the resulting CMS will include the content if and only if the CmsToCoSign also includes the content
                 signatureStarter.SetEncapsulateContent(true);
 
@@ -45,7 +45,7 @@ namespace WebForms {
 
 					// If the user was redirected here by Upload (signature with file uploaded by user), the "userfile" URL argument
 					// will contain the filename under the "App_Data" folder. 
-					signatureStarter.SetFileToSign(Server.MapPath("~/App_Data/" + UserFile.Replace("_", "."))); // Note: we're passing the filename argument with "_" as "." because of limitations of ASP.NET MVC
+					signatureStarter.SetFileToSign(Server.MapPath("~/App_Data/" + UserFile));
 
                 } else if (!String.IsNullOrEmpty(CmsFile)) {
 
@@ -58,7 +58,7 @@ namespace WebForms {
 					 * 2. Since we're creating CMSs with encapsulated content (see call to SetEncapsulateContent above), we don't need to set the content
 					 *    to be signed, REST PKI will get the content from the CMS being co-signed.
 					 */
-					signatureStarter.SetCmsToCoSign(Server.MapPath("~/App_Data/" + CmsFile.Replace("_", "."))); // Note: we're passing the filename argument with "_" as "." because of limitations of ASP.NET MVC
+					signatureStarter.SetCmsToCoSign(Server.MapPath("~/App_Data/" + CmsFile));
 
                 } else {
 
@@ -87,30 +87,25 @@ namespace WebForms {
             };
 
             // Call the Finish() method, which finalizes the signature process and returns a SignatureResult object
-            var signatureResult = signatureFinisher.Finish();
+            var result = signatureFinisher.Finish();
 
-            // The "Certificate" property of the SignatureResult object contains information about the certificate used by the user
-            // to sign the file.
-            var signerCert = signatureResult.Certificate;
-
-			// At this point, you'd typically store the CMS on your database. For demonstration purposes, we'll
-			// store the CMS on the App_Data folder and render a page with a link to download the CMS and with the
-			// signer's certificate details.
-
-			var appDataPath = Server.MapPath("~/App_Data");
-			if (!Directory.Exists(appDataPath)) {
-				Directory.CreateDirectory(appDataPath);
-			}
-			var id = Guid.NewGuid();
-			var filename = id + ".p7s";
+            // At this point, you'd typically store the signed PDF on your database. For demonstration purposes, we'll
+            // store the PDF on our mock Storage class.
 
             // The SignatureResult object has various methods for writing the signature file to a stream (WriteTo()), local file (WriteToFile()), open
             // a stream to read the content (OpenRead()) and get its contents (GetContent()). For large files, avoid the method GetContent() to avoid
             // memory allocation issues.
-            signatureResult.WriteToFile(Path.Combine(appDataPath, filename));
+            string fileId;
+            using (var resultStream = result.OpenRead()) {
+                fileId = StorageMock.Store(resultStream, ".p7s");
+            }
+            // If you prefer a simpler approach without streams, simply do:
+            //fileId = StorageMock.Store(result.GetContent(), ".pdf");
 
-            this.SignatureFilename = filename;
-			this.SignerCertificate = signerCert;
+            // What you do at this point is up to you. For demonstration purposes, we'll render a page with a link to
+            // download the signed PDF and with the signer's certificate details.
+            this.SignatureFilename = fileId;
+			this.SignerCertificate = result.Certificate;
 			Server.Transfer("CadesSignatureInfo.aspx");
 		}
 	}

@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 namespace WebForms {
 	public partial class Download : System.Web.UI.Page {
 		protected void Page_Load(object sender, EventArgs e) {
-			var filename = Request.QueryString["file"].Replace("_", ".");
+			var filename = Request.QueryString["file"];
 			var path = String.Empty;
 
 			if (Request.QueryString["from"] == "content") {
