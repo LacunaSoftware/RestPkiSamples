@@ -23,7 +23,7 @@
 			var _webPkiLicense = '<%= System.Configuration.ConfigurationManager.AppSettings["WebPkiLicense"] %>';
 			var _restPkiEndpoint = '<%= System.Configuration.ConfigurationManager.AppSettings["RestPkiEndpoint"] %>';
 		</script>
-		<asp:ScriptManager runat="server">
+		<asp:ScriptManager runat="server" EnablePageMethods="true">
 			<Scripts>
 				<%--To learn more about bundling scripts in ScriptManager see http://go.microsoft.com/fwlink/?LinkID=301884 --%>
 				<%--Framework Scripts--%>
@@ -85,7 +85,7 @@
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Batch signature <span class="caret"></span></a>
 							<ul class="dropdown-menu">
 								<li><a href="/BatchSignature">Simple batch signature</a></li>
-								<%--<li><a href="/BatchSignatureOptimized">Optimized batch signature</a></li>--%>
+								<li><a href="/BatchSignatureOptimized">Optimized batch signature</a></li>
 							</ul>
 						</li>
 					</ul>

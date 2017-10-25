@@ -43,6 +43,12 @@ namespace WebForms {
                 "~/Scripts/batch-signature-form.js"
             ));
 
+            bundles.Add(new ScriptBundle("~/bundles/webpki-batch-optimized").Include(
+                "~/Scripts/jquery.blockUI.js",
+                "~/Scripts/lacuna-web-pki-*",
+                "~/Scripts/batch-signature-optimized-form.js"
+            ));
+
             ScriptManager.ScriptResourceMapping.AddDefinition(
 				 "respond",
 				 new ScriptResourceDefinition {
