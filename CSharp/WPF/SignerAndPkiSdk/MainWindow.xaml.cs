@@ -19,7 +19,6 @@ namespace Signer {
 		public string FileToSign { get; private set; }
 		public string SignedFile { get; private set; }
 		public ClientSideSignatureInstructions Token { get; set; }
-		private bool init = false;
 		private RestPkiClient restPkiClient;
 
 		public MainWindow() {
@@ -27,22 +26,19 @@ namespace Signer {
 		}
 
 		private async void Window_Loaded(object sender, RoutedEventArgs e) {
-			if (!init) {
-				try {
-					restPkiClient = Util.GetRestPkiClient();
-					PkiConfig.LoadLicense(Convert.FromBase64String(Util.PkiLicenseBase64));
-				} catch (Exception ex) {
-					MessageBox.Show("Configuration Error", $"{ex.Message}\r\n\r\nSigner will close.");
-					addLog($"RestPKI token not found");
-					Application.Current.Shutdown();
-				}
-				addLog($"RestPKI token found");
-
-				await listCertificatesWithKey();				
-				checkBoxSafeSign.IsChecked = false;
-				checkBoxSafeNet.IsChecked = false;
-				init = true;
+			try {
+				restPkiClient = Util.GetRestPkiClient();
+				PkiConfig.LoadLicense(Util.GetPkiSdkLicense());
+			} catch (Exception ex) {
+				MessageBox.Show($"{ex.Message}\r\n\r\nSigner will close.", "Configuration Error");
+				addLog($"RestPKI token not found");
+				Application.Current.Shutdown();
 			}
+			addLog($"RestPKI token found");
+
+			await listCertificatesWithKey();
+			checkBoxSafeSign.IsChecked = false;
+			checkBoxSafeNet.IsChecked = false;
 		}
 
 		private void fileButtonClick(object sender, RoutedEventArgs e) {
@@ -63,7 +59,7 @@ namespace Signer {
 			//var progressDialog = await this.ShowProgressAsync("Please wait...", "Signing");
 			Pkcs11CertificateStore p11Store = null;
 			addLog($"Signature started");
-			//progressDialog.SetProgress(0.10);
+			progressBar.Value = 10;
 			try {
 				var signatureStarter = new PadesSignatureStarter(restPkiClient) {
 					// Set the unit of measurement used to edit the pdf marks and visual representations
@@ -79,22 +75,7 @@ namespace Signer {
 					VisualRepresentation = createVisualRepresentation()
 				};
 
-				// Find selected certificate with key
-				// --------------------------------------------------------------
-				PKCertificateWithKey certWithKey = null;
-				var selectedThumbprint = (CertificatesCB.SelectedItem as ComboCertificate).Certificate.ThumbprintSHA256;
-				p11Store = Pkcs11CertificateStore.Load(getPkcs11Modules(), new P11LoginProvider());
-				if (findCertificate(p11Store.GetCertificatesWithKey(), selectedThumbprint, out certWithKey)) {
-					// found on PKCS#11 store
-				} else if (findCertificate(WindowsCertificateStore.LoadPersonalCurrentUser().GetCertificatesWithKey(), selectedThumbprint, out certWithKey)) {
-					// found on Windows store
-				} else {
-					throw new Exception("Selected certificate not found!");
-				}
-				// --------------------------------------------------------------
-
-				signatureStarter.SetSignerCertificate(certWithKey.Certificate.EncodedValue);
-				//progressDialog.SetProgress(0.15);
+				progressBar.Value = 15;
 
 				// If the user was redirected here by UploadController (signature with file uploaded by user), the "userfile" URL argument
 				// will contain the filename under the "App_Data" folder. Otherwise (signature with server file), we'll sign a sample
@@ -127,21 +108,36 @@ namespace Signer {
 				// signWithRestPki() method on the Web PKI component (see javascript on the view) and also to complete the signature
 				// on the POST action below (this should not be mistaken with the API access token).
 
-				//progressDialog.SetProgress(0.20);
+				// Find selected certificate with key
+				// --------------------------------------------------------------
+				PKCertificateWithKey certWithKey = null;
+				var selectedThumbprint = (CertificatesCB.SelectedItem as ComboCertificate).Certificate.ThumbprintSHA256;
+
+				p11Store = Pkcs11CertificateStore.Load(getPkcs11Modules(), new P11LoginProvider());
+				// search on pkcs11 store
+				if (findCertificate(p11Store.GetCertificatesWithKey(), selectedThumbprint, out certWithKey)) {
+				} else if (findCertificate(WindowsCertificateStore.LoadPersonalCurrentUser().GetCertificatesWithKey(), selectedThumbprint, out certWithKey)) {
+				} else {
+					throw new Exception("Selected certificate not found");
+				}
+				// --------------------------------------------------------------
+				signatureStarter.SetSignerCertificate(certWithKey.Certificate.EncodedValue);
+
+				progressBar.Value = 30;
 				addLog($"Step One Started");
 				var sw = new Stopwatch();
 				sw.Start();
 				Token = await signatureStarter.StartAsync();
 				sw.Stop();
 				addLog($"Step One finished,elapsed {sw.Elapsed.TotalSeconds:N1}s");
-				//progressDialog.SetProgress(0.40);
+				progressBar.Value = 50;
 
 				var signature = certWithKey.SignData(Lacuna.Pki.DigestAlgorithm.GetInstanceByOid(Token.DigestAlgorithmOid), Token.ToSignData);
 				var signatureFinisher = new PadesSignatureFinisher2(restPkiClient) {
 					Token = Token.Token,
 					Signature = signature
 				};
-				//progressDialog.SetProgress(0.50);
+				progressBar.Value = 70;
 				// Call the Finish() method, which finalizes the signature process and returns a SignatureResult object
 				sw.Reset();
 				sw.Start();
@@ -151,7 +147,7 @@ namespace Signer {
 				SignedFile = System.IO.Path.Combine(Path.GetDirectoryName(FileToSign), Path.GetFileNameWithoutExtension(FileToSign) + "Signed" + Path.GetExtension(FileToSign));
 				signatureResult.WriteToFile(SignedFile);
 				//BusyIndicator.IsBusy = false;
-				//progressDialog.SetProgress(0.99);
+				progressBar.Value = 100;
 				OpenFileSignedBt.IsEnabled = true;
 				addLog($"Signarure finished");
 
@@ -161,7 +157,7 @@ namespace Signer {
 			} finally {
 				p11Store.Dispose();
 			}
-			//await progressDialog.CloseAsync();
+			progressBar.Value = 0;
 		}
 
 		private void CertificatesCB_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e) {
@@ -234,14 +230,8 @@ namespace Signer {
 		#region PKI SDK usage
 
 		private bool findCertificate(List<PKCertificateWithKey> certificates, byte[] thumbprint, out PKCertificateWithKey cert) {
-			cert = null;
-			foreach (var c in certificates) {
-				if (c.Certificate.ThumbprintSHA256.SequenceEqual(thumbprint)) {
-					cert = c;
-					return true;
-				}
-			}
-			return false;
+			cert = certificates.FirstOrDefault(c => c.Certificate.ThumbprintSHA256.SequenceEqual(thumbprint));
+			return cert != null;
 		}
 
 		private List<string> getPkcs11Modules() {

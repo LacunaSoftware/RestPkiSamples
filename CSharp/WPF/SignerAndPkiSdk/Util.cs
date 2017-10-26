@@ -37,10 +37,18 @@ namespace Signer {
 			return new RestPkiClient(endpoint, accessToken);
 		}
 
-		// =======================================================================================
-		//                      >>>> PASTE YOUR PKI SDK LICENSE BELOW <<<<
-		// =======================================================================================
-		public static string PkiLicenseBase64 = "YOUR LACUNA PKI SDK BASE64 LICENSE HERE";
-		//                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+		public static byte[] GetPkiSdkLicense() {
+
+			// =======================================================================================
+			//                      >>>> PASTE YOUR PKI SDK LICENSE BELOW <<<<
+			// =======================================================================================
+			var pkiLicenseBase64 = "YOUR LACUNA PKI SDK BASE64 LICENSE HERE";
+			//                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+
+			if (string.IsNullOrEmpty(pkiLicenseBase64) || pkiLicenseBase64.Contains("PKI SDK")) {
+				throw new Exception("The PKI SDK license was not set! Hint: to run this sample you must get your Lacuna PKI SDK license in the base64 format and paste it on the Util.cs file");
+			}
+			return Convert.FromBase64String(pkiLicenseBase64);
+		}
 	}
 }

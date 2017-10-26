@@ -5,15 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:local="clr-namespace:Signer"
         mc:Ignorable="d"
-        Title="Signer" Height="495.944" Width="717.691" FontSize="14" Loaded="Window_Loaded">
+        Title="Signer" Height="509.944" Width="714.691" FontSize="14" Loaded="Window_Loaded">
     <Grid>
         <Button   Content="Select File to Sign" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Click="fileButtonClick" FontSize="14" Margin="10,10,0,0"/>
         <ComboBox x:Name="CertificatesCB" Margin="10,45,137,0" SelectionChanged="CertificatesCB_SelectionChanged" FontSize="14" Height="25" VerticalAlignment="Top" />
         <Label   Content="" Padding="0" HorizontalAlignment="Left"  VerticalAlignment="Center" Name="FileNameL" Margin="10,192,0,244" />
         <Button  Content="Sign" VerticalAlignment="Top" Click="signButtonClick" IsEnabled="False" Name="SignBt" Margin="10,158,0,0" FontSize="14" HorizontalAlignment="Left" Width="104"/>
-        <Button   Content="Open Signed File" HorizontalAlignment="Left" VerticalAlignment="Top" Width="230"  IsEnabled="False" Name="OpenFileSignedBt" Margin="135,158,0,0" FontSize="14" Click="OpenFileSignedBt_Click">
+        <Button   Content="Open Signed File" HorizontalAlignment="Left" VerticalAlignment="Top" Width="159"  IsEnabled="False" Name="OpenFileSignedBt" Margin="135,158,0,0" FontSize="14" Click="OpenFileSignedBt_Click">
         </Button>
-        <TextBox  Margin="10,226,10,10" Name="LogTB" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
+        <TextBox  Margin="10,226,10,28" Name="LogTB" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
         <Button x:Name="button" Content="Refresh" Margin="0,47,24,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Click="button_Click"/>
         <GroupBox x:Name="groupBox" Header="PKCS#11 integration" Margin="10,84,137,0" VerticalAlignment="Top" Height="58">
             <Grid Margin="10,0,-2,3">
@@ -22,5 +22,6 @@
             </Grid>
 
         </GroupBox>
+        <ProgressBar Name="progressBar" Margin="14,0,10,10" Height="10" VerticalAlignment="Bottom"/>
     </Grid>
 </Window>
