@@ -4,7 +4,7 @@
 	
 	<h2>Authentication</h2>
 
-	<%-- Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it later on (see javascript below). --%>
+	<%-- Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it later on (see signature-form.js). --%>
     <div class="form-group">
 		<label for="certificateSelect">Choose a certificate</label>
 		<select id="certificateSelect" class="form-control"></select>
@@ -29,7 +29,7 @@
 	<%--
 		Include the "webpki" bundle, which includes the following javascript files (see App_Start\BundleConfig.cs):
 		- jquery.blockUI.js       : jQuery plugin to block the UI
-		- lacuna-web-pki-2.5.0.js : Javascript library to access the Web PKI component (client-side component used to access the user's certificates)
+		- lacuna-web-pki-2.6.1.js : Javascript library to access the Web PKI component (client-side component used to access the user's certificates)
 		- signature-form.js       : Javascript code to call the Web PKI component
 	--%>
 	<asp:PlaceHolder runat="server">

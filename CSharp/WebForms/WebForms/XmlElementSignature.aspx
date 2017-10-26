@@ -6,7 +6,7 @@
 	
     <div class="form-group">
 		<label>File to sign</label>
-		<p>You are signing the <i>infNFe</i> node of <a href='/Download?file=SampleNFe_xml&from=content'>this sample XML</a>.</p>
+		<p>You are signing the <i>infNFe</i> node of <a href='/Download?file=SampleNFe'>this sample XML</a>.</p>
 	</div>
 
 	<%-- Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it later on (see javascript below). --%>
@@ -34,7 +34,7 @@
 	<%--
 		Include the "webpki" bundle, which includes the following javascript files (see App_Start\BundleConfig.cs):
 		- jquery.blockUI.js       : jQuery plugin to block the UI
-		- lacuna-web-pki-2.5.0.js : Javascript library to access the Web PKI component (client-side component used to access the user's certificates)
+		- lacuna-web-pki-2.6.1.js : Javascript library to access the Web PKI component (client-side component used to access the user's certificates)
 		- signature-form.js       : Javascript code to call the Web PKI component
 	--%>
 	<asp:PlaceHolder runat="server">
