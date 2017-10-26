@@ -52,8 +52,12 @@ namespace WebForms {
 			return Path.Combine(ContentPath, "SampleDocument.pdf");
 		}
 
+		public static string GetBatchDocPath(int id) {
+			return Path.Combine(ContentPath, string.Format("{0:D2}.pdf", id % 10));
+		}
+
 		public static byte[] GetBatchDocContent(int id) {
-			return File.ReadAllBytes(Path.Combine(ContentPath, string.Format("{0:D2}.pdf", ((id - 1) % 10) + 1)));
+			return File.ReadAllBytes(GetBatchDocPath(id));
 		}
 
 		public static byte[] GetSampleNFeContent() {
