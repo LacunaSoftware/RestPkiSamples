@@ -186,7 +186,7 @@ namespace WebForms {
 				var result = signatureFinisher.Finish();
 
 				// At this point, you'd typically store the signed PDF on your database. For demonstration purposes, we'll
-				// store the PDF on the App_Data folder.
+				// store the PDF on our mock Storage class.
 
 
 				// The SignatureResult object has various methods for writing the signature file to a stream (WriteTo()), local file (WriteToFile()), open
@@ -194,9 +194,9 @@ namespace WebForms {
 				// memory allocation issues.
 				using (var resultStream = result.OpenRead()) {
 					fileId = StorageMock.Store(resultStream, ".pdf");
-					// If you prefer a simpler approach without streams, simply do:
-					//fileId = StorageMock.Store(result.GetContent(), ".pdf");
 				}
+				// If you prefer a simpler approach without streams, simply do:
+				//fileId = StorageMock.Store(result.GetContent(), ".pdf");
 
 			} catch (ValidationException ex) {
 
@@ -264,7 +264,7 @@ namespace WebForms {
 				// We'll use as background the image in Content/PdfStamp.png
 				Image = new PadesVisualImage(Util.GetPdfStampContent(), "image/png") {
 
-					// Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is completely opaque).
+					// Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is completely opaque)
 					Opacity = 50,
 
 					// Align the image to the right

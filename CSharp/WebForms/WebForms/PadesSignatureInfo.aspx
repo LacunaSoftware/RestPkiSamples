@@ -29,7 +29,7 @@
     <ul>
         <li><a href='Download?file=<%= signatureFilename %>'>Download the signed file</a></li>
 		<li><a href='PrinterFriendlyVersion?file=<%= signatureFilename %>'>Download a printer-friendly version of the signed file</a></li>
-        <%--<li><a href='OpenPadesSignature?userfile=<%= signatureFilename.Replace(".", "_") %>'>Open/validate the signed file</a></li>--%>
+        <%--<li><a href='OpenPadesSignature?userfile=<%= signatureFilename %>'>Open/validate the signed file</a></li>--%>
         <li><a href='PadesSignature?userfile=<%= signatureFilename %>'>Co-sign with another certificate</a></li>
     </ul>
 </asp:Content>

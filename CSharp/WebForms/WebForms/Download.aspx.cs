@@ -16,7 +16,7 @@ namespace WebForms {
 
 			if (!string.IsNullOrEmpty(Request.QueryString["file"])) {
 
-				filename = Request.QueryString["file"].Replace("_", ".");
+				filename = Request.QueryString["file"];
 				var from = Request.QueryString["from"];
 				if (from == "content") {
 					path = Server.MapPath(string.Format("~/Content/{0}", filename));

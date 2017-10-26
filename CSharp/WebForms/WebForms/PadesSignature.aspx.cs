@@ -59,7 +59,7 @@ namespace WebForms {
 					signatureStarter.SetPdfToSign(Util.GetSampleDocContent());
 				} else {
 					// Set the path of the file to be signed
-					signatureStarter.SetPdfToSign(Server.MapPath("~/App_Data/" + UserFile.Replace("_", "."))); // Note: we're passing the filename argument with "_" as "." because of limitations of ASP.NET MVC
+					signatureStarter.SetPdfToSign(Server.MapPath("~/App_Data/" + UserFile));
 				}
 
 				// Call the StartWithWebPki() method, which initiates the signature. This yields the token, a 43-character
@@ -85,13 +85,17 @@ namespace WebForms {
 			var result = signatureFinisher.Finish();
 
 			// At this point, you'd typically store the signed PDF on your database. For demonstration purposes, we'll
-			// store the PDF on our mock Storage class
+			// store the PDF on our mock Storage class.
+
+			// The SignatureResult object has various methods for writing the signature file to a stream (WriteTo()), local file (WriteToFile()), open
+			// a stream to read the content (OpenRead()) and get its contents (GetContent()). For large files, avoid the method GetContent() to avoid
+			// memory allocation issues.
 			string fileId;
 			using (var resultStream = result.OpenRead()) {
 				fileId = StorageMock.Store(resultStream, ".pdf");
-				// If you prefer a simpler approach without streams, simply do:
-				fileId = StorageMock.Store(result.GetContent(), ".pdf");
 			}
+			// If you prefer a simpler approach without streams, simply do:
+			//fileId = StorageMock.Store(result.GetContent(), ".pdf");
 
 			// What you do at this point is up to you. For demonstration purposes, we'll render a page with a link to
 			// download the signed PDF and with the signer's certificate details.
