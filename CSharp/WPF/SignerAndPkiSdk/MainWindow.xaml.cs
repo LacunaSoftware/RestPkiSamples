@@ -31,8 +31,8 @@ namespace Signer {
 				PkiConfig.LoadLicense(Util.GetPkiSdkLicense());
 			} catch (Exception ex) {
 				MessageBox.Show($"{ex.Message}\r\n\r\nSigner will close.", "Configuration Error");
-				addLog($"RestPKI token not found");
-				Application.Current.Shutdown();
+				addLog(ex.Message);
+				//Application.Current.Shutdown();
 			}
 			addLog($"RestPKI token found");
 
@@ -58,7 +58,7 @@ namespace Signer {
 		private async void signButtonClick(object sender, RoutedEventArgs e) {
 			//var progressDialog = await this.ShowProgressAsync("Please wait...", "Signing");
 			Pkcs11CertificateStore p11Store = null;
-			addLog($"Signature started");
+			addLog($"Signature process begin");
 			progressBar.Value = 10;
 			try {
 				var signatureStarter = new PadesSignatureStarter(restPkiClient) {
@@ -85,7 +85,7 @@ namespace Signer {
 					signatureStarter.SetPdfToSign(Signer.Resources.SampleDocument);
 				} else {
 					// Set the path of the file to be signed
-					addLog($"file size {new FileInfo(FileToSign).Length / 1024}kBytes");
+					addLog($"file size {(new FileInfo(FileToSign).Length / 1024.0).ToString("0.00")} KBytes");
 					signatureStarter.SetPdfToSign(FileToSign);
 				}
 
@@ -124,38 +124,43 @@ namespace Signer {
 				signatureStarter.SetSignerCertificate(certWithKey.Certificate.EncodedValue);
 
 				progressBar.Value = 30;
-				addLog($"Step One Started");
-				var sw = new Stopwatch();
-				sw.Start();
+				addLog($"Step 1: Start Signature");
+				var sw = Stopwatch.StartNew();
 				Token = await signatureStarter.StartAsync();
 				sw.Stop();
-				addLog($"Step One finished,elapsed {sw.Elapsed.TotalSeconds:N1}s");
+				addLog($"Step 1: Signature Started, elapsed {sw.Elapsed.TotalSeconds:N1}s");
 				progressBar.Value = 50;
 
+				addLog($"Signing with {certWithKey.Certificate.SubjectDisplayName}");
 				var signature = certWithKey.SignData(Lacuna.Pki.DigestAlgorithm.GetInstanceByOid(Token.DigestAlgorithmOid), Token.ToSignData);
+				addLog($"Signed");
+
+				progressBar.Value = 70;
 				var signatureFinisher = new PadesSignatureFinisher2(restPkiClient) {
 					Token = Token.Token,
 					Signature = signature
 				};
-				progressBar.Value = 70;
+				sw = Stopwatch.StartNew();
 				// Call the Finish() method, which finalizes the signature process and returns a SignatureResult object
-				sw.Reset();
-				sw.Start();
+				addLog($"Step 2: Finish Signature");
 				var signatureResult = await signatureFinisher.FinishAsync();
 				sw.Stop();
-				addLog($"Step two finished,elapsed {sw.Elapsed.TotalSeconds:N1}s");
-				SignedFile = System.IO.Path.Combine(Path.GetDirectoryName(FileToSign), Path.GetFileNameWithoutExtension(FileToSign) + "Signed" + Path.GetExtension(FileToSign));
+				addLog($"Step 2: Signature Finished, elapsed {sw.Elapsed.TotalSeconds:N1}s");
+
+				SignedFile = System.IO.Path.Combine(Path.GetDirectoryName(FileToSign), Path.GetFileNameWithoutExtension(FileToSign) + "-signed" + Path.GetExtension(FileToSign));
 				signatureResult.WriteToFile(SignedFile);
 				//BusyIndicator.IsBusy = false;
 				progressBar.Value = 100;
 				OpenFileSignedBt.IsEnabled = true;
-				addLog($"Signarure finished");
+				addLog($"File signed: {SignedFile}");
 
 			} catch (Exception ex) {
 				addLog(ex.ToString());
 
 			} finally {
-				p11Store.Dispose();
+				if (p11Store != null) {
+					p11Store.Dispose();
+				}
 			}
 			progressBar.Value = 0;
 		}
@@ -259,11 +264,10 @@ namespace Signer {
 				certificates.AddRange(WindowsCertificateStore.LoadPersonalCurrentUser().GetCertificatesWithKey()
 					.FindAll(winc => !certificates.Select(c => c.Certificate).Contains(winc.Certificate)));
 			});
-
 			// clear any previous list
 			CertificatesCB.Items.Clear();
 			// populate
-			certificates.ForEach(c => CertificatesCB.Items.Add(new ComboCertificate(c.Certificate)));
+			certificates.OrderBy(c => c.Certificate.SubjectDisplayName).ToList().ForEach(c => CertificatesCB.Items.Add(new ComboCertificate(c.Certificate)));
 			addLog($"Certificates listed");
 			addLog($"{CertificatesCB.Items.Count} Certificates found");
 
