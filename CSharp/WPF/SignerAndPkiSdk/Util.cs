@@ -13,10 +13,16 @@ namespace Signer {
 		public static RestPkiClient GetRestPkiClient() {
 
 			// ================================================================
-			//           >>>> PASTE YOUR API ACCESS TOKEN BELOW <<<<
+			//           >>>> PASTE YOUR RestPKI API ACCESS TOKEN BELOW <<<<
 			// ================================================================
-			var accessToken = "YOUR API ACCESS TOKEN HERE";
+			var accessToken = "YOUR RestPKI API ACCESS TOKEN HERE";
 			//                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+			// =======================================================================================
+			//                      >>>> PASTE YOUR PKI SDK LICENSE BELOW <<<<
+			// =======================================================================================
+			var pkiLicenseBase64 = "YOUR LACUNA PKI SDK BASE64 LICENSE HERE";
+			//                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+
 
 			// Please keep the API access token hardcoded on your code (instead of, for instance, placing it on the App.config file)
 			// in order to make it more difficult for ill-intended users to acquire your token. Ideally, you should employ an obfuscation
@@ -39,11 +45,6 @@ namespace Signer {
 
 		public static byte[] GetPkiSdkLicense() {
 
-			// =======================================================================================
-			//                      >>>> PASTE YOUR PKI SDK LICENSE BELOW <<<<
-			// =======================================================================================
-			var pkiLicenseBase64 = "YOUR LACUNA PKI SDK BASE64 LICENSE HERE";
-			//                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
 
 			if (string.IsNullOrEmpty(pkiLicenseBase64) || pkiLicenseBase64.Contains("PKI SDK")) {
 				throw new Exception("The PKI SDK license was not set! Hint: to run this sample you must get your Lacuna PKI SDK license in the base64 format and paste it on the Util.cs file");
