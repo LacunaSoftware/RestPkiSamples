@@ -7,36 +7,31 @@
 
     <h2>Batch signature optimized</h2>
 
-    <%-- Surrounding panel containing the certificate select (combo box) and buttons, which is hidden by the code-behind after --%>
-	<asp:Panel ID="SignatureControlsPanel" runat="server">
+    <div class="form-group">
+        <label>File to sign</label>
+		<p>
+			You'll be signing the following files:
+			<%-- UL element to hold the batch's documents (we'll render these programatically, see batch-signature-optimized-form.js) --%>
+			<ul id="docList" />
+		</p>
+    </div>
 
-        <div class="form-group">
-            <label>File to sign</label>
-		    <p>
-			    You'll be signing the following files:
-			    <%-- UL element to hold the batch's documents (we'll render these programatically, see batch-signature-optimized-form.js) --%>
-			    <ul id="docList" />
-		    </p>
-        </div>
+	<%--
+        Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it later 
+        on (see batch-signature-optimized-form.js). 
+    --%>
+	<div class="form-group">
+		<label for="certificateSelect">Choose a certificate</label>
+		<select id="certificateSelect" class="form-control"></select>
+	</div>
 
-		<%--
-            Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it later 
-            on (see batch-signature-optimized-form.js). 
-        --%>
-		<div class="form-group">
-			<label for="certificateSelect">Choose a certificate</label>
-			<select id="certificateSelect" class="form-control"></select>
-		</div>
-
-		<%--
-			Action buttons. Notice that both buttons have a OnClientClick attribute, which calls the
-			client-side javascript functions "sign" and "refresh" below. Both functions return false,
-			which prevents the postback.
-		--%>
-		<asp:Button ID="SignButton" runat="server" class="btn btn-primary" Text="Sign Batch" OnClientClick="return sign();" />
-		<asp:Button ID="RefreshButton" runat="server" class="btn btn-default" Text="Refresh" OnClientClick="return refresh();" />
-
-	</asp:Panel>
+	<%--
+		Action buttons. Notice that both buttons have a OnClientClick attribute, which calls the
+		client-side javascript functions "sign" and "refresh" below. Both functions return false,
+		which prevents the postback.
+	--%>
+	<asp:Button ID="SignButton" runat="server" class="btn btn-primary" Text="Sign Batch" OnClientClick="return sign();" />
+	<asp:Button ID="RefreshButton" runat="server" class="btn btn-default" Text="Refresh" OnClientClick="return refresh();" />
 
     <%--
 		Include the "webpki-batch-optimized" bundle, which includes the following javascript files (see App_Start\BundleConfig.cs):
@@ -51,19 +46,17 @@
     <script>
 
 		<%--
-			The function below is called by ASP.NET's javascripts when the page is loaded and also when the UpdatePanel above changes.
-			We'll call the pageLoaded() function on the "batch signature optimized form" javascript module passing references to our 
-            page's elements and hidden fields
+			Once the page is loaded, we'll call the init() function on the batch-signature-optimized-form.js file passing the list of
+			Ids that need signing (we'll iterate over the list on the Javascript code) and a reference to the certificates select element.
 		--%>
-		function pageLoad() {
-
-            batchSignatureOptimizedForm.pageLoad({
+		$(function () {
+			batchSignatureOptimizedForm.init({
 				<%-- Reference to the certificate combo box --%>
 				certificateSelect: $('#certificateSelect'),
-				<%-- Ids of documents --%>
-                documentsIds: [<%= string.Join(",", DocumentsIds) %>]
+				<%-- Ids of documents. DocumentsIds is a protected property on the page-behind, filled on the Page_Load method. --%>
+				documentsIds: [<%= string.Join(",", DocumentsIds) %>]
 			});
-		}
+		});
 
 		<%-- Client-side function called when the user clicks the "Sign" button --%>
 		function sign() {

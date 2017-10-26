@@ -23,17 +23,14 @@ namespace WebForms {
 				// Get an instance of the Authentication class
 				var auth = Util.GetRestPkiClient().GetAuthentication();
 
-                // Call the StartWithWebPki() method, which initiates the authentication. This yields the "token", a 22-character
-                // case-sensitive URL-safe string, which represents this authentication process. We'll use this value to call the
-                // signWithRestPki() method on the Web PKI component (see signature-form.js) and also to call the
-                // CompleteWithWebPki() method on the Click-event handler below (this should not be mistaken with the API access token).
-                var token = auth.StartWithWebPki(StandardSecurityContexts.PkiBrazil);
+				// Call the StartWithWebPki() method, which initiates the authentication. This yields the "token", a 22-character
+				// case-sensitive URL-safe string, which represents this authentication process. We'll use this value to call the
+				// signWithRestPki() method on the Web PKI component (see signature-form.js) and also to call the
+				// CompleteWithWebPki() method on the Click-event handler below (this should not be mistaken with the API access token).
+				var token = auth.StartWithWebPki(Util.GetSecurityContextId());
 
-                // Optionally, authenticate the user with a custom security context containting, for instance, your private PKI certificate
-                //var token = auth.StartWithWebPki(new Guid("ID OF YOUR CUSTOM SECURITY CONTEXT"));
-
-                // We'll need the token later, so we'll put it on ViewState and we'll render a hidden field on the page with it
-                ViewState["Token"] = token;
+				// We'll need the token later, so we'll put it on ViewState and we'll render a hidden field on the page with it
+				ViewState["Token"] = token;
 			}
 		}
 

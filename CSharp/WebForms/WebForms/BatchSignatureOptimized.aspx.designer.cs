@@ -13,15 +13,6 @@ namespace WebForms {
     public partial class BatchSignatureOptimized {
         
         /// <summary>
-        /// SignatureControlsPanel control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel SignatureControlsPanel;
-        
-        /// <summary>
         /// SignButton control.
         /// </summary>
         /// <remarks>

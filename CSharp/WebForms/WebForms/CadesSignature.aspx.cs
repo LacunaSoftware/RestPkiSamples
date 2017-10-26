@@ -27,17 +27,15 @@ namespace WebForms {
 
 				// Set the signature policy
 				signatureStarter.SetSignaturePolicy(StandardCadesSignaturePolicies.PkiBrazil.AdrBasica);
-                // Note: Depending on the signature policy chosen above, setting the security context may be mandatory (this is not
-                // the case for ICP-Brasil policies, which will automatically use the PkiBrazil security context if none is passed)
 
-                // Optionally, set a SecurityContext to be used to determine trust in the certificate chain
-                //signatureStarter.SetSecurityContext(new Guid("ID OF YOUR CUSTOM SECURITY CONTEXT"));
+				// Set the security context to be used to determine trust in the certificate chain
+				signatureStarter.SetSecurityContext(Util.GetSecurityContextId());
 
-                // Optionally, set whether the content should be encapsulated in the resulting CMS. If this parameter is ommitted,
-                // the following rules apply:
-                // - If no CmsToSign is given, the resulting CMS will include the content
-                // - If a CmsToCoSign is given, the resulting CMS will include the content if and only if the CmsToCoSign also includes the content
-                signatureStarter.SetEncapsulateContent(true);
+				// Optionally, set whether the content should be encapsulated in the resulting CMS. If this parameter is ommitted,
+				// the following rules apply:
+				// - If no CmsToSign is given, the resulting CMS will include the content
+				// - If a CmsToCoSign is given, the resulting CMS will include the content if and only if the CmsToCoSign also includes the content
+				signatureStarter.SetEncapsulateContent(true);
 
 				UserFile = Request.QueryString["userfile"];
 				CmsFile = Request.QueryString["cmsfile"];
@@ -47,7 +45,7 @@ namespace WebForms {
 					// will contain the filename under the "App_Data" folder. 
 					signatureStarter.SetFileToSign(Server.MapPath("~/App_Data/" + UserFile.Replace("_", "."))); // Note: we're passing the filename argument with "_" as "." because of limitations of ASP.NET MVC
 
-                } else if (!String.IsNullOrEmpty(CmsFile)) {
+				} else if (!String.IsNullOrEmpty(CmsFile)) {
 
 					/*
 					 * If the URL argument "cmsfile" is filled, the user has asked to co-sign a previously signed CMS. We'll set the path to the CMS
@@ -60,7 +58,7 @@ namespace WebForms {
 					 */
 					signatureStarter.SetCmsToCoSign(Server.MapPath("~/App_Data/" + CmsFile.Replace("_", "."))); // Note: we're passing the filename argument with "_" as "." because of limitations of ASP.NET MVC
 
-                } else {
+				} else {
 
 					// If both userfile and cmsfile are null, this is the "signature with server file" case. We'll set the path of the file to be signed
 					signatureStarter.SetFileToSign(Util.GetSampleDocPath());
@@ -79,19 +77,19 @@ namespace WebForms {
 
 		protected void SubmitButton_Click(object sender, EventArgs e) {
 
-            // Get an instance of the CadesSignatureFinisher2 class, responsible for completing the signature process
-            var signatureFinisher = new CadesSignatureFinisher2(Util.GetRestPkiClient()) {
+			// Get an instance of the CadesSignatureFinisher2 class, responsible for completing the signature process
+			var signatureFinisher = new CadesSignatureFinisher2(Util.GetRestPkiClient()) {
 
-                // Set the token for this signature acquired previously
-                Token = (string)ViewState["Token"]
-            };
+				// Set the token for this signature acquired previously
+				Token = (string)ViewState["Token"]
+			};
 
-            // Call the Finish() method, which finalizes the signature process and returns a SignatureResult object
-            var signatureResult = signatureFinisher.Finish();
+			// Call the Finish() method, which finalizes the signature process and returns a SignatureResult object
+			var signatureResult = signatureFinisher.Finish();
 
-            // The "Certificate" property of the SignatureResult object contains information about the certificate used by the user
-            // to sign the file.
-            var signerCert = signatureResult.Certificate;
+			// The "Certificate" property of the SignatureResult object contains information about the certificate used by the user
+			// to sign the file.
+			var signerCert = signatureResult.Certificate;
 
 			// At this point, you'd typically store the CMS on your database. For demonstration purposes, we'll
 			// store the CMS on the App_Data folder and render a page with a link to download the CMS and with the
@@ -104,12 +102,12 @@ namespace WebForms {
 			var id = Guid.NewGuid();
 			var filename = id + ".p7s";
 
-            // The SignatureResult object has various methods for writing the signature file to a stream (WriteTo()), local file (WriteToFile()), open
-            // a stream to read the content (OpenRead()) and get its contents (GetContent()). For large files, avoid the method GetContent() to avoid
-            // memory allocation issues.
-            signatureResult.WriteToFile(Path.Combine(appDataPath, filename));
+			// The SignatureResult object has various methods for writing the signature file to a stream (WriteTo()), local file (WriteToFile()), open
+			// a stream to read the content (OpenRead()) and get its contents (GetContent()). For large files, avoid the method GetContent() to avoid
+			// memory allocation issues.
+			signatureResult.WriteToFile(Path.Combine(appDataPath, filename));
 
-            this.SignatureFilename = filename;
+			this.SignatureFilename = filename;
 			this.SignerCertificate = signerCert;
 			Server.Transfer("CadesSignatureInfo.aspx");
 		}

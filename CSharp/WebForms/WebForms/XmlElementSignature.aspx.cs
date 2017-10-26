@@ -31,17 +31,15 @@ namespace WebForms {
 
 				// Set the signature policy
 				signatureStarter.SetSignaturePolicy(StandardXmlSignaturePolicies.PkiBrazil.NFePadraoNacional);
-                // Note: Depending on the signature policy chosen above, setting the security context below may be mandatory (this is not
-                // the case for ICP-Brasil policies, which will automatically use the PkiBrazil security context if none is passed)
 
-                // Optionally, set a SecurityContext to be used to determine trust in the certificate chain
-                //signatureStarter.SetSecurityContext(new Guid("ID OF YOUR CUSTOM SECURITY CONTEXT"));
+				// Set the security context to be used to determine trust in the certificate chain
+				signatureStarter.SetSecurityContext(Util.GetSecurityContextId());
 
-                // Call the StartWithWebPki() method, which initiates the signature. This yields the token, a 43-character
-                // case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
-                // signWithRestPki() method on the Web PKI component (see javascript on the view) and also to complete the signature
-                // on the POST action below (this should not be mistaken with the API access token).
-                var token = signatureStarter.StartWithWebPki();
+				// Call the StartWithWebPki() method, which initiates the signature. This yields the token, a 43-character
+				// case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
+				// signWithRestPki() method on the Web PKI component (see javascript on the view) and also to complete the signature
+				// on the POST action below (this should not be mistaken with the API access token).
+				var token = signatureStarter.StartWithWebPki();
 
 				ViewState["Token"] = token;
 			}
@@ -50,12 +48,12 @@ namespace WebForms {
 
 		protected void SubmitButton_Click(object sender, EventArgs e) {
 
-            // Get an instance of the XmlSignatureFinisher class, responsible for completing the signature process
-            var signatureFinisher = new XmlSignatureFinisher(Util.GetRestPkiClient()) {
+			// Get an instance of the XmlSignatureFinisher class, responsible for completing the signature process
+			var signatureFinisher = new XmlSignatureFinisher(Util.GetRestPkiClient()) {
 
-                // Set the token for this signature (rendered in a hidden input field, see the view)
-                Token = (string)ViewState["Token"]
-            };
+				// Set the token for this signature (rendered in a hidden input field, see the view)
+				Token = (string)ViewState["Token"]
+			};
 
 			// Call the Finish() method, which finalizes the signature process and returns the signed XML
 			var signedXml = signatureFinisher.Finish();
