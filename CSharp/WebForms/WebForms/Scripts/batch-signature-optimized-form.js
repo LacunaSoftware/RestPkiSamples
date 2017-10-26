@@ -60,7 +60,8 @@ var batchSignatureOptimizedForm = (function () {
 	var startQueue = null;
 	var performQueue = null;
 	var completeQueue = null;
-	var batchDocIds = null;
+    var batchDocIds = null;
+    var signButton = null;
 
 	// Create an instance of the LacunaWebPKI object
 	var pki = new LacunaWebPKI();
@@ -71,7 +72,10 @@ var batchSignatureOptimizedForm = (function () {
 	function init(args) {
 
 		// Receive the documents ids
-		batchDocIds = args.documentsIds;
+        batchDocIds = args.documentsIds;
+
+        // Receive sign buttom reference
+        signButton = args.signButton;
 
 		// Block the UI while we get things ready
 		$.blockUI();
@@ -298,8 +302,8 @@ var batchSignatureOptimizedForm = (function () {
 	function onBatchCompleted() {
 		// Notify the user and unblock the UI
 		addAlert('info', 'Batch processing completed');
-		// Prevent user from clicking "Sign Batch" again (our logic isn't prepared for that)
-		$('#signButton').prop('disabled', true);
+        // Prevent user from clicking "Sign Batch" again (our logic isn't prepared for that)
+        signButton.prop('disabled', true);
 		// Unblock the UI
 		$.unblockUI();
 	}
@@ -316,7 +320,7 @@ var batchSignatureOptimizedForm = (function () {
 			).append(
 			document.createTextNode(' ')
 			).append(
-			$('<a />').text(step.filename).attr('href', '/Download?file=' + step.filename)
+			$('<a />').text(step.filename).attr('href', '/Download?fileId=' + step.filename)
 			);
 	}
 

@@ -54,7 +54,9 @@
 				<%-- Reference to the certificate combo box --%>
 				certificateSelect: $('#certificateSelect'),
 				<%-- Ids of documents. DocumentsIds is a protected property on the page-behind, filled on the Page_Load method. --%>
-				documentsIds: [<%= string.Join(",", DocumentsIds) %>]
+                documentsIds: [<%= string.Join(",", DocumentsIds) %>],
+                <%-- Sign button's reference to be disable when the batch signature finishes --%>
+                signButton: $('#<%= SignButton.ClientID %>')
 			});
 		});
 

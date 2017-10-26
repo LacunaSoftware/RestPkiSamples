@@ -91,6 +91,10 @@ namespace WebForms {
 			return File.ReadAllBytes(Path.Combine(ContentPath, "SampleNFe.xml"));
 		}
 
+        public static string GetSampleNFePath() {
+            return Path.Combine(ContentPath, "SampleNFe.xml");
+        }
+
 		public static byte[] GetSampleXmlDocument() {
 			return File.ReadAllBytes(Path.Combine(ContentPath, "SampleDocument.xml"));
 		}

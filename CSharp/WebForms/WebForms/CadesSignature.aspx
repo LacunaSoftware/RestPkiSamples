@@ -6,11 +6,11 @@
 
     <label>File to sign</label>
     <%if (!String.IsNullOrEmpty(UserFile)) { %>
-        <p>You'll be signing <a href='/Download?file=<%= UserFile %>'>this document</a>.</p>
+        <p>You'll be signing <a href='/Download?fileId=<%= UserFile %>'>this document</a>.</p>
     <% } else if (!String.IsNullOrEmpty(CmsFile)) { %>
-        <p>You'll be signing <a href='/Download?file=<%= CmsFile %>'>this CMS</a>.</p>
+        <p>You'll be signing <a href='/Download?fileId=<%= CmsFile %>'>this CMS</a>.</p>
     <% } else { %>
-        <p>You'll be signing <a href='/Download?file=SampleDocument_pdf&from=content'>this sample document</a>.</p>
+        <p>You'll be signing <a href='/Download?file=SampleDocument'>this sample document</a>.</p>
     <% } %>
 	
 	<%-- Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it later on (see signature-form.js). --%>

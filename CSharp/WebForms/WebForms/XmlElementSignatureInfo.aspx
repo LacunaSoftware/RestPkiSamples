@@ -5,7 +5,7 @@
 
 	<h2>XML Element Signature</h2>
 
-	<p>File signed successfully! <a href="Download?file=<%= signatureFilename %>">Click here to download the signed file</a></p>
+	<p>File signed successfully! <a href="Download?fileId=<%= signatureFilename %>">Click here to download the signed file</a></p>
 
 	<p>Signer information:</p>
 	<ul>

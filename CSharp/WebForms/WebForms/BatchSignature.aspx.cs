@@ -216,7 +216,7 @@ namespace WebForms {
 			var docItem = DocumentsListView.Items[DocumentIndex];
 			docItem.DataItem = new DocumentItem() {
 				Id = DocumentIds[DocumentIndex],
-				DownloadLink = "Download.aspx?file=" + fileId
+				DownloadLink = "Download.aspx?fileId=" + fileId
 			};
 			docItem.DataBind();
 		}
