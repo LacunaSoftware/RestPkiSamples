@@ -268,7 +268,6 @@ namespace Signer {
 			CertificatesCB.Items.Clear();
 			// populate
 			certificates.OrderBy(c => c.Certificate.SubjectDisplayName).ToList().ForEach(c => CertificatesCB.Items.Add(new ComboCertificate(c.Certificate)));
-			addLog($"Certificates listed");
 			addLog($"{CertificatesCB.Items.Count} Certificates found");
 
 			if (CertificatesCB.Items.Count > 0) {
