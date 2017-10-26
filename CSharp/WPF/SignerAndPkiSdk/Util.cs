@@ -9,19 +9,20 @@ using System.Web;
 namespace Signer {
 
 	public class Util {
+		// ================================================================
+		//           >>>> PASTE YOUR RestPKI API ACCESS TOKEN BELOW <<<<
+		// ================================================================
+		private const string accessToken = "YOUR RestPKI API ACCESS TOKEN HERE";
+		//                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+		// =======================================================================================
+		//                      >>>> PASTE YOUR PKI SDK LICENSE BELOW <<<<
+		// =======================================================================================
+		private const string pkiLicenseBase64 = "YOUR LACUNA PKI SDK BASE64 LICENSE HERE";
+		//                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+
 
 		public static RestPkiClient GetRestPkiClient() {
 
-			// ================================================================
-			//           >>>> PASTE YOUR RestPKI API ACCESS TOKEN BELOW <<<<
-			// ================================================================
-			var accessToken = "YOUR RestPKI API ACCESS TOKEN HERE";
-			//                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
-			// =======================================================================================
-			//                      >>>> PASTE YOUR PKI SDK LICENSE BELOW <<<<
-			// =======================================================================================
-			var pkiLicenseBase64 = "YOUR LACUNA PKI SDK BASE64 LICENSE HERE";
-			//                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
 
 
 			// Please keep the API access token hardcoded on your code (instead of, for instance, placing it on the App.config file)
