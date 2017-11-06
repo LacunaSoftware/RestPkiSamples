@@ -48,6 +48,10 @@ function getPdfStampContent()
 {
     return file_get_contents('content/PdfStamp.png');
 }
+function getPdfLargeStampContent()
+{
+    return file_get_contents('content/LargeStamp.png');
+}
 
 function getIcpBrasilLogoContent()
 {

@@ -92,6 +92,35 @@ function getVisualRepresentationPosition($sampleNumber)
                     'rowSpacing' => 1
                 ]
             ];
+        case 7:
+            // Example #6: custom auto positioning
+            return [
+                'pageNumber' => -1, // negative values represent pages counted from the end of the document (-1 is
+                // last page)
+                'measurementUnits' => PadesMeasurementUnits::CENTIMETERS,
+                'auto' => [
+                    // Specification of the container where the signatures will be placed, one after the other
+                    'container' => [
+                        // Specifying left and right (but no width) results in a variable-width container with the
+                        // given margins
+                        'left' => 2.0,
+                        'right' => 2.0,
+                        // Specifying bottom and height (but no top) results in a bottom-aligned fixed-height
+                        // container
+                        'bottom' => 2.0,
+                        'height' => 10
+                    ],
+                    // Specification of the size of each signature rectangle
+                    'signatureRectangleSize' => [
+                        'width' => 17.0,
+                        'height' => 2.0
+                    ],
+                    // The signatures will be placed in the container side by side. If there's no room left, the
+                    // signatures will "wrap" to the next row. The value below specifies the vertical distance
+                    // between rows
+                    'rowSpacing' => 1
+                ]
+            ];
 
         default:
             return null;

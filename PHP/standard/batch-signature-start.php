@@ -76,7 +76,7 @@ $signatureStarter->visualRepresentation = [
     // possibilities depending on the argument passed to the function. Experiment changing the argument to see
     // different examples of signature positioning. Once you decide which is best for your case, you can place the
     // code directly here. See file util-pades.php
-    'position' => getVisualRepresentationPosition(3)
+    'position' => getVisualRepresentationPosition(7)
 ];
 
 /*

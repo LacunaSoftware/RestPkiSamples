@@ -47,7 +47,7 @@ $signatureStarter->visualRepresentation = [
         //  national_id : if the certificate is ICP-Brasil, contains the signer's CPF
         //
         // For a full list of the supported tags, see: https://github.com/LacunaSoftware/RestPkiSamples/blob/master/PadesTags.md
-        'text' => 'Signed by {{name}} ({{national_id}})',
+        'text' => "Assinado digitalmente por {{br_responsavel}}, emitido por {{issuer_cn}}\nCPF: {{br_cpf_formatted}}",
         // Specify that the signing time should also be rendered
         'includeSigningTime' => true,
         // Optionally set the horizontal alignment of the text ('Left' or 'Right'), if not set the default is Left
@@ -56,21 +56,21 @@ $signatureStarter->visualRepresentation = [
         // text can occupy the entire rectangle (how much of the rectangle the text will actually fill depends on the
         // length and font size). Below, we specify that the text should respect a right margin of 1.5 cm.
         'container' => [
-            'left' => 0,
-            'top' => 0,
-            'right' => 1.5,
-            'bottom' => 0
+            'left' => 0.2,
+            'top' => 0.2,
+            'right' => 4,
+            'bottom' => 0.2
         ]
     ],
     'image' => [
 
         // We'll use as background the image content/PdfStamp.png
         'resource' => [
-            'content' => base64_encode(getPdfStampContent()),
+            'content' => base64_encode(getPdfLargeStampContent()),
             'mimeType' => 'image/png'
         ],
         // Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is completely opaque).
-        'opacity' => 50,
+        'opacity' => 80,
         // Align the image to the right
         'horizontalAlign' => 'Right',
         // Align the image to the center
@@ -81,7 +81,7 @@ $signatureStarter->visualRepresentation = [
     // possibilities depending on the argument passed to the function. Experiment changing the argument to see
     // different examples of signature positioning. Once you decide which is best for your case, you can place the
     // code directly here. See file util-pades.php
-    'position' => getVisualRepresentationPosition(1)
+    'position' => getVisualRepresentationPosition(7)
 
 ];
 
