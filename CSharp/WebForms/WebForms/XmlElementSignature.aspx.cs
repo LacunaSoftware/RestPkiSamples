@@ -32,10 +32,8 @@ namespace WebForms {
 				// Set the signature policy
 				signatureStarter.SetSignaturePolicy(StandardXmlSignaturePolicies.PkiBrazil.NFePadraoNacional);
 
-				// Optionally, set a SecurityContext to be used to determine trust in the certificate chain. Since we're using the
-				// StandardXmlSignaturePolicies.PkiBrazil.NFePadraoNacional policy, the security context will default to PKI Brazil (ICP-Brasil)
-				//signatureStarter.SetSecurityContext(new Guid("..."));
-				// Note: By changing the SecurityContext above you can accept certificates from a custom security context
+				// Set the security context to be used to determine trust in the certificate chain
+				signatureStarter.SetSecurityContext(Util.GetSecurityContextId());
 
 				// Call the StartWithWebPki() method, which initiates the signature. This yields the token, a 43-character
 				// case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
@@ -51,17 +49,18 @@ namespace WebForms {
 		protected void SubmitButton_Click(object sender, EventArgs e) {
 
 			// Get an instance of the XmlSignatureFinisher class, responsible for completing the signature process
-			var signatureFinisher = new XmlSignatureFinisher(Util.GetRestPkiClient());
+			var signatureFinisher = new XmlSignatureFinisher(Util.GetRestPkiClient()) {
 
-			// Set the token for this signature (rendered in a hidden input field, see the view)
-			signatureFinisher.SetToken((string)ViewState["Token"]);
+				// Set the token for this signature (rendered in a hidden input field, see the view)
+				Token = (string)ViewState["Token"]
+			};
 
 			// Call the Finish() method, which finalizes the signature process and returns the signed XML
-			var cms = signatureFinisher.Finish();
+			var signedXml = signatureFinisher.Finish();
 
 			// Get information about the certificate used by the user to sign the file. This method must only be called after
 			// calling the Finish() method.
-			var signerCertificate = signatureFinisher.GetCertificateInfo();
+			var signerCert = signatureFinisher.GetCertificateInfo();
 
 			// At this point, you'd typically store the XML on your database. For demonstration purposes, we'll
 			// store the XML on the App_Data folder and render a page with a link to download the CMS and with the
@@ -73,10 +72,10 @@ namespace WebForms {
 			}
 			var id = Guid.NewGuid();
 			var filename = id + ".xml";
-			File.WriteAllBytes(Path.Combine(appDataPath, filename), cms);
+			File.WriteAllBytes(Path.Combine(appDataPath, filename), signedXml);
 
 			this.SignatureFilename = filename;
-			this.SignerCertificate = signerCertificate;
+			this.SignerCertificate = signerCert;
 			Server.Transfer("XmlElementSignatureInfo.aspx");
 		}
 	}

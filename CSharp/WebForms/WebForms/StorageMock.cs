@@ -19,7 +19,7 @@ namespace WebForms {
 			using (var fileStream = File.Create(path)) {
 				stream.CopyTo(fileStream);
 			}
-			return filename.Replace(".", "_");
+			return filename;
 		}
 
 		public static string Store(byte[] content, string extension = "") {
@@ -37,7 +37,7 @@ namespace WebForms {
 			if (fileId == null) {
 				throw new ArgumentNullException("fileId");
 			}
-			var path = HttpContext.Current.Server.MapPath("~/App_Data/" + fileId.Replace("_", "."));
+			var path = HttpContext.Current.Server.MapPath("~/App_Data/" + fileId);
 			var fileInfo = new FileInfo(path);
 			if (!fileInfo.Exists) {
 				throw new FileNotFoundException("File not found: " + fileId);
