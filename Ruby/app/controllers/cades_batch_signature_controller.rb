@@ -1,5 +1,5 @@
 class CadesBatchSignatureController < ApplicationController
-    include ApplicationHelper
+
 
     # This action renders the batch singature page.
     #
@@ -14,7 +14,7 @@ class CadesBatchSignatureController < ApplicationController
 
             # from 1 to 30
             (1..30).each do |i|
-                @documents_ids.push("%02d" % i)
+                @documents_ids.push('%02d' % i)
             end
 
         rescue => ex
@@ -42,11 +42,8 @@ class CadesBatchSignatureController < ApplicationController
         # Set the signature policy
         signature_starter.signature_policy_id = RestPki::StandardSignaturePolicies::CADES_ICPBR_ADR_BASICA
 
-        # Optionally, set a SecurityContext to be used to determine trust in the certificate chain
-        # signature_starter.security_context_id = RestPki::StandardSecurityContexts::PKI_BRAZIL
-        # Note: Depending on the signature policy chosen above, setting the security context may be mandatory (this
-        # is not the case for ICP-Brasil policies, which will automatically use the PKI_BRAZIL security context if
-        # none is passed)
+        # Set the security context to be used to determine trust in the certificate chain
+        signature_starter.security_context_id = get_security_context_id
 
         # Optionally, set whether the content should be encapsulated in the resulting CMS. If this parameter is
         # omitted, the following rules apply:
@@ -70,11 +67,11 @@ class CadesBatchSignatureController < ApplicationController
     # This action is called asynchronously from the batch signature page in order to complete the signature.
     #
     # Notice that the "id" is actually the signature process token. We're naming it "id" so that the action
-    # can be called as /cades_batch_signature/complete?token={token}
+    # can be called as /cades_batch_signature/complete/{token}
     def complete
 
         # Get the token for this signature (received from the POST call, see cades-batch-signature-form.js)
-        token = params[:token]
+        token = params[:id]
 
         # Instantiate the CadesSignatureFinisher class, responsible for completing the signature process
         signature_finisher = RestPki::CadesSignatureFinisher.new(get_restpki_client)

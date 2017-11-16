@@ -1,0 +1,104 @@
+<!--
+  The file below contains the JS lib for accessing the Web PKI component. For more information, see:
+  https://webpki.lacunasoftware.com/#/Documentation
+-->
+<%= javascript_include_tag 'lacuna-web-pki-2.6.1' %>
+
+<!--
+  The file below contains the logic for calling the Web PKI component. It is only an example, feel free to alter it
+  to meet your application's needs. You can also bring the code into the javascript block below if you prefer.
+-->
+<%= javascript_include_tag 'signature-without-integration-form' %>
+
+<div class="container">
+
+  <!--
+    This section will be only shown if some error has occurred in the last signature attempt. If the user start
+    a new signature, this error message is cleared.
+  -->
+  <% unless @error_message.nil? %>
+
+      <div class="alert alert-danger alert-dismissible" role="alert" style="margin-top: 2%;">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <label for="errorMsg"><%= @error_title %></label><br/>
+        <span id="errorMsg"><%= @error_message %></span>
+      </div>
+
+  <% end %>
+
+  <h2>PAdES Signature without integration between Web PKI and REST PKI</h2>
+
+  <% if not @state.eql? 'completed' %>
+    <form id="signForm" action="/pades_signature_without_integration" method="post">
+
+      <!-- Render the @token in a hidden input field -->
+      <input type="hidden" id="stateField" name="state" value="<%= @state %>">
+      <input type="hidden" id="tokenField" name="token" value="<%= @token %>">
+      <input type="hidden" id="certThumbField" name="cert_thumb" value="<%= @cert_thumb %>">
+      <input type="hidden" id="certContentField" name="cert_content" value="<%= @cert_content %>">
+      <input type="hidden" id="toSignHashField" name="to_sign_hash" value="<%= @to_sign_hash %>">
+      <input type="hidden" id="signatureField" name="signature" value="<%= @signature %>">
+      <input type="hidden" id="digestAlgorithmOidField" name="digest_algorithm_oid" value="<%= @digest_algorithm_oid %>">
+      <input type="hidden" id="fileToSignField" name="file_to_sign" value="<%= @file_to_sign %>">
+
+      <div class="form-group">
+        <label>File to sign</label>
+        <% if @userfile.nil? %>
+            <p>You'll are signing <a href='/uploads/SampleDocument.pdf'>this sample document</a>.</p>
+        <% else %>
+            <p>You'll are signing <a href='/uploads/<%= @userfile %>'>this document</a>.</p>
+        <% end %>
+      </div>
+
+      <!--
+        Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it
+        later on (see assets/javascripts/signature-form.js).
+      -->
+      <div class="form-group">
+        <label for="certificateSelect">Choose a certificate</label>
+        <select id="certificateSelect" class="form-control"></select>
+      </div>
+
+      <!--
+        Action buttons. Notice that the "Sign File" button is NOT a submit button. When the user clicks the button,
+        we must first use the Web PKI component to perform the client-side computation necessary and only when
+        that computation is finished we'll submit the form programmatically (see assets/javascripts/signature-form.js).
+      -->
+      <button id="signButton" type="button" class="btn btn-primary">Sign File</button>
+      <button id="refreshButton" type="button" class="btn btn-default">Refresh Certificates</button>
+    </form>
+
+    <script>
+
+      $(document).ready(function () {
+        // Once the page is ready, we call the init() function on the javascript code (see
+        // signature-wihtout-integration-form.js).
+        signatureWithoutIntegrationForm.init({
+          form: $('#signForm'),                       // the form that should be submitted when the operation is complete
+          certificateSelect: $('#certificateSelect'), // the select element (combo box) to list the certificates
+          refreshButton: $('#refreshButton'),         // the "refresh" button
+          signButton: $('#signButton'),               // the button that initiates the operation
+          stateField: $('#stateField'),               // the field $state
+          tokenField: $('#tokenField'),               // the token acquired from REST PKI
+          certThumbField: $('#certThumbField'),       // the field @certThumb, storing the signer's certificate thumbprint
+          certContentField: $('#certContentField'),   // the field @cert_content, storing the signer's certificate content
+          toSignHashField: $('#toSignHashField'),     // the field @to_sign_hash
+          digestAlgorithmOidField: $('#digestAlgorithmOidField'),   // the field @digest_algorithm_oid
+          signatureField: $('#signatureField')        // the field @signature, willl be computed by Web PKI component
+        });
+      });
+
+    </script>
+
+  <% else %>
+
+    <!-- This page is shown when the signature is completed with success. -->
+    <p>File signed sucessfully!</p>
+    <p>
+      <a href="/uploads/<%= @filename %>" class="btn btn-default">Download the signed file</a>
+    </p>
+
+  <% end %>
+
+</div>
+

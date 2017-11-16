@@ -90,7 +90,7 @@ var cadesBatchSignatureForm = (function() {
             var docId = batchDocIds[i];
             docList.append(
                 $('<li />').append(
-                    $('<a />').text('Document ' + docId).attr('href', "uploads/" + docId + ".pdf")
+                    $('<a />').text('Document ' + docId).attr('href', "uploads/0" + (parseInt(docId) % 10) + ".pdf")
                 )
             );
         }
@@ -219,9 +219,8 @@ var cadesBatchSignatureForm = (function() {
     function startSignature(step, done) {
         // Call the server asynchronously to start the signature (the server will call REST PKI and will return the signature operation token)
         $.ajax({
-            url: 'cades_batch_signature/start',
+            url: 'cades_batch_signature/start/' + step.docId,
             method: 'POST',
-            data: 'id=' + step.docId,
             dataType: 'json',
             success: function (token) {
                 // Add the token to the document information (we'll need it in the second step)
@@ -273,9 +272,8 @@ var cadesBatchSignatureForm = (function() {
     function completeSignature(step, done) {
         // Call the server asynchronously to notify that the signature has been performed
         $.ajax({
-            url: 'cades_batch_signature/complete',
+            url: 'cades_batch_signature/complete/' + step.token, // The signature process token is guaranteed to be URL-safe,
             method: 'POST',
-            data:  "token=" + step.token, // The signature process token is guaranteed to be URL-safe
             dataType: 'json',
             success: function (filename) {
                 step.filename = filename;

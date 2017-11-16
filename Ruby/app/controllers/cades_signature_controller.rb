@@ -1,11 +1,4 @@
 class CadesSignatureController < ApplicationController
-    include ApplicationHelper
-    # The token acquired below can only be used for a single authentication attempt. In order to retry the signature it
-    # is necessary to get a new token. This can be a problem if the user uses the back button of the browser, since the
-    # browser might show a cached page that we rendered previously, with a now stale token. To prevent this from
-    # happening, we call the method :set_expired_page_headers, located in application_controller.rb, which sets HTTP
-    # headers to prevent caching of the page.
-    before_action :set_expired_page_headers
 
 
     # This action initiates a CAdES signature using REST PKI and renders the signature page.
@@ -58,11 +51,8 @@ class CadesSignatureController < ApplicationController
             # Set the signature policy
             signature_starter.signature_policy_id = RestPki::StandardSignaturePolicies::CADES_ICPBR_ADR_BASICA
 
-            # Optionally, set a SecurityContext to be used to determine trust in the certificate chain
-            # signature_starter.security_context_id = RestPki::StandardSecurityContexts::PKI_BRAZIL
-            # Note: Depending on the signature policy chosen above, setting the security context may be mandatory (this
-            # is not the case for ICP-Brasil policies, which will automatically use the PKI_BRAZIL security context if
-            # none is passed)
+            # Set the security context to be used to determine trust in the certificate chain
+            signature_starter.security_context_id = get_security_context_id
 
             # Optionally, set whether the content should be encapsulated in the resulting CMS. If this parameter is
             # omitted, the following rules apply:
@@ -77,6 +67,13 @@ class CadesSignatureController < ApplicationController
             # signature after the form is submitted (see method action below). This should not be mistaken with the
             # API access token.
             @token = signature_starter.start_with_webpki
+
+            # The token acquired above can only be used for a single signature attempt. In order to retry the signature
+            # it is necessary to get a new token. This can be a problem if the user uses the back button of the browser,
+            # since the browser might show a cached page that we rendered previously, with a now stale token. To prevent
+            # this from happening, we call the method set_expired_page_headers, located in application_helper.rb,
+            # which sets HTTP headers to prevent caching of the page.
+            set_expired_page_headers
 
         rescue => ex
             @error = ex
