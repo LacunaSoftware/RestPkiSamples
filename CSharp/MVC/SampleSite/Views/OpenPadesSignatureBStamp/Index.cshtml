@@ -1,0 +1,135 @@
+﻿@using SampleSite.Classes
+@model Lacuna.RestPki.Client.PadesSignature
+
+<h2>Open existing PAdES Signature with B-Stamp&trade;</h2>
+
+@if (Model.BStamp == null) {
+
+<h3>The given signature has not been registered on a Blockchain</h3>
+
+} else {
+
+<h3>The given signature has a B-Stamp&trade;</h3>
+
+<p>
+	Este relatório contém as informações necessárias para que seja realizada uma auditoria da validade das
+	assinaturas digitais presentes no documento cujos resumos criptográficos ("hashes") encontram-se abaixo:
+</p>
+
+<ul>
+	@foreach (var digest in Model.BStamp.DocumentDigests) {
+	<li>@Util.GetDigestAlgorithmDisplayName(digest.Key): @Util.ConvertToHexString(digest.Value)</li>
+	}
+</ul>
+
+<p>
+	Os hashes do documento assinado e dos artefatos de validação encontram-se incluídos no índice de hashes
+	(<a href="/Download/File/@ViewBag.BStampIndexFile" target="_blank">Hashes.txt</a>), que acompanha este relatório.
+	Os hashes desse índice são:
+</p>
+
+<ul>
+	@foreach (var digest in Model.BStamp.IndexDigests) {
+	<li>@Util.GetDigestAlgorithmDisplayName(digest.Key): <b>@Util.ConvertToHexString(digest.Value)</b></li>
+	}
+</ul>
+
+<p>
+	O índice de hashes encontra-se registrado no Blockchain do @Model.BStamp.Blockchain na seguinte transação:
+</p>
+
+<ul>
+	<li>Blockchain: <b>@Model.BStamp.Blockchain</b></li>
+	<li>Transaction: <b><a href="https://blockchain.info/tx/@Model.BStamp.TransactionId?show_adv=true" target="_blank">@Model.BStamp.TransactionId</a></b></li>
+	<li>Block number: <b><a href="https://blockchain.info/block-index/@Model.BStamp.BlockNumber" target="_blank">@Model.BStamp.BlockNumber</a></b></li>
+	<li>Block date: <b>@Model.BStamp.BlockDate.UtcDateTime.ToString("G")</b> (@Model.BStamp.BlockDate.LocalDateTime.ToString("G") no horário local)</li>
+</ul>
+
+<p>
+	A transação pode ser verificada utilizando qualquer serviço online de verificação de Blockchain, por exemplo:
+</p>
+
+<ul>
+	<li><a href="https://blockchain.info/tx/@Model.BStamp.TransactionId?show_adv=true" target="_blank">https://blockchain.info/tx/@Model.BStamp.TransactionId</a></li>
+	<li><a href="https://blocktrail.com/BTC/tx/@Model.BStamp.TransactionId" target="_blank">https://blocktrail.com/BTC/tx/@Model.BStamp.TransactionId</a></li>
+</ul>
+
+<p>
+	Acessando qualquer um dos links acima é possível conferir os hashes do índice de hashes nos detalhes da
+	transação. Portanto, a existência na data indicada acima do referido índice de hashes, e por consequência do
+	documento assinado e de todos os artefatos de validação, encontra-se registrada de maneira inviolável no
+	blockchain do @Model.BStamp.Blockchain, estrutura de dados difundida e perpetuada globalmente pelos nós da rede da
+	criptomoeda.
+</p>
+
+<p>
+   	Portanto, as validações a seguir foram feitas assumindo que o documento assinado e os artefatos de
+   	validação comprovadamente existiam em <b>@Model.BStamp.BlockDate.UtcDateTime.ToString("G") UTC</b> (@Model.BStamp.BlockDate.LocalDateTime.ToString("G") no horário local).
+</p>
+
+}
+
+<h3>The given file contains @Model.Signers.Count signatures:</h3>
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+	@for (var i = 0; i < Model.Signers.Count; i++) {
+
+		var signer = Model.Signers[i];
+		var collapseId = string.Format("signer_{0}_collapse", i);
+		var headingId = string.Format("signer_{0}_heading", i);
+
+	<div class="panel panel-default">
+		<div class="panel-heading" role="tab" id="@headingId">
+			<h4 class="panel-title">
+				<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#@collapseId" aria-expanded="true" aria-controls="@collapseId">
+					@signer.Certificate.SubjectName.CommonName
+					@if (signer.ValidationResults != null) {
+					<text>- </text>
+						if (signer.ValidationResults.IsValid) {
+						<span style="color: green; font-weight: bold;">valid</span>
+						} else {
+						<span style="color: red; font-weight: bold;">invalid</span>
+						}
+					}
+				</a>
+			</h4>
+		</div>
+		<div id="@collapseId" class="panel-collapse collapse" role="tabpanel" aria-labelledby="@headingId">
+			<div class="panel-body">
+				<p>Signing time: @signer.SigningTime</p>
+				<p>Message digest: @signer.MessageDigest.Algorithm.Name @BitConverter.ToString(signer.MessageDigest.Value) </p>
+				@if (signer.SignaturePolicy != null) {
+				<p>Signature policy: @signer.SignaturePolicy.Oid</p>
+				}
+				<p>
+					Signer information:
+					<ul>
+						<li>Subject: @signer.Certificate.SubjectName.CommonName</li>
+						<li>Email: @signer.Certificate.EmailAddress</li>
+						<li>
+							ICP-Brasil fields
+							<ul>
+								<li>Tipo de certificado: @signer.Certificate.PkiBrazil.CertificateType</li>
+								<li>CPF: @signer.Certificate.PkiBrazil.Cpf</li>
+								<li>Responsavel: @signer.Certificate.PkiBrazil.Responsavel</li>
+								<li>Empresa: @signer.Certificate.PkiBrazil.CompanyName</li>
+								<li>CNPJ: @signer.Certificate.PkiBrazil.Cnpj</li>
+								<li>RG: @signer.Certificate.PkiBrazil.RGNumero @signer.Certificate.PkiBrazil.RGEmissor @signer.Certificate.PkiBrazil.RGEmissorUF</li>
+								<li>OAB: @signer.Certificate.PkiBrazil.OabNumero @signer.Certificate.PkiBrazil.OabUF</li>
+							</ul>
+						</li>
+					</ul>
+				</p>
+				@if (signer.ValidationResults != null) {
+				<p>
+					Validation results:<br />
+					<textarea style="width: 100%" rows="20">@signer.ValidationResults.ToString()</textarea>
+				</p>
+				}
+			</div>
+		</div>
+	</div>
+	}
+</div>
+@if (ViewBag.AuditPackageFile != null) {
+<a href="/Download/File/@ViewBag.AuditPackageFile" class="btn btn-primary">Baixar Pacote para Auditoria</a>
+}

@@ -1,4 +1,5 @@
-﻿using Lacuna.RestPki.Client;
+﻿using Lacuna.RestPki.Api;
+using Lacuna.RestPki.Client;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -54,6 +55,29 @@ namespace SampleSite.Classes {
 
 		public static byte[] GetXmlInvoiceWithSigs() {
 			return File.ReadAllBytes(Path.Combine(ContentPath, "InvoiceWithSigs.xml"));
+		}
+
+		public static string GetDigestAlgorithmDisplayName(DigestAlgorithms alg) {
+			switch (alg) {
+				case DigestAlgorithms.MD5:
+					return "MD5";
+				case DigestAlgorithms.SHA1:
+					return "SHA-1";
+				case DigestAlgorithms.SHA256:
+					return "SHA2-256";
+				case DigestAlgorithms.SHA384:
+					return "SHA2-384";
+				case DigestAlgorithms.SHA512:
+					return "SHA2-512";
+				case DigestAlgorithms.SHA3_256:
+					return "SHA3-256";
+				default:
+					return alg.ToString();
+			}
+		}
+
+		public static string ConvertToHexString(byte[] content) {
+			return string.Join("", content.Select(b => b.ToString("x2")));
 		}
 	}
 }
