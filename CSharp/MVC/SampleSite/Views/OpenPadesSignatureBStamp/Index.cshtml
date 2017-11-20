@@ -19,7 +19,7 @@
 
 <ul>
 	@foreach (var digest in Model.BStamp.DocumentDigests) {
-	<li>@Util.GetDigestAlgorithmDisplayName(digest.Key): @Util.ConvertToHexString(digest.Value)</li>
+	<li>@digest.Algorithm.Name: @digest.HexValue</li>
 	}
 </ul>
 
@@ -31,7 +31,7 @@
 
 <ul>
 	@foreach (var digest in Model.BStamp.IndexDigests) {
-	<li>@Util.GetDigestAlgorithmDisplayName(digest.Key): <b>@Util.ConvertToHexString(digest.Value)</b></li>
+	<li>@digest.Algorithm.Name: <b>@digest.HexValue</b></li>
 	}
 </ul>
 
