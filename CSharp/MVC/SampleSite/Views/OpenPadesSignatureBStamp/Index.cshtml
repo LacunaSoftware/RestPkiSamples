@@ -6,6 +6,7 @@
 @if (Model.BStamp == null) {
 
 <h3>The given signature has not been registered on a Blockchain</h3>
+<h4>Tip: signatures performed with Rest PKI are registered on the Bitcoin Blockchain overnight. Try again tomorrow with this same file.</h4>
 
 } else {
 
@@ -41,7 +42,7 @@
 <ul>
 	<li>Blockchain: <b>@Model.BStamp.Blockchain</b></li>
 	<li>Transaction: <b><a href="https://blockchain.info/tx/@Model.BStamp.TransactionId?show_adv=true" target="_blank">@Model.BStamp.TransactionId</a></b></li>
-	<li>Block number: <b><a href="https://blockchain.info/block-index/@Model.BStamp.BlockNumber" target="_blank">@Model.BStamp.BlockNumber</a></b></li>
+	<li>Block number: <b>@Model.BStamp.BlockNumber</b></li>
 	<li>Block date: <b>@Model.BStamp.BlockDate.UtcDateTime.ToString("G")</b> (@Model.BStamp.BlockDate.LocalDateTime.ToString("G") no horário local)</li>
 </ul>
 
@@ -63,10 +64,14 @@
 </p>
 
 <p>
-   	Portanto, as validações a seguir foram feitas assumindo que o documento assinado e os artefatos de
-   	validação comprovadamente existiam em <b>@Model.BStamp.BlockDate.UtcDateTime.ToString("G") UTC</b> (@Model.BStamp.BlockDate.LocalDateTime.ToString("G") no horário local).
+	Portanto, as validações a seguir foram feitas assumindo que o documento assinado e os artefatos de
+	validação comprovadamente existiam em <b>@Model.BStamp.BlockDate.UtcDateTime.ToString("G") UTC</b> (@Model.BStamp.BlockDate.LocalDateTime.ToString("G") no horário local).
 </p>
 
+}
+
+@if (ViewBag.AuditPackageFile != null) {
+<a href="/Download/File/@ViewBag.AuditPackageFile" class="btn btn-primary">Baixar Pacote para Auditoria</a>
 }
 
 <h3>The given file contains @Model.Signers.Count signatures:</h3>
@@ -110,7 +115,7 @@
 							<ul>
 								<li>Tipo de certificado: @signer.Certificate.PkiBrazil.CertificateType</li>
 								<li>CPF: @signer.Certificate.PkiBrazil.Cpf</li>
-								<li>Responsavel: @signer.Certificate.PkiBrazil.Responsavel</li>
+								<li>Responsável: @signer.Certificate.PkiBrazil.Responsavel</li>
 								<li>Empresa: @signer.Certificate.PkiBrazil.CompanyName</li>
 								<li>CNPJ: @signer.Certificate.PkiBrazil.Cnpj</li>
 								<li>RG: @signer.Certificate.PkiBrazil.RGNumero @signer.Certificate.PkiBrazil.RGEmissor @signer.Certificate.PkiBrazil.RGEmissorUF</li>
@@ -130,6 +135,3 @@
 	</div>
 	}
 </div>
-@if (ViewBag.AuditPackageFile != null) {
-<a href="/Download/File/@ViewBag.AuditPackageFile" class="btn btn-primary">Baixar Pacote para Auditoria</a>
-}
