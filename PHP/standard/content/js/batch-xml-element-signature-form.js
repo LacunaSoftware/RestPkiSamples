@@ -119,7 +119,7 @@ var batchXmlSignatureForm = (function() {
         $('#signNum').text(step.elemId + 1);
 
         $.ajax({
-            url: 'batch-xml-signature-start.php',
+            url: 'batch-xml-element-signature-start.php',
             method: 'POST',
             data: {
                 elemId: batchElemIds[step.elemId],
@@ -156,7 +156,7 @@ var batchXmlSignatureForm = (function() {
     function completeSignature(step) {
 
         $.ajax({
-            url: 'batch-xml-signature-complete.php',
+            url: 'batch-xml-element-signature-complete.php',
             method: 'POST',
             data: {
                 token: step.token,

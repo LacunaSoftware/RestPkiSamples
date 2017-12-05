@@ -38,13 +38,13 @@
                 <li><a href="xml-full-signature.php">Create a full XML signature (enveloped signature)</a></li>
                 <li><a href="xml-element-signature.php">Create a XML element signature</a></li>
                 <li><a href="upload.php?goto=open-xml-signature">Open/validate signatures on an existing XML file</a></li>
-                <li><a href="batch-xml-signature.php">Simple batch signature of XML elements</a></li>
             </ul>
         </li>
         <li>
             Sign a batch of files
             <ul>
                 <li><a href="batch-signature.php">Simple batch signature</a></li>
+                <li><a href="batch-xml-element-signature.php">Simple batch signature of XML elements on the same document</a></li>
             </ul>
         </li>
     </ul>

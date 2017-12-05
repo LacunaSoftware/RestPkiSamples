@@ -85,7 +85,7 @@ $elementsIds = array_map(function ($id) {
 // The file below contains the logic for calling the Web PKI component. It is only an example, feel free to alter it
 // to meet your application's needs. You can also bring the code into the javascript block below if you prefer.
 ?>
-<script src="content/js/batch-xml-signature-form.js"></script>
+<script src="content/js/batch-xml-element-signature-form.js"></script>
 <script>
     $(document).ready(function () {
         // Once the page is ready, we call the init() function on the javascript code (see batch-signature-form.js)
