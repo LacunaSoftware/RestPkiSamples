@@ -2,7 +2,7 @@
 // This file contains logic for calling the Web PKI component to sign a batch of documents. It is only
 // an example, feel free to alter it to meet your application's needs.
 // -----------------------------------------------------------------------------------------------------
-var batchXmlSignatureForm = (function() {
+var batchXmlElementSignatureForm = (function() {
 
     // Auxiliary global variables
     var selectedCertThumbprint = null;

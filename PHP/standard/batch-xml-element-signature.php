@@ -10,7 +10,8 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-// It is up to your application's business logic to determine which element id will compose the batch
+// It is up to your application's business logic to determine which element id will compose the batch and which file
+// will be signed.
 $elementsIds = array_map(function ($id) {
     return "ID2102100000000000000000000000000000000000008916" . sprintf("%02d", $id);
 }, range(1, 10));
@@ -88,9 +89,9 @@ $elementsIds = array_map(function ($id) {
 <script src="content/js/batch-xml-element-signature-form.js"></script>
 <script>
     $(document).ready(function () {
-        // Once the page is ready, we call the init() function on the javascript code (see batch-signature-form.js)
-        batchXmlSignatureForm.init({
-            elementsIds: <?= json_encode($elementsIds); ?>, // ids of documents
+        // Once the page is ready, we call the init() function on the javascript code (see batch-xml-element-signature-form.js)
+        batchXmlElementSignatureForm.init({
+            elementsIds: <?= json_encode($elementsIds); ?>, // ids of the elements of the document
             certificateSelect: $('#certificateSelect'),   // the select element (combo box) to list the certificates
             refreshButton: $('#refreshButton'),           // the "refresh" button
             signButton: $('#signButton')                  // the button that initiates the operation

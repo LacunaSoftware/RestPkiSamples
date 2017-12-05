@@ -1,8 +1,10 @@
 <?php
 
 /*
- * This file initiates a XML signature of an element of the XML using REST PKI and renders the signature page. The form
- * is posted to another file, xml-element-signature-action.php, which calls REST PKI again to complete the signature.
+ * This file is called asynchronously via AJAX by the batch signature page for each XML element being signed. It
+ * receives the ID of the element and the document to be signed. It initiates a XML element signature using REST PKI
+ * and returns a JSON with the token, which identifies this signature process, to be used in the next signature steps
+ * (see batch-xml-element-signature-form.js).
  */
 
 require __DIR__ . '/vendor/autoload.php';
@@ -11,10 +13,10 @@ use Lacuna\RestPki\XmlElementSignatureStarter;
 use Lacuna\RestPki\StandardSecurityContexts;
 use Lacuna\RestPki\StandardSignaturePolicies;
 
-// Get the element id for this signature (received from the POST call, see batch-signature-form.js)
+// Get the element id for this signature (received from the POST call, see batch-xml-element-signature-form.js)
 $elemId = $_POST['elemId'];
 
-// Get the document id for this signature (received from the POST call, see batch-signature-form.js)
+// Get the document id for this signature (received from the POST call, see batch-xml-element-signature-form.js)
 if (array_key_exists('fileId', $_POST)) {
     $fileId = $_POST['fileId'];
 }
@@ -31,10 +33,10 @@ if (empty($fileId)) {
     $signatureStarter->setXmlToSignFromPath("app-data/$fileId");
 }
 
-// Set the ID of the element to be signed
+// Set the ID of the element to be signed.
 $signatureStarter->toSignElementId = $elemId;
 
-// Set the signature policy
+// Set the signature policy.
 $signatureStarter->signaturePolicy = StandardSignaturePolicies::XML_ICPBR_NFE_PADRAO_NACIONAL;
 
 // Optionally, set a SecurityContext to be used to determine trust in the certificate chain. Since we're using the
