@@ -44,6 +44,7 @@
             Sign a batch of files
             <ul>
                 <li><a href="batch-signature.php">Simple batch signature</a></li>
+                <li><a href="batch-xml-element-signature.php">Simple batch signature of XML elements on the same document</a></li>
             </ul>
         </li>
     </ul>

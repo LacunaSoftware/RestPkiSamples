@@ -10,7 +10,7 @@ require __DIR__ . '/vendor/autoload.php';
 
 use Lacuna\RestPki\PadesSignatureFinisher2;
 
-// Get the token for this signature (received from the post call, see batch-signature-form.php)
+// Get the token for this signature (received from the post call, see batch-signature-form.js)
 $token = $_POST['token'];
 
 // Instantiate the PadesSignatureFinisher2 class, responsible for completing the signature process

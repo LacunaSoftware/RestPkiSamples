@@ -47,6 +47,7 @@
                        aria-expanded="false">Batch signature <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="batch-signature.php">Simple batch signature</a></li>
+                        <li><a href="batch-xml-element-signature.php">Simple batch signature of XML elements</a></li>
                     </ul>
                 </li>
             </ul>
