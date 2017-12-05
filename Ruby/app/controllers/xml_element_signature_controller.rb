@@ -1,11 +1,5 @@
 class XmlElementSignatureController < ApplicationController
-  include ApplicationHelper
-  before_action :set_expired_page_headers
-  # The token acquired below can only be used for a single authentication attempt. In order to retry the signature it
-  # is necessary to get a new token. This can be a problem if the user uses the back button of the browser, since the
-  # browser might show a cached page that we rendered previously, with a now stale token. To prevent this from
-  # happening, we call the method :set_expired_page_headers, located in application_controller.rb, which sets HTTP
-  # headers to prevent caching of the page.
+
 
   # This action initiates a XML element signature using REST PKI and renders the signature page.
   def index
@@ -17,12 +11,9 @@ class XmlElementSignatureController < ApplicationController
 
       # Set the signature policy
       signature_starter.signature_policy_id = RestPki::StandardSignaturePolicies::XML_ICPBR_NFE_PADRAO_NACIONAL
-      # Note: Depending on the signature policy chosen above, setting the security context below may be mandatory (this
-      # is not the case for ICP-Brasil policies, which will automatically use the PkiBrazil security context if none
-      # is passed)
 
-      # Optionally, set a SecurityContext to be used to determine trust in the certificate chain
-      # signature_starter.security_context_id = 'ID OF YOUR CUSTOM SECURITY CONTEXT'
+      # Set the security context to be used to determine trust in the certificate chain
+      signature_starter.security_context_id = get_security_context_id
 
       # Set the XML to be signed, a sample Brazilian fiscal invoice pre-generated
       signature_starter.set_xml_tosign_from_path(get_sample_nfe_path)
@@ -36,6 +27,13 @@ class XmlElementSignatureController < ApplicationController
       # after the form is submitted (see method create below). This should not be mistaken with the
       # API access token.
       @token = signature_starter.start_with_webpki
+
+      # The token acquired above can only be used for a single signature attempt. In order to retry the signature it
+      # is necessary to get a new token. This can be a problem if the user uses the back button of the browser, since
+      # the browser might show a cached page that we rendered previously, with a now stale token. To prevent this from
+      # happening, we call the method set_expired_page_headers, located in application_helper.rb, which sets HTTP
+      # headers to prevent caching of the page.
+      set_expired_page_headers
 
     rescue => ex
       @error = ex

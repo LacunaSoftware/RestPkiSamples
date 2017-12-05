@@ -1,8 +1,8 @@
 <div class="container">
 
+  <% # We'll render different contents depending on whether the authentication succeeded or not %>
   <% if @vr.is_valid %>
 
-      <!-- We'll render different contents depending on whether the authentication succeeded or not -->
       <h2>Authentication successful</h2>
 
       <p>
@@ -27,10 +27,10 @@
 
   <% else %>
 
-      <!--
-        The $vr object can be used as a string, but the string contains tabs and new line characters for formatting,
-        which we'll convert to <br>'s and &nbsp;'s.
-      -->
+      <%
+        # The $vr object can be used as a string, but the string contains tabs and new line characters for formatting,
+        # which we'll convert to <br>'s and &nbsp;'s.
+      %>
       <h2>Authentication Failed</h2>
 
       <p>

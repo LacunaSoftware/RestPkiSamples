@@ -1,11 +1,5 @@
 class FullXmlSignatureController < ApplicationController
-    include ApplicationHelper
-    before_action :set_expired_page_headers
-    # The token acquired below can only be used for a single authentication attempt. In order to retry the signature it
-    # is necessary to get a new token. This can be a problem if the user uses the back button of the browser, since the
-    # browser might show a cached page that we rendered previously, with a now stale token. To prevent this from
-    # happening, we call the method :set_expired_page_headers, located in application_controller.rb, which sets HTTP
-    # headers to prevent caching of the page.
+
 
     # This action initiates a full XML signature using REST PKI and renders the signature page.
     def index
@@ -31,13 +25,8 @@ class FullXmlSignatureController < ApplicationController
             # Set the signature policy
             signature_starter.signature_policy_id = RestPki::StandardSignaturePolicies::XML_XADES_BES
 
-            # Set a SecurityContext to be used to determine trust in the certificate chain
-            signature_starter.security_context_id = RestPki::StandardSecurityContexts::PKI_BRAZIL
-            # Note: By changing the SecurityContext above you can accept only certificates from a certain PKI, for
-            # instance, ICP-Brasil (RestPki::StandardSecurityContexts::PKI_BRAZIL).
-
-            # Optionally, set a SecurityContext to be used to determine trust in the certificate chain
-            # signature_starter.security_context_id = 'ID OF YOUR CUSTOM SECURITY CONTEXT'
+            # Set the security context to be used to determine trust in the certificate chain
+            signature_starter.security_context_id = get_security_context_id
 
             # Call the :start_with_webpki method, which initiates the signature. This yields the token, a 43-character
             # case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
@@ -45,6 +34,13 @@ class FullXmlSignatureController < ApplicationController
             # the signature after the form is submitted (see method action below). This should not be mistaken with the
             # API access token.
             @token = signature_starter.start_with_webpki
+
+            # The token acquired above can only be used for a single signature attempt. In order to retry the signature
+            # it is necessary to get a new token. This can be a problem if the user uses the back button of the browser,
+            # since the browser might show a cached page that we rendered previously, with a now stale token. To prevent
+            # this from happening, we call the method set_expired_page_headers, located in application_helper.rb,
+            # which sets HTTP headers to prevent caching of the page.
+            set_expired_page_headers
 
         rescue => ex
             @error = ex

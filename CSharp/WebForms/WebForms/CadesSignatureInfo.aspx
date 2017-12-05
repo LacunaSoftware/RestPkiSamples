@@ -27,7 +27,7 @@
 
     <h3>Actions:</h3>
     <ul>
-        <li><a href='Download?file=<%= signatureFilename %>'>Download the signed file</a></li>
+        <li><a href='Download?fileId=<%= signatureFilename %>'>Download the signed file</a></li>
         <%--<li><a href='OpenCadesSignature?userfile=<%= signatureFilename %>'>Open/validate the signed file</a></li>--%>
         <li><a href='/CadesSignature?cmsfile=<%= signatureFilename %>'>Co-sign with another certificate</a></li>
     </ul>
