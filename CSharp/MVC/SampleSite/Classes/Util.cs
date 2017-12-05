@@ -1,4 +1,5 @@
-﻿using Lacuna.RestPki.Client;
+﻿using Lacuna.RestPki.Api;
+using Lacuna.RestPki.Client;
 using System;
 using System.Collections.Generic;
 using System.Configuration;

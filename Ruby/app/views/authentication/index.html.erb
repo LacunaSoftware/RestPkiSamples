@@ -4,38 +4,38 @@
 
   <form id="authForm" action="/authentication" method="post">
 
-    <!-- Render the @token in a hidden input field -->
+    <% # Render the @token in a hidden input field %>
     <input type="hidden" id="token" name="token" value="<%= @token %>">
 
-    <!--
-      Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it later
-      on (see assets/javascripts/signature-form.js).
-    -->
+    <%
+      # Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it later
+      # on (see assets/javascripts/signature-form.js).
+    %>
     <div class="form-group">
       <label for="certificateSelect">Choose a certificate</label>
       <select id="certificateSelect" class="form-control"></select>
     </div>
 
-    <!--
-      Action buttons. Notice that the "Sign In" button is NOT a submit button. When the user clicks the button, we must
-      first use the Web PKI component to perform the client-side computation necessary and only when that computation is
-      finished we'll submit the form programmatically (see assets/javascripts/signature-form.js).
-    -->
+    <%
+      # Action buttons. Notice that the "Sign In" button is NOT a submit button. When the user clicks the button, we
+      # must first use the Web PKI component to perform the client-side computation necessary and only when that
+      # computation is finished we'll submit the form programmatically (see assets/javascripts/signature-form.js).
+    %>
     <button id="signInButton" type="button" class="btn btn-primary">Sign In</button>
     <button id="refreshButton" type="button" class="btn btn-default">Refresh Certificates</button>
   </form>
 </div>
 
-<!--
-  The file below contains the JS lib for accessing the Web PKI component. For more information, see:
-  https://webpki.lacunasoftware.com/#/Documentation
--->
-<%= javascript_include_tag 'lacuna-web-pki-2.5.0' %>
+<%
+  # The file below contains the JS lib for accessing the Web PKI component. For more information, see:
+  # https://webpki.lacunasoftware.com/#/Documentation
+%>
+<%= javascript_include_tag 'lacuna-web-pki-2.6.1' %>
 
-<!--
-  The file below contains the logic for calling the Web PKI component. It is only an example, feel free to alter it
-  to meet your application's needs. You can also bring the code into the javascript block below if you prefer.
--->
+<%
+  # The file below contains the logic for calling the Web PKI component. It is only an example, feel free to alter it
+  # to meet your application's needs. You can also bring the code into the javascript block below if you prefer.
+%>
 <%= javascript_include_tag 'signature-form' %>
 <script>
   $(document).ready(function () {
