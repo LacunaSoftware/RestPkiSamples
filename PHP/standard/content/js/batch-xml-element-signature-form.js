@@ -123,7 +123,7 @@ var batchXmlElementSignatureForm = (function() {
             method: 'POST',
             data: {
                 elemId: batchElemIds[step.elemId],
-                fileId: step.fileId ? step.fileId : null
+                fileId: step.fileId
             },
             dataType: 'json',
             success: function (token) {
