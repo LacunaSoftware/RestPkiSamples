@@ -1,0 +1,68 @@
+<div class="container">
+
+  <!--This section will show the errors occurred on the batch signature. It will be filled using jQuery.-->
+  <div id="errorPanel"></div>
+
+  <h2>Batch signature of XML Elements</h2>
+
+  <!--This section will be only shown when the batch signature is complete successfully, in other cases, the signature-->
+  <!--form will be visible.-->
+  <div id="signatureResults" class="form-group" style="display: none;">
+    <h3>File signed successfully!</h3>
+    <label for="actions">Actions:</label>
+    <ul id="actions">
+      <li><a id="signedFileLink">Download the signed file</a></li>
+    </ul>
+  </div>
+
+  <form id="signForm" method="post">
+
+    <!-- Link to the file being signed -->
+    <div class="form-group">
+      <label>File to sign</label>
+      <p>You are signing a batch of nodes of <a href='/uploads/EventoManifesto.xml'>this sample XML</a>.</p>
+    </div>
+
+    <!--
+      Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it
+      later on (see assets/javascripts/signature-form.js).
+    -->
+    <div class="form-group">
+      <label for="certificateSelect">Choose a certificate</label>
+      <select id="certificateSelect" class="form-control"></select>
+    </div>
+
+    <!--
+      Action buttons. Notice that the "Sign File" button is NOT a submit button. When the user clicks the button,
+      we must first use the Web PKI component to perform the client-side computation necessary and only when
+      that computation is finished we'll submit the form programmatically (see assets/javascripts/signature-form.js).
+    -->
+    <button id="signButton" type="button" class="btn btn-primary">Sign File</button>
+    <button id="refreshButton" type="button" class="btn btn-default">Refresh Certificates</button>
+  </form>
+
+</div>
+
+<!--
+  The file below contains the JS lib for accessing the Web PKI component. For more information, see:
+  https://webpki.lacunasoftware.com/#/Documentation
+-->
+<%= javascript_include_tag 'lacuna-web-pki-2.6.1' %>
+
+<!--
+  The file below contains the logic for calling the Web PKI component. It is only an example, feel free to alter it
+  to meet your application's needs. You can also bring the code into the javascript block below if you prefer.
+-->
+<%= javascript_include_tag 'xml-element-batch-signature-form' %>
+<script type="text/javascript" charset="utf-8">
+  $(document).ready(function () {
+    // Once the page is ready, we call the init() function on the javascript code (see signature-form.js)
+    batchXmlElementSignatureForm.init({
+      elementsIds: <%= raw @elements_ids.to_json %>,               // elements' ids of the sample XML, defined on server-side
+      errorPanel: $('#errorPanel'),                // the panel, where will be shown a error, when it occurs
+      certificateSelect: $('#certificateSelect'),  // the select element (combo box) to list the certificates
+      refreshButton: $('#refreshButton'),          // the "refresh" button
+      signButton: $('#signButton')                 // the button that initiates the operation
+    });
+  });
+</script>

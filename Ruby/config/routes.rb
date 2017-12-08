@@ -27,4 +27,8 @@ Rails.application.routes.draw do
     post 'cades_batch_signature/start/:id', to: 'cades_batch_signature#start'
     post 'cades_batch_signature/complete/:id', to: 'cades_batch_signature#complete'
 
+    get 'xml_element_batch_signature', to: 'xml_element_batch_signature#index'
+    post 'xml_element_batch_signature/start', to: 'xml_element_batch_signature#start'
+    post 'xml_element_batch_signature/complete', to: 'xml_element_batch_signature#complete'
+
 end

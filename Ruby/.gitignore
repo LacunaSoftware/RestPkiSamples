@@ -30,6 +30,7 @@ Gemfile.lock
 !public/uploads/SampleDocument.pdf
 !public/uploads/SampleDocument.xml
 !public/uploads/SampleNFe.xml
+!public/uploads/EventoManifesto.xml
 !public/uploads/01.pdf
 !public/uploads/02.pdf
 !public/uploads/03.pdf

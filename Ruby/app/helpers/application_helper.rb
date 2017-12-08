@@ -12,13 +12,18 @@ module ApplicationHelper
         Rails.root.join('public', 'uploads', 'SampleNFe.xml')
     end
 
+    def get_sample_manifesto_path
+        Rails.root.join('public', 'uploads', 'EventoManifesto.xml')
+    end
+
     def get_batch_doc_path(id)
         Rails.root.join('public', 'uploads', "0#{id.to_i % 10}.pdf")
     end
 
     def get_pdf_stamp_content
         content = nil
-        File.open(Rails.root.join('app/assets', 'images', 'PdfStamp.png'), 'rb') do |file|
+        stamp_path = Rails.root.join('app', 'assets', 'images', 'PdfStamp.png')
+        File.open(stamp_path, 'rb') do |file|
             content = file.read
         end
         content
