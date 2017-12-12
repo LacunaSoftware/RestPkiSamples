@@ -84,7 +84,7 @@ function init() {
         var docId = batchDocIds[i-1];
         docList.append(
             $('<li />').append(
-                $('<a />').text('Document ' + docId).attr('href', "/" + (docId < 10 ? "0" + docId : docId) + ".pdf")
+                $('<a />').text('Document ' + docId).attr('href', "/0" + (docId % 10) + ".pdf")
             )
         );
     }
