@@ -8,6 +8,7 @@ CoreWebApp/App_Data/*
 !CoreWebApp/App_Data/SampleDocument.xml
 !CoreWebApp/App_Data/SampleNFe.xml
 !CoreWebApp/App_Data/PdfStamp.png
+!CoreWebApp/App_Data/00.pdf
 !CoreWebApp/App_Data/01.pdf
 !CoreWebApp/App_Data/02.pdf
 !CoreWebApp/App_Data/03.pdf
@@ -17,25 +18,4 @@ CoreWebApp/App_Data/*
 !CoreWebApp/App_Data/07.pdf
 !CoreWebApp/App_Data/08.pdf
 !CoreWebApp/App_Data/09.pdf
-!CoreWebApp/App_Data/10.pdf
-!CoreWebApp/App_Data/11.pdf
-!CoreWebApp/App_Data/12.pdf
-!CoreWebApp/App_Data/13.pdf
-!CoreWebApp/App_Data/14.pdf
-!CoreWebApp/App_Data/15.pdf
-!CoreWebApp/App_Data/16.pdf
-!CoreWebApp/App_Data/17.pdf
-!CoreWebApp/App_Data/18.pdf
-!CoreWebApp/App_Data/19.pdf
-!CoreWebApp/App_Data/20.pdf
-!CoreWebApp/App_Data/21.pdf
-!CoreWebApp/App_Data/22.pdf
-!CoreWebApp/App_Data/23.pdf
-!CoreWebApp/App_Data/24.pdf
-!CoreWebApp/App_Data/25.pdf
-!CoreWebApp/App_Data/26.pdf
-!CoreWebApp/App_Data/27.pdf
-!CoreWebApp/App_Data/28.pdf
-!CoreWebApp/App_Data/29.pdf
-!CoreWebApp/App_Data/30.pdf
 
