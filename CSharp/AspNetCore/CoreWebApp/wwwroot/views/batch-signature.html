@@ -11,7 +11,7 @@
             <!-- UL element to hold the batch's documents (we'll render these programatically) -->
             <ul>
                 <li ng-repeat="elem in batch">
-                    <a href="Download/{{ elem.docId | digits: 2 }}.pdf" target="_blank">Document {{ elem.docId }}</a>
+                    <a href="Download/{{ elem.docId % 10 | digits: 2 }}.pdf" target="_blank">Document {{ elem.docId }}</a>
                     <span ng-if="elem.done && elem.success"> <span class="glyphicon glyphicon-arrow-right"></span> <a href="Download/{{elem.signedFileId}}" target="_blank">{{elem.signedFileId.replace('_', '.')}}</a></span>
                     <span ng-if="elem.done && !elem.success"> <span class="glyphicon glyphicon-remove"></span></span>
                 </li>

@@ -66,7 +66,12 @@ app.controller('xmlElementSignatureController', ['$scope', '$http', 'blockUI', '
 				if (c.thumbprint === originalSelected) {
 					$scope.selectedCertificate = c;
 				}
-			});
+            });
+
+            // If a certificate couldn't be selected, select the first of the available certificates
+            if (certificates.length > 0 && !$scope.selectedCertificate) {
+                $scope.selectedCertificate = certificates[0];
+            }
 
 			// once the certificates have been listed, unblock the UI
 			blockUI.stop();

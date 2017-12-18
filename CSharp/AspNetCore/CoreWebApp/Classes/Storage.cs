@@ -35,12 +35,16 @@ namespace CoreWebApp.Classes {
 		}
 
         public string GetBatchDocPath(int id) {
-            return Path.Combine(AppDataPath, string.Format("{0:D2}.pdf", id));
+            return Path.Combine(AppDataPath, string.Format("{0:D2}.pdf", id % 10));
         }
 
         public byte[] GetPdfStampContent() {
 			return File.ReadAllBytes(Path.Combine(AppDataPath, "PdfStamp.png"));
 		}
+
+        public byte[] GetSampleCertificateContent() {
+            return File.ReadAllBytes(Path.Combine(AppDataPath, "Pierre de Fermat.pfx"));
+        }
 
 		public async Task<string> StoreAsync(byte[] content, string extension = "") {
 			using (var buffer = new MemoryStream(content)) {
