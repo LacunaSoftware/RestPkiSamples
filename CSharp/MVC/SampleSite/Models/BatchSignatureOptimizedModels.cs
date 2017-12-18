@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Lacuna.RestPki.SampleSite.Models {
 	public class BatchSignatureInitRequest {
-		public byte[] Certificate { get; set; }
+		public string Certificate { get; set; }
 	}
 	public class BatchSignatureInitResponse {
 		public Guid BatchId { get; set; }
@@ -16,11 +16,11 @@ namespace Lacuna.RestPki.SampleSite.Models {
 	}
 	public class BatchSignatureStartResponse {
 		public string Token { get; set; }
-		public byte[] ToSignHash { get; set; }
+		public string ToSignHash { get; set; }
 		public string DigestAlgorithmOid { get; set; }
 	}
 	public class BatchSignatureCompleteRequest {
  		public string Token { get; set; }
-		public byte[] Signature { get; set; }
+		public string Signature { get; set; }
 	}
 }

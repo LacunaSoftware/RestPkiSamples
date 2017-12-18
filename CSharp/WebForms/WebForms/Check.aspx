@@ -75,7 +75,7 @@
 
 	<h3>Actions:</h3>
 	<ul>
-		<li><a href='Download?file=<%= FileId %>'>Download signed file</a></li>
+		<li><a href='Download?fileId=<%= FileId %>'>Download signed file</a></li>
 		<li><a href='PrinterFriendlyVersion?file=<%= FileId %>'>Download printer-friendly version</a></li>
 	</ul>
 </asp:Content>
