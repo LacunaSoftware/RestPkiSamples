@@ -32,13 +32,7 @@ namespace CoreWebApp.Controllers {
 			// case-sensitive URL-safe string, which represents this authentication process. We'll use this value to call the
 			// signWithRestPki() method on the Web PKI component (see javascript on the angular controller) and also to call the
 			// CompleteWithWebPkiAsync() method on the POST action below (this should not be mistaken with the API access token).
-			var token = await auth.StartWithWebPkiAsync(Lacuna.RestPki.Api.StandardSecurityContexts.PkiBrazil);
-
-			// Alternative option: authenticate the user with a custom security context containting, for instance, your private PKI certificate
-			//var token = await auth.StartWithWebPkiAsync(new Guid("ID OF YOUR CUSTOM SECURITY CONTEXT"));
-
-			// For instance, to use the test certificates on Lacuna Test PKI (for development purposes only!):
-			//var token = await auth.StartWithWebPkiAsync(new Guid("803517ad-3bbc-4169-b085-60053a8f6dbf"));
+			var token = await auth.StartWithWebPkiAsync(Util.GetSecurityContextId());
 
 			return token;
 		}

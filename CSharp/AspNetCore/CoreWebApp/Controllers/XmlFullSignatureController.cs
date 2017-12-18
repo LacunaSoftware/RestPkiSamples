@@ -38,14 +38,7 @@ namespace CoreWebApp.Controllers {
                 SignaturePolicyId = StandardXmlSignaturePolicies.XadesBes,
 
                 // Set a SecurityContext to be used to determine trust in the certificate chain
-                SecurityContextId = StandardSecurityContexts.PkiBrazil,
-                // Note: By changing the SecurityContext above you can accept only certificates from a certain PKI, for instance,
-                // ICP-Brasil (StandardSecurityContexts.PkiBrazil).
-
-                // Optionally, set a SecurityContext to be used to determine trust in the certificate chain
-                //SecurityContextId = new Guid("ID OF YOUR CUSTOM SECURITY CONTEXT"),
-                // For instance, to use the test certificates on Lacuna Test PKI (for development purposes only!):
-                //SecurityContextId = new Guid("803517ad-3bbc-4169-b085-60053a8f6dbf"),
+                SecurityContextId = Util.GetSecurityContextId()
 
             };
 

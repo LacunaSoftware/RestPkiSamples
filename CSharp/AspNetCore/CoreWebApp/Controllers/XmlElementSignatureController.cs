@@ -35,13 +35,9 @@ namespace CoreWebApp.Controllers {
 
 				// Set the signature policy
 				SignaturePolicyId = StandardXmlSignaturePolicies.PkiBrazil.NFePadraoNacional,
-				// Note: Depending on the signature policy chosen above, setting the security context below may be mandatory (this is not
-				// the case for ICP-Brasil policies, which will automatically use the PkiBrazil security context if none is passed)
-
-				// Optionally, set a SecurityContext to be used to determine trust in the certificate chain
-				//SecurityContextId = new Guid("ID OF YOUR CUSTOM SECURITY CONTEXT"),
-				// For instance, to use the test certificates on Lacuna Test PKI (for development purposes only!):
-				//SecurityContextId = new Guid("803517ad-3bbc-4169-b085-60053a8f6dbf"),
+				
+                // Set the security context to be used to determine trust in the certificate chain.
+                SecurityContextId = Util.GetSecurityContextId()
 
 			};
 

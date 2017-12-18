@@ -22,6 +22,11 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
 		controller: 'padesSignatureController'
 	});
 
+    $routeProvider.when('/pades-signature-server-key', {
+        templateUrl: 'views/pades-signature-server-key.html',
+		controller: 'padesSignatureServerKeyController'
+	});
+
     $routeProvider.when('/open-pades-signature', {
         templateUrl: 'views/open-signature.html',
         controller: 'openPadesSignatureController'
@@ -35,7 +40,12 @@ app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $lo
 	$routeProvider.when('/cades-signature', {
 		templateUrl: 'views/cades-signature.html',
 		controller: 'cadesSignatureController'
-	});
+    });
+
+    $routeProvider.when('/cades-signature-server-key', {
+        templateUrl: 'views/cades-signature-server-key.html',
+        controller: 'cadesSignatureServerKeyController'
+    });
 
     $routeProvider.when('/open-cades-signature', {
         templateUrl: 'views/open-signature.html',

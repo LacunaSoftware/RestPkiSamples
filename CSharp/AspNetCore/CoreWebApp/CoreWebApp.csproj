@@ -15,9 +15,10 @@
     <None Remove="wwwroot\lib\font-awesome\**" />
   </ItemGroup>
 
-  <ItemGroup>
+   <!--<ItemGroup>
     <Content Include="wwwroot\controllers\authentication.js" />
     <Content Include="wwwroot\controllers\batch-signature.js" />
+    <Content Include="wwwroot\controllers\cades-signature-server-key.js" />
     <Content Include="wwwroot\controllers\cades-signature.js" />
     <Content Include="wwwroot\controllers\certificate-dialog.js" />
     <Content Include="wwwroot\controllers\home.js" />
@@ -45,7 +46,7 @@
     <Content Include="wwwroot\views\upload.html" />
     <Content Include="wwwroot\views\xml-element-signature.html" />
     <Content Include="wwwroot\views\xml-full-signature.html" />
-  </ItemGroup>
+  </ItemGroup>--> 
   <ItemGroup>
     <PackageReference Include="Lacuna.RestPki.Client" Version="1.11.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />

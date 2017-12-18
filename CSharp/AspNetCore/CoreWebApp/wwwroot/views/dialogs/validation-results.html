@@ -43,7 +43,8 @@
 		<h4>Passed checks</h4>
 		<ul class="text-success">
 			<li ng-repeat="item in model.passedChecks">
-				{{ item.detail }}
+				{{ item.message }}
+                <span ng-show="item.detail">({{ item.detail }})</span>
 				<a ng-show="item.innerValidationResults != null" href="" ng-click="showDetails(item)">details</a>
 			</li>
 		</ul>

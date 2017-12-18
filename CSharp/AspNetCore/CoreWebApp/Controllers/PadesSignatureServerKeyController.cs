@@ -1,34 +1,44 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Lacuna.RestPki.Client;
+using CoreWebApp.Classes;
+using CoreWebApp.Models;
 using Lacuna.RestPki.Api;
 using Lacuna.RestPki.Api.PadesSignature;
+using Lacuna.RestPki.Client;
 using Microsoft.AspNetCore.Hosting;
-using CoreWebApp.Classes;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
 namespace CoreWebApp.Controllers {
 
     [Route("api/[controller]")]
-    public class BatchSignatureController : Controller {
+    public class PadesSignatureServerKeyController : Controller {
 
         private IHostingEnvironment hostingEnvironment;
         private RestPkiConfig restPkiConfig;
 
-        public BatchSignatureController(IHostingEnvironment hostingEnvironment, IOptions<RestPkiConfig> optionsAccessor) {
+        public PadesSignatureServerKeyController(IHostingEnvironment hostingEnvironment, IOptions<RestPkiConfig> optionsAcessor) {
             this.hostingEnvironment = hostingEnvironment;
-            this.restPkiConfig = optionsAccessor.Value;
+            this.restPkiConfig = optionsAcessor.Value;
         }
 
-        [HttpPost("Start/{id}")]
-        public async Task<string> Start(int id) {
+        [HttpPost]
+        public async Task<SignatureCompleteResponse> Post(string userfile) {
 
             var storage = new Storage(hostingEnvironment);
             var client = Util.GetRestPkiClient(restPkiConfig);
+
+            // Read the certificate from a PKCS#12 file.
+            //var cert = Util.GetSampleCertificateFromPKCS12(storage);
+
+            // Alternative option: Get the certificate from Microsoft CryptoAPI.
+            var cert = Util.GetSampleCertificateFromMSCAPI();
 
             // Get an instance of the PadesSignatureStarter class, responsible for receiving the signature elements and start the
             // signature process
@@ -37,11 +47,13 @@ namespace CoreWebApp.Controllers {
                 // Set the unit of measurement used to edit the pdf marks and visual representations
                 MeasurementUnits = PadesMeasurementUnits.Centimeters,
 
-                // Set the signature policy
+                // Set the signature policy.
                 SignaturePolicyId = StandardPadesSignaturePolicies.PkiBrazil.BasicWithPkiBrazilCerts,
-                
-                // Set the security context to be used to determine trust in the certificate chain.
-                SecurityContextId = Util.GetSecurityContextId(),
+
+                // For this sample, we'll use the Lacuna Test PKI as our security context in order to accept our test certificate used
+                // above ("Pierre de Fermat"). This security context should be used ***** FOR DEVELOPMENT PUPOSES ONLY *****
+                SecurityContextId = new Guid("803517ad-3bbc-4169-b085-60053a8f6dbf"),
+
 
                 // Set a visual representation for the signature
                 VisualRepresentation = new PadesVisualRepresentation() {
@@ -75,16 +87,29 @@ namespace CoreWebApp.Controllers {
 
                     // Position of the visual representation. We have encapsulated this code in a method to include several
                     // possibilities depending on the argument passed. Experiment changing the argument to see different examples
-                    // of signature positioning (valid values are 1-6). Once you decide which is best for your case, you can place 
+                    // of signature positioning (valid values are 1-6). Once you decide which is best for your case, you can place
                     // the code directly here.
                     Position = PadesVisualElements.GetVisualPositioning(client, 1)
-
                 }
-
             };
 
-            // Set the document to be signed based on its ID (passed to us from the angular controller)
-            signatureStarter.SetPdfToSign(storage.GetBatchDocPath(id));
+            // Set the signer certificate.
+            signatureStarter.SetSignerCertificate(cert.RawData);
+
+            // Below we'll either set the PDF file to be signed. Prefer passing a path or a stream instead of the file's contents
+            // as a byte array to prevent memory allocation issues with large files.
+
+            // If the "userfile" URL argument is set, it will contain the filename under the "App_Data" folder. Otherwise 
+            // (signature with server file), we'll sign a sample document.
+            if (string.IsNullOrEmpty(userfile)) {
+                signatureStarter.SetPdfToSign(storage.GetSampleDocPath());
+            } else {
+                Stream userFileStream;
+                if (!storage.TryOpenRead(userfile, out userFileStream)) {
+                    throw new Exception("File not found");
+                }
+                signatureStarter.SetPdfToSign(userFileStream);
+            }
 
             /*
 				Optionally, add marks to the PDF before signing. These differ from the signature visual representation in that
@@ -100,36 +125,39 @@ namespace CoreWebApp.Controllers {
 			*/
             //signatureStarter.PdfMarks.Add(PadesVisualElements.GetPdfMark(storage, 1));
 
-            // Call the StartWithWebPkiAsync() method, which initiates the signature. This yields the token, a 43-character
-            // case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
-            // signWithRestPki() method on the Web PKI component (see javascript on the angular controller) and also to complete
-            // the signature on the POST action below (this should not be mistaken with the API access token).
-            var token = await signatureStarter.StartWithWebPkiAsync();
+            // Call the Start() method, which initiates the signature. This yields the parameters for the signature using the
+            // certificate
+            var signatureParams = signatureStarter.Start();
 
-            // Return the token obtained from REST PKI
-            return token;
-        }
+            // Get the key from a PKCS#12 file.
+            var pkey = cert.GetRSAPrivateKey();
 
-        [HttpPost("Complete/{token}")]
-        public async Task<string> Complete(string token) {
+            // Alternative option: Get the key from Microsoft CryptoAPI.
+            // TODO!
 
-            var storage = new Storage(hostingEnvironment);
-            var client = Util.GetRestPkiClient(restPkiConfig);
+            // Perform the signature usign the parameters returned by Rest PKI with the signer's key.
+            var signature = pkey.SignHash(signatureParams.ToSignHash, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
 
             // Get an instance of the PadesSignatureFinisher2 class, responsible for completing the signature process
             var signatureFinisher = new PadesSignatureFinisher2(client) {
 
                 // Set the token for this signature (acquired previously and passed back here by the angular controller)
-                Token = token
+                Token = signatureParams.Token,
+
+                // Set the signature
+                Signature = signature
 
             };
 
             // Call the FinishAsync() method, which finalizes the signature process and returns a SignatureResult object
             var signatureResult = await signatureFinisher.FinishAsync();
 
+            // The "Certificate" property of the SignatureResult object contains information about the certificate used by the user
+            // to sign the file.
+            var signerCert = signatureResult.Certificate;
+
             // At this point, you'd typically store the signed PDF on a database or storage service. For demonstration purposes, we'll
-            // store the PDF on our "storage mock", which in turn stores the PDF on the App_Data folder and render a page with a link
-            // to download the signed PDF and with the signer's certificate details.
+            // store the PDF on our "storage mock", which in turn stores the PDF on the App_Data folder.
 
             // The SignatureResult object has various methods for writing the signature file to a stream (WriteToAsync()), local file (WriteToFileAsync()),
             // open a stream to read the content (OpenReadAsync()) and get its contents (GetContentAsync()). Avoid the method GetContentAsync() to prevent
@@ -139,9 +167,15 @@ namespace CoreWebApp.Controllers {
                 filename = await storage.StoreAsync(signatureStream, ".pdf");
             }
 
-            // Return the filename to be rendered as link to download the signed PDF
-            return filename;
-        }
+            // Pass the following fields to be used on signature-results template:
+            // - The signature filename, which can be used to provide a link to the file
+            // - The user's certificate
+            var response = new SignatureCompleteResponse() {
+                Filename = filename,
+                Certificate = new Models.CertificateModel(signerCert)
+            };
 
+            return response;
+        }
     }
 }

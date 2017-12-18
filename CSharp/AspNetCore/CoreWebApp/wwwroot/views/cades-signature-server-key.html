@@ -1,0 +1,30 @@
+﻿<h2>CAdES Signature with Server Key</h2>
+
+<p>File signed successfully!</p>
+
+<p>
+    Signer information:
+    <ul>
+        <li>Subject: {{signerCert.subjectName.commonName}}</li>
+        <li>Email: {{signerCert.emailAddress}}</li>
+        <li>
+            ICP-Brasil fields
+            <ul>
+                <li>Tipo de certificado: {{signerCert.pkiBrazil.certificateType}}</li>
+                <li>CPF: {{signerCert.pkiBrazil.cpf}}</li>
+                <li>Responsavel: {{signerCert.pkiBrazil.responsavel}}</li>
+                <li>Empresa: {{signerCert.pkiBrazil.companyName}}</li>
+                <li>CNPJ: {{signerCert.pkiBrazil.cnpj}}</li>
+                <li>RG: {{signerCert.pkiBrazil.rgNumero}} {{signerCert.pkiBrazil.rgEmissor}} {{signerCert.pkiBrazil.rgEmissorUF}}</li>
+                <li>OAB: {{signerCert.pkiBrazil.oabNumero}} {{signerCert.pkiBrazil.oabUF}}</li>
+            </ul>
+        </li>
+    </ul>
+</p>
+
+<h3>Actions:</h3>
+<ul>
+    <li><a href="Download/{{filename}}">Download the signed file</a></li>
+    <li><a href="/open-cades-signature?userfile={{filename}}">Open/validate the signed file</a></li>
+    <li><a href="cades-signature?cmsfile={{filename}}">Co-sign with another certificate</a></li>
+</ul>
