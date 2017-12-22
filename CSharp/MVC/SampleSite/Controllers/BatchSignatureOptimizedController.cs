@@ -31,7 +31,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 			this information on your database instead.
 		 */
 		private class BatchInfo {
-			public byte[] Certificate { get; set; }
+			public string Certificate { get; set; }
 		}
 		private static Dictionary<Guid, BatchInfo> batches = new Dictionary<Guid, BatchInfo>();
 
@@ -62,7 +62,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 			var batchId = Guid.NewGuid();
 			// Store the user's certificate based on the generated ID
 			var batchInfo = new BatchInfo() {
-				Certificate = request.Certificate
+				Certificate = request.Certificate,
 			};
 			lock (batches) {
 				batches[batchId] = batchInfo;
@@ -90,7 +90,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 
 				// Set the user's certificate. Notice that this step is not necessary on the regular batch signature example. This
 				// enhances the performance of the batch processing
-				SignerCertificate = batchInfo.Certificate,
+				SignerCertificate = Convert.FromBase64String(batchInfo.Certificate),
 
 				// Set the signature policy
 				SignaturePolicyId = StandardPadesSignaturePolicies.Basic,
@@ -150,7 +150,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 			// (the page will use jQuery to decode this value)
 			var response = new BatchSignatureStartResponse() {
 				Token = signatureParams.Token,
-				ToSignHash = signatureParams.ToSignHash,
+				ToSignHash = Convert.ToBase64String(signatureParams.ToSignHash),
 				DigestAlgorithmOid = signatureParams.DigestAlgorithmOid
 			};
 			return Json(response);
@@ -170,7 +170,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 				Token = request.Token,
 
 				// Set the result of the RSA signature. Notice that this call is not necessary on the "regular" batch signature example
-				Signature = request.Signature
+				Signature = Convert.FromBase64String(request.Signature),
 
 			};
 
