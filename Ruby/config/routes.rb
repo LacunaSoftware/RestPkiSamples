@@ -23,6 +23,10 @@ Rails.application.routes.draw do
     get 'xml_element_signature', to: 'xml_element_signature#index'
     post 'xml_element_signature', to: 'xml_element_signature#action'
 
+    get 'batch_signature', to: 'batch_signature#index'
+    post 'batch_signature/start/:id', to: 'batch_signature#start'
+    post 'batch_signature/complete/:id', to: 'batch_signature#complete'
+
     get 'cades_batch_signature', to: 'cades_batch_signature#index'
     post 'cades_batch_signature/start/:id', to: 'cades_batch_signature#start'
     post 'cades_batch_signature/complete/:id', to: 'cades_batch_signature#complete'
