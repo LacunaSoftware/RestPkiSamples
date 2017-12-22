@@ -98,7 +98,7 @@ class BatchSignatureController < ApplicationController
 
             # Call the start_with_webpki method, which initiates the signature. This yields the token, a 43-character
             # case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
-            # sign_with_restpki method on the Web PKI component (see cades-batch-signature-form.js) and also to complete the
+            # sign_with_restpki method on the Web PKI component (see batch-signature-form.js) and also to complete the
             # signature after the signature is computed by Web PKI (see method complete below). This should not be mistaken
             # with the API access token.
             token = signature_starter.start_with_webpki
