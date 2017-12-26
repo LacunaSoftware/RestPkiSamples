@@ -62,6 +62,7 @@ var cadesBatchSignatureForm = (function() {
     var completeQueue = null;
     var batchDocIds = null;
     var errorPanel = null;
+    var sampleApi = null;
 
     // Create an instance of the LacunaWebPKI object
     var pki = new LacunaWebPKI();
@@ -76,6 +77,9 @@ var cadesBatchSignatureForm = (function() {
 
         // Receive the reference for the error panel
         errorPanel = args.errorPanel;
+
+        // Receive sample API route to be called on start and complete steps
+        sampleApi = args.sampleApi;
 
         // Wireup of button clicks
         args.signButton.click(sign);
@@ -219,7 +223,7 @@ var cadesBatchSignatureForm = (function() {
     function startSignature(step, done) {
         // Call the server asynchronously to start the signature (the server will call REST PKI and will return the signature operation token)
         $.ajax({
-            url: 'cades_batch_signature/start/' + step.docId,
+            url: sampleApi + '/start/' + step.docId,
             method: 'POST',
             dataType: 'json',
             success: function (token) {
@@ -230,7 +234,7 @@ var cadesBatchSignatureForm = (function() {
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 // Render error
-                renderFail(step, errorThrown || textStatus);
+                renderFail(step, jqXHR.responseText || errorThrown || textStatus);
                 // Call the "done" callback with no argument, signalling the document should not go to the next queue
                 done();
             }
@@ -272,7 +276,7 @@ var cadesBatchSignatureForm = (function() {
     function completeSignature(step, done) {
         // Call the server asynchronously to notify that the signature has been performed
         $.ajax({
-            url: 'cades_batch_signature/complete/' + step.token, // The signature process token is guaranteed to be URL-safe,
+            url: sampleApi + '/complete/' + step.token, // The signature process token is guaranteed to be URL-safe,
             method: 'POST',
             dataType: 'json',
             success: function (filename) {
@@ -284,7 +288,7 @@ var cadesBatchSignatureForm = (function() {
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 // Render error
-                renderFail(step, errorThrown || textStatus);
+                renderFail(step, jqXHR.responseText || errorThrown || textStatus);
                 // Call the "done" callback with no argument, signalling the document should not go to the next queue
                 done();
             }

@@ -3,7 +3,7 @@
   <!--This section will show the errors occurred on the batch signature. It will be filled using jQuery.-->
   <div id="errorPanel"></div>
 
-  <h2>CAdES signature of a batch of files</h2>
+  <h2>PAdES Batch Signature</h2>
 
   <form id="signForm" method="post">
 
@@ -59,7 +59,7 @@
       certificateSelect: $('#certificateSelect'),  // the select element (combo box) to list the certificates
       refreshButton: $('#refreshButton'),          // the "refresh" button
       signButton: $('#signButton'),                // the button that initiates the operation
-      sampleApi: 'cades_batch_signature'                 // the API route to be called by javascript code
+      sampleApi: 'batch_signature'                 // the API route to be called by javascript code
     });
   });
 </script>
