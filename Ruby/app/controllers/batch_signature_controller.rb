@@ -1,18 +1,44 @@
-class PadesSignatureController < ApplicationController
+class BatchSignatureController < ApplicationController
     include PadesHelper
 
-
-    # This action initiates a PAdES signature using REST PKI and renders the signature page.
+    # This action renders the batch singature page.
     #
-    # Both PAdES signature examples, with a server file and with a file uploaded by the user, converge to this action.
-    # The difference is that, when the file is uploaded by the user, the action is called with a URL argument name
-    # "userfile".
+    # Notice that the only thing we'll do on the server-side at this point is determine the IDs of the documents
+    # to be signed. The page will handle each document one by one and will call the server asynchronously to
+    # start and complete each signature.
     def index
         begin
 
-            # Instantiate the PadesSignatureStarter class, responsible for receiving the signature elements and start
+            # It is up to your application's business logic to determine which element ids will compose the batch.
+            @documents_ids = Array.new
+
+            # from 1 to 30
+            (1..30).each do |i|
+                @documents_ids.push('%02d' % i)
+            end
+
+        rescue => ex
+
+            @error = ex
+            render 'layouts/_error'
+
+        end
+    end
+
+    # This action is called asynchronously from the batch signature page in order to initiate the signature of each
+    # document in the batch.
+    def start
+        begin
+
+            # Get the document id for this signature (received from the POST call, see batch-signature-form.js)
+            id = params[:id]
+
+            # Get an instance the PadesSignatureStarter class, responsible for receiving the signature elements and start
             # the signature process
             signature_starter = RestPki::PadesSignatureStarter.new(get_restpki_client)
+
+            # Set the document to be signed based on its ID (passed to us from the page)
+            signature_starter.set_pdf_tosign_from_path(get_batch_doc_path(id))
 
             # Set the signature policy
             signature_starter.signature_policy_id = RestPki::StandardSignaturePolicies::PADES_BASIC
@@ -70,77 +96,53 @@ class PadesSignatureController < ApplicationController
                 position: get_visual_representation_position(1)
             }
 
-            # Below we'll either set the PDF file to be signed. Prefer passing a path or a stream instead of the file's
-            # contents as a byte array to prevent memory allocation issues with large files.
-            @userfile = params[:userfile]
-            if @userfile.nil?
-
-                # If the URL argument "userfile" is filled, it means the user was redirected by upload_controller
-                # (signature with file upload by user). We'll set the path of the file to be signed, which was saved in
-                # the temporary folder by upload_controller (such a file would normally come from your application's
-                # database)
-                signature_starter.set_pdf_tosign_from_path(get_sample_doc_path)
-
-            else
-
-                # If userfile is null, this is the "signature with server file" case. We'll set the file to be signed
-                # by passing its path
-                signature_starter.set_pdf_tosign_from_path(Rails.root.join('public', 'uploads', @userfile))
-
-            end
-
             # Call the start_with_webpki method, which initiates the signature. This yields the token, a 43-character
             # case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
-            # sign_with_restpki method on the Web PKI component (see signature-form.js) and also to complete the
-            # signature after the form is submitted (see method create below). This should not be mistaken with the
-            # API access token.
-            @token = signature_starter.start_with_webpki
+            # sign_with_restpki method on the Web PKI component (see batch-signature-form.js) and also to complete the
+            # signature after the signature is computed by Web PKI (see method complete below). This should not be mistaken
+            # with the API access token.
+            token = signature_starter.start_with_webpki
 
-            # The token acquired above can only be used for a single signature attempt. In order to retry the signature
-            # it is necessary to get a new token. This can be a problem if the user uses the back button of the browser,
-            # since the browser might show a cached page that we rendered previously, with a now stale token. To prevent
-            # this from happening, we call the method set_expired_page_headers, located in application_helper.rb, which
-            # sets HTTP headers to prevent caching of the page.
-            set_expired_page_headers
+            # Return a JSON with the token obtained from REST PKI (the page will use jQuery to decode this value)
+            render :json => token.to_json
 
-        rescue => ex
-            @error = ex
-            render 'layouts/_error'
+        rescue => e
+            render :plain => e.message, :status => :internal_server_error
         end
     end
 
-    # This action receives the form submission from the signature page. We'll call REST PKI to complete the signature.
-    def action
+    # This action is called asynchronously from the batch signature page in order to complete the signature.
+    #
+    # Notice that the "id" is actually the signature process token. We're naming it "id" so that the action
+    # can be called as /batch_signature/complete/{token}
+    def complete
         begin
 
-            # Get the token for this signature (rendered in a hidden input field, see pades_signature/new.html.erb)
-            token = params[:token]
+            # Get the token for this signature (received from the POST call, see batch-signature-form.js)
+            token = params[:id]
 
             # Instantiate the PadesSignatureFinisher class, responsible for completing the signature process
-            # (see config/initializers/restpki.rb)
             signature_finisher = RestPki::PadesSignatureFinisher.new(get_restpki_client)
 
             # Set the token
             signature_finisher.token = token
 
-            # Call the finish method, which finalizes the signature process and returns the signed PDF's bytes
+            # Call the finish method, which finalizes the signature process and returns the signed CMS bytes
             signed_bytes = signature_finisher.finish
 
-            # Get information about the certificate used by the user to sign the file. This field can only be acquired
-            # after calling the finish method.
-            @signer_cert = signature_finisher.certificate_info
+            # At this point, you'd typically store the signed CMS on your database. For demonstration purposes, we'll
+            # store the CMS on a temporary folder publicly accessible and render a link to it.
 
-            # At this point, you'd typically store the signed XML on your database. For demonstration purposes, we'll
-            # store the XML on a temporary folder publicly accessible and render a link to it.
-
-            @filename = SecureRandom.hex(10).to_s + '.pdf'
-            File.open(Rails.root.join('public', 'uploads', @filename), 'wb') do |file|
+            filename = SecureRandom.hex(10).to_s + '.pdf'
+            File.open(Rails.root.join('public', 'uploads', filename), 'wb') do |file|
                 file.write(signed_bytes)
             end
 
-        rescue => ex
-            @error = ex
-            render 'layouts/_error'
+            # Return a JSON with the filename of the signed file (the page will use jQuery to decode this value)
+            render :json => filename.to_json
+
+        rescue => e
+            render :plain => e.message, :status => :internal_server_error
         end
     end
 end
