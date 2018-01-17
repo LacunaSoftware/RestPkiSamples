@@ -198,4 +198,4 @@ See also
 
 * [Test certificates](../TestCertificates.md)
 * [Samples in other programming languages](https://github.com/LacunaSoftware/RestPkiSamples)
-* [Javadoc for the Java client lib](https://pki.rest/Content/docs/java-client/)
+* [Javadoc for the Java client lib](https://docs.lacunasoftware.com/content/javadocs/restpki-client/)
