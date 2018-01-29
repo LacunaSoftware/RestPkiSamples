@@ -15,7 +15,7 @@ var signatureCompleteForm = (function () {
     // ------------------------------------------------------------------------------------------------------
     function init(fe) {
 
-        // Receive form parameters received as arguments
+        // Receive form parameters received as arguments.
         formElements = fe;
 
         // Verify if the form is invalid. (this only happens after a unsuccessful form submission)
