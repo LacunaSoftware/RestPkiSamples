@@ -41,10 +41,12 @@ namespace Lacuna.RestPki.SampleSite.Controllers
 			} else {
 				// Set the path of the file to be signed.
 				signatureStarter.SetXml(Server.MapPath("~/App_Data/" + userfile.Replace("_", ".")));
-			}			
+                // Note: we're receiving the userfile argument with "_" as "." because of limitations of
+                // ASP.NET MVC.
+            }
 
-			// Set the ID of the element to be signed.
-			signatureStarter.SetToSignElementId("Invoice0000000001");
+            // Set the ID of the element to be signed.
+            signatureStarter.SetToSignElementId("Invoice0000000001");
 
 			// Set the signature policy. (notice that we use XAdES AD-RB policy)
 			signatureStarter.SetSignaturePolicy(StandardXmlSignaturePolicies.PkiBrazil.XadesAdrBasica);

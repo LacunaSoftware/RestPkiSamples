@@ -42,10 +42,12 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 				sigExplorer.SetSignatureFile(Server.MapPath("~/Content/bstamped.pdf"));
 			} else {
 				sigExplorer.SetSignatureFile(Server.MapPath("~/App_Data/" + userfile.Replace("_", ".")));
-			}
+                // Note: we're receiving the userfile argument with "_" as "." because of limitations of
+                // ASP.NET MVC.
+            }
 
-			// Call the OpenAsync() method, which returns the signature file's information.
-			var signature = await sigExplorer.OpenAsync();
+            // Call the OpenAsync() method, which returns the signature file's information.
+            var signature = await sigExplorer.OpenAsync();
 
 			// If the document has been B-Stamped, store the "digest index file" to show a link on the page.
 			if (signature.BStamp != null) {

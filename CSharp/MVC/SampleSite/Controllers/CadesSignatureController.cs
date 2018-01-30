@@ -54,8 +54,10 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
                 // UploadController (signature with file uploaded by user). We'll set the path of the file to
                 // be signed, which was saved in the App_Data folder by UploadController.
 				signatureStarter.SetFileToSign(Server.MapPath("~/App_Data/" + userfile.Replace("_", ".")));
+                // Note: we're receiving the userfile argument with "_" as "." because of limitations of
+                // ASP.NET MVC.
 
-			} else if (!string.IsNullOrEmpty(cmsfile)) {
+            } else if (!string.IsNullOrEmpty(cmsfile)) {
 
 				/*
 				 * If the URL argument "cmsfile" is filled, the user has asked to co-sign a previously signed
@@ -70,8 +72,10 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
                  *         REST PKI will get the content from the CMS being co-signed.
 				 */
 				signatureStarter.SetCmsToCoSign(Server.MapPath("~/App_Data/" + cmsfile.Replace("_", ".")));
+                // Note: we're receiving the cmsfile argument with "_" as "." because of limitations of
+                // ASP.NET MVC.
 
-			} else {
+            } else {
 
                 // If both userfile and cmsfile are null, this is the "signature with server file" case.
                 // We'll set the path of the file to be signed.

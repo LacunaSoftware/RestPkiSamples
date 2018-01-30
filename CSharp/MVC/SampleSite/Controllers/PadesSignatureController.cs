@@ -88,7 +88,9 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 			} else {
                 // Set the path of the file to be signed
                 signatureStarter.SetPdfToSign(Server.MapPath("~/App_Data/" + userfile.Replace("_", ".")));
-			}
+                // Note: we're receiving the userfile argument with "_" as "." because of limitations of
+                // ASP.NET MVC.
+            }
 
             /*
 				Optionally, add marks to the PDF before signing. These differ from the signature visual
@@ -111,7 +113,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
             // use this value to call the signWithRestPki() method on the Web PKI component (see javascript
             // on the view) and also to complete the signature on the POST action below (this should not be
             // mistaken with the API access token).
-			var token = await signatureStarter.StartWithWebPkiAsync();
+            var token = await signatureStarter.StartWithWebPkiAsync();
 
             // The token acquired above can only be used for a single signature attempt. In order to retry
             // the signature it is necessary to get a new token. This can be a problem if the user uses the

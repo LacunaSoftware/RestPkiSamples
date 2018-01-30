@@ -23,7 +23,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 				return HttpNotFound();
 			}
             var filename = userfile.Replace("_", ".");
-            // Note: we're receiving the fileId argument with "_" as "." because of limitations of
+            // Note: we're receiving the userfile argument with "_" as "." because of limitations of
             // ASP.NET MVC.
 
             // Get an instance of the XmlSignatureExplorer class, used to open/validate XML signatures.
