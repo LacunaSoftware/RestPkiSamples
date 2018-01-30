@@ -116,7 +116,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
                 // for the signature using the certificates.
                 signatureParams = await signatureStarter.StartAsync();
 
-            } catch (Exception ex) {
+            } catch (ValidationException ex) {
 
                 // Return to Index view rendering the error message.
                 ModelState.AddModelError("", ex.Message);
@@ -193,7 +193,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
                 // If you prefer a simpler approach without stream, simply do:
                 //fileId = StorageMock.Store(result.GetContent(), ".pdf");
 
-            } catch (Exception ex) {
+            } catch (ValidationException ex) {
 
                 // Return to Index view rendering the error message.
                 ModelState.AddModelError("", ex.Message);

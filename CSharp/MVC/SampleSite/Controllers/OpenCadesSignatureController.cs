@@ -35,7 +35,11 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
                 // Accept any CAdES signature as long as the signer has an ICP-Brasil certificate.
                 DefaultSignaturePolicyId = StandardCadesSignaturePolicies.CadesBes,
                 // We have encapsulated the security context choice on Util.cs
-                SecurityContextId = Util.GetSecurityContextId()
+                SecurityContextId = Util.GetSecurityContextId(),
+
+                // Alternatively, you may require full compliance with ICP-Brasil by doing:
+                //AcceptableExplicitPolicies = SignaturePolicyCatalog.GetPkiBrazilCades(),
+                //DefaultSignaturePolicyId = null,
             };
 
 			// Set the CAdES signature file
