@@ -13,12 +13,12 @@ namespace Lacuna.RestPki.SampleSite.Classes {
 			switch (sampleNumber) {
 
 				case 1:
-					// Example #1: automatic positioning on footnote. This will insert the signature, and future signatures,
-					// ordered as a footnote of the last page of the document
+                    // Example #1: Automatic positioning on footnote. This will insert the signature, and
+                    // future signatures, ordered as a footnote of the last page of the document.
 					return PadesVisualPositioning.GetFootnote(Util.GetRestPkiClient());
 
 				case 2:
-					// Example #2: get the footnote positioning preset and customize it
+					// Example #2: Get the footnote positioning preset and customize it.
 					var footnotePosition = PadesVisualPositioning.GetFootnote(Util.GetRestPkiClient());
 					footnotePosition.Container.Left = 2.54;
 					footnotePosition.Container.Bottom = 2.54;
@@ -26,12 +26,12 @@ namespace Lacuna.RestPki.SampleSite.Classes {
 					return footnotePosition;
 
 				case 3:
-					// Example #3: automatic positioning on new page. This will insert the signature, and future signatures,
-					// in a new page appended to the end of the document.
+                    // Example #3: Automatic positioning on new page. This will insert the signature, and
+                    // future signatures, in a new page appended to the end of the document.
 					return PadesVisualPositioning.GetNewPage(Util.GetRestPkiClient());
 
 				case 4:
-					// Example #4: get the "new page" positioning preset and customize it
+					// Example #4: Get the "new page" positioning preset and customize it.
 					var newPagePos = PadesVisualPositioning.GetNewPage(Util.GetRestPkiClient());
 					newPagePos.Container.Left = 2.54;
 					newPagePos.Container.Top = 2.54;
@@ -41,10 +41,12 @@ namespace Lacuna.RestPki.SampleSite.Classes {
 					return newPagePos;
 
 				case 5:
-					// Example #5: manual positioning
-					// The first parameter is the page number. Zero means the signature will be placed on a new page appended to the end of the document
+                    // Example #5: Manual positioning.
+                    // The first parameter is the page number. Zero means the signature will be placed on a
+                    // new page appended to the end of the document.
 					return new PadesVisualManualPositioning(0, new PadesVisualRectangle() {
-						// define a manual position of 5cm x 3cm, positioned at 1 inch from  the left and bottom margins
+                        // Define a manual position of 5cm x 3cm, positioned at 1 inch from  the left and
+                        // bottom margins.
 						Left = 2.54,
 						Bottom = 2.54,
 						Width = 5,
@@ -52,22 +54,27 @@ namespace Lacuna.RestPki.SampleSite.Classes {
 					});
 
 				case 6:
-					// Example #6: custom auto positioning
+					// Example #6: Custom auto positioning.
 					return new PadesVisualAutoPositioning() {
-						PageNumber = -1, // negative values represent pages counted from the end of the document (-1 is last page)
-						// Specification of the container where the signatures will be placed, one after the other
+						PageNumber = -1, // Negative values represent pages counted from the end of the document (-1 is last page)
+
+						// Specification of the container where the signatures will be placed, one after the
+                        // other.
 						Container = new PadesVisualRectangle() {
-							// Specifying left and right (but no width) results in a variable-width container with the given margins
+                            // Specifying left and right (but no width) results in a variable-width container
+                            // with the given margins.
 							Left = 2.54,
 							Right = 2.54,
-							// Specifying bottom and height (but no top) results in a bottom-aligned fixed-height container
+							// Specifying bottom and height (but no top) results in a bottom-aligned
+                            // fixed-height container.
 							Bottom = 2.54,
 							Height = 12.31
 						},
-						// Specification of the size of each signature rectangle
+						// Specification of the size of each signature rectangle.
 						SignatureRectangleSize = new PadesSize(5, 3),
-						// The signatures will be placed in the container side by side. If there's no room left, the signatures
-						// will "wrap" to the next row. The value below specifies the vertical distance between rows
+                        // The signatures will be placed in the container side by side. If there's no room
+                        // left, the signatures will "wrap" to the next row. The value below specifies the
+                        // vertical distance between rows.
 						RowSpacing = 1
 					};
 
@@ -88,41 +95,48 @@ namespace Lacuna.RestPki.SampleSite.Classes {
 					var mark = new PdfMark() {
 						// Here, we set the mark's position in every page.
 						Container = new PadesVisualRectangle() {
-							// Specifying the width (but no left nor right) results in a horizontally centered fixed-width container
+                            // Specifying the width (but no left nor right) results in a horizontally
+                            // centered fixed-width container.
 							Width = 8,
-							// Specifying bottom and height (but no top) results in a bottom-aligned fixed-height container
+							// Specifying bottom and height (but no top) results in a bottom-aligned
+                            // fixed-height container.
 							Bottom = 0.2,
 							Height = 0.6
 						}
-						// This example has no background and no borders, so we don't set BackgroundColor nor BorderColor
+						// This example has no background and no borders, so we don't set BackgroundColor nor
+                        // BorderColor.
 					};
 
 					// First, the image.
 					mark.Elements.Add(new PdfMarkImageElement() {
 						// We'll position it to the right of the text.
 						RelativeContainer = new PadesVisualRectangle() {
-							// Specifying right and width (but no left) results in a right-aligned fixed-width container
+							// Specifying right and width (but no left) results in a right-aligned
+                            // fixed-width container.
 							Right = 0,
 							Width = 1,
-							// Specifying top and bottom (but no height) results in a variable-height container with the given margins
+                            // Specifying top and bottom (but no height) results in a variable-height
+                            // container with the given margins.
 							Top = 0,
 							Bottom = 0
 						},
 						// We'll use the image at 'Content/PdfStamp.png'.
-						Image = new PdfMarkImage(Util.GetPdfStampContent(), "image/png") {
-							// Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is completely opaque).
-							Opacity = 75,
-						}
+						Image = new PdfMarkImage(Util.GetPdfStampContent(), "image/png"),
+                        // Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is
+                        // completely opaque).
+						Opacity = 75
 					});
 
 					// Then, the text.
 					mark.Elements.Add(new PdfMarkTextElement() {
 						// We center the text.
 						RelativeContainer = new PadesVisualRectangle() {
-							// Specifying left and right (but no width) results in a variable-width container with the given margins
+                            // Specifying left and right (but no width) results in a variable-width container
+                            // with the given margins.
 							Left = 1,
 							Right = 0,
-							// Specifying just the height results in a vertically centered fixed-height container
+                            // Specifying just the height results in a vertically centered fixed-height
+                            // container.
 							Height = 0.5
 						},
 						// Then add the text sections.
@@ -160,10 +174,12 @@ namespace Lacuna.RestPki.SampleSite.Classes {
 					mark = new PdfMark() {
 						// Then, we set the mark's position in every page.
 						Container = new PadesVisualRectangle() {
-							// Specifying right and width (but no left) results in a right-aligned fixed-width container
+							// Specifying right and width (but no left) results in a right-aligned
+                            // fixed-width container.
 							Right = 1,
 							Width = 2.54,
-							// Specifying bottom and height (but no top) results in a bottom-aligned fixed-height container
+							// Specifying bottom and height (but no top) results in a bottom-aligned
+                            // fixed-height container.
 							Bottom = 1,
 							Height = 2.54
 						},
@@ -172,9 +188,9 @@ namespace Lacuna.RestPki.SampleSite.Classes {
 						BorderColor = Color.Black
 					};
 
-					// Add a single image element
+					// Add a single image element.
 					mark.Elements.Add(new PdfMarkImageElement() {
-						// We'll make the image fill the entire mark, leaving space for the border
+						// We'll make the image fill the entire mark, leaving space for the border.
 						RelativeContainer = new PadesVisualRectangle() {
 							Left = 0.1,
 							Right = 0.1,
@@ -182,24 +198,27 @@ namespace Lacuna.RestPki.SampleSite.Classes {
 							Bottom = 0.1
 						},
 						// We'll use the 'Content/PdfStamp.png' as background.
-						Image = new PdfMarkImage(Util.GetPdfStampContent(), "image/png") {
-							// Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is completely opaque).
-							Opacity = 50,
-						}
+						Image = new PdfMarkImage(Util.GetPdfStampContent(), "image/png"),
+                        // Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is
+                        // completely opaque).
+						Opacity = 50
 					});
 
 					return mark;
 
 				case 3:
-					// Example #3: 'Signed with RestPKI' is printed at the top of every page in a blue horizontal bar.
-					// First, we create the mark object. It contains no elements, being a simple empty box.
+                    // Example #3: 'Signed with RestPKI' is printed at the top of every page in a blue
+                    // horizontal bar. First, we create the mark object. It contains no elements, being a
+                    // simple empty box.
 					mark = new PdfMark() {
 						// Then, we set the mark's position in every page.
 						Container = new PadesVisualRectangle() {
-							// Specifying left and right (but no width) results in a variable-width container with the given margins
+                            // Specifying left and right (but no width) results in a variable-width container
+                            // with the given margins.
 							Left = 0,
 							Right = 0,
-							// Specifying top and height (but no bottom) results in a top-aligned fixed-height container
+							// Specifying top and height (but no bottom) results in a top-aligned
+                            // fixed-height container.
 							Top = 0.5,
 							Height = 1
 						},
@@ -211,9 +230,11 @@ namespace Lacuna.RestPki.SampleSite.Classes {
 					mark.Elements.Add(new PdfMarkTextElement() {
 						// We center the text.
 						RelativeContainer = new PadesVisualRectangle() {
-							// Specifying just the width results in a horizontally centered fixed-width container
+                            // Specifying just the width results in a horizontally centered fixed-width
+                            // container.
 							Width = 5,
-							// Specifying just the height results in a vertically centered fixed-height container
+                            // Specifying just the height results in a vertically centered fixed-height
+                            // container.
 							Height = 1
 						},
 						// Then add the text sections.
