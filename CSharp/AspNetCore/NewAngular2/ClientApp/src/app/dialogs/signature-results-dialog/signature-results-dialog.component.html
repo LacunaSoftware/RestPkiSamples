@@ -1,6 +1,4 @@
-<h2 mat-dialog-title>Signature results</h2>
-<mat-dialog-content>
-
+<dialog-base title="Signature Results">
     <h5>Certificate details</h5>
     <form class="form-horizontal" role="form">
 
@@ -76,10 +74,10 @@
                     <span title="{{ (issuerDetailsVisible ? 'hide details' : 'show details') }}">
                         <span *ngIf="issuerDetailsVisible; then issuerThen; else issuerElse"></span>
                         <ng-template #issuerThen>
-                            <span class="glyphicon glyphicon-menu-up glyphicon-btn" (click)="subjectDetailsVisible = false"></span>
+                            <span class="glyphicon glyphicon-menu-up glyphicon-btn" (click)="issuerDetailsVisible = false"></span>
                         </ng-template>
                         <ng-template #issuerElse>
-                            <span class="glyphicon glyphicon-menu-down glyphicon-btn" (click)="subjectDetailsVisible = true"></span>
+                            <span class="glyphicon glyphicon-menu-down glyphicon-btn" (click)="issuerDetailsVisible = true"></span>
                         </ng-template>
                     </span>
                 </p>
@@ -145,8 +143,4 @@
             </li>
         </ul>
     </div>
-
-</mat-dialog-content>
-<mat-dialog-actions align="center">
-    <button mat-button mat-dialog-close>Close</button>
-</mat-dialog-actions>
+</dialog-base>

@@ -23,6 +23,7 @@ import { BatchSignatureComponent } from './components/batch-signature/batch-sign
 import { CadesSignatureComponent } from './components/cades-signature/cades-signature.component';
 import { CadesSignatureServerKeyComponent } from './components/cades-signature-server-key/cades-signature-server-key.component';
 import { CertificateDialogComponent } from './dialogs/certificate-dialog/certificate-dialog.component';
+import { DialogBaseComponent } from './dialogs/dialog-base/dialog-base.component';
 import { MessageDialogComponent } from './dialogs/message-dialog/message-dialog.component';
 import { OpenCadesSignatureComponent } from './components/open-cades-signature/open-cades-signature.component';
 import { OpenPadesSignatureComponent } from './components/open-pades-signature/open-pades-signature.component';
@@ -48,6 +49,7 @@ import { XmlFullSignatureComponent } from './components/xml-full-signature/xml-f
         CadesSignatureComponent,
         CadesSignatureServerKeyComponent,
         CertificateDialogComponent,
+        DialogBaseComponent,
         MessageDialogComponent,
         OpenCadesSignatureComponent,
         OpenPadesSignatureComponent,
@@ -85,7 +87,7 @@ import { XmlFullSignatureComponent } from './components/xml-full-signature/xml-f
             { path: 'xml-element-signature', component: XmlElementSignatureComponent },
             { path: 'xml-full-signature', component: XmlFullSignatureComponent },
 
-            { path: '**', redirectTo: 'home' }
+            { path: '**', redirectTo: '' }
         ])
     ],
     entryComponents: [

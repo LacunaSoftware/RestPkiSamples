@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { DialogBaseComponent } from '../dialog-base/dialog-base.component';
 import { RestPkiCertModel } from '../../types.common';
 
 @Component({

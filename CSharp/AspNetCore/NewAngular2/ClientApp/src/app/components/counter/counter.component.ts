@@ -28,49 +28,49 @@ export class CounterComponent {
         //    console.log('WebPkiLicense: ' + this.config.getWebPkiLicense());
         //});
 
-        var vr = {
-            passedChecks: [{
-                type: "alpha",
-                message: "all checks passed correctly",
-                detail: "no details",
-                innerValidationResults: null
-            }],
-            warnings: [{
-                type: "alpha",
-                message: "all checks passed correctly",
-                detail: "no details",
-                innerValidationResults: null
-            }],
-            errors: [{
-                type: "alpha",
-                message: "all checks passed correctly",
-                detail: "no details",
-                innerValidationResults: null
-            }],
-        };
-
-        this.dialogs.showValidationResults(vr);
-
-        //var cert: RestPkiCertModel = {
-        //    subjectName: {
-        //        commonName: "João",
-        //        emailAddress: "joao@joao.com",
-        //        country: "Brazil",
-        //        organization: "João LTDA",
-        //        organizationUnit: "JCORP"
-        //    },
-        //    issuerName: {
-        //        commonName: "José",
-        //        emailAddress: "jose@jose.com",
-        //        country: "Ecuador",
-        //        organization: "Jose LTDA",
-        //        organizationUnit: "ZECORP"
-        //    },
-        //    serialNumber: 'asdf9820345u4iuoer89upiojhg89piwerkfdbio34er90jiok2l4wrtbjiókl',
-        //    validityEnd: new Date(), 
-        //    validityStart: new Date()
+        //var vr = {
+        //    passedChecks: [{
+        //        type: "alpha",
+        //        message: "all checks passed correctly",
+        //        detail: "no details",
+        //        innerValidationResults: null
+        //    }],
+        //    warnings: [{
+        //        type: "alpha",
+        //        message: "all checks passed correctly",
+        //        detail: "no details",
+        //        innerValidationResults: null
+        //    }],
+        //    errors: [{
+        //        type: "alpha",
+        //        message: "all checks passed correctly",
+        //        detail: "no details",
+        //        innerValidationResults: null
+        //    }],
         //};
 
-        //this.dialogs.showCertificate(cert);
+        //this.dialogs.showValidationResults(vr);
+
+        var cert: RestPkiCertModel = {
+            subjectName: {
+                commonName: "João",
+                emailAddress: "joao@joao.com",
+                country: "Brazil",
+                organization: "João LTDA",
+                organizationUnit: "JCORP"
+            },
+            issuerName: {
+                commonName: "José",
+                emailAddress: "jose@jose.com",
+                country: "Ecuador",
+                organization: "Jose LTDA",
+                organizationUnit: "ZECORP"
+            },
+            serialNumber: 'asdf9820345u4iuoer89upiojhg89piwerkfdbio34er90jiok2l4wrtbjiókl',
+            validityEnd: new Date(), 
+            validityStart: new Date()
+        };
+
+        this.dialogs.showCertificate(cert);
     }
 }

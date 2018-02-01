@@ -1,10 +1,8 @@
-<h2 mat-dialog-title>Validation Results</h2>
-<mat-dialog-content>
-
+<dialog-base title="Validation Results">
     <!-- Breadcrumb -->
     <ol class="breadcrumb" *ngIf="itemStack.length > 1">
         <li *ngFor="let item of itemStack; let i = index" [attr.data-index]="i">
-            <a *ngIf="i < itemStack.length - 1" href="" (click)="showParent(item)" >
+            <a *ngIf="i < itemStack.length - 1" href="" (click)="showParent(item)">
                 {{ item.message }}
                 <span *ngIf="item.detail">({{ item.detail }})</span>
             </a>
@@ -47,8 +45,4 @@
             </li>
         </ul>
     </div>
-
-</mat-dialog-content>
-<mat-dialog-actions align="center">
-    <button mat-button mat-dialog-close>Close</button>
-</mat-dialog-actions>
+</dialog-base>
