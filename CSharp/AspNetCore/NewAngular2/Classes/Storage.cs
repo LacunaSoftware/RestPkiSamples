@@ -1,0 +1,106 @@
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace NewAngular2.Classes {
+
+	public class Storage {
+
+		private IHostingEnvironment hostingEnvironment;
+
+		public Storage(IHostingEnvironment hostingEnvironment) {
+			this.hostingEnvironment = hostingEnvironment;
+		}
+
+		protected string AppDataPath {
+			get {
+				return Path.Combine(hostingEnvironment.ContentRootPath, "App_Data");
+			}
+		}
+
+		public string GetSampleDocPath() {
+			return Path.Combine(AppDataPath, "SampleDocument.pdf");
+		}
+
+        public string GetSampleXmlPath() {
+            return Path.Combine(AppDataPath, "SampleDocument.xml");
+        }
+
+        public string GetSampleNFePath() {
+			return Path.Combine(AppDataPath, "SampleNFe.xml");
+		}
+
+        public string GetBatchDocPath(int id) {
+            return Path.Combine(AppDataPath, string.Format("{0:D2}.pdf", id % 10));
+        }
+
+        public byte[] GetPdfStampContent() {
+			return File.ReadAllBytes(Path.Combine(AppDataPath, "PdfStamp.png"));
+		}
+
+        public byte[] GetSampleCertificateContent() {
+            return File.ReadAllBytes(Path.Combine(AppDataPath, "Pierre de Fermat.pfx"));
+        }
+
+		public async Task<string> StoreAsync(byte[] content, string extension = "") {
+			using (var buffer = new MemoryStream(content)) {
+				return await StoreAsync(buffer, extension);
+			}
+		}
+
+		public async Task<string> StoreAsync(Stream stream, string extension = "") {
+			var filename = Guid.NewGuid() + extension;
+			var path = Path.Combine(AppDataPath, filename);
+			using (var fileStream = File.Create(path)) {
+				await stream.CopyToAsync(fileStream);
+			}
+			return filename;
+		}
+
+		public bool TryOpenRead(string fileId, out byte[] content) {
+			string extension;
+			return TryOpenRead(fileId, out content, out extension);
+		}
+
+		public bool TryOpenRead(string fileId, out byte[] content, out string extension) {
+			string path;
+			if (!CheckFileExists(fileId, out path, out extension)) {
+				content = null;
+				return false;
+			}
+			content = File.ReadAllBytes(path);
+			return true;
+		}
+
+		public bool TryOpenRead(string fileId, out Stream stream) {
+			string extension;
+			return TryOpenRead(fileId, out stream, out extension);
+		}
+
+		public bool TryOpenRead(string fileId, out Stream stream, out string extension) {
+			string path;
+			if (!CheckFileExists(fileId, out path, out extension)) {
+				stream = null;
+				return false;
+			}
+			stream = File.OpenRead(path);
+			return true;
+		}
+
+		public bool CheckFileExists(string fileId, out string path, out string extension) {
+			var filename = fileId;
+			path = Path.Combine(AppDataPath, filename);
+			var fileInfo = new FileInfo(path);
+			if (!fileInfo.Exists) {
+				extension = null;
+				return false;
+			}
+			extension = fileInfo.Extension;
+			return true;
+		}
+	}
+}

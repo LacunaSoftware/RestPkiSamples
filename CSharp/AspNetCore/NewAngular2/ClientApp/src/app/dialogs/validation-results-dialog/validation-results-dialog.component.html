@@ -1,0 +1,54 @@
+<h2 mat-dialog-title>Validation Results</h2>
+<mat-dialog-content>
+
+    <!-- Breadcrumb -->
+    <ol class="breadcrumb" *ngIf="itemStack.length > 1">
+        <li *ngFor="let item of itemStack; let i = index" [attr.data-index]="i">
+            <a *ngIf="i < itemStack.length - 1" href="" (click)="showParent(item)" >
+                {{ item.message }}
+                <span *ngIf="item.detail">({{ item.detail }})</span>
+            </a>
+        </li>
+        <li class="active">
+            {{ itemStack[itemStack.length-1].message }}
+            <span *ngIf="itemStack[itemStack.length-1].detail">({{ itemStack[itemStack.length-1].detail }})</span>
+        </li>
+    </ol>
+
+    <div *ngIf="model.errors.length > 0">
+        <h4>Errors</h4>
+        <ul class="text-danger">
+            <li *ngFor="let item of model.errors">
+                {{ item.message }}
+                <span *ngIf="item.detail">({{ item.detail }})</span>
+                <a *ngIf="item.innerValidationResults != null" href="" (click)="showDetails(item)">details</a>
+            </li>
+        </ul>
+    </div>
+
+    <div *ngIf="model.warnings.length > 0">
+        <h4>Warnings</h4>
+        <ul class="text-warning">
+            <li *ngFor="let item of model.warnings">
+                {{ item.message }}
+                <span *ngIf="item.detail">({{ item.detail }})</span>
+                <a *ngIf="item.innerValidationResults != null" href="" (click)="showDetails(item)">details</a>
+            </li>
+        </ul>
+    </div>
+
+    <div *ngIf="model.passedChecks.length > 0">
+        <h4>Passed checks</h4>
+        <ul class="text-success">
+            <li *ngFor="let item of model.passedChecks">
+                {{ item.message }}
+                <span *ngIf="item.detail">({{ item.detail }})</span>
+                <a *ngIf="item.innerValidationResults != null" href="" (click)="showDetails(item)">details</a>
+            </li>
+        </ul>
+    </div>
+
+</mat-dialog-content>
+<mat-dialog-actions align="center">
+    <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>
