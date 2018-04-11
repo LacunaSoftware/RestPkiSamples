@@ -48,8 +48,8 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 			// Save the file to the App_Data folder with the unique filename
 			file.SaveAs(Path.Combine(appDataPath, filename));
 
-			// Redirect the user to the Index action on either CadesController or PadesController, passing the name of the file as a URL argument
-			// Note: we're passing the filename argument with "." as "_" because of limitations of ASP.NET MVC
+            // Redirect the user to the Index action on either CadesController or PadesController, passing
+            // the name of the file as a URL argument.
 			return RedirectToAction("Index", model.ReturnController, new { userfile = filename.Replace(".", "_") });
 		}
 	}
