@@ -23,16 +23,16 @@ To run the sample:
    
 4. Install dependencies: `pip install -r requirements.txt`
 
-5. Run application: `python run.py`
+5. Run application: `python manage.py runserver`
 
 6. Access the URL [http://localhost:5000](http://localhost:5000)
 
 Optionally, you can create and activate a "virtualenv" to avoid mixing library versions:
 
-    virtualenv env
-    . ./env/bin/activate
+    virtualenv venv
+    ./venv/bin/activate
     pip install -r requirements.txt
-    python demo.py
+    python manage.py runserver
     deactivate
 
 See also

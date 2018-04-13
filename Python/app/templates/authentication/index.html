@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+
+	<h2>Authentication</h2>
+
+	<form id="signForm" action="/authentication/action" method="post">
+
+		<!-- render the $token in a hidden input field -->
+		<input type="hidden" id="token" name="token" value="{{token}}">
+
+		<!-- Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it later on (see javascript below). -->
+		<div class="form-group">
+			<label for="certificateSelect">Choose a certificate</label>
+			<select id="certificateSelect" class="form-control"></select>
+		</div>
+
+		<!-- Action buttons. Notice that the "Sign In" button is NOT a submit button. When the user clicks the button,
+		we must first use the Web PKI component to perform the client-side computation necessary and only when
+		that computation is finished we'll submit the form programmatically (see javascript below).
+	 	-->
+		<button id="signButton" type="button" class="btn btn-primary">Sign In</button>
+		<button id="refreshButton" type="button" class="btn btn-default">Refresh Certificates</button>
+	</form>
+</div>
+
+<script src="/static/js/signature-form.js"></script>
+{% endblock %}

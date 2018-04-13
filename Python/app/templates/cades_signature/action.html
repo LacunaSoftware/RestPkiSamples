@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+	<h2>CAdES Signature</h2>
+
+	<p>File signed successfully!</p>
+
+	<p>
+		Signer information:
+	<ul>
+		<li>Subject: {{ signer_cert.subjectName.commonName }}</li>
+		<li>Email: {{ signer_cert.emailAddress }}</li>
+		<li>
+			ICP-Brasil fields
+			<ul>
+				<li>Tipo de certificado: {{ signer_cert.pkiBrazil.certificateType }} </li>
+				<li>CPF:  {{ signer_cert.pkiBrazil.cpf }}</li>
+				<li>Responsavel: {{ signer_cert.pkiBrazil.responsavel }} </li>
+				<li>Empresa: {{ signer_cert.pkiBrazil.companyName }} </li>
+				<li>CNPJ: {{ signer_cert.pkiBrazil.cnpj }} </li>
+				<li>RG: {{ signer_cert.pkiBrazil.rgNumero }} {{ signer_cert.pkiBrazil.rgEmissor }} {{ signer_cert.pkiBrazil.rgEmissorUF }}</li>
+				<li>OAB: {{ signer_cert.pkiBrazil.oabNumero }} {{ signer_cert.pkiBrazil.oabUF }}</li>
+
+			</ul>
+		</li>
+	</ul>
+	</p>
+
+    <h3>Actions:</h3>
+    <ul>
+        <li><a href="/files/{{ filename }}">Download the signed file</a></li>
+        <li><a href="/cades-signature/cosign/{{ filename }}">Co-sign with another certificate</a></li>
+    </ul>
+</div>
+{% endblock %}

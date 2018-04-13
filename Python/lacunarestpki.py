@@ -4,7 +4,6 @@ import six
 import requests
 import base64
 import simplejson as json
-
 from abc import ABCMeta, abstractmethod
 
 
@@ -12,6 +11,8 @@ class StandardSecurityContexts:
     PKI_BRAZIL = '201856ce-273c-4058-a872-8937bd547d36'
     PKI_ITALY = 'c438b17e-4862-446b-86ad-6f85734f0bfe'
     WINDOWS_SERVER = '3881384c-a54d-45c5-bbe9-976b674f5ec7'
+
+    LACUNA_TEST = "803517ad-3bbc-4169-b085-60053a8f6dbf"
 
     def __init__(self):
         return
@@ -48,12 +49,14 @@ class RestPkiClient:
         self._headers['Content-Type'] = 'application/json'
 
     def post(self, url, data=None):
-        response = requests.post('%s%s' % (self._endpointUrl, url), data=json.dumps(data), headers=self._headers)
+        response = requests.post('%s%s' % (self._endpointUrl, url),
+                                 data=json.dumps(data), headers=self._headers)
         response.raise_for_status()
         return response
 
     def get(self, url, params=None):
-        response = requests.get('%s%s' % (self._endpointUrl, url), params=params, headers=self._headers)
+        response = requests.get('%s%s' % (self._endpointUrl, url),
+                                params=params, headers=self._headers)
         response.raise_for_status()
         return response
 
@@ -70,7 +73,8 @@ class Authentication:
         self._client = restpki_client
 
     def start_with_webpki(self, security_context_id):
-        response = self._client.post('Api/Authentications', data={'securityContextId': security_context_id})
+        response = self._client.post('Api/Authentications', data={
+            'securityContextId': security_context_id})
         return response.json().get('token', None)
 
     def complete_with_webpki(self, token):
@@ -137,8 +141,10 @@ class PadesSignatureFinisher:
         if not self.token:
             raise Exception('The token was not set')
 
-        response = self._client.post('Api/PadesSignatures/%s/Finalize' % self.token)
-        self._signed_pdf_content = base64.b64decode(response.json().get('signedPdf', None))
+        response = self._client.post(
+            'Api/PadesSignatures/%s/Finalize' % self.token)
+        self._signed_pdf_content = base64.b64decode(
+            response.json().get('signedPdf', None))
         self._certificate = response.json().get('certificate', None)
         self._callback_argument = response.json().get('callbackArgument', None)
         self._done = True
@@ -146,21 +152,24 @@ class PadesSignatureFinisher:
     @property
     def signed_pdf_content(self):
         if not self._done:
-            raise Exception('The property "signed_pdf_content" can only be called after calling the finish() method')
+            raise Exception(
+                'The property "signed_pdf_content" can only be called after calling the finish() method')
 
         return self._signed_pdf_content
 
     @property
     def callback_argument(self):
         if not self._done:
-            raise Exception('The property "callback_argument" can only be called after calling the finish() method')
+            raise Exception(
+                'The property "callback_argument" can only be called after calling the finish() method')
 
         return self._callback_argument
 
     @property
     def certificate(self):
         if not self._done:
-            raise Exception('The property "certificate" can only be called after calling the finish() method')
+            raise Exception(
+                'The property "certificate" can only be called after calling the finish() method')
 
         return self._certificate
 
@@ -198,7 +207,8 @@ class CadesSignatureStarter:
 
     def start_with_webpki(self):
         if self.content_to_sign is None and self.cms_to_cosign_bytes is None:
-            raise Exception('The content to sign was not set and no CMS to be co-signed was given')
+            raise Exception(
+                'The content to sign was not set and no CMS to be co-signed was given')
 
         if self.signature_policy_id is None:
             raise Exception('The signature policy was not set')
@@ -232,7 +242,8 @@ class CadesSignatureFinisher:
         if not self.token:
             raise Exception('The token was not set')
 
-        response = self._client.post('Api/CadesSignatures/%s/Finalize' % self.token).json()
+        response = self._client.post(
+            'Api/CadesSignatures/%s/Finalize' % self.token).json()
         self._cms = base64.b64decode(response.get('cms', None))
         self._certificate = response.get('certificate', None)
         self._callback_argument = response.get('callbackArgument', None)
@@ -241,21 +252,24 @@ class CadesSignatureFinisher:
     @property
     def cms(self):
         if not self._done:
-            raise Exception('The property "cms" can only be called after calling the finish() method')
+            raise Exception(
+                'The property "cms" can only be called after calling the finish() method')
 
         return self._cms
 
     @property
     def certificate(self):
         if not self._done:
-            raise Exception('The property "certificate" can only be called after calling the finish() method')
+            raise Exception(
+                'The property "certificate" can only be called after calling the finish() method')
 
         return self._certificate
 
     @property
     def callback_argument(self):
         if not self._done:
-            raise Exception('The property "callback_argument" can only be called after calling the finish() method')
+            raise Exception(
+                'The property "callback_argument" can only be called after calling the finish() method')
 
         return self._callback_argument
 
@@ -281,7 +295,8 @@ class ValidationItem:
         self.detail = model['detail']
 
         if model['innerValidationResults'] is not None:
-            self.innerValidationResults = ValidationResults(model['innerValidationResults'])
+            self.innerValidationResults = ValidationResults(
+                model['innerValidationResults'])
 
     def __unicode__(self):
         return self.to_string(0)
@@ -317,19 +332,23 @@ class PadesVisualPositioningPresets:
         if rows is not None:
             url_segment += '?rows=%s' % rows
 
-        return PadesVisualPositioningPresets._get_preset(restpki_client, url_segment)
+        return PadesVisualPositioningPresets._get_preset(restpki_client,
+                                                         url_segment)
 
     @staticmethod
     def get_new_page(restpki_client):
-        return PadesVisualPositioningPresets._get_preset(restpki_client, 'NewPage')
+        return PadesVisualPositioningPresets._get_preset(restpki_client,
+                                                         'NewPage')
 
     @staticmethod
     def _get_preset(restpki_client, url_segment):
         if url_segment in PadesVisualPositioningPresets._cached_presets:
             return PadesVisualPositioningPresets._cached_presets[url_segment]
 
-        preset = restpki_client.get('Api/PadesVisualPositioningPresets/%s' % url_segment)
-        PadesVisualPositioningPresets._cached_presets[url_segment] = preset.json()
+        preset = restpki_client.get(
+            'Api/PadesVisualPositioningPresets/%s' % url_segment)
+        PadesVisualPositioningPresets._cached_presets[
+            url_segment] = preset.json()
         return preset.json()
 
 
@@ -364,18 +383,24 @@ class XmlIdResolutionTable:
         self._element_id_attributes = []
         self._global_id_attributes = []
 
-    def add_global_id_attribute(self, id_attribute_local_name, id_attribute_namespace=None):
-        self._global_id_attributes.append({'localName': id_attribute_local_name, 'namespace': id_attribute_namespace})
+    def add_global_id_attribute(self, id_attribute_local_name,
+                                id_attribute_namespace=None):
+        self._global_id_attributes.append({'localName': id_attribute_local_name,
+                                           'namespace': id_attribute_namespace})
 
-    def set_element_id_attribute(self, element_local_name, element_namespace, id_attribute_local_name,
+    def set_element_id_attribute(self, element_local_name, element_namespace,
+                                 id_attribute_local_name,
                                  id_attribute_namespace=None):
         self._element_id_attributes.append(
-            {'element': {'localName': element_local_name, 'namespace': element_namespace},
-             'attribute': {'localName': id_attribute_local_name, 'namespace': id_attribute_namespace}})
+            {'element': {'localName': element_local_name,
+                         'namespace': element_namespace},
+             'attribute': {'localName': id_attribute_local_name,
+                           'namespace': id_attribute_namespace}})
 
     def to_model(self):
         return {'includeXmlIdAttribute': self._include_xml_id_attribute,
-                'elementIdAttributes': self._element_id_attributes, 'globalIdAttributes': self._global_id_attributes}
+                'elementIdAttributes': self._element_id_attributes,
+                'globalIdAttributes': self._global_id_attributes}
 
 
 class XmlSignatureStarter:
@@ -402,7 +427,8 @@ class XmlSignatureStarter:
         self.xml_content = f.read()
         f.close()
 
-    def set_signature_element_location(self, xpath, insertion_options, namespace_manager):
+    def set_signature_element_location(self, xpath, insertion_options,
+                                       namespace_manager):
         self._xpath = xpath
         self._insertion_option = insertion_options
         self._namespace_manager = namespace_manager
@@ -446,7 +472,8 @@ class XmlElementSignatureStarter(XmlSignatureStarter):
         if self.id_resolution_table is not None:
             data['idResolutionTable'] = self.id_resolution_table.to_model()
 
-        response = self._client.post('Api/XmlSignatures/XmlElementSignature', data=data)
+        response = self._client.post('Api/XmlSignatures/XmlElementSignature',
+                                     data=data)
         return response.json().get('token', None)
 
 
@@ -459,7 +486,8 @@ class FullXmlSignatureStarter(XmlSignatureStarter):
             raise Exception('The XML to sign was not set')
 
         data = super(FullXmlSignatureStarter, self).get_common_request_data()
-        response = self._client.post('Api/XmlSignatures/FullXmlSignature', data=data)
+        response = self._client.post('Api/XmlSignatures/FullXmlSignature',
+                                     data=data)
         return response.json().get('token', None)
 
 
@@ -480,10 +508,12 @@ class DetachedResourceXmlSignatureStarter(XmlSignatureStarter):
         if self.resource_content is None or len(self.resource_content) == 0:
             raise Exception('The detached resource to sign was not set')
 
-        data = super(DetachedResourceXmlSignatureStarter, self).get_common_request_data()
+        data = super(DetachedResourceXmlSignatureStarter,
+                     self).get_common_request_data()
         data['detachedResourceToSignContent'] = self.resource_content
         data['detachedResourceReferenceUri'] = self.resource_uri
-        response = self._client.post('Api/XmlSignatures/DetachedResourceXmlSignature', data=data)
+        response = self._client.post(
+            'Api/XmlSignatures/DetachedResourceXmlSignature', data=data)
         return response.json().get('token', None)
 
 
@@ -497,9 +527,11 @@ class OnlineResourceXmlSignatureStarter(XmlSignatureStarter):
         if self.resource_uri is None or self.resource_uri == '':
             raise Exception('The online resource URI to sign was not set')
 
-        data = super(OnlineResourceXmlSignatureStarter, self).get_common_request_data()
+        data = super(OnlineResourceXmlSignatureStarter,
+                     self).get_common_request_data()
         data['resourceToSignUri'] = self.resource_uri
-        response = self._client.post('Api/XmlSignatures/OnlineResourceXmlSignature', data=data)
+        response = self._client.post(
+            'Api/XmlSignatures/OnlineResourceXmlSignature', data=data)
         return response.json().get('token', None)
 
 
@@ -518,8 +550,10 @@ class XmlSignatureFinisher:
         if not self.token:
             raise Exception('The token was not set')
 
-        response = self._client.post('Api/XmlSignatures/%s/Finalize' % self.token)
-        self._signed_xml_content = base64.b64decode(response.json().get('signedXml', None))
+        response = self._client.post(
+            'Api/XmlSignatures/%s/Finalize' % self.token)
+        self._signed_xml_content = base64.b64decode(
+            response.json().get('signedXml', None))
         self._certificate = response.json().get('certificate', None)
         self._callback_argument = response.json().get('callbackArgument', None)
         self._done = True
@@ -527,21 +561,24 @@ class XmlSignatureFinisher:
     @property
     def signed_xml_content(self):
         if not self._done:
-            raise Exception('The property "signed_xml_content" can only be called after calling the finish() method')
+            raise Exception(
+                'The property "signed_xml_content" can only be called after calling the finish() method')
 
         return self._signed_xml_content
 
     @property
     def callback_argument(self):
         if not self._done:
-            raise Exception('The property "callback_argument" can only be called after calling the finish() method')
+            raise Exception(
+                'The property "callback_argument" can only be called after calling the finish() method')
 
         return self._callback_argument
 
     @property
     def certificate(self):
         if not self._done:
-            raise Exception('The property "certificate" can only be called after calling the finish() method')
+            raise Exception(
+                'The property "certificate" can only be called after calling the finish() method')
 
         return self._certificate
 

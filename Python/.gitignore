@@ -1,4 +1,5 @@
 *.pyc
 .idea/
-uploads/
 app_data/
+venv/
+env/
