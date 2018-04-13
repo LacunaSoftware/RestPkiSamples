@@ -29,8 +29,8 @@ To run the sample:
 
 Optionally, you can create and activate a "virtualenv" to avoid mixing library versions:
 
-    virtualenv venv
-    ./venv/bin/activate
+    virtualenv <venv>
+    source bin/activate (on Windows: ./<venv>/Scripts/activate)
     pip install -r requirements.txt
     python manage.py runserver
     deactivate
