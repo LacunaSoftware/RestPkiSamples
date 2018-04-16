@@ -34,7 +34,7 @@ def index(userfile=None, cmsfile=None):
         # receiving the signature elements and start the signature process.
         signature_starter = CadesSignatureStarter(get_restpki_client())
 
-        # Set the signature policy
+        # Set the signature policy.
         signature_starter.signature_policy_id = StandardSignaturePolicies.CADES_ICPBR_ADR_BASICA
 
         # Set a security context to be used to determine trust in the
@@ -60,7 +60,7 @@ def index(userfile=None, cmsfile=None):
         # resulting CMS. If this parameter is ommitted, the following rules
         # apply:
         # - If no CmsToCoSign is given, the resulting CMS will include the
-        # content.
+        # content;
         # - If a CmsToCoSign is given, the resulting CMS will include the
         # content if and only if the CmsToCoSign also includes the content.
         signature_starter.encapsulate_content = True
@@ -87,8 +87,8 @@ def index(userfile=None, cmsfile=None):
     # can be a problem if the user uses the back button of the browser, since
     # the browser might show a cached page that we rendered previously, with a
     # now stale token. To prevent this from happening, we call the method
-    # set_no_cache_headers(). We force page expiration through HTTP headers to
-    # prevent caching of the page.
+    # set_no_cache_headers(). To prevent this from happen, we force page
+    # expiration through HTTP headers to prevent caching of the page.
     response.headers = get_expired_page_headers()
 
     return response
@@ -104,14 +104,14 @@ def action():
     """
 
     # Get the token for this signature (rendered in a hidden input field, see
-    # pades-signature.html template)
+    # pades-signature.html template).
     token = request.form['token']
 
     # Get an instance of the CadesSignatureFinisher class, responsible for
     # completing the signature process.
     signature_finisher = CadesSignatureFinisher(get_restpki_client())
 
-    # Set the token
+    # Set the token.
     signature_finisher.token = token
 
     # Call the finish() method, which finalizes the signature process and

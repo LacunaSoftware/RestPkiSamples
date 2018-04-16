@@ -4,11 +4,11 @@ import uuid
 
 from flask import make_response, render_template, request
 
-from lacunarestpki import PadesSignatureStarter, PadesSignatureFinisher,\
+from lacunarestpki import PadesSignatureStarter, PadesSignatureFinisher, \
     StandardSignaturePolicies
 from app import APPDATA_FOLDER, STATIC_FOLDER
 from app.blueprints import pades_signature
-from app.util import get_restpki_client, get_expired_page_headers,\
+from app.util import get_restpki_client, get_expired_page_headers, \
     get_pdf_stamp_content, get_security_context_id
 from app.util_pades import get_visual_representation_position
 
@@ -34,7 +34,7 @@ def index(userfile=None):
         # receiving the signature elements and start the signature process.
         signature_starter = PadesSignatureStarter(get_restpki_client())
 
-        # Set the signature policy
+        # Set the signature policy.
         signature_starter.signature_policy_id = StandardSignaturePolicies.PADES_BASIC
 
         # Set a security context to be used to determine trust in the
@@ -52,7 +52,7 @@ def index(userfile=None):
             signature_starter.set_pdf_path(
                 '%s/%s' % (STATIC_FOLDER, 'SampleDocument.pdf'))
 
-        # Set the visual representation for the signature
+        # Set the visual representation for the signature.
         signature_starter.visual_representation = ({
 
             'text': {
@@ -117,8 +117,8 @@ def index(userfile=None):
     # In order to retry the signature it is necessary to get a new token. This
     # can be a problem if the user uses the back button of the browser, since
     # the browser might show a cached page that we rendered previously, with a
-    # now stale token. # we force page expiration through HTTP headers to
-    # prevent caching of the page.
+    # now stale token. To prevent this from happen, we force page expiration
+    # through HTTP headers to prevent caching of the page.
     response.headers = get_expired_page_headers()
 
     return response

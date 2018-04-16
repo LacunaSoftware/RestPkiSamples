@@ -1,13 +1,13 @@
 import os
 import uuid
 from flask import make_response, render_template, request
-from lacunarestpki import FullXmlSignatureStarter, NamespaceManager,\
+from lacunarestpki import FullXmlSignatureStarter, NamespaceManager, \
     XmlInsertionOptions, StandardSignaturePolicies, \
     XmlElementSignatureStarter, XmlSignatureFinisher
 
 from app import APPDATA_FOLDER, STATIC_FOLDER
 from app.blueprints import xml_signature
-from app.util import get_restpki_client, get_expired_page_headers,\
+from app.util import get_restpki_client, get_expired_page_headers, \
     get_security_context_id
 
 
@@ -68,8 +68,8 @@ def full():
     # In order to retry the signature it is necessary to get a new token. This
     # can be a problem if the user uses the back button of the browser, since
     # the browser might show a cached page that we rendered previously, with a
-    # now stale token. # we force page expiration through HTTP headers to
-    # prevent caching of the page.
+    # now stale token. To prevent this from happen, we force page expiration
+    # through HTTP headers to prevent caching of the page.
     response.headers = get_expired_page_headers()
 
     return response
@@ -91,7 +91,8 @@ def element():
         signature_starter = XmlElementSignatureStarter(get_restpki_client())
 
         # Set the XML to be signed, a sample XML Document.
-        signature_starter.set_xml_path('%s/%s' % (STATIC_FOLDER, 'SampleNFe.xml'))
+        signature_starter.set_xml_path(
+            '%s/%s' % (STATIC_FOLDER, 'SampleNFe.xml'))
 
         # Set the ID of the element to be signed.
         signature_starter.element_tosign_id = 'NFe35141214314050000662550010001084271182362300'
@@ -122,7 +123,7 @@ def element():
     # In order to retry the signature it is necessary to get a new token. This
     # can be a problem if the user uses the back button of the browser, since
     # the browser might show a cached page that we rendered previously, with a
-    # now stale token. # we force page expiration through HTTP headers to
+    # now stale token. We force page expiration through HTTP headers to
     # prevent caching of the page.
     response.headers = get_expired_page_headers()
 

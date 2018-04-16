@@ -1,4 +1,3 @@
-
 from flask import make_response, render_template, request
 
 from app.blueprints import authentication
@@ -16,7 +15,7 @@ def index():
     """
 
     try:
-        # Get an instance of the Authentication class
+        # Get an instance of the Authentication class.
         auth = get_restpki_client().get_authentication()
 
         # Call the start_with_webpki() method, which initiates the
@@ -55,10 +54,10 @@ def action():
     """
 
     # Get the token for this authentication (rendered in a hidden input field,
-    # see authentication.html template)
+    # see authentication.html template).
     token = request.form['token']
 
-    # Get an instance of the Authentication class
+    # Get an instance of the Authentication class.
     auth = get_restpki_client().get_authentication()
 
     # Call the complete_with_webpki() method with the token, which finalizes the

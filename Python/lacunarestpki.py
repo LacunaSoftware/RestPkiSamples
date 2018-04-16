@@ -87,7 +87,9 @@ class Authentication:
     def certificate(self):
         if not self._done:
             raise Exception(
-                'The property "certificate" can only be called after calling the complete_with_webpki() method')
+                'The property "certificate" can only be called after calling '
+                'the complete_with_webpki() method'
+            )
 
         return self._certificate
 
@@ -153,7 +155,9 @@ class PadesSignatureFinisher:
     def signed_pdf_content(self):
         if not self._done:
             raise Exception(
-                'The property "signed_pdf_content" can only be called after calling the finish() method')
+                'The property "signed_pdf_content" can only be called'
+                ' after calling the finish() method'
+            )
 
         return self._signed_pdf_content
 
@@ -161,7 +165,9 @@ class PadesSignatureFinisher:
     def callback_argument(self):
         if not self._done:
             raise Exception(
-                'The property "callback_argument" can only be called after calling the finish() method')
+                'The property "callback_argument" can only be called after'
+                ' calling the finish() method'
+            )
 
         return self._callback_argument
 
@@ -169,14 +175,18 @@ class PadesSignatureFinisher:
     def certificate(self):
         if not self._done:
             raise Exception(
-                'The property "certificate" can only be called after calling the finish() method')
+                'The property "certificate" can only be called after calling'
+                ' the finish() method'
+            )
 
         return self._certificate
 
     def write_signed_pdf(self, local_pdf_path):
         if not self._done:
             raise Exception(
-                'The method write_signed_pdf() can only be called after calling the finish() method')
+                'The method write_signed_pdf() can only be called after calling'
+                ' the finish() method'
+            )
 
         f = open(local_pdf_path, 'wb')
         f.write(self._signed_pdf_content)
@@ -208,7 +218,9 @@ class CadesSignatureStarter:
     def start_with_webpki(self):
         if self.content_to_sign is None and self.cms_to_cosign_bytes is None:
             raise Exception(
-                'The content to sign was not set and no CMS to be co-signed was given')
+                'The content to sign was not set and no CMS to be co-signed was'
+                ' given'
+            )
 
         if self.signature_policy_id is None:
             raise Exception('The signature policy was not set')
@@ -253,7 +265,9 @@ class CadesSignatureFinisher:
     def cms(self):
         if not self._done:
             raise Exception(
-                'The property "cms" can only be called after calling the finish() method')
+                'The property "cms" can only be called after calling the'
+                ' finish() method'
+            )
 
         return self._cms
 
@@ -261,7 +275,9 @@ class CadesSignatureFinisher:
     def certificate(self):
         if not self._done:
             raise Exception(
-                'The property "certificate" can only be called after calling the finish() method')
+                'The property "certificate" can only be called after calling'
+                ' the finish() method'
+            )
 
         return self._certificate
 
@@ -269,14 +285,18 @@ class CadesSignatureFinisher:
     def callback_argument(self):
         if not self._done:
             raise Exception(
-                'The property "callback_argument" can only be called after calling the finish() method')
+                'The property "callback_argument" can only be called after'
+                ' calling the finish() method'
+            )
 
         return self._callback_argument
 
     def write_cms(self, path):
         if not self._done:
             raise Exception(
-                'The method write_cms() can only be called after calling the finish() method')
+                'The method write_cms() can only be called after calling the'
+                ' finish() method'
+            )
 
         f = open(path, 'wb')
         f.write(self._cms)
@@ -353,8 +373,7 @@ class PadesVisualPositioningPresets:
 
 
 # XML
-# ----------------------------------------------------------------------------------------------------------------------
-
+# ------------------------------------------------------------------------------
 class XmlInsertionOptions:
     appendChild = 'appendChild'
     prependChild = 'prependChild'
@@ -443,8 +462,10 @@ class XmlSignatureStarter:
         if self._xpath is not None:
             data['signatureElementLocation'] = {
                 'xpath': self._xpath,
-                'InsertionOption': None if self._insertion_option is None else self._insertion_option,
-                'namespaces': None if self._namespace_manager is None else self._namespace_manager.namespaces
+                'InsertionOption': None if self._insertion_option is None
+                else self._insertion_option,
+                'namespaces': None if self._namespace_manager is None
+                else self._namespace_manager.namespaces
             }
         data['signatureElementId'] = self.signature_element_id
         data['signaturePolicyId'] = self.signature_policy_id
@@ -562,7 +583,9 @@ class XmlSignatureFinisher:
     def signed_xml_content(self):
         if not self._done:
             raise Exception(
-                'The property "signed_xml_content" can only be called after calling the finish() method')
+                'The property "signed_xml_content" can only be called after'
+                ' calling the finish() method'
+            )
 
         return self._signed_xml_content
 
@@ -570,7 +593,9 @@ class XmlSignatureFinisher:
     def callback_argument(self):
         if not self._done:
             raise Exception(
-                'The property "callback_argument" can only be called after calling the finish() method')
+                'The property "callback_argument" can only be called after'
+                ' calling the finish() method'
+            )
 
         return self._callback_argument
 
@@ -578,14 +603,18 @@ class XmlSignatureFinisher:
     def certificate(self):
         if not self._done:
             raise Exception(
-                'The property "certificate" can only be called after calling the finish() method')
+                'The property "certificate" can only be called after calling'
+                ' the finish() method'
+            )
 
         return self._certificate
 
     def write_signed_xml(self, local_xml_path):
         if not self._done:
             raise Exception(
-                'The method write_signed_xml() can only be called after calling the finish() method')
+                'The method write_signed_xml() can only be called after calling'
+                ' the finish() method'
+            )
 
         f = open(local_xml_path, 'wb')
         f.write(self._signed_xml_content)

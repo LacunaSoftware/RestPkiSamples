@@ -46,10 +46,10 @@ def get_visual_representation_position(sample_number):
         # Example #5: manual positioning
         return {
             'pageNumber': 0,
-            # zero means the signature will be placed on a new page appended to
+            # Zero means the signature will be placed on a new page appended to
             # the end of the document.
             'measurementUnits': 'Centimeters',
-            # define a manual position of 5cm x 3cm, positioned at 1 inch from
+            # Define a manual position of 5cm x 3cm, positioned at 1 inch from
             # the left and bottom margins.
             'manual': {
                 'left': 2.54,
@@ -62,7 +62,7 @@ def get_visual_representation_position(sample_number):
         # Example #6: custom auto positioning
         return {
             'pageNumber': -1,
-            # negative values represent pages counted from the end of the
+            # Negative values represent pages counted from the end of the
             # document. (-1 is last page)
             'measurementUnits': 'Centimeters',
             'auto': {
