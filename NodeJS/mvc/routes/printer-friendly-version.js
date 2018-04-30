@@ -115,8 +115,7 @@ function generatePrinterFriendlyVersion(pdfContent, verificationCode, next) {
 
          if (restPki.checkResponse(err, restRes, body, next)) {
 
-
-            // Parse signature fields
+            // Parse output fields
             var signature = restRes.body;
             signature.signers.forEach(function(signer) {
                signer.validationResults = new restPki.ValidationResults(signer.validationResults);
@@ -130,7 +129,8 @@ function generatePrinterFriendlyVersion(pdfContent, verificationCode, next) {
                }
             });
 
-            // Get marks form function below
+            // 2. Get marks from function below. We'll use this marks to create PDF
+            // with verification information from uploaded PDF.
             var marks = getMarks(signature, formattedVerificationCode);
 
             var applyRequest = {
@@ -168,8 +168,6 @@ function getMarks(signature, formattedVerificationCode) {
    var manifestMark;
    var element;
    var section;
-
-   // 2. Create PDF with verification information from uploaded PDF.
 
    // Build string with joined names of signers (see method getDisplayName()
    // below).
