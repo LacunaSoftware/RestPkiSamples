@@ -64,7 +64,7 @@ This dependency is specified in the file `composer.json`:
 
 	{
 		"require": {
-			"lacuna/restpki-client": "^2.2.1"
+			"lacuna/restpki-client": "^2.2.3"
 		}
 	}
 
@@ -92,7 +92,7 @@ Once you've done this, you might start seeing the following error when executing
 That means your PHP is not configured with a list of trusted root certification authorities, which is necessary to
 establish a secure SSL connection with REST PKI. To fix this, follow these steps:
 
-1. Download the file [http://curl.haxx.se/ca/cacert.pem](http://curl.haxx.se/ca/cacert.pem) and save it somewhere in your PHP server (for instance `C:\Program Files (x86)\PHP\cacert.pem`)
+1. Download the file [https://curl.haxx.se/ca/cacert.pem](https://curl.haxx.se/ca/cacert.pem) and save it somewhere in your PHP server (for instance `C:\Program Files (x86)\PHP\cacert.pem`)
 
 2. Edit the `php.ini` file
 

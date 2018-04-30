@@ -1,3 +1,3 @@
 @echo off
-call gradlew.bat run
+call gradlew.bat bootRun
 pause

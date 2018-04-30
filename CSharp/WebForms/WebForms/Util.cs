@@ -1,4 +1,5 @@
-﻿using Lacuna.RestPki.Client;
+﻿using Lacuna.RestPki.Api;
+using Lacuna.RestPki.Client;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,6 +24,33 @@ namespace WebForms {
 				endpoint = "https://pki.rest/";
 			}
 			return new RestPkiClient(endpoint, accessToken);
+		}
+
+		/*
+		 * This method is called by all pages to determine the security context to be used.
+		 * 
+		 * Security contexts dictate which root certification authorities are trusted during
+		 * certificate validation. In your API calls, you can use one of the standard security
+		 * contexts or reference one of your custom contexts.
+		 */
+		public static Guid GetSecurityContextId() {
+#if DEBUG
+			/*
+			 * Lacuna Test PKI (for development purposes only!)
+			 * 
+			 * This security context trusts ICP-Brasil certificates as well as certificates on
+			 * Lacuna Software's test PKI. Use it to accept the test certificates provided by
+			 * Lacuna Software.
+			 * 
+			 * THIS SHOULD NEVER BE USED ON A PRODUCTION ENVIRONMENT!
+			 */
+			return StandardSecurityContexts.LacunaTest;
+			// Notice for On Premises users: this security context might not exist on your installation,
+			// if you encounter an error please contact developer support.
+#else
+			// In production, accepting only certificates from ICP-Brasil
+			return Lacuna.RestPki.Api.StandardSecurityContexts.PkiBrazil;
+#endif
 		}
 
 		public static string ContentPath {
@@ -52,13 +80,21 @@ namespace WebForms {
 			return Path.Combine(ContentPath, "SampleDocument.pdf");
 		}
 
+		public static string GetBatchDocPath(int id) {
+			return Path.Combine(ContentPath, string.Format("{0:D2}.pdf", id % 10));
+		}
+
 		public static byte[] GetBatchDocContent(int id) {
-			return File.ReadAllBytes(Path.Combine(ContentPath, string.Format("{0:D2}.pdf", ((id - 1) % 10) + 1)));
+			return File.ReadAllBytes(GetBatchDocPath(id));
 		}
 
 		public static byte[] GetSampleNFeContent() {
 			return File.ReadAllBytes(Path.Combine(ContentPath, "SampleNFe.xml"));
 		}
+
+        public static string GetSampleNFePath() {
+            return Path.Combine(ContentPath, "SampleNFe.xml");
+        }
 
 		public static byte[] GetSampleXmlDocument() {
 			return File.ReadAllBytes(Path.Combine(ContentPath, "SampleDocument.xml"));
