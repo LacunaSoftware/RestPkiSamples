@@ -4,9 +4,7 @@ block content
 
 	h2 CAdES Signature
 	
-	p
-		| File signed successfully!&nbsp;
-		a(href='app-data/' + signedFileName, target='_blank') Click here to download the signed file
+	p File signed successfully!
 	
 	p
 		| Signer information:
@@ -22,3 +20,12 @@ block content
 					li CNPJ: #{signerCert.pkiBrazil.cnpj}
 					li RG: #{signerCert.pkiBrazil.rgNumero} #{signerCert.pkiBrazil.rgEmissor} #{signerCert.pkiBrazil.rgEmissorUF}
 					li OAB: #{signerCert.pkiBrazil.oabNumero} #{signerCert.pkiBrazil.oabUF}
+
+	h3 Actions:
+	ul
+		li
+			a(href='app-data/' + signedFile, target='_blank') Download the signed file
+		li
+			a(href='open-cades-signature?userfile=' + signedFile) Open/validate the signed file
+		li
+			a(href='cades-signature?cmsfile=' + signedFile) Co-sign with another certificate
