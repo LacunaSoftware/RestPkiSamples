@@ -50,7 +50,7 @@ module.exports = {
       var count = strings.length;
       for (var i = 0; i < strings.length; i++) {
          if (i > 0) {
-            if (i < count) {
+            if (i < count - 1) {
                text += ', ';
             } else {
                text += ' e ';
