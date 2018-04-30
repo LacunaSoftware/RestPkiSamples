@@ -5,19 +5,18 @@ ValidationResults = function(model) {
    self._warnings = [];
    self._passedChecks = [];
 
-   (function() {
-      if (model['errors'] && model['errors'].length > 0) {
-         self._errors = _convertItems(model['errors']);
-      }
+   // Initialize object
+   if (model['errors'] && model['errors'].length > 0) {
+      self._errors = _convertItems(model['errors']);
+   }
 
-      if (model['warnings'] && model['warnings'].length > 0) {
-         self._warnings = _convertItems(model['warnings']);
-      }
+   if (model['warnings'] && model['warnings'].length > 0) {
+      self._warnings = _convertItems(model['warnings']);
+   }
 
-      if (model['passedChecks'] && model['passedChecks'].length > 0) {
-         self._passedChecks = _convertItems(model['passedChecks']);
-      }
-   })();
+   if (model['passedChecks'] && model['passedChecks'].length > 0) {
+      self._passedChecks = _convertItems(model['passedChecks']);
+   }
 
    self.isValid = function() {
       return !self.hasErrors();
@@ -125,14 +124,13 @@ ValidationItem = function(model) {
    self._detail = null;
    self._innerValidationResults = null;
 
-   (function() {
-      self._type = model['type'];
-      self._message = model['message'];
-      self._detail = model['detail'];
-      if (model['innerValidationResults']) {
-         self._innerValidationResults = new ValidationResults(model['innerValidationResults']);
-      }
-   })();
+   // Initialize objects
+   self._type = model['type'];
+   self._message = model['message'];
+   self._detail = model['detail'];
+   if (model['innerValidationResults']) {
+      self._innerValidationResults = new ValidationResults(model['innerValidationResults']);
+   }
 
    self.getType = function() {
       return self._type;

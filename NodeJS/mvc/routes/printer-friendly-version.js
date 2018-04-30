@@ -175,7 +175,7 @@ function getMarks(signature, formattedVerificationCode) {
    // below).
    var certDisplayNames = [];
    signature.signers.forEach(function(signer) {
-      certDisplayNames.push(getDisplayName(signer.certificate));
+      certDisplayNames.push(_getDisplayName(signer.certificate));
    });
    var signerNames = util.joinStringPt(certDisplayNames);
    var allPagesMessage = 'Este documento foi assinado digitalmente por ' + signerNames +
@@ -429,14 +429,14 @@ function getMarks(signature, formattedVerificationCode) {
          },
          image: {
             resource: {
-               content: new Buffer(util.getValidationResultIcon(signer.validationResults.errors <= 0)).toString('base64'),
+               content: new Buffer(util.getValidationResultIcon(signer.validationResults.isValid())).toString('base64'),
                mimeType: 'image/png'
             }
          }
       };
       manifestMark.elements.push(element);
 
-      // Description of signer (see method getSignerDescription() below).
+      // Description of signer (see method _getSignerDescription() below).
       element = {
          elementType: 'Text',
          relativeContainer: {
@@ -449,7 +449,7 @@ function getMarks(signature, formattedVerificationCode) {
       };
       section = {
          fontSize: normalFontSize,
-         text: getSignerDescription(signer),
+         text: _getSignerDescription(signer),
          style: 'Normal',
          color: {
             blue: 0,
@@ -461,8 +461,10 @@ function getMarks(signature, formattedVerificationCode) {
       element.textSections.push(section);
       manifestMark.elements.push(element);
 
-      verticalOffset += elementHeight;
+      verticalOffset += 1.0;
    }
+
+   verticalOffset += 0.5;
 
    // Paragraph with link to verification site and citing both the verification
    // code above and the verification link below.
@@ -548,29 +550,29 @@ function getMarks(signature, formattedVerificationCode) {
    return marks;
 }
 
-function getDisplayName(cert) {
+function _getDisplayName(cert) {
    if (cert.pkiBrazil.responsavel) {
       return cert.pkiBrazil.responsavel;
    }
    return cert.pkiBrazil.commonName;
 }
 
-function getDescription(cert) {
+function _getDescription(cert) {
    var text = '';
-   text += getDisplayName(cert);
+   text += _getDisplayName(cert);
    if (cert.pkiBrazil.cpf) {
       text += ' (CPF ' + cert.pkiBrazil.cpfFormatted + ')';
    }
    if (cert.pkiBrazil.cnpj) {
-      text += ', empresa ' + cert.pkiBrazil.companyName + ' CNPJ ' +
+      text += ', empresa ' + cert.pkiBrazil.companyName + ' (CNPJ ' +
           cert.pkiBrazil.cnpjFormatted + ')';
    }
    return text;
 }
 
-function getSignerDescription(signer) {
+function _getSignerDescription(signer) {
    var text = '';
-   text += getDescription(signer.certificate);
+   text += _getDescription(signer.certificate);
    if (signer.signingTime) {
       text += ' em ' + signer.signingTime.format(dateFormat);
    }
