@@ -9,43 +9,43 @@
 require __DIR__ . '/vendor/autoload.php';
 
 use Lacuna\RestPki\PadesSignatureStarter;
+use Lacuna\RestPki\PadesVisualPositioningPresets;
 use Lacuna\RestPki\StandardSignaturePolicies;
 use Lacuna\RestPki\PadesMeasurementUnits;
 use Lacuna\RestPki\StandardSecurityContexts;
 
-// Get the document id for this signature (received from the POST call, see batch-signature-form.js)
+// Get the document id for this signature (received from the POST call, see batch-signature-form.js).
 $id = $_POST['id'];
 
 // Instantiate the PadesSignatureStarter class, responsible for receiving the signature elements and start the
-// signature process
+// signature process.
 $signatureStarter = new PadesSignatureStarter(getRestPkiClient());
 
-// Set the document to be signed based on its ID
-$signatureStarter->setPdfToSignFromPath("content/{$id}.pdf");
+// Set the document to be signed based on its ID.
+$signatureStarter->setPdfToSignFromPath(sprintf("content/0%s.pdf", $id % 10));
 
-// Set the unit of measurement used to edit the pdf marks and visual representations
-$signatureStarter->measurementUnits = PadesMeasurementUnits::CENTIMETERS;
-
-// Set the signature policy
+// Set the signature policy.
 $signatureStarter->signaturePolicy = StandardSignaturePolicies::PADES_BASIC;
 
-// Set a SecurityContext to be used to determine trust in the certificate chain
+// Set the security context. To accept Lacuna Software's test certificates, use the second line.
 $signatureStarter->securityContext = StandardSecurityContexts::PKI_BRAZIL;
-// Note: By changing the SecurityContext above you can accept only certificates from a certain PKI, for instance,
-// ICP-Brasil (\Lacuna\StandardSecurityContexts::PKI_BRAZIL).
+//$signatureStarter->securityContext = StandardSecurityContexts::LACUNA_TEST;
+// For more information, see https://github.com/LacunaSoftware/RestPkiSamples/blob/master/TestCertificates.md
 
-// Set the visual representation for the signature
-$signatureStarter->visualRepresentation = [
+// Set the unit of measurement used to edit the pdf marks and visual representations.
+$signatureStarter->measurementUnits = PadesMeasurementUnits::CENTIMETERS;
+
+// Create a visual representation.
+$visualRepresentation = [
 
     'text' => [
 
-        // The tags {{signerName}} and {{signerNationalId}} will be substituted according to the user's certificate
-        // signerName -> full name of the signer
-        // signerNationalId -> if the certificate is ICP-Brasil, contains the signer's CPF
-        'text' => 'Signed by {{signerName}} ({{signerNationalId}})',
-        // Specify that the signing time should also be rendered
+        // For a full list of the supported tags, see: https://github.com/LacunaSoftware/RestPkiSamples/blob/master/PadesTags.md
+        'text' => 'Signed by {{name}} ({{national_id}})',
+        'fontSize' => 13.0,
+        // Specify that the signing time should also be rendered.
         'includeSigningTime' => true,
-        // Optionally set the horizontal alignment of the text ('Left' or 'Right'), if not set the default is Left
+        // Optionally set the horizontal alignment of the text ('Left' or 'Right'), if not set the default is Left.
         'horizontalAlign' => 'Left',
         // Optionally set the container within the signature rectangle on which to place the text. By default, the
         // text can occupy the entire rectangle (how much of the rectangle the text will actually fill depends on the
@@ -59,25 +59,24 @@ $signatureStarter->visualRepresentation = [
     ],
     'image' => [
 
-        // We'll use as background the image content/PdfStamp.png
+        // We'll use as background the image content/PdfStamp.png.
         'resource' => [
             'content' => base64_encode(file_get_contents('content/PdfStamp.png')),
             'mimeType' => 'image/png'
         ],
-        // Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is completely opaque).
-        'opacity' => 50,
-        // Align the image to the right
+        // Align the image to the right.
         'horizontalAlign' => 'Right',
-        // Align the image to the center
+        // Align the image to the center.
         'verticalAlign' => 'Center',
-
-    ],
-    // Position of the visual representation. We have encapsulated this code in a function to include several
-    // possibilities depending on the argument passed to the function. Experiment changing the argument to see
-    // different examples of signature positioning. Once you decide which is best for your case, you can place the
-    // code directly here. See file util-pades.php
-    'position' => getVisualRepresentationPosition(3)
+    ]
 ];
+// Position of the visual representation. We get the footnote positioning preset and customize it.
+$visualRepresentation['position'] = PadesVisualPositioningPresets::getFootnote(getRestPkiClient());
+$visualRepresentation['position']->auto->container->height = 4.94;
+$visualRepresentation['position']->auto->signatureRectangleSize->width = 8.0;
+$visualRepresentation['position']->auto->signatureRectangleSize->height = 4.94;
+// Set the visual representation to signature.
+$signatureStarter->visualRepresentation = $visualRepresentation;
 
 /*
 	Optionally, add marks to the PDF before signing. These differ from the signature visual representation in that

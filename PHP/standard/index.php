@@ -41,10 +41,10 @@
             </ul>
         </li>
         <li>
-            Sign a batch of files
+            Batch signature
             <ul>
-                <li><a href="batch-signature.php">Simple batch signature</a></li>
-                <li><a href="batch-xml-element-signature.php">Simple batch signature of XML elements on the same document</a></li>
+                <li><a href="batch-signature.php">Simple batch of PAdES signatures</a></li>
+                <li><a href="batch-xml-element-signature.php">Simple batch of XML element signatures on the same document</a></li>
             </ul>
         </li>
     </ul>

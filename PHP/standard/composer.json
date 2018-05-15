@@ -7,6 +7,6 @@
     ]
   },
   "require": {
-    "lacuna/restpki-client": "^2.2.3"
+    "lacuna/restpki-client": "dev-release/2.2.4"
   }
 }

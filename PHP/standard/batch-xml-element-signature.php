@@ -26,11 +26,11 @@ $elementsIds = array_map(function ($id) {
 </head>
 <body>
 
-<?php include 'menu.php' // The top menu, this can be removed entirely ?>
+<?php include 'menu.php' // The top menu, this can be removed entirely. ?>
 
 <div class="container">
 
-    <?php // Messages about the signature process will be rendered in here ?>
+    <?php // Messages about the signature process will be rendered in here. ?>
     <div id="messagesPanel"></div>
 
     <h2>Batch Signature of XML Elements</h2>
@@ -56,7 +56,7 @@ $elementsIds = array_map(function ($id) {
 
         <?php
         // Render a select (combo box) to list the user's certificates. For now it will be
-        // empty, we'll populate it later on (see batch-signature-form.js)
+        // empty, we'll populate it later on (see batch-xml-element-signature-form.js).
         ?>
         <div class="form-group">
             <label for="certificateSelect">Choose a certificate</label>
@@ -66,7 +66,7 @@ $elementsIds = array_map(function ($id) {
         <?php
         // Action buttons. Notice that the "Sign File" button is NOT a submit button. When the user clicks the button,
         // we must first use the Web PKI component to perform the client-side computation necessary and only when
-        // that computation is finished we'll submit the form programmatically (see batch-signature-form.js).
+        // that computation is finished we'll submit the form programmatically (see batch-xml-element-signature-form.js).
         ?>
         <button id="signButton" type="button" class="btn btn-primary">Sign Batch</button>
         <button id="refreshButton" type="button" class="btn btn-default">Refresh Certificates</button>
@@ -89,12 +89,12 @@ $elementsIds = array_map(function ($id) {
 <script src="content/js/batch-xml-element-signature-form.js"></script>
 <script>
     $(document).ready(function () {
-        // Once the page is ready, we call the init() function on the javascript code (see batch-xml-element-signature-form.js)
+        // Once the page is ready, we call the init() function on the javascript code (see batch-xml-element-signature-form.js).
         batchXmlElementSignatureForm.init({
-            elementsIds: <?= json_encode($elementsIds); ?>, // ids of the elements of the document
-            certificateSelect: $('#certificateSelect'),   // the select element (combo box) to list the certificates
-            refreshButton: $('#refreshButton'),           // the "refresh" button
-            signButton: $('#signButton')                  // the button that initiates the operation
+            elementsIds: <?= json_encode($elementsIds); ?>, // The IDs of the elements of the document.
+            certificateSelect: $('#certificateSelect'),     // The <select> element (combo box) to list the certificates.
+            refreshButton: $('#refreshButton'),             // The "refresh" button.
+            signButton: $('#signButton')                    // The button that initiates the operation.
         });
     });
 </script>

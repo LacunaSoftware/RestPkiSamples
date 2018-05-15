@@ -13,8 +13,8 @@ use Lacuna\RestPki\XmlSignatureFinisher;
 // Get the token for this signature (received from the post call, see batch-xml-element-signature-form.js).
 $token = $_POST['token'];
 
-// Get the document id for this signature (received from the POST call, see batch-signature-form.js), if not set,
-// a new file created and passed to the next signatures. This logic is necessary to use only a single file until
+// Get the document id for this signature (received from the POST call, see batch-xml-element-signature-form.js), if not
+// set, a new file created and passed to the next signatures. This logic is necessary to use only a single file until
 // all signatures are complete.
 if (array_key_exists('fileId', $_POST)) {
     $fileId = $_POST['fileId'];

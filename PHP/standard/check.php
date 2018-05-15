@@ -6,7 +6,7 @@ use Lacuna\RestPki\PadesSignatureExplorer;
 use Lacuna\RestPki\StandardSignaturePolicies;
 use Lacuna\RestPki\StandardSecurityContexts;
 
-// Get document ID from query string
+// Get document ID from query string.
 $formattedCode = isset($_GET['c']) ? $_GET['c'] : null;
 if (!isset($formattedCode)) {
     throw new \Exception("No code was provided");
@@ -17,7 +17,7 @@ if (!isset($formattedCode)) {
 // up.
 $verificationCode = parseVerificationCode($formattedCode);
 
-// Get document associated with verification code
+// Get document associated with verification code.
 $fileId = lookupVerificationCode($verificationCode);
 if ($fileId == null) {
     // Invalid code given!
@@ -25,18 +25,28 @@ if ($fileId == null) {
     // the process).
     sleep(2);
 
-    // Inform that the file was not found
+    // Inform that the file was not found.
     die('File not found');
 }
 
-// Open and validate signature with Rest PKI
-$client = getRestPkiClient();
-$sigExplorer = new PadesSignatureExplorer($client);
-$sigExplorer->validate = true;
-$sigExplorer->defaultSignaturePolicy = StandardSignaturePolicies::PADES_BASIC;
-$sigExplorer->securityContext = StandardSecurityContexts::PKI_BRAZIL;
+// Open and validate signature with Rest PKI.
+$sigExplorer = new PadesSignatureExplorer(getRestPkiClient());
+
+// Set the PDF file to be inspected.
 $sigExplorer->setSignatureFileFromPath('app-data/' . $fileId);
 
+// Specify that we want to validate the signatures in the file, not only inspect them.
+$sigExplorer->validate = true;
+
+// Accept any valid PAdES signature as long as the signer is trusted by the security context.
+$sigExplorer->defaultSignaturePolicy = StandardSignaturePolicies::PADES_BASIC;
+
+// Specify the security context. To accept Lacuna Software's test certificates, use the second line.
+$sigExplorer->securityContext = StandardSecurityContexts::PKI_BRAZIL;
+//$sigExplorer->securityContext = StandardSecurityContexts::LACUNA_TEST;
+// For more information, see https://github.com/LacunaSoftware/RestPkiSamples/blob/master/TestCertificates.md
+
+// Call the open() method, which returns the signature file's information.
 $signature = $sigExplorer->open();
 
 ?>

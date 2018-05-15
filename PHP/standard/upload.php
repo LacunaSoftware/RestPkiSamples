@@ -19,16 +19,16 @@ if (isset($_FILES['userfile'])) {
     $filenameParts = explode('.', $file['name']);
     $fileExt = end($filenameParts);
 
-    // Generate a unique filename
+    // Generate a unique filename.
     $filename = uniqid() . ".{$fileExt}";
 
-    // Move the file to the "app-data" folder with the unique filename
-    createAppData(); // make sure the "app-data" folder exists (util.php)
+    // Move the file to the "app-data" folder with the unique filename.
+    createAppData(); // make sure the "app-data" folder exists (util.php).
     if (!move_uploaded_file($file['tmp_name'], "app-data/{$filename}")) {
         die('File upload error');
     }
 
-    // Redirect the user to the PAdES signature page, passing the name of the file as a URL argument
+    // Redirect the user to the PAdES signature page, passing the name of the file as a URL argument.
     header("Location: " . $_GET['goto'] . ".php?userfile={$filename}", true, 302);
     exit;
 
@@ -42,7 +42,7 @@ if (isset($_FILES['userfile'])) {
 </head>
 <body>
 
-<?php include 'menu.php' // The top menu, this can be removed entirely ?>
+<?php include 'menu.php' // The top menu, this can be removed entirely. ?>
 
 <div class="container">
 

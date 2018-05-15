@@ -13,7 +13,7 @@ function getRestPkiClient()
     //                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     // -----------------------------------------------------------------------------------------------------------
 
-    // Throw exception if token is not set (this check is here just for the sake of newcomers, you can remove it)
+    // Throw exception if token is not set (this check is here just for the sake of newcomers, you can remove it).
     if (strpos($restPkiAccessToken, ' API ') !== false) {
         throw new \Exception('The API access token was not set! Hint: to run this sample you must generate an API access token on the REST PKI website and paste it on the file api/util.php');
     }
@@ -85,7 +85,7 @@ function generateVerificationCode()
      * Configuration of the code generation
      * ------------------------------------
      *
-     * - CodeSize   : size of the code in characters
+     * - CodeSize   : size of the code in characters.
      *
      * Entropy
      * -------
@@ -99,7 +99,7 @@ function generateVerificationCode()
      */
     $codeSize = 16;
 
-    // Generate the entropy with PHP's pseudo-random bytes generator function
+    // Generate the entropy with PHP's pseudo-random bytes generator function.
     $numBytes = floor($codeSize / 2);
     $randInt = openssl_random_pseudo_bytes($numBytes);
 
@@ -121,7 +121,7 @@ function formatVerificationCode($code)
      */
     $codeGroups = 4;
 
-    // Return the code separated in groups
+    // Return the code separated in groups.
     $charsPerGroup = (strlen($code) - (strlen($code) % $codeGroups)) / $codeGroups;
     $text = '';
     for ($ind = 0; $ind < strlen($code); $ind++) {

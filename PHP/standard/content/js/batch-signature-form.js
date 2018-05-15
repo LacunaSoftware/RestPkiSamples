@@ -86,7 +86,7 @@ var batchSignatureForm = (function() {
             var docId = batchDocIds[i];
             docList.append(
                 $('<li />').append(
-                    $('<a />').text('Document ' + docId).attr('href', "content/" + docId + ".pdf")
+                    $('<a />').text('Document ' + docId).attr('href', "content/0" + (docId % 10) + ".pdf")
                 )
             );
         }
@@ -121,12 +121,6 @@ var batchSignatureForm = (function() {
         // Call the listCertificates() method to list the user's certificates. For more information see
         // http://webpki.lacunasoftware.com/Help/classes/LacunaWebPKI.html#method_listCertificates
         pki.listCertificates({
-
-            // specify that expired certificates should be ignored
-            filter: pki.filters.isWithinValidity,
-
-            // in order to list only certificates within validity period and having a CPF (ICP-Brasil), use this instead:
-            //filter: pki.filters.all(pki.filters.hasPkiBrazilCpf, pki.filters.isWithinValidity),
 
             // id of the select to be populated with the certificates
             selectId: 'certificateSelect',
@@ -215,9 +209,8 @@ var batchSignatureForm = (function() {
     function startSignature(step, done) {
         // Call the server asynchronously to start the signature (the server will call REST PKI and will return the signature operation token)
         $.ajax({
-            url: 'batch-signature-start.php',
+            url: 'batch-signature-start.php?id=' + step.docId,
             method: 'POST',
-            data: 'id=' + step.docId,
             dataType: 'json',
             success: function (token) {
                 // Add the token to the document information (we'll need it in the second step)
@@ -271,7 +264,9 @@ var batchSignatureForm = (function() {
         $.ajax({
             url: 'batch-signature-complete.php',
             method: 'POST',
-            data:  "token=" + step.token, // The signature process token is guaranteed to be URL-safe
+            data: {
+                token: step.token // The signature process token is guaranteed to be URL-safe
+            },
             dataType: 'json',
             success: function (filename) {
                 step.filename = filename;

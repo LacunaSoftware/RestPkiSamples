@@ -11,46 +11,47 @@
 require __DIR__ . '/vendor/autoload.php';
 
 use Lacuna\RestPki\PadesSignatureStarter;
+use Lacuna\RestPki\PadesVisualPositioningPresets;
 use Lacuna\RestPki\StandardSignaturePolicies;
 use Lacuna\RestPki\PadesMeasurementUnits;
 use Lacuna\RestPki\StandardSecurityContexts;
 
 // Instantiate the PadesSignatureStarter class, responsible for receiving the signature elements and start the signature
-// process
+// process.
 $signatureStarter = new PadesSignatureStarter(getRestPkiClient());
 
-// Set the unit of measurement used to edit the pdf marks and visual representations
+// If the user was redirected here by upload.php (signature with file uploaded by user), the "userfile" URL argument
+// will contain the filename under the "app-data" folder. Otherwise (signature with server file), we'll sign a sample
+// document.
+$userfile = isset($_GET['userfile']) ? $_GET['userfile'] : null;
+if (!empty($userfile)) {
+    $signatureStarter->setPdfToSignFromPath("app-data/{$userfile}");
+} else {
+    $signatureStarter->setPdfToSignFromPath('content/SampleDocument.pdf');
+}
+
+// Set the signature policy.
+$signatureStarter->signaturePolicy = StandardSignaturePolicies::PADES_BASIC;
+
+// Set the security context. To accept Lacuna Software's test certificates, use the second line.
+$signatureStarter->securityContext = StandardSecurityContexts::PKI_BRAZIL;
+//$signatureStarter->securityContext = StandardSecurityContexts::LACUNA_TEST;
+// For more information, see https://github.com/LacunaSoftware/RestPkiSamples/blob/master/TestCertificates.md
+
+// Set the unit of measurement used to edit the pdf marks and visual representations.
 $signatureStarter->measurementUnits = PadesMeasurementUnits::CENTIMETERS;
 
-// Set the signature policy
-$signatureStarter->signaturePolicy = StandardSignaturePolicies::PADES_BASIC_WITH_ICPBR_CERTS;
-
-// Alternative option: add a ICP-Brasil timestamp to the signature
-//$signatureStarter->signaturePolicy = StandardSignaturePolicies::PADES_T_WITH_ICPBR_CERTS;
-
-// Alternative option: PAdES Basic with PKIs trusted by Windows
-//$signatureStarter->signaturePolicy = StandardSignaturePolicies::PADES_BASIC;
-//$signatureStarter->securityContext = StandardSecurityContexts::WINDOWS_SERVER;
-
-// Alternative option: PAdES Basic with a custom security context containting, for instance, your private PKI certificate
-//$signatureStarter->signaturePolicy = StandardSignaturePolicies::PADES_BASIC;
-//$signatureStarter->securityContext = 'ID OF YOUR CUSTOM SECURITY CONTEXT';
-
-// Set the visual representation for the signature
-$signatureStarter->visualRepresentation = [
+// Create a visual representation.
+$visualRepresentation = [
 
     'text' => [
 
-        // The tags {{name}} and {{national_id}} will be substituted according to the user's certificate
-        //
-        //  name        : full name of the signer
-        //  national_id : if the certificate is ICP-Brasil, contains the signer's CPF
-        //
         // For a full list of the supported tags, see: https://github.com/LacunaSoftware/RestPkiSamples/blob/master/PadesTags.md
         'text' => 'Signed by {{name}} ({{national_id}})',
-        // Specify that the signing time should also be rendered
+        'fontSize' => 13.0,
+        // Specify that the signing time should also be rendered.
         'includeSigningTime' => true,
-        // Optionally set the horizontal alignment of the text ('Left' or 'Right'), if not set the default is Left
+        // Optionally set the horizontal alignment of the text ('Left' or 'Right'), if not set the default is Left.
         'horizontalAlign' => 'Left',
         // Optionally set the container within the signature rectangle on which to place the text. By default, the
         // text can occupy the entire rectangle (how much of the rectangle the text will actually fill depends on the
@@ -64,36 +65,24 @@ $signatureStarter->visualRepresentation = [
     ],
     'image' => [
 
-        // We'll use as background the image content/PdfStamp.png
+        // We'll use as background the image content/PdfStamp.png.
         'resource' => [
-            'content' => base64_encode(getPdfStampContent()),
+            'content' => base64_encode(file_get_contents('content/PdfStamp.png')),
             'mimeType' => 'image/png'
         ],
-        // Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is completely opaque).
-        'opacity' => 50,
-        // Align the image to the right
+        // Align the image to the right.
         'horizontalAlign' => 'Right',
-        // Align the image to the center
+        // Align the image to the center.
         'verticalAlign' => 'Center',
-
-    ],
-    // Position of the visual representation. We have encapsulated this code in a function to include several
-    // possibilities depending on the argument passed to the function. Experiment changing the argument to see
-    // different examples of signature positioning. Once you decide which is best for your case, you can place the
-    // code directly here. See file util-pades.php
-    'position' => getVisualRepresentationPosition(1)
-
+    ]
 ];
-
-// If the user was redirected here by upload.php (signature with file uploaded by user), the "userfile" URL argument
-// will contain the filename under the "app-data" folder. Otherwise (signature with server file), we'll sign a sample
-// document.
-$userfile = isset($_GET['userfile']) ? $_GET['userfile'] : null;
-if (!empty($userfile)) {
-    $signatureStarter->setPdfToSignFromPath("app-data/{$userfile}");
-} else {
-    $signatureStarter->setPdfToSignFromPath('content/SampleDocument.pdf');
-}
+// Position of the visual representation. We get the footnote positioning preset and customize it.
+$visualRepresentation['position'] = PadesVisualPositioningPresets::getFootnote(getRestPkiClient());
+$visualRepresentation['position']->auto->container->height = 4.94;
+$visualRepresentation['position']->auto->signatureRectangleSize->width = 8.0;
+$visualRepresentation['position']->auto->signatureRectangleSize->height = 4.94;
+// Set the visual representation to signature.
+$signatureStarter->visualRepresentation = $visualRepresentation;
 
 /*
 	Optionally, add marks to the PDF before signing. These differ from the signature visual representation in that
@@ -152,7 +141,7 @@ setExpiredPage();
 
         <?php
         // Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it
-        // later on (see javascript below).
+        // later on (see signature-form.js).
         ?>
         <div class="form-group">
             <label for="certificateSelect">Choose a certificate</label>
@@ -162,7 +151,7 @@ setExpiredPage();
         <?php
         // Action buttons. Notice that the "Sign File" button is NOT a submit button. When the user clicks the button,
         // we must first use the Web PKI component to perform the client-side computation necessary and only when
-        // that computation is finished we'll submit the form programmatically (see javascript below).
+        // that computation is finished we'll submit the form programmatically (see signature-form.js).
         ?>
         <button id="signButton" type="button" class="btn btn-primary">Sign File</button>
         <button id="refreshButton" type="button" class="btn btn-default">Refresh Certificates</button>
@@ -183,13 +172,13 @@ setExpiredPage();
 <script src="content/js/signature-form.js"></script>
 <script>
     $(document).ready(function () {
-        // Once the page is ready, we call the init() function on the javascript code (see signature-form.js)
+        // Once the page is ready, we call the init() function on the javascript code (see signature-form.js).
         signatureForm.init({
-            token: '<?= $token ?>',                     // token acquired from REST PKI
-            form: $('#signForm'),                       // the form that should be submitted when the operation is complete
-            certificateSelect: $('#certificateSelect'), // the select element (combo box) to list the certificates
-            refreshButton: $('#refreshButton'),         // the "refresh" button
-            signButton: $('#signButton')                // the button that initiates the operation
+            token: '<?= $token ?>',                     // The token acquired from REST PKI.
+            form: $('#signForm'),                       // The form that should be submitted when the operation is complete.
+            certificateSelect: $('#certificateSelect'), // The <select> element (combo box) to list the certificates.
+            refreshButton: $('#refreshButton'),         // The "refresh" button.
+            signButton: $('#signButton')                // The button that initiates the operation.
         });
     });
 </script>
