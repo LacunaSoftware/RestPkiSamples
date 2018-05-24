@@ -2,7 +2,7 @@ extends layout
 
 block content
 	p
-	- if (isValid) {
+	- if (validationResults.isValid()) {
 		h2 Authentication Success
 		
 		p
@@ -21,14 +21,10 @@ block content
 					li OAB: #{certificate.pkiBrazil.oabNumero} #{certificate.pkiBrazil.oabUF}
 
 	- } else {
-		//- Function to convert Validation Results to string idented
-		- function validationResultsToString(vr, ident) {	var text = '';	var itemIdent = ident + '\t';	var i = i;		text += ident + 'Errors:\n';	for (i=0; i<vr.errors.length; i++) {		text += itemIdent + vr.errors[i].message;		if (vr.errors[i].detail) {			text += ' (' + vr.errors[i].detail + ')';		}		text += '\n';		if (vr.errors[i].innerValidationResults) {			text += validationResultsToString(vr.errors[i].innerValidationResults, ident + '\t');		}	}		text += ident + 'Warnings:\n';	for (i=0; i<vr.warnings.length; i++) {		text += itemIdent + vr.warnings[i].message;		if (vr.warnings[i].detail) {			text += ' (' + vr.warnings[i].detail + ')';		}		text += '\n';		if (vr.warnings[i].innerValidationResults) {			text += validationResultsToString(vr.warnings[i].innerValidationResults, ident + '\t');		}	}		text += ident + 'Passed Checks:\n';	for (i=0; i<vr.passedChecks.length; i++) {		text += itemIdent + vr.passedChecks[i].message;		if (vr.passedChecks[i].detail) {			text += ' (' + vr.passedChecks[i].detail + ')';		}		text += '\n';		if (vr.passedChecks[i].innerValidationResults) {			text += validationResultsToString(vr.passedChecks[i].innerValidationResults, ident + '\t');		}	}	return text;};
-		
 		h2 Authentication Failed
+
+		p Validation Results:
+
 		p
-		| Validation Results:
-		
-		p
-		textarea(id="theTextarea" rows="30" cols="120")
-			| #{validationResultsToString(validationResults, '')}
+			textarea(id="text" rows="30" cols="120") #{validationResults.toString()}
 	- }

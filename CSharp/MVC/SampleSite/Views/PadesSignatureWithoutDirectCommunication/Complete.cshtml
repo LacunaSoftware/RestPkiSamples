@@ -1,0 +1,54 @@
+﻿@using Lacuna.RestPki.SampleSite.Models
+@model SignatureCompleteModel
+
+<h2>PAdES Signature without direct communication between Web PKI and REST PKI</h2>
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "signForm", role = "form" })) {
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+
+    @* 
+        Hidden fields used to pass data from the action to the "signature form" javascript (see below) and
+        vice-versa 
+    *@
+    @Html.HiddenFor(m => m.CertThumb, new { id = "certThumb" })
+    @Html.HiddenFor(m => m.ToSignHash, new { id = "toSignHash" })
+    @Html.HiddenFor(m => m.Signature, new { id = "signature" })
+    @Html.HiddenFor(m => m.Token, new { id = "token" })
+    @Html.HiddenFor(m => m.DigestAlgorithmOid, new { id = "digestAlgorithmOid" })
+
+    @Html.ActionLink("Try Again", "Index", null, new { id = "tryAgainButton", @class = "btn btn-default", style = "display: none;" })
+}
+
+@section Scripts {
+
+    @*
+        The file below contains the JS lib for accessing the Web PKI component. For more information, see:
+        https://docs.lacunasoftware.com/en-us/articles/web-pki/index.html
+    *@
+    <script src="@Url.Content("~/Content/js/lacuna-web-pki-2.6.1.js")"></script>
+
+    @*
+        The file below contains the logic for calling the Web PKI component. It is only an example, feel free
+        to alter it to meet your application's needs. You can also bring the code into the javascript block
+        below if you prefer.
+    *@
+    <script src="@Url.Content("~/Content/js/signature-complete-form.js")"></script>
+    <script>
+        var formIsValid = @Html.Raw(Json.Encode(ViewData.ModelState.IsValid));
+        $(document).ready(function () {
+            // Once the page is ready, we call the init() function on the javascript code (see
+            // signature-complete-form.js).
+            signatureCompleteForm.init({
+                form: $('#signForm'),                   // The form that should be submitted.
+                tryAgainButton: $('#tryAgainButton'),   // The "try again" button.
+                formIsValid: formIsValid,               // The indication to show the "try again" button.
+                certThumbField: $('#certThumb'),        // The "certThumb" hidden field reference.
+                toSignHashField: $('#toSignHash'),      // The "toSignHash" hidden field reference.
+                signatureField: $('#signature'),        // The "signature" hidden field reference.
+                digestAlgorithmOidField: $('#digestAlgorithmOid')  // The "digestAlgorithmOid" hidden field
+                                                                   // reference.
+            });
+        })
+    </script>
+
+}

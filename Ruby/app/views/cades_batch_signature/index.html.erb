@@ -14,7 +14,7 @@
       <p>
         You'll be signing the following files:
         <!-- UL element to hold the batch's documents (we'll render these programatically -->
-        <!--see cades-batch-signature-form.js)-->
+        <!--see batch-signature-form.js)-->
         <ul id="docList"/>
       </p>
     </div>
@@ -49,16 +49,17 @@
   The file below contains the logic for calling the Web PKI component. It is only an example, feel free to alter it
   to meet your application's needs. You can also bring the code into the javascript block below if you prefer.
 -->
-<%= javascript_include_tag 'cades-batch-signature-form' %>
+<%= javascript_include_tag 'batch-signature-form' %>
 <script type="text/javascript" charset="utf-8">
   $(document).ready(function () {
-    // Once the page is ready, we call the init() function on the javascript code (see cades-batch-signature-form.js)
+    // Once the page is ready, we call the init() function on the javascript code (see batch-signature-form.js)
     cadesBatchSignatureForm.init({
       documentsIds: <%= raw @documents_ids.to_json %>,  // ids of documents
       errorPanel: $('#errorPanel'),                // the panel, where will be shown a error, when it occurs
       certificateSelect: $('#certificateSelect'),  // the select element (combo box) to list the certificates
       refreshButton: $('#refreshButton'),          // the "refresh" button
-      signButton: $('#signButton')                 // the button that initiates the operation
+      signButton: $('#signButton'),                // the button that initiates the operation
+      sampleApi: 'cades_batch_signature'                 // the API route to be called by javascript code
     });
   });
 </script>

@@ -1,0 +1,33 @@
+﻿@using Lacuna.RestPki.SampleSite.Models
+@model SignatureInfoModel
+
+<h2>PAdES Signature without direct communication between Web PKI and REST PKI</h2>
+
+<p>File signed successfully!</p>
+
+<p>
+    Signer information:
+    <ul>
+        <li>Subject: @Model.SignerCertificate.SubjectName.CommonName</li>
+        <li>Email: @Model.SignerCertificate.EmailAddress</li>
+        <li>
+            ICP-Brasil fields
+            <ul>
+                <li>Tipo de certificado: @Model.SignerCertificate.PkiBrazil.CertificateType</li>
+                <li>CPF: @Model.SignerCertificate.PkiBrazil.Cpf</li>
+                <li>Responsavel: @Model.SignerCertificate.PkiBrazil.Responsavel</li>
+                <li>Empresa: @Model.SignerCertificate.PkiBrazil.CompanyName</li>
+                <li>CNPJ: @Model.SignerCertificate.PkiBrazil.Cnpj</li>
+                <li>RG: @Model.SignerCertificate.PkiBrazil.RGNumero @Model.SignerCertificate.PkiBrazil.RGEmissor @Model.SignerCertificate.PkiBrazil.RGEmissorUF</li>
+                <li>OAB: @Model.SignerCertificate.PkiBrazil.OabNumero @Model.SignerCertificate.PkiBrazil.OabUF</li>
+            </ul>
+        </li>
+    </ul>
+</p>
+
+<h3>Actions:</h3>
+<ul>
+    <li><a href="/Download/File/@Model.File">Download the signed file</a></li>
+    <li><a href="/OpenPadesSignature?userfile=@Model.File">Open/validate the signed file</a></li>
+</ul>
+

@@ -1,4 +1,4 @@
-package sample.controller.util;
+package sample.util;
 
 import com.lacunasoftware.restpki.*;
 import sample.util.Util;
