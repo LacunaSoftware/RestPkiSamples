@@ -4,104 +4,105 @@
 // -----------------------------------------------------------------------------------------------------
 var batchXmlElementSignatureForm = (function() {
 
-    // Auxiliary global variables
+    // Auxiliary global variables.
     var selectedCertThumbprint = null;
     var batchElemIds = null;
     var errors = 0;
 
-    // Create an instance of the LacunaWebPKI object
-    var pki = new LacunaWebPKI();
+    // Create an instance of the LacunaWebPKI object.
+    var pki = new LacunaWebPKI(_webPkiLicense);
 
     // -------------------------------------------------------------------------------------------------
-    // Function called once the page is loaded
+    // Function called once the page is loaded.
     // -------------------------------------------------------------------------------------------------
     function init(args) {
 
-        // Receive the documents ids
+        // Receive the documents IDs.
         batchElemIds = args.elementsIds;
 
-        // Wireup of button clicks
+        // Wireup of button clicks.
         args.signButton.click(sign);
         args.refreshButton.click(refresh);
 
-        // Block the UI while we get things ready
+        // Block the UI while we get things ready.
         $.blockUI({ message: "Initializing ..." });
 
-        // Call the init() method on the LacunaWebPKI object, passing a callback for when
-        // the component is ready to be used and another to be called when an error occurrs
-        // on any of the subsequent operations. For more information, see:
-        // https://webpki.lacunasoftware.com/#/Documentation#coding-the-first-lines
+        // Call the init() method on the LacunaWebPKI object, passing a callback for when the component
+        // is ready to be used and another to be called when an error occurs on any of the subsequent
+        // operations. For more information, see:
+        // http://docs.lacunasoftware.com/en-us/articles/web-pki/get-started.html
         // http://webpki.lacunasoftware.com/Help/classes/LacunaWebPKI.html#method_init
         pki.init({
-            ready: loadCertificates, // as soon as the component is ready we'll load the certificates
-            defaultError: onWebPkiError // generic error callback
+            ready: loadCertificates, // As soon as the component is ready we'll load the certificates.
+            defaultError: onWebPkiError, // Generic error callback.
+            restPkiUrl: _restPkiEndpoint
         });
     }
 
     // -------------------------------------------------------------------------------------------------
-    // Function called when the user clicks the "Refresh" button
+    // Function called when the user clicks the "Refresh" button.
     // -------------------------------------------------------------------------------------------------
     function refresh() {
-        // Block the UI while we load the certificates
+        // Block the UI while we load the certificates.
         $.blockUI({ message: "Initializing ..." });
-        // Invoke the loading of the certificates
+        // Invoke the loading of the certificates.
         loadCertificates();
     }
 
     // -------------------------------------------------------------------------------------------------
-    // Function that loads the certificates, either on startup or when the user
-    // clicks the "Refresh" button. At this point, the UI is already blocked.
+    // Function that loads the certificates, either on startup or when the user clicks the "Refresh"
+    // button. At this point, the UI is already blocked.
     // -------------------------------------------------------------------------------------------------
     function loadCertificates() {
 
-        // Call the listCertificates() method to list the user's certificates. For more information see
+        // Call the listCertificates() method to list the user's certificates. For more information see:
         // http://webpki.lacunasoftware.com/Help/classes/LacunaWebPKI.html#method_listCertificates
         pki.listCertificates({
 
-            // specify that expired certificates should be ignored
-            filter: pki.filters.isWithinValidity,
-
-            // in order to list only certificates within validity period and having a CPF (ICP-Brasil), use this instead:
-            //filter: pki.filters.all(pki.filters.hasPkiBrazilCpf, pki.filters.isWithinValidity),
-
-            // id of the select to be populated with the certificates
+            // The ID of the <select> element to be populated with the certificates.
             selectId: 'certificateSelect',
 
-            // function that will be called to get the text that should be displayed for each option
+            // Function that will be called to get the text that should be displayed for each option.
             selectOptionFormatter: function (cert) {
-                return cert.subjectName + ' (issued by ' + cert.issuerName + ')';
+                var s = cert.subjectName + ' (issued by ' + cert.issuerName + ')';
+                if (new Date() > cert.validityEnd) {
+                    s = '[EXPIRED] ' + s;
+                }
+                return s;
             }
 
         }).success(function () {
 
-            // once the certificates have been listed, unblock the UI
+            // Once the certificates have been listed, unblock the UI.
             $.unblockUI();
 
         });
     }
 
     // -------------------------------------------------------------------------------------------------
-    // Function called when the user clicks the "Sign Batch" button
+    // Function called when the user clicks the "Sign Batch" button.
     // -------------------------------------------------------------------------------------------------
     function sign() {
 
         $("#messagesPanel").text('');
 
-        // Block the UI while we perform the signature
+        // Block the UI while we perform the signature.
         $.blockUI({ message: "Signing (<span id='signNum'>1</span>/" + batchElemIds.length + ") ..." });
 
-        // Get the thumbprint of the selected certificate and store it in a global variable (we'll need it later)
+        // Get the thumbprint of the selected certificate and store it in a global variable (we'll need
+        // it later).
         selectedCertThumbprint = $('#certificateSelect').val();
 
-        // Call Web PKI to preauthorize the signatures, so that the user only sees one confirmation dialog
+        // Call Web PKI to preauthorize the signatures, so that the user only sees one confirmation
+        // dialog.
         pki.preauthorizeSignatures({
             certificateThumbprint: selectedCertThumbprint,
-            signatureCount: batchElemIds.length // number of signatures to be authorized by the user
-        }).success(startBatch); // callback to be called if the user authorizes the signatures
+            signatureCount: batchElemIds.length // Number of signatures to be authorized by the user.
+        }).success(startBatch); // Callback to be called if the user authorizes the signatures.
     }
 
     // -------------------------------------------------------------------------------------------------
-    // Function called when the user authorizes the signatures
+    // Function called when the user authorizes the signatures.
     // -------------------------------------------------------------------------------------------------
     function startBatch() {
         startSignature({ elemId: 0 });
@@ -109,13 +110,13 @@ var batchXmlElementSignatureForm = (function() {
 
     function startSignature(step) {
 
-        // Verify if there more elements to be signed
+        // Verify if there more elements to be signed.
         if (step.elemId >= batchElemIds.length) {
             onBatchCompleted(step.fileId);
             return;
         }
 
-        // Update signature number
+        // Update signature number.
         $('#signNum').text(step.elemId + 1);
 
         $.ajax({
@@ -131,7 +132,7 @@ var batchXmlElementSignatureForm = (function() {
                 performSignature(step);
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                // Render error and stop signature
+                // Render error and stop signature.
                 addAlert('danger', 'An error has occurred while signing element\'s id \"' + batchElemIds[step.elemId] + '\": ' + (errorThrown || textStatus));
                 $.unblockUI();
             }
@@ -139,15 +140,16 @@ var batchXmlElementSignatureForm = (function() {
     }
 
     function performSignature(step) {
-        // Call signWithRestPki() on the Web PKI component passing the token received from REST PKI and the certificate selected by the user.
+        // Call signWithRestPki() on the Web PKI component passing the token received from REST PKI and
+        // the certificate selected by the user.
         pki.signWithRestPki({
             token: step.token,
             thumbprint: selectedCertThumbprint
         }).success(function () {
-            // Complete signature with REST PKI
+            // Complete signature with REST PKI.
             completeSignature(step);
         }).error(function (error) {
-            // Render error and stop signature
+            // Render error and stop signature.
             addAlert('danger', 'An error has occurred while signing element\'s id \"' + batchElemIds[step.elemId] + '\": ' + error);
             $.unblockUI();
         });
@@ -165,12 +167,12 @@ var batchXmlElementSignatureForm = (function() {
             dataType: 'json',
             success: function (fileId) {
                 step.fileId = fileId;
-                // Start the new signature
+                // Start the new signature.
                 step.elemId++;
                 startSignature({ elemId: step.elemId, fileId: fileId});
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                // Render error and stop signature
+                // Render error and stop signature.
                 addAlert('danger', 'An error has occurred while signing element\'s id \"' + batchElemIds[step.elemId] + '\": ' + (errorThrown || textStatus));
                 $.unblockUI();
             }
@@ -182,13 +184,13 @@ var batchXmlElementSignatureForm = (function() {
     // -------------------------------------------------------------------------------------------------
     function onBatchCompleted(filename) {
 
-        // Unblock the UI
+        // Unblock the UI.
         $.unblockUI();
 
-        // Prevent user from clicking "sign batch" again (our logic isn't prepared for that)
+        // Prevent user from clicking "sign batch" again (our logic isn't prepared for that).
         $('#signButton').prop('disabled', true);
 
-        // Show signature results
+        // Show signature results.
         $('#signedFileLink').attr('href', 'app-data/' + filename);
         $('#openSignatureLink').attr('href', 'open-xml-signature.php?userfile=' + filename);
         $('#signatureResult').show();
@@ -196,22 +198,22 @@ var batchXmlElementSignatureForm = (function() {
     }
 
     // -------------------------------------------------------------------------------------------------
-    // Function called if an error occurs on the Web PKI component
+    // Function called if an error occurs on the Web PKI component.
     // -------------------------------------------------------------------------------------------------
     function onWebPkiError(message, error, origin) {
-        // Unblock the UI
+        // Unblock the UI.
         $.unblockUI();
-        // Log the error to the browser console (for debugging purposes)
+        // Log the error to the browser console (for debugging purposes).
         if (console) {
             console.log('An error has occurred on the signature browser component: ' + message, error);
         }
-        // Show the message to the user. You might want to substitute the alert below with a more user-friendly UI
-        // component to show the error.
+        // Show the message to the user. You might want to substitute the alert below with a more
+        // user-friendly UI component to show the error.
         alert(message);
     }
 
     // -------------------------------------------------------------------------------------------------
-    // Function called to notify the user with some message
+    // Function called to notify the user with some message.
     // -------------------------------------------------------------------------------------------------
     function addAlert(type, message) {
         $('#messagesPanel').append(

@@ -58,10 +58,8 @@ if (!empty($userfile)) {
 // Set the signature policy.
 $signatureStarter->signaturePolicy = StandardSignaturePolicies::CADES_ICPBR_ADR_BASICA;
 
-// Set the security context. To accept Lacuna Software's test certificates, use the second line.
-$signatureStarter->securityContext = StandardSecurityContexts::PKI_BRAZIL;
-//$signatureStarter->securityContext = StandardSecurityContexts::LACUNA_TEST;
-// For more information, see https://github.com/LacunaSoftware/RestPkiSamples/blob/master/TestCertificates.md
+// Set the security context. We have encapsulated the security context choice on util.php.
+$signatureStarter->securityContext = getSecurityContextId();
 
 // Optionally, set whether the content should be encapsulated in the resulting CMS. If this parameter is omitted,
 // the following rules apply:
@@ -137,7 +135,7 @@ setExpiredPage();
 // The file below contains the JS lib for accessing the Web PKI component. For more information, see:
 // https://webpki.lacunasoftware.com/#/Documentation
 ?>
-<script src="content/js/lacuna-web-pki-2.6.1.js"></script>
+<script src="content/js/lacuna-web-pki-2.9.0.js"></script>
 
 <?php
 // The file below contains the logic for calling the Web PKI component. It is only an example, feel free to alter it

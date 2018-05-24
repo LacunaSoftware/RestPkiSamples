@@ -50,48 +50,9 @@ $signatureStarter->signaturePolicy = StandardSignaturePolicies::PADES_BASIC;
 // above ("Pierre de Fermat"). This security context should be used ***** FOR DEVELOPMENT PUPOSES ONLY ****.
 $signatureStarter->securityContext = StandardSecurityContexts::LACUNA_TEST;
 
-// Create a visual representation.
-$visualRepresentation = [
-
-    'text' => [
-
-        // For a full list of the supported tags, see: https://github.com/LacunaSoftware/RestPkiSamples/blob/master/PadesTags.md
-        'text' => 'Signed by {{name}} ({{national_id}})',
-        'fontSize' => 13.0,
-        // Specify that the signing time should also be rendered.
-        'includeSigningTime' => true,
-        // Optionally set the horizontal alignment of the text ('Left' or 'Right'), if not set the default is Left.
-        'horizontalAlign' => 'Left',
-        // Optionally set the container within the signature rectangle on which to place the text. By default, the
-        // text can occupy the entire rectangle (how much of the rectangle the text will actually fill depends on the
-        // length and font size). Below, we specify that the text should respect a right margin of 1.5 cm.
-        'container' => [
-            'left' => 0,
-            'top' => 0,
-            'right' => 1.5,
-            'bottom' => 0
-        ]
-    ],
-    'image' => [
-
-        // We'll use as background the image content/PdfStamp.png.
-        'resource' => [
-            'content' => base64_encode(file_get_contents('content/PdfStamp.png')),
-            'mimeType' => 'image/png'
-        ],
-        // Align the image to the right.
-        'horizontalAlign' => 'Right',
-        // Align the image to the center.
-        'verticalAlign' => 'Center',
-    ]
-];
-// Position of the visual representation. We get the footnote positioning preset and customize it.
-$visualRepresentation['position'] = PadesVisualPositioningPresets::getFootnote(getRestPkiClient());
-$visualRepresentation['position']->auto->container->height = 4.94;
-$visualRepresentation['position']->auto->signatureRectangleSize->width = 8.0;
-$visualRepresentation['position']->auto->signatureRectangleSize->height = 4.94;
-// Set the visual representation to signature.
-$signatureStarter->visualRepresentation = $visualRepresentation;
+// Set the visual representation to the signature. We have encapsulated this code (on util-pades.php) to be used on
+// various PAdES examples.
+$signatureStarter->visualRepresentation = getVisualRepresentation(getRestPkiClient());
 
 /*
 	Optionally, add marks to the PDF before signing. These differ from the signature visual representation in that
@@ -99,7 +60,7 @@ $signatureStarter->visualRepresentation = $visualRepresentation;
 	of marks can be added, for instance one per page, whereas there can only be one visual representation per signature.
 	However, since the marks are in reality changes to the PDF, they can only be added to documents which have no
     previous signatures, otherwise such signatures would be made invalid by the changes to the document (see property
-	PadesSignatureStarter.BypassMarksIfSigned). This problem does not occurr with signature visual representations.
+	PadesSignatureStarter::bypassMarksIfSigned). This problem does not occurr with signature visual representations.
 
 	We have encapsulated this code in a method to include several possibilities depending on the argument passed.
 	Experiment changing the argument to see different examples of PDF marks. Once you decide which is best for your

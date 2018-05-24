@@ -16,10 +16,9 @@ $auth = new Authentication(getRestPkiClient());
 // Call the startWithWebPki() method, which initiates the authentication. This yields the "token", a 22-character
 // case-sensitive URL-safe string, which represents this authentication process. We'll use this value to call the
 // signWithRestPki() method on the Web PKI component (see javascript below) and also to call the completeWithWebPki()
-// method on the file authentication-action.php. This should not be mistaken with the API access token. To accept
-// Lacuna Software's test certificates, use the second line.
-$token = $auth->startWithWebPki(StandardSecurityContexts::PKI_BRAZIL);
-//$token = $auth->startWithWebPki(StandardSecurityContexts::LACUNA_TEST);
+// method on the file authentication-action.php. This should not be mistaken with the API access token. We have
+// encapsulated the security context choice on util.php.
+$token = $auth->startWithWebPki(getSecurityContextId());
 
 // The token acquired above can only be used for a single authentication. In order to retry authenticating it is
 // necessary to get a new token. This can be a problem if the user uses the back button of the browser, since the
@@ -71,7 +70,7 @@ setExpiredPage();
 // The file below contains the JS lib for accessing the Web PKI component. For more information, see:
 // https://webpki.lacunasoftware.com/#/Documentation
 ?>
-<script src="content/js/lacuna-web-pki-2.6.1.js"></script>
+<script src="content/js/lacuna-web-pki-2.9.0.js"></script>
 
 <?php
 // The file below contains the logic for calling the Web PKI component. It is only an example, feel free to alter it

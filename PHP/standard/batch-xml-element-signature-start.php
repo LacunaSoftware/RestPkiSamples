@@ -39,10 +39,8 @@ $signatureStarter->toSignElementId = $elemId;
 // Set the signature policy.
 $signatureStarter->signaturePolicy = StandardSignaturePolicies::XML_ICPBR_NFE_PADRAO_NACIONAL;
 
-// Set the security context. To accept Lacuna Software's test certificates, use the second line.
-$signatureStarter->securityContext = StandardSecurityContexts::PKI_BRAZIL;
-//$signatureStarter->securityContext = StandardSecurityContexts::LACUNA_TEST;
-// For more information, see https://github.com/LacunaSoftware/RestPkiSamples/blob/master/TestCertificates.md
+// Set the security context. We have encapsulated the security context choice on util.php.
+$signatureStarter->securityContext = getSecurityContextId();
 
 // Call the startWithWebPki() method, which initiates the signature. This yields the token, a 43-character
 // case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the

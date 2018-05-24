@@ -41,10 +41,8 @@ $sigExplorer->validate = true;
 // Accept any valid PAdES signature as long as the signer is trusted by the security context.
 $sigExplorer->defaultSignaturePolicy = StandardSignaturePolicies::PADES_BASIC;
 
-// Specify the security context. To accept Lacuna Software's test certificates, use the second line.
-$sigExplorer->securityContext = StandardSecurityContexts::PKI_BRAZIL;
-//$sigExplorer->securityContext = StandardSecurityContexts::LACUNA_TEST;
-// For more information, see https://github.com/LacunaSoftware/RestPkiSamples/blob/master/TestCertificates.md
+// Specify the security context. We have encapsulated choice on util.php.
+$sigExplorer->securityContext = getSecurityContextId();
 
 // Call the open() method, which returns the signature file's information.
 $signature = $sigExplorer->open();

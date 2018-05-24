@@ -28,10 +28,8 @@ $sigExplorer->validate = true;
 // Accept only 100%-compliant ICP-Brasil signatures as long as the signer is trusted by the security context.
 $sigExplorer->acceptableExplicitPolicies = StandardSignaturePolicyCatalog::getPkiBrazilCades();
 
-// Specify the security context. To accept Lacuna Software's test certificates, use the second line.
-$sigExplorer->securityContext = StandardSecurityContexts::PKI_BRAZIL;
-//$sigExplorer->securityContext = StandardSecurityContexts::LACUNA_TEST;
-// For more information, see https://github.com/LacunaSoftware/RestPkiSamples/blob/master/TestCertificates.md
+// Specify the security context. We have encapsulated the security context choice on util.php.
+$sigExplorer->securityContext = getSecurityContextId();
 
 // Call the open() method, which returns the signature file's information
 $signature = $sigExplorer->open();

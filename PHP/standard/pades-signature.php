@@ -33,64 +33,23 @@ if (!empty($userfile)) {
 // Set the signature policy.
 $signatureStarter->signaturePolicy = StandardSignaturePolicies::PADES_BASIC;
 
-// Set the security context. To accept Lacuna Software's test certificates, use the second line.
-$signatureStarter->securityContext = StandardSecurityContexts::PKI_BRAZIL;
-//$signatureStarter->securityContext = StandardSecurityContexts::LACUNA_TEST;
-// For more information, see https://github.com/LacunaSoftware/RestPkiSamples/blob/master/TestCertificates.md
+// Set the security context. We have encapsulated the security context choice on util.php.
+$signatureStarter->securityContext = getSecurityContextId();
 
 // Set the unit of measurement used to edit the pdf marks and visual representations.
 $signatureStarter->measurementUnits = PadesMeasurementUnits::CENTIMETERS;
 
-// Create a visual representation.
-$visualRepresentation = [
-
-    'text' => [
-
-        // For a full list of the supported tags, see: https://github.com/LacunaSoftware/RestPkiSamples/blob/master/PadesTags.md
-        'text' => 'Signed by {{name}} ({{national_id}})',
-        'fontSize' => 13.0,
-        // Specify that the signing time should also be rendered.
-        'includeSigningTime' => true,
-        // Optionally set the horizontal alignment of the text ('Left' or 'Right'), if not set the default is Left.
-        'horizontalAlign' => 'Left',
-        // Optionally set the container within the signature rectangle on which to place the text. By default, the
-        // text can occupy the entire rectangle (how much of the rectangle the text will actually fill depends on the
-        // length and font size). Below, we specify that the text should respect a right margin of 1.5 cm.
-        'container' => [
-            'left' => 0,
-            'top' => 0,
-            'right' => 1.5,
-            'bottom' => 0
-        ]
-    ],
-    'image' => [
-
-        // We'll use as background the image content/PdfStamp.png.
-        'resource' => [
-            'content' => base64_encode(file_get_contents('content/PdfStamp.png')),
-            'mimeType' => 'image/png'
-        ],
-        // Align the image to the right.
-        'horizontalAlign' => 'Right',
-        // Align the image to the center.
-        'verticalAlign' => 'Center',
-    ]
-];
-// Position of the visual representation. We get the footnote positioning preset and customize it.
-$visualRepresentation['position'] = PadesVisualPositioningPresets::getFootnote(getRestPkiClient());
-$visualRepresentation['position']->auto->container->height = 4.94;
-$visualRepresentation['position']->auto->signatureRectangleSize->width = 8.0;
-$visualRepresentation['position']->auto->signatureRectangleSize->height = 4.94;
-// Set the visual representation to signature.
-$signatureStarter->visualRepresentation = $visualRepresentation;
+// Set the visual representation to the signature. We have encapsulated this code (on util-pades.php) to be used on
+// various PAdES examples.
+$signatureStarter->visualRepresentation = getVisualRepresentation(getRestPkiClient());
 
 /*
 	Optionally, add marks to the PDF before signing. These differ from the signature visual representation in that
 	they are actually changes done to the document prior to signing, not binded to any signature. Therefore, any number
 	of marks can be added, for instance one per page, whereas there can only be one visual representation per signature.
-	However, since the marks are in reality changes to the PDF, they can only be added to documents which have no previous
-	signatures, otherwise such signatures would be made invalid by the changes to the document (see property
-	PadesSignatureStarter.BypassMarksIfSigned). This problem does not occurr with signature visual representations.
+	However, since the marks are in reality changes to the PDF, they can only be added to documents which have no
+    previous signatures, otherwise such signatures would be made invalid by the changes to the document (see property
+	PadesSignatureStarter::bypassMarksIfSigned). This problem does not occur with signature visual representations.
 
 	We have encapsulated this code in a method to include several possibilities depending on the argument passed.
 	Experiment changing the argument to see different examples of PDF marks. Once you decide which is best for your case,
@@ -163,7 +122,7 @@ setExpiredPage();
 // The file below contains the JS lib for accessing the Web PKI component. For more information, see:
 // https://webpki.lacunasoftware.com/#/Documentation
 ?>
-<script src="content/js/lacuna-web-pki-2.6.1.js"></script>
+<script src="content/js/lacuna-web-pki-2.9.0.js"></script>
 
 <?php
 // The file below contains the logic for calling the Web PKI component. It is only an example, feel free to alter it

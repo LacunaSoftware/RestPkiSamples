@@ -98,10 +98,8 @@ function generatePrinterFriendlyVersion($pdfPath, $verificationCode)
     $signatureExplorer->validate = true;
     // Accept any valid PAdES signature as long as the signer is trusted by the security context.
     $signatureExplorer->defaultSignaturePolicy = StandardSignaturePolicies::PADES_BASIC;
-    // Specify the security context. To accept Lacuna Software's test certificates, use the second line.
-    $signatureExplorer->securityContext = StandardSecurityContexts::PKI_BRAZIL;
-    //$signatureExplorer->securityContext = StandardSecurityContexts::LACUNA_TEST;
-    // For more information, see https://github.com/LacunaSoftware/RestPkiSamples/blob/master/TestCertificates.md
+    // Specify the security context. We have encapsulated the security context choice on util.php.
+    $signatureExplorer->securityContext = getSecurityContextId();
     // Specify the uploaded file from its BLOB's identification.
     $signatureExplorer->setSignatureFileFromBlob($blob);
     $signature = $signatureExplorer->open();
