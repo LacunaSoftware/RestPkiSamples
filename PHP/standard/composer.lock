@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "9bafc48179a909dddbd80d58bedb4853",
-    "content-hash": "2ca69b4da01bbb9b67c760bf9aabcc8b",
+    "hash": "dcb2507f0d806679e92c69cd3c503941",
+    "content-hash": "c62a112d096d302e2fc85c8cf0f1a745",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -190,16 +190,16 @@
         },
         {
             "name": "lacuna/restpki-client",
-            "version": "dev-release/2.2.4",
+            "version": "2.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/LacunaSoftware/RestPkiPhpClient.git",
-                "reference": "85a742381eca1f840ebfa3d34acb32f19b5af313"
+                "reference": "71d8b8cd12a7dcdb54bc51dd758ebaa0f080f18a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LacunaSoftware/RestPkiPhpClient/zipball/85a742381eca1f840ebfa3d34acb32f19b5af313",
-                "reference": "85a742381eca1f840ebfa3d34acb32f19b5af313",
+                "url": "https://api.github.com/repos/LacunaSoftware/RestPkiPhpClient/zipball/71d8b8cd12a7dcdb54bc51dd758ebaa0f080f18a",
+                "reference": "71d8b8cd12a7dcdb54bc51dd758ebaa0f080f18a",
                 "shasum": ""
             },
             "require": {
@@ -231,7 +231,7 @@
                 "rest pki",
                 "signature"
             ],
-            "time": "2018-05-09 22:14:56"
+            "time": "2018-05-24 13:33:32"
         },
         {
             "name": "psr/http-message",
@@ -287,9 +287,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "lacuna/restpki-client": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
