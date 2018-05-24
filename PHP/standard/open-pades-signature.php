@@ -81,7 +81,9 @@ $signature = $sigExplorer->open();
                 <div id="<?= $collapseId ?>" class="panel-collapse collapse" role="tabpanel"
                      aria-labelledby="<?= $headingId ?>">
                     <div class="panel-body">
-                        <p>Signing time: <?= $signer->signingTime ?></p>
+                        <?php if ($signer->signingTime != null) { ?>
+                            <p>Signing time: <?= date('d/m/Y H:i', strtotime($signer->signingTime)) ?></p>
+                        <?php } ?>
 
                         <p>Message
                             digest: <?= $signer->messageDigest->algorithm->getName() . " " . $signer->messageDigest->hexValue ?></p>

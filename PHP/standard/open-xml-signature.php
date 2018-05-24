@@ -38,7 +38,7 @@ $signatures = $sigExplorer->open();
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Open existing CAdES Signature</title>
+    <title>Open existing signatures on an existing XML</title>
     <?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT
     // required to use the Web PKI component) ?>
 </head>
@@ -86,12 +86,14 @@ $signatures = $sigExplorer->open();
                         <?php if ($signature->signedElement != null) { ?>
                             <p>
                                 Signed element: <?= $signature->signedElement->localName ?>
-                                <?php if (empty($signature->signedElement->namespaceUri)) { ?>
+                                <?php if ($signature->signedElement->namespaceUri != null) { ?>
                                     <text>(xmlns: <?= $signature->signedElement->namespaceUri ?>)</text>
                                 <?php } ?>
                             </p>
                         <?php } ?>
-                        <p>Signing time: <?= $signature->signingTime ?></p>
+                        <?php if ($signature->signingTime != null) { ?>
+                            <p>Signing time: <?= date('d/m/Y H:i', strtotime($signature->signingTime)) ?></p>
+                        <?php } ?>
                         <?php if ($signature->signaturePolicy != null) { ?>
                             <p>Signature policy: <?= $signature->signaturePolicy->oid ?></p>
                         <?php } ?>

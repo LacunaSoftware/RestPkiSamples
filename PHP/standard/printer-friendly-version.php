@@ -36,6 +36,12 @@ $verificationLinkFormat = 'http://localhost:8000/check.php?c=';
 // "Normal" font size. Sizes of header fonts are defined based on this size.
 $normalFontSize = 12;
 
+// Date format to be used when converting dates to string
+$dateFormat = "d/m/Y H:i";
+
+// Display name of the time zone chosen above
+$timeZoneDisplayName = "horário de Brasília";
+
 // You may also change texts, positions and more by editing directly the method generatePrinterFriendlyVersion() below.
 // #####################################################################################################################
 
@@ -74,6 +80,7 @@ function generatePrinterFriendlyVersion($pdfPath, $verificationCode)
     global $verificationSite;
     global $verificationLinkFormat;
     global $normalFontSize;
+    global $timeZoneDisplayName;
 
     // Use PHP's global variable PHP_EOL that returns a OS independent break-line
     $breakline = PHP_EOL;
@@ -256,7 +263,8 @@ function generatePrinterFriendlyVersion($pdfPath, $verificationCode)
     ];
     $textSection = new PdfTextSection();
     $textSection->fontSize = $normalFontSize;
-    $textSection->text = 'Este documento foi assinado digitalmente pelos seguintes signatários nas datas indicadas';
+    $textSection->text = sprintf('Este documento foi assinado digitalmente pelos seguintes signatários nas datas indicadas (%s):',
+        $timeZoneDisplayName);
     array_push($element->textSections, $textSection);
     array_push($manifestMark->elements, $element);
     $verticalOffset += $elementHeight;
@@ -352,7 +360,7 @@ function generatePrinterFriendlyVersion($pdfPath, $verificationCode)
 
 function _getDisplayName($cert)
 {
-    if (isset($cert->pkiBrazil->responsavel)) {
+    if ($cert->pkiBrazil->responsavel != null) {
         return $cert->pkiBrazil->responsavel;
     }
     return $cert->pkiBrazil->commonName;
@@ -362,10 +370,10 @@ function _getDescription($cert)
 {
     $text = '';
     $text .= _getDisplayName($cert);
-    if (isset($cert->pkiBrazil->cpf)) {
+    if ($cert->pkiBrazil->cpf != null) {
         $text .= ' (CPF ' . $cert->pkiBrazil->cpfFormatted . ')';
     }
-    if (isset($cert->pkiBrazil->cnpj)) {
+    if ($cert->pkiBrazil->cnpj != null) {
         $text .= ', empresa ' . $cert->pkiBrazil->companyName . ' (CNPJ ' . $cert->pkiBrazil->cnpjFormatted . ')';
     }
     return $text;
@@ -373,10 +381,13 @@ function _getDescription($cert)
 
 function _getSignerDescription($signer)
 {
+    // Use global variables defined above
+    global $dateFormat;
+
     $text = '';
     $text .= _getDescription($signer->certificate);
-    if (isset($signer->signingTime)) {
-        $text .= ' em ' . $signer->signingTime;
+    if ($signer->signingTime != null) {
+        $text .= ' em ' . date($dateFormat, strtotime($signer->signingTime));
     }
     return $text;
 }
