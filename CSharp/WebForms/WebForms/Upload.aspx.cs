@@ -41,8 +41,7 @@ namespace WebForms {
 			file.SaveAs(Path.Combine(appDataPath, filename));
 
 			// Redirect the user to either CadesSignature or PadesSignature form, passing the name of the file as a URL argument
-			// Note: we're passing the filename argument with "." as "_" because of limitations of ASP.NET MVC
-			Response.Redirect(ViewState["ReturnController"] + "?userfile=" + filename.Replace(".", "_"));
+			Response.Redirect(ViewState["ReturnController"] + "?userfile=" + filename);
 		}
 	}
 }

@@ -108,11 +108,10 @@ namespace WebForms {
 							Bottom = 0
 						},
 						// We'll use the image at 'Content/PdfStamp.png'.
-						Image = new PdfMarkImage(Util.GetPdfStampContent(), "image/png") {
-							// Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is completely opaque).
-							Opacity = 75,
-						}
-					});
+						Image = new PdfMarkImage(Util.GetPdfStampContent(), "image/png"),
+                        // Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is completely opaque).
+                        Opacity = 75
+                    });
 
 					// Then, the text.
 					mark.Elements.Add(new PdfMarkTextElement() {
@@ -171,21 +170,20 @@ namespace WebForms {
 						BorderColor = Color.Black
 					};
 
-					// Add a single image element
-					mark.Elements.Add(new PdfMarkImageElement() {
-						// We'll make the image fill the entire mark, leaving space for the border
-						RelativeContainer = new PadesVisualRectangle() {
-							Left = 0.1,
-							Right = 0.1,
-							Top = 0.1,
-							Bottom = 0.1
-						},
-						// We'll use the 'Content/PdfStamp.png' as background.
-						Image = new PdfMarkImage(Util.GetPdfStampContent(), "image/png") {
-							// Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is completely opaque).
-							Opacity = 50,
-						}
-					});
+                    // Add a single image element
+                    mark.Elements.Add(new PdfMarkImageElement() {
+                        // We'll make the image fill the entire mark, leaving space for the border
+                        RelativeContainer = new PadesVisualRectangle() {
+                            Left = 0.1,
+                            Right = 0.1,
+                            Top = 0.1,
+                            Bottom = 0.1
+                        },
+                        // We'll use the 'Content/PdfStamp.png' as background.
+                        Image = new PdfMarkImage(Util.GetPdfStampContent(), "image/png"),
+                        // Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is completely opaque).
+                        Opacity = 50
+                    });
 
 					return mark;
 

@@ -114,7 +114,7 @@ public class Util {
 	}
 
 	public static byte[] getBatchDocContent(int id) throws IOException {
-		Resource resource = new ClassPathResource("/static/" + String.format("%02d", id) + ".pdf");
+		Resource resource = new ClassPathResource("/static/" + String.format("%02d", id % 10) + ".pdf");
 		InputStream fileStream = resource.getInputStream();
 		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 		org.apache.commons.io.IOUtils.copy(fileStream, buffer);
@@ -124,7 +124,7 @@ public class Util {
 	}
 
 	public static Path getBatchDocPath(int id) throws IOException {
-		return new ClassPathResource("/static/" + String.format("%02d", id) + ".pdf").getFile().toPath();
+		return new ClassPathResource("/static/" + String.format("%02d", id % 10) + ".pdf").getFile().toPath();
 	}
 
 }

@@ -26,11 +26,12 @@
 					<li><a href="/Authentication">Authentication</a></li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">PAdES signature <span class="caret"></span></a>
-						<ul class="dropdown-menu">
-							<li><a href="/PadesSignature">With file already on server</a></li>
-							<li><a href="/Upload?rc=PadesSignature">With file uploaded by user</a></li>
-							<li><a href="/Upload?rc=OpenPadesSignature">Open/validate existing signature</a></li>
-						</ul>
+                        <ul class="dropdown-menu">
+                            <li><a href="/PadesSignature">With file already on server</a></li>
+                            <li><a href="/Upload?rc=PadesSignature">With file uploaded by user</a></li>
+                            <li><a href="/PadesSignatureWithoutDirectCommunication">Without direct communication between REST PKI and Web PKI</a></li>
+                            <li><a href="/Upload?rc=OpenPadesSignature">Open/validate existing signature</a></li>
+                        </ul>
 					</li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">CAdES signature <span class="caret"></span></a>
@@ -56,6 +57,13 @@
 							<li><a href="/BatchSignatureOptimized">Optimized batch signature</a></li>
 						</ul>
 					</li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">B-Stamp&trade; <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="/OpenPadesSignatureBStamp">Previously B-Stamped file</a></li>
+							<li><a href="/Upload?rc=OpenPadesSignatureBStamp">File uploaded by user</a></li>
+						</ul>
+					</li>
 				</ul>
 			</div><!--/.nav-collapse -->
 		</div>
@@ -63,7 +71,8 @@
 
 	<div class="container">
 		@if (User.Identity.IsAuthenticated) {
-			<p>You are signed in as @User.Identity.Name -- <a href="/Home/SignOut">sign out</a></p>
+            <br />
+			<p>You are signed in as <b>@User.Identity.Name</b> <a href="/Home/SignOut">Sign Out</a></p>
 		}
 		<div id="messagesPanel"></div>
 		@RenderBody()

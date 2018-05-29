@@ -1,0 +1,65 @@
+<div class="container">
+
+  <!--This section will show the errors occurred on the batch signature. It will be filled using jQuery.-->
+  <div id="errorPanel"></div>
+
+  <h2>PAdES Batch Signature</h2>
+
+  <form id="signForm" method="post">
+
+    <!-- Link to the file being signed -->
+    <div class="form-group">
+      <label>File to sign</label>
+
+      <p>
+        You'll be signing the following files:
+        <!-- UL element to hold the batch's documents (we'll render these programatically -->
+        <!--see batch-signature-form.js)-->
+        <ul id="docList"/>
+      </p>
+    </div>
+
+    <!--
+      Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it
+      later on (see assets/javascripts/signature-form.js).
+    -->
+    <div class="form-group">
+      <label for="certificateSelect">Choose a certificate</label>
+      <select id="certificateSelect" class="form-control"></select>
+    </div>
+
+    <!--
+      Action buttons. Notice that the "Sign Batch" button is NOT a submit button. When the user clicks the button,
+      we must first use the Web PKI component to perform the client-side computation necessary and only when
+      that computation is finished we'll submit the form programmatically (see assets/javascripts/signature-form.js).
+    -->
+    <button id="signButton" type="button" class="btn btn-primary">Sign Batch</button>
+    <button id="refreshButton" type="button" class="btn btn-default">Refresh Certificates</button>
+  </form>
+
+</div>
+
+<!--
+  The file below contains the JS lib for accessing the Web PKI component. For more information, see:
+  https://webpki.lacunasoftware.com/#/Documentation
+-->
+<%= javascript_include_tag 'lacuna-web-pki-2.6.1' %>
+
+<!--
+  The file below contains the logic for calling the Web PKI component. It is only an example, feel free to alter it
+  to meet your application's needs. You can also bring the code into the javascript block below if you prefer.
+-->
+<%= javascript_include_tag 'batch-signature-form' %>
+<script type="text/javascript" charset="utf-8">
+  $(document).ready(function () {
+    // Once the page is ready, we call the init() function on the javascript code (see batch-signature-form.js)
+    cadesBatchSignatureForm.init({
+      documentsIds: <%= raw @documents_ids.to_json %>,  // ids of documents
+      errorPanel: $('#errorPanel'),                // the panel, where will be shown a error, when it occurs
+      certificateSelect: $('#certificateSelect'),  // the select element (combo box) to list the certificates
+      refreshButton: $('#refreshButton'),          // the "refresh" button
+      signButton: $('#signButton'),                // the button that initiates the operation
+      sampleApi: 'batch_signature'                 // the API route to be called by javascript code
+    });
+  });
+</script>

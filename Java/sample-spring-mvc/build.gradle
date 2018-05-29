@@ -3,14 +3,14 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.5.RELEASE")
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.9.RELEASE")
 	}
 }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
-apply plugin: 'spring-boot'
+apply plugin: 'org.springframework.boot'
 
 repositories {
 	mavenCentral()
@@ -25,11 +25,11 @@ jar {
 }
 
 dependencies {
-	compile("com.lacunasoftware.restpki:restpki-client:1.8.1")
+	compile("com.lacunasoftware.restpki:restpki-client:1.8.4")
 	compile("org.springframework.boot:spring-boot-starter-thymeleaf")
 	compile("commons-io:commons-io:2.4")
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.6'
+    gradleVersion = '4.4.1'
 }

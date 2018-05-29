@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 import sample.Application;
-import sample.controller.util.PadesVisualElements;
+import sample.util.PadesVisualElements;
 import sample.util.*;
 
 @Controller

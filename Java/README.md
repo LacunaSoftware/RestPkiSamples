@@ -16,21 +16,41 @@ A sample for a Java web application using the Spring MVC framework can be found 
 [sample-spring-mvc](sample-spring-mvc/). The sample uses spring boot to provide a self-contained web application,
 not requiring a web server installed. The only requirement is **having a JDK installed**.
 
-Steps to execute the sample:
+To run this project, you can use the following tools:
+
+**Using Gradle**
 
 1. [Download the project](https://github.com/LacunaSoftware/RestPkiSamples/archive/master.zip)
    or clone the repository
 
-2. Generate an API access token on the [REST PKI website](https://pki.rest/)
+1. Generate an API access token on the [REST PKI website](https://pki.rest/)
 
-3. Paste your access token on the file `Java/sample-spring-mvc/src/main/java/sample/util/Util.java`
+1. Paste your access token on the file `Java/sample-spring-mvc/src/main/java/sample/util/Util.java`
    
-4. In a command prompt, navigate to the folder `Java/sample-spring-mvc` and run the command
-   `gradlew run` (on Linux `./gradlew run`). If you are using Windows, you can alternatively
+1. In a command prompt, navigate to the folder `Java/sample-spring-mvc` and run the command
+   `gradlew bootRun` (on Linux `./gradlew bootRun`). If you are using Windows, you can alternatively
    double-click the file `Run-Sample.bat`.
   
-5. Once you see the message "Started Application in x.xxx seconds" (the on-screen percentage
+1. Once you see the message "Started Application in x.xxx seconds" (the on-screen percentage
    will *not* reach 100%), open a web browser and go the URL [http://localhost:8080/](http://localhost:8080/)
+   
+> If you are on Linux, you may have to add the execution permission to *gradrew* file by executing the command
+`chmod +x gradlew`.
+
+**Using Maven**
+
+1. [Download the project](https://github.com/LacunaSoftware/RestPkiSamples/archive/master.zip)
+   or clone the repository
+
+1. Generate an API access token on the [REST PKI website](https://pki.rest/)
+
+1. Paste your access token on the file `Java/sample-spring-mvc/src/main/java/sample/util/Util.java`
+
+1. In a command prompt, navigate to the folder `Java/sample-spring-mvc` and run the command
+   `mvn spring-boot:run`. To run this command, it's necessary to have the Apache Maven installed.
+   
+1. Once you see the message "Started Application in x.xxx seconds", open a web browser and go the URL
+   http://localhost:60963
    
 On-premises installations with restricted access
 ------------------------------------------------
@@ -80,7 +100,7 @@ of each sample:
 	} 
 
 	dependencies {
-		compile("com.lacunasoftware.restpki:restpki-client:1.8.1")
+		compile("com.lacunasoftware.restpki:restpki-client:1.8.4")
 	}
 
 If you project uses Maven, please refer to the file [pom.xml](sample-spring-mvc/pom.xml) instead:
@@ -90,7 +110,7 @@ If you project uses Maven, please refer to the file [pom.xml](sample-spring-mvc/
 		<dependency>
 			<groupId>com.lacunasoftware.restpki</groupId>
 			<artifactId>restpki-client</artifactId>
-			<version>1.8.1</version>
+			<version>1.8.4</version>
 		</dependency>
 		...
 	</dependencies>
@@ -198,4 +218,4 @@ See also
 
 * [Test certificates](../TestCertificates.md)
 * [Samples in other programming languages](https://github.com/LacunaSoftware/RestPkiSamples)
-* [Javadoc for the Java client lib](https://pki.rest/Content/docs/java-client/)
+* [Javadoc for the Java client lib](https://docs.lacunasoftware.com/content/javadocs/restpki-client/)

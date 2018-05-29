@@ -16,6 +16,8 @@ block content
 				| You are signing&nbsp;
 				- if (userfile) {
 					a(href='/app-data/' + userfile, target='_blank') this document
+				- } else if (cmsfile) {
+					a(href='/app-data/' + cmsfile, target='_blank') this CMS
 				- } else {
 					a(href='/SampleDocument.pdf', target='_blank') this sample document
 				- }
