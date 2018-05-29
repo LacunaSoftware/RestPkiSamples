@@ -67,6 +67,17 @@ This dependency is specified in the file `composer.json`:
 			"lacuna/restpki-client": "^2.2.3"
 		}
 	}
+	
+The sample projects depend on [Rest PKI client lib for PHP](https://github.com/LacunaSoftware/RestPkiPhpClientLegacy) library, which in turn requires **PHP 5.3** or
+**PHP 5.4**.
+
+This dependency is specified in the file `composer.json`:
+
+	{
+		"require": {
+			"lacuna/restpki-client-legacy": "^1.0.0"
+		}
+	}
 
 
 Secure communication with REST PKI (HTTPS)

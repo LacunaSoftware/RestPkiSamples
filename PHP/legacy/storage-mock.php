@@ -5,7 +5,7 @@
 // with it.
 function getVerificationCode($fileId)
 {
-    // Initialize or resume session
+    // Initialize or resume session.
     session_start();
 
     // >>>>> NOTICE <<<<<
@@ -20,7 +20,7 @@ function getVerificationCode($fileId)
 // Registers the verification code for a given document.
 function setVerificationCode($fileId, $code)
 {
-    // Initialize or resume session
+    // Initialize or resume session.
     session_start();
 
     // >>>>> NOTICE <<<<<
