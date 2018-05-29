@@ -36,7 +36,7 @@ file_put_contents("app-data/{$filename}", $cms);
 <!DOCTYPE html>
 <html>
 <head>
-    <title>PAdES Signature</title>
+    <title>CAdES Signature</title>
     <?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component). ?>
 </head>
 <body>

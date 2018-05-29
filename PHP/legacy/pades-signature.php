@@ -32,11 +32,11 @@ $signatureStarter->setSignaturePolicy(StandardSignaturePolicies::PADES_BASIC);
 
 // Set the security context to be used to determine trust in the certificate chain. We have encapsulated the security
 // context choice on util.php.
-$signatureStarter->setSignaturePolicy(getSecurityContextId());
+$signatureStarter->setSecurityContext(getSecurityContextId());
 
 // Set the visual representation for the signature. We have encapsulated this code (on util-pades.php) to be used on
 // on various PAdES examples.
-$signatureStarter->setVisualRepresentation(getVisualRepresentation());
+$signatureStarter->setVisualRepresentation(getVisualRepresentation(getRestPkiClient()));
 
 /*
 	Optionally, add marks to the PDF before signing. These differ from the signature visual representation in that

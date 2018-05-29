@@ -85,7 +85,7 @@ setNoCacheHeaders();
            form: $('#authForm'),                       // The form that should be submitted when the operation is complete.
            certificateSelect: $('#certificateSelect'), // The <select> element (combo box) to list the certificates.
            refreshButton: $('#refreshButton'),         // The "refresh" button.
-           signButton: $('#signButton')                // The button that initiates the operation.
+           signButton: $('#signInButton')              // The button that initiates the operation.
         });
     });
 </script>

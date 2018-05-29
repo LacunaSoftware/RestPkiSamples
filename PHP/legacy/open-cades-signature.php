@@ -84,7 +84,7 @@ $signature = $sigExplorer->open();
                      aria-labelledby="<?php echo $headingId ?>">
                     <div class="panel-body">
                         <?php if ($signer->signingTime != null) { ?>
-                            <p>Signing time: <?= date('d/m/Y H:i', strtotime($signer->signingTime)) ?></p>
+                            <p>Signing time: <?php echo date('d/m/Y H:i', strtotime($signer->signingTime)) ?></p>
                         <?php } ?>
 
                         <p>Message

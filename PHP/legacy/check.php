@@ -43,7 +43,7 @@ $sigExplorer->setDefaultSignaturePolicyid(StandardSignaturePolicies::PADES_BASIC
 
 // Specify the security context to be used to determine trust in the certificate chain. We have encapsulated the
 // security context choice on util.php.
-$sigExplorer->setSecurityContextId(StandardSecurityContexts::PKI_BRAZIL);
+$sigExplorer->setSecurityContextId(getSecurityContextId());
 
 // Call the open() method, which returns the signautre file's information.
 $signature = $sigExplorer->open();
@@ -98,7 +98,7 @@ $signature = $sigExplorer->open();
                      aria-labelledby="<?php echo $headingId ?>">
                     <div class="panel-body">
                         <?php if ($signer->signingTime != null) { ?>
-                            <p>Signing time: <?= date('d/m/Y H:i', strtotime($signer->signingTime)) ?></p>
+                            <p>Signing time: <?php echo date('d/m/Y H:i', strtotime($signer->signingTime)) ?></p>
                         <?php } ?>
 
                         <p>Message

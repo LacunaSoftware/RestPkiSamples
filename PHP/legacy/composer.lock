@@ -13,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/LacunaSoftware/RestPkiPhpClientLegacy.git",
-                "reference": "7663ab7d4acea16ce46032b21970b95d9fbae175"
+                "reference": "9a1541281c8d47fe7482022887cb71c40200b819"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LacunaSoftware/RestPkiPhpClientLegacy/zipball/7663ab7d4acea16ce46032b21970b95d9fbae175",
-                "reference": "7663ab7d4acea16ce46032b21970b95d9fbae175",
+                "url": "https://api.github.com/repos/LacunaSoftware/RestPkiPhpClientLegacy/zipball/9a1541281c8d47fe7482022887cb71c40200b819",
+                "reference": "9a1541281c8d47fe7482022887cb71c40200b819",
                 "shasum": ""
             },
             "require": {
@@ -44,10 +44,11 @@
                 "client lib",
                 "lacuna",
                 "legacy",
-                "rest pki",
+                "pki",
+                "rest",
                 "signature"
             ],
-            "time": "2018-05-25 19:59:22"
+            "time": "2018-05-29 15:22:35"
         },
         {
             "name": "nategood/httpful",

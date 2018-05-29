@@ -120,4 +120,4 @@ var signatureForm = (function() {
         init: init
     };
 
-});
+})();

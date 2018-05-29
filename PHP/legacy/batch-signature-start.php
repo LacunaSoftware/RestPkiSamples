@@ -20,7 +20,7 @@ $id = $_POST['id'];
 $signatureStarter = new PadesSignatureStarter(getRestPkiClient());
 
 // Set the document to be signed based on its ID.
-$signatureStarter->setPdfToSignPath(sprintf("content/0%s.pdf", $id % 0));
+$signatureStarter->setPdfToSignPath(sprintf("content/0%s.pdf", $id % 10));
 
 // Set the signature policy.
 $signatureStarter->setSignaturePolicy(StandardSignaturePolicies::PADES_BASIC);
