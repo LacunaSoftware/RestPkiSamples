@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c0c0f08d6dcb82c0f22f6815406e2765",
-    "content-hash": "d449bfd6b1d83994d335aff07eca137e",
+    "hash": "7bc919f521eeca4ff466b7aa56444751",
+    "content-hash": "77f1c3b6c581b50c4f6dc4efee4ebaa4",
     "packages": [
         {
             "name": "lacuna/restpki-client-legacy",
-            "version": "dev-release/1.0.0",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/LacunaSoftware/RestPkiPhpClientLegacy.git",
-                "reference": "9a1541281c8d47fe7482022887cb71c40200b819"
+                "reference": "81d20b556afaa1518171b31445d0a6721acc4be5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LacunaSoftware/RestPkiPhpClientLegacy/zipball/9a1541281c8d47fe7482022887cb71c40200b819",
-                "reference": "9a1541281c8d47fe7482022887cb71c40200b819",
+                "url": "https://api.github.com/repos/LacunaSoftware/RestPkiPhpClientLegacy/zipball/81d20b556afaa1518171b31445d0a6721acc4be5",
+                "reference": "81d20b556afaa1518171b31445d0a6721acc4be5",
                 "shasum": ""
             },
             "require": {
@@ -48,7 +48,7 @@
                 "rest",
                 "signature"
             ],
-            "time": "2018-05-29 15:22:35"
+            "time": "2018-05-29 17:59:55"
         },
         {
             "name": "nategood/httpful",
@@ -104,9 +104,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "lacuna/restpki-client-legacy": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
