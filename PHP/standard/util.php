@@ -47,10 +47,10 @@ function getSecurityContextId() {
      * THIS SHOULD NEVER BE USED ON A PRODUCTION ENVIRONMENT!
      * For more information, see https://github.com/LacunaSoftware/RestPkiSamples/blob/master/TestCertificates.md
      */
-    return StandardSecurityContexts::LACUNA_TEST;
+    //return StandardSecurityContexts::LACUNA_TEST;
 
     // In production, accept only certificates from ICP-Brasil.
-//    return StandardSecurityContexts::PKI_BRAZIL;
+    return StandardSecurityContexts::PKI_BRAZIL;
 }
 
 function setExpiredPage()
