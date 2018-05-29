@@ -363,7 +363,7 @@ function _getDisplayName($cert)
     if ($cert->pkiBrazil->responsavel != null) {
         return $cert->pkiBrazil->responsavel;
     }
-    return $cert->pkiBrazil->commonName;
+    return $cert->subjectName->commonName;
 }
 
 function _getDescription($cert)
