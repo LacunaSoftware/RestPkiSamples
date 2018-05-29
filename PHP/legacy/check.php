@@ -1,22 +1,12 @@
 <?php
 
-// The file RestPkiLegacy.php contains the helper classes to call the REST PKI API for PHP 5.3+. Notice: if you're using
-// PHP version 5.5 or greater, please use one of the other samples, which make better use of the extended capabilities
-// of the newer versions of PHP - https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP
-require_once 'RestPkiLegacy.php';
+require __DIR__ . '/vendor/autoload.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
-// initialized with the API access token
-require_once 'util.php';
+use Lacuna\RestPki\Legacy\PadesSignatureExplorer;
+use Lacuna\RestPki\Legacy\StandardSignaturePolicies;
+use Lacuna\RestPki\Legacy\StandardSecurityContexts;
 
-// The file storage-mock.php contains the mock functions used to store and to retrieve signature codes.
-require_once 'storage-mock.php';
-
-use Lacuna\PadesSignatureExplorer;
-use Lacuna\StandardSignaturePolicies;
-use Lacuna\StandardSecurityContexts;
-
-// Get document ID from query string
+// Get document ID from query string.
 $formattedCode = isset($_GET['c']) ? $_GET['c'] : null;
 if (!isset($formattedCode)) {
     throw new \Exception("No code was provided");
@@ -27,7 +17,7 @@ if (!isset($formattedCode)) {
 // up.
 $verificationCode = parseVerificationCode($formattedCode);
 
-// Get document associated with verification code
+// Get document associated with verification code.
 $fileId = lookupVerificationCode($verificationCode);
 if ($fileId == null) {
     // Invalid code given!
@@ -35,32 +25,41 @@ if ($fileId == null) {
     // the process).
     sleep(2);
 
-    // Inform that the file was not found
+    // Inform that the file was not found.
     die('File not found');
 }
 
-// Open and validate signature with Rest PKI
-$client = getRestPkiClient();
-$sigExplorer = new PadesSignatureExplorer($client);
-$sigExplorer->setValidate(true);
-$sigExplorer->setDefaultSignaturePolicyid(StandardSignaturePolicies::PADES_BASIC);
-$sigExplorer->setSecurityContextId(StandardSecurityContexts::PKI_BRAZIL);
-$sigExplorer->setSignatureFile('app-data/' . $fileId);
+// Open and validate signature with Rest PKI.
+$sigExplorer = new PadesSignatureExplorer(getRestPkiClient());
 
+// Set the PDF file to be inspected.
+$sigExplorer->setSignatureFile("app-data/$fileId");
+
+// Specify that we want to validate the signatures in the file, not only inspect them.
+$sigExplorer->setValidate(true);
+
+// Accept any valid PAdES signature as long as the signer is trusted by the security context.
+$sigExplorer->setDefaultSignaturePolicyid(StandardSignaturePolicies::PADES_BASIC);
+
+// Specify the security context to be used to determine trust in the certificate chain. We have encapsulated the
+// security context choice on util.php.
+$sigExplorer->setSecurityContextId(StandardSecurityContexts::PKI_BRAZIL);
+
+// Call the open() method, which returns the signautre file's information.
 $signature = $sigExplorer->open();
 
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
     <title>Checking code signature</title>
     <meta charset="utf-8">
-    <?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT
-    // required to use the Web PKI component) ?>
+    <?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component). ?>
 </head>
 <body>
 
-<?php include 'menu.php' // The top menu, this can be removed entirely ?>
+<?php include 'menu.php' // The top menu, this can be removed entirely. ?>
 
 <div class="container">
 
@@ -98,7 +97,9 @@ $signature = $sigExplorer->open();
                 <div id="<?php echo $collapseId ?>" class="panel-collapse collapse" role="tabpanel"
                      aria-labelledby="<?php echo $headingId ?>">
                     <div class="panel-body">
-                        <p>Signing time: <?php echo $signer->signingTime ?></p>
+                        <?php if ($signer->signingTime != null) { ?>
+                            <p>Signing time: <?= date('d/m/Y H:i', strtotime($signer->signingTime)) ?></p>
+                        <?php } ?>
 
                         <p>Message
                             digest: <?php echo $signer->messageDigest->algorithm->getName() . " " . $signer->messageDigest->hexValue ?></p>

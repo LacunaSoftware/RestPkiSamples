@@ -4,30 +4,19 @@
  * This file generates a printer-friendly version from a signature file using Rest PKI.
  */
 
-// The file RestPkiLegacy.php contains the helper classes to call the REST PKI API for PHP 5.3+. Notice: if you're using
-// PHP version 5.5 or greater, please use one of the other samples, which make better use of the extended capabilities
-// of the newer versions of PHP - https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP
-require_once 'RestPkiLegacy.php';
+require __DIR__ . '/vendor/autoload.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
-// initialized with the API access token
-require_once 'util.php';
-
-// The file storage-mock.php contains the mock functions used to store and to retrieve signature codes.
-require_once  'storage-mock.php';
-
-use Lacuna\PadesSignatureExplorer;
-use Lacuna\StandardSignaturePolicies;
-use Lacuna\StandardSecurityContexts;
-use Lacuna\PdfMark;
-use Lacuna\PdfMarkPageOptions;
-use Lacuna\PdfMarkImage;
-use Lacuna\PdfMarkImageElement;
-use Lacuna\PdfTextSection;
-use Lacuna\PdfMarkTextElement;
-use Lacuna\PdfMarkQRCodeElement;
-use Lacuna\PdfMarker;
-use Lacuna\Color;
+use Lacuna\RestPki\Legacy\PadesSignatureExplorer;
+use Lacuna\RestPki\Legacy\StandardSignaturePolicies;
+use Lacuna\RestPki\Legacy\PdfMark;
+use Lacuna\RestPki\Legacy\PdfMarkPageOptions;
+use Lacuna\RestPki\Legacy\PdfMarkImage;
+use Lacuna\RestPki\Legacy\PdfMarkImageElement;
+use Lacuna\RestPki\Legacy\PdfTextSection;
+use Lacuna\RestPki\Legacy\PdfMarkTextElement;
+use Lacuna\RestPki\Legacy\PdfMarkQRCodeElement;
+use Lacuna\RestPki\Legacy\PdfMarker;
+use Lacuna\RestPki\Legacy\Color;
 
 // #####################################################################################################################
 // Configuration of the Printer-Friendly version
@@ -46,30 +35,36 @@ $verificationLinkFormat = 'http://localhost:8000/check.php?c=';
 // "Normal" font size. Sizes of header fonts are defined based on this size.
 $normalFontSize = 12;
 
+// Date format to be used when converting dates to string.
+$dateFormat = 'd/m/Y H:i';
+
+// Display name of the time zone chosen above.
+$timeZoneDisplayName = "horário de Brasília";
+
 // You may also change texts, positions and more by editing directly the method generatePrinterFriendlyVersion() below.
 // #####################################################################################################################
 
-// Get file ID from query string
+// Get file ID from query string.
 $fileId = isset($_GET['file']) ? $_GET['file'] : null;
 if (empty($fileId)) {
     throw new \Exception("No file was uploaded");
 }
 
-// Locate document path
+// Locate document path.
 $filePath = 'app-data/' . $fileId;
 
-// Check if doc already has a verification code registered on storage
+// Check if doc already has a verification code registered on storage.
 $verificationCode = getVerificationCode($fileId);
 if (!isset($verificationCode)) {
-    // If not, generate a code and register it
+    // If not, generate a code and register it.
     $verificationCode = generateVerificationCode();
     setVerificationCode($fileId, $verificationCode);
 }
 
-// Generate the printer-friendly version
+// Generate the printer-friendly version.
 $pfvContent = generatePrinterFriendlyVersion($filePath, $verificationCode);
 
-// Redirect to the generated file
+// Redirect to the generated file.
 $pdfPath = 'app-data/' . formatVerificationCode($verificationCode) . '.pdf';
 createAppData();
 file_put_contents($pdfPath, $pfvContent);
@@ -84,8 +79,9 @@ function generatePrinterFriendlyVersion($pdfPath, $verificationCode)
     global $verificationSite;
     global $verificationLinkFormat;
     global $normalFontSize;
+    global $timeZoneDisplayName;
 
-    // Use PHP's global variable PHP_EOL that returns a OS independent break-line
+    // Use PHP's global variable PHP_EOL that returns a OS independent break-line.
     $breakline = PHP_EOL;
 
     $client = getRestPkiClient();
@@ -99,20 +95,26 @@ function generatePrinterFriendlyVersion($pdfPath, $verificationCode)
     // code.
     $verificationLink = $verificationLinkFormat . $formattedVerificationCode;
 
-    // 1. Inspect signatures on the uploaded PDF
+    // 1. Inspect signatures on the PDF.
     $signatureExplorer = new PadesSignatureExplorer($client);
-    $signatureExplorer->setValidate(true);
-    $signatureExplorer->setDefaultSignaturePolicyId(StandardSignaturePolicies::PADES_BASIC);
-    $signatureExplorer->setSecurityContextId(StandardSecurityContexts::PKI_BRAZIL);
+    // Set the PDF file to be inspected.
     $signatureExplorer->setSignatureFile($pdfPath);
+    // Specify that we want to validate the signatures in the file, not only inspect them.
+    $signatureExplorer->setValidate(true);
+    // Accept any valid PAdES signature as long as the signer is trusted by the security context.
+    $signatureExplorer->setDefaultSignaturePolicyId(StandardSignaturePolicies::PADES_BASIC);
+    // Set the security context to be used to determine trust in the certificate chain. We have encapsulated the security
+    // context choice on util.php.
+    $signatureExplorer->setSecurityContextId(getSecurityContextId());
+    // Call the open() method, which returns the signature file's information.
     $signature = $signatureExplorer->open();
 
-    // 2. Create PDF wiht verification information from uploaded PDF
+    // 2. Create PDF wiht verification information from uploaded PDF.
 
     $pdfMarker = new PdfMarker($client);
     $pdfMarker->setFileFromPath($pdfPath);
 
-    // Build string with joined names of signers (see method _getDisplayName below)
+    // Build string with joined names of signers (see method _getDisplayName below).
     $certDisplayNames = array();
     foreach ($signature->signers as $signer) {
         array_push($certDisplayNames, _getDisplayName($signer->certificate));
@@ -123,7 +125,7 @@ function generatePrinterFriendlyVersion($pdfPath, $verificationCode)
         . ' em ' . $verificationSite . ' e informe o código ' . $formattedVerificationCode;
 
     // ICP-Brasil logo on bottom-right corner of every page (except on the page which will be created at the end of the
-    // document)
+    // document).
     $pdfMark = new PdfMark();
     $pdfMark->pageOption = PdfMarkPageOptions::ALL_PAGES;
     $pdfMark->container = array(
@@ -138,7 +140,7 @@ function generatePrinterFriendlyVersion($pdfPath, $verificationCode)
     array_push($pdfMark->elements, $element);
     array_push($pdfMarker->marks, $pdfMark);
 
-    // Summary on bottom margin of every page (except on the page which will be created at the end of the document)
+    // Summary on bottom margin of every page (except on the page which will be created at the end of the document).
     $pdfMark = new PdfMark();
     $pdfMark->pageOption = PdfMarkPageOptions::ALL_PAGES;
     $pdfMark->container = array(
@@ -154,7 +156,7 @@ function generatePrinterFriendlyVersion($pdfPath, $verificationCode)
     array_push($pdfMarker->marks, $pdfMark);
 
     // Summary on right margin of every page (except on the page which wil be created at the end of the document),
-    // rotated 90 degrees counter-clockwise (text goes up)
+    // rotated 90 degrees counter-clockwise (text goes up).
     $pdfMark = new PdfMark();
     $pdfMark->pageOption = PdfMarkPageOptions::ALL_PAGES;
     $pdfMark->container = array(
@@ -173,7 +175,7 @@ function generatePrinterFriendlyVersion($pdfPath, $verificationCode)
     // Create a "manifest" mark on a new page added on the end of the document. We'll add several elements to this mark.
     $manifestMark = new PdfMark();
     $manifestMark->pageOption = PdfMarkPageOptions::NEW_PAGE;
-    // This mark's container is the whole page with 1-inch margins
+    // This mark's container is the whole page with 1-inch margins.
     $manifestMark->container = array(
         'top' => 1.5,
         'bottom' => 1.5,
@@ -181,34 +183,34 @@ function generatePrinterFriendlyVersion($pdfPath, $verificationCode)
         'right' => 1.5
     );
 
-    // We'll keep track of our "vertical offset" as we add elements to the mark
+    // We'll keep track of our "vertical offset" as we add elements to the mark.
     $verticalOffset = 0;
     $elementHeight = null;
 
     $elementHeight = 3;
-    // ICP-Brasil logo on the upper-left corner
+    // ICP-Brasil logo on the upper-left corner.
     $element = new PdfMarkImageElement();
     $element->relativeContainer = array(
         'height' => $elementHeight,
         'top' => $verticalOffset,
-        'width' => $elementHeight, // using elementHeight as width because the image has square format
+        'width' => $elementHeight, // Using elementHeight as width because the image has square format.
         'left' => 0
     );
     $element->image = new PdfMarkImage(getIcpBrasilLogoContent(), "image/png");
     array_push($manifestMark->elements, $element);
 
-    // QR Code with the verification link on the upper-right corner
+    // QR Code with the verification link on the upper-right corner.
     $element = new PdfMarkQRCodeElement();
     $element->relativeContainer = array(
         'height' => $elementHeight,
         'top' => $verticalOffset,
-        'width' => $elementHeight, // using elementHeight as width because the image has square format
+        'width' => $elementHeight, // Using elementHeight as width because the image has square format.
         'right' => 0
     );
     $element->qrCodeData = $verificationLink;
     array_push($manifestMark->elements, $element);
 
-    // Header "VERIFICAÇÃO DAS ASSINATURAS" centered between ICP-Brasil logo and QR Code
+    // Header "VERIFICAÇÃO DAS ASSINATURAS" centered between ICP-Brasil logo and QR Code.
     $element = new PdfMarkTextElement();
     $element->relativeContainer = array(
         'height' => $elementHeight,
@@ -225,10 +227,10 @@ function generatePrinterFriendlyVersion($pdfPath, $verificationCode)
     array_push($manifestMark->elements, $element);
     $verticalOffset += $elementHeight;
 
-    // Vertical padding
+    // Vertical padding.
     $verticalOffset += 1.7;
 
-    // Header with verification code
+    // Header with verification code.
     $elementHeight = 2;
     $element = new PdfMarkTextElement();
     $element->relativeContainer = array(
@@ -247,7 +249,7 @@ function generatePrinterFriendlyVersion($pdfPath, $verificationCode)
     $verticalOffset += $elementHeight;
 
     // Paragraph saying "this document was signed by the following signers etc" and mentioning the time zone of the
-    // date/times below
+    // date/times below.
     $elementHeight = 2.5;
     $element = new PdfMarkTextElement();
     $element->relativeContainer = array(
@@ -259,17 +261,18 @@ function generatePrinterFriendlyVersion($pdfPath, $verificationCode)
     );
     $textSection = new PdfTextSection();
     $textSection->fontSize = $normalFontSize;
-    $textSection->text = 'Este documento foi assinado digitalmente pelos seguintes signatários nas datas indicadas';
+    $textSection->text = sprintf('Este documento foi assinado digitalmente pelos seguintes signatários nas datas indicadas (%s):',
+        $timeZoneDisplayName);
     array_push($element->textSections, $textSection);
     array_push($manifestMark->elements, $element);
     $verticalOffset += $elementHeight;
 
-    // Iterate signers
+    // Iterate signers.
     foreach ($signature->signers as $signer) {
 
         $elementHeight = 1.5;
 
-        // Green "check" or red "X" icon depending on result of validation for this signer
+        // Green "check" or red "X" icon depending on result of validation for this signer.
         $element = new PdfMarkImageElement();
         $element->relativeContainer = array(
             'height' => 0.5,
@@ -279,7 +282,7 @@ function generatePrinterFriendlyVersion($pdfPath, $verificationCode)
         );
         $element->image = new PdfMarkImage(getValidationResultIcon($signer->validationResults->isValid()), 'image/png');
         array_push($manifestMark->elements, $element);
-        // Description of signer (see method _getSignerDescription() below
+        // Description of signer (see method _getSignerDescription() below.
         $element = new PdfMarkTextElement();
         $element->relativeContainer = array(
             'height' => $elementHeight,
@@ -296,11 +299,11 @@ function generatePrinterFriendlyVersion($pdfPath, $verificationCode)
         $verticalOffset += $elementHeight;
     }
 
-    // Some vertical padding from last signer
+    // Some vertical padding from last signer.
     $verticalOffset += 1;
 
     // Paragraph with link to verification site and citing both the verification code above and the verification link
-    // below
+    // below.
     $elementHeight = 2.5;
     $element = new PdfMarkTextElement();
     $element->relativeContainer = array(
@@ -327,7 +330,7 @@ function generatePrinterFriendlyVersion($pdfPath, $verificationCode)
     array_push($manifestMark->elements, $element);
     $verticalOffset += $elementHeight;
 
-    // Verification link
+    // Verification link.
     $elementHeight = 1.5;
     $element = new PdfMarkTextElement();
     $element->relativeContainer = array(
@@ -345,11 +348,11 @@ function generatePrinterFriendlyVersion($pdfPath, $verificationCode)
     array_push($element->textSections, $textSection);
     array_push($manifestMark->elements, $element);
 
-    // Apply marks
+    // Apply marks.
     array_push($pdfMarker->marks, $manifestMark);
     $result = $pdfMarker->apply();
 
-    // Return result content raw (binary)
+    // Return result content raw (binary).
     return base64_decode($result->content);
 }
 
@@ -376,10 +379,13 @@ function _getDescription($cert)
 
 function _getSignerDescription($signer)
 {
+    // Use global variables defined above
+    global $dateFormat;
+
     $text = '';
     $text .= _getDescription($signer->certificate);
     if (isset($signer->signingTime)) {
-        $text .= ' em ' . $signer->signingTime;
+        $text .= ' em ' . date($dateFormat, strtotime($signer->signingTime));
     }
     return $text;
 }

@@ -3,29 +3,30 @@
 /**
  * This action renders the batch signature page.
  *
- * Notice that the only thing we'll do on the server-side at this point is determine the IDs of the documents
- * to be signed. The page will handle each document one by one and will call the server asynchronously to
- * start and complete each signature.
+ * Notice that the only thing we'll do on the server-side at this point is determine the IDs of the documents to be
+ * signed. The page will handle each document one by one and will call the server asynchronously to start and complete
+ * each signature.
  */
 
 // It is up to your application's business logic to determine which documents will compose the batch
 $documentsIds = array_map( function($id) { return sprintf("%02d", $id); }, range(1,30) );
 
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <title>Batch Samples</title>
-    <?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component) ?>
+    <?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component). ?>
 </head>
 <body>
 
-<?php include 'menu.php' // The top menu, this can be removed entirely ?>
+<?php include 'menu.php' // The top menu, this can be removed entirely. ?>
 
 <div class="container">
 
-	<?php // Messages about the signature process will be rendered in here ?>
+	<?php // Messages about the signature process will be rendered in here. ?>
     <div id="messagesPanel"></div> 
 	
     <h2>Batch Signature</h2>
@@ -39,15 +40,15 @@ $documentsIds = array_map( function($id) { return sprintf("%02d", $id); }, range
                 You'll be signing the following files:
                 <?php
                 // UL element to hold the batch's documents (we'll render these programatically,
-                // see batch-signature-form.js)
+                // see batch-signature-form.js).
                 ?>
                 <ul id="docList" />
             </p>
         </div>
 
         <?php
-        // Render a select (combo box) to list the user's certificates. For now it will be
-        // empty, we'll populate it later on (see batch-signature-form.js)
+        // Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it
+        // later on (see batch-signature-form.js).
         ?>
         <div class="form-group">
             <label for="certificateSelect">Choose a certificate</label>
@@ -71,7 +72,7 @@ $documentsIds = array_map( function($id) { return sprintf("%02d", $id); }, range
 // The file below contains the JS lib for accessing the Web PKI component. For more information, see:
 // https://webpki.lacunasoftware.com/#/Documentation
 ?>
-<script src="content/js/lacuna-web-pki-2.5.0.js"></script>
+<script src="content/js/lacuna-web-pki-2.9.0.js"></script>
 
 <?php
 // The file below contains the logic for calling the Web PKI component. It is only an example, feel free to alter it
@@ -80,12 +81,12 @@ $documentsIds = array_map( function($id) { return sprintf("%02d", $id); }, range
 <script src="content/js/batch-signature-form.js"></script>
 <script>
     $(document).ready(function () {
-        // Once the page is ready, we call the init() function on the javascript code (see batch-signature-form.js)
+        // Once the page is ready, we call the init() function on the javascript code (see batch-signature-form.js).
         batchSignatureForm.init({                    	
-            documentsIds: <?php echo json_encode($documentsIds); ?>, // ids of documents
-            certificateSelect: $('#certificateSelect'), // the select element (combo box) to list the certificates
-            refreshButton: $('#refreshButton'),         // the "refresh" button
-            signButton: $('#signButton'),               // the button that initiates the operation
+            documentsIds: <?php echo json_encode($documentsIds); ?>, // The IDs of documents
+            certificateSelect: $('#certificateSelect'), // The select element (combo box) to list the certificates
+            refreshButton: $('#refreshButton'),         // The "refresh" button
+            signButton: $('#signButton')                // The button that initiates the operation
         });
     });
 </script>

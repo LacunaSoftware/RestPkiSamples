@@ -6,97 +6,35 @@
  * identifies this signature process, to be used in the next signature steps (see batch-signature-form.js).
  */
 
-// The file RestPkiLegacy.php contains the helper classes to call the REST PKI API for PHP 5.3+. Notice: if you're using
-// PHP version 5.5 or greater, please use one of the other samples, which make better use of the extended capabilities
-// of the newer versions of PHP - https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP
-require_once 'RestPkiLegacy.php';
+require __DIR__ . '/vendor/autoload.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
-// initialized with the API access token
-require_once 'util.php';
+use Lacuna\RestPki\Legacy\PadesSignatureStarter;
+use Lacuna\RestPki\Legacy\StandardSignaturePolicies;
+use Lacuna\RestPki\Legacy\PadesMeasurementUnits;
 
-// The file pades-visual-elements.php contains sample settings for visual representations and PDF marks (see below)
-require_once 'pades-visual-elements.php';
-
-use Lacuna\PadesSignatureStarter;
-use Lacuna\StandardSignaturePolicies;
-use Lacuna\PadesMeasurementUnits;
-use Lacuna\PadesVisualElements;
-use Lacuna\StandardSecurityContexts;
-
-// Get the document id for this signature (received from the POST call, see batch-signature-form.js)
+// Get the document id for this signature (received from the POST call, see batch-signature-form.js).
 $id = $_POST['id'];
 
-// Instantiate the PadesSignatureStarter class, responsible for receiving the signature elements and start the
-// signature process
+// Get an instance of the PadesSignatureStarter class, responsible for receiving the signature elements and start the
+// signature process.
 $signatureStarter = new PadesSignatureStarter(getRestPkiClient());
 
-// Set the unit of measurement used to edit the pdf marks and visual representations
-$signatureStarter->measurementUnits = PadesMeasurementUnits::CENTIMETERS;
+// Set the document to be signed based on its ID.
+$signatureStarter->setPdfToSignPath(sprintf("content/0%s.pdf", $id % 0));
 
-// Set the document to be signed based on its ID
-$signatureStarter->setPdfToSignPath("content/{$id}.pdf");
-
-// Set the signature policy
+// Set the signature policy.
 $signatureStarter->setSignaturePolicy(StandardSignaturePolicies::PADES_BASIC);
 
-// Set a SecurityContext to be used to determine trust in the certificate chain
-$signatureStarter->setSecurityContext(StandardSecurityContexts::PKI_BRAZIL);
-// Note: By changing the SecurityContext above you can accept only certificates from a certain PKI, for instance,
-// ICP-Brasil (\Lacuna\StandardSecurityContexts::PKI_BRAZIL).
+// Set a the security context to be used to determine trust in the certificate chain. We have encapsulated the security
+// context choice on util.php.
+$signatureStarter->setSecurityContext(getSecurityContextId());
 
-// Set the visual representation for the signature
-$signatureStarter->setVisualRepresentation(array(
+// Set the unit of measurement used to edit the pdf marks and visual representations.
+$signatureStarter->measurementUnits = PadesMeasurementUnits::CENTIMETERS;
 
-    'text' => array(
-
-        // The tags {{signerName}} and {{signerNationalId}} will be substituted according to the user's certificate
-        // signerName -> full name of the signer
-        // signerNationalId -> if the certificate is ICP-Brasil, contains the signer's CPF
-        'text' => 'Signed by {{signerName}} ({{signerNationalId}})',
-
-        // Specify that the signing time should also be rendered
-        'includeSigningTime' => true,
-
-        // Optionally set the horizontal alignment of the text ('Left' or 'Right'), if not set the default is Left
-        'horizontalAlign' => 'Left',
-
-        // Optionally set the container within the signature rectangle on which to place the text. By default, the
-        // text can occupy the entire rectangle (how much of the rectangle the text will actually fill depends on the
-        // length and font size). Below, we specify that the text should respect a right margin of 1.5 cm.
-        'container' => array(
-            'left' => 0,
-            'top' => 0,
-            'right' => 1.5,
-            'bottom' => 0
-        )
-    ),
-
-    'image' => array(
-
-        // We'll use as background the image content/PdfStamp.png
-        'resource' => array(
-            'content' => base64_encode(getPdfStampContent()),
-            'mimeType' => 'image/png'
-        ),
-
-        // Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is completely opaque).
-        'opacity' => 50,
-
-        // Align the image to the right
-        'horizontalAlign' => 'Right',
-
-        // Align the image vertically o the center
-        'verticalAlign' => 'Center'
-
-    ),
-
-    // Position of the visual representation. We have encapsulated this code in a function to include several
-    // possibilities depending on the argument passed to the function. Experiment changing the argument to see
-    // different examples of signature positioning. Once you decide which is best for your case, you can place the
-    // code directly here.
-    'position' => PadesVisualElements::getVisualRepresentationPosition(3)
-));
+// Set the visual representation for the signature. We have encapsulated this code (on util-pades.php) to be used on
+// various PAdES examples.
+$signatureStarter->setVisualRepresentation(getVisualRepresentation(getRestPkiClient()));
 
 /*
 	Optionally, add marks to the PDF before signing. These differ from the signature visual representation in that
@@ -104,12 +42,13 @@ $signatureStarter->setVisualRepresentation(array(
 	of marks can be added, for instance one per page, whereas there can only be one visual representation per signature.
 	However, since the marks are in reality changes to the PDF, they can only be added to documents which have no
     previous signatures, otherwise such signatures would be made invalid by the changes to the document (see property
-	PadesSignatureStarter.BypassMarksIfSigned). This problem does not occurr with signature visual representations.
+	PadesSignatureStarter::bypassMarksIfSigned). This problem does not occurr with signature visual representations.
+
 	We have encapsulated this code in a method to include several possibilities depending on the argument passed.
 	Experiment changing the argument to see different examples of PDF marks. Once you decide which is best for your
     case, you can place the code directly here.
 */
-//array_push($signatureStarter->pdfMarks, PadesVisualElements::getPdfMark(1));
+//array_push($signatureStarter->pdfMarks, getPdfMark(1));
 
 // Call the startWithWebPki() method, which initiates the signature. This yields the token, a 43-character
 // case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
@@ -117,5 +56,5 @@ $signatureStarter->setVisualRepresentation(array(
 // on the POST action below (this should not be mistaken with the API access token).
 $token = $signatureStarter->startWithWebPki();
 
-// Return a JSON with the token obtained from REST PKI (the page will use jQuery to decode this value)
+// Return a JSON with the token obtained from REST PKI (the page will use jQuery to decode this value).
 echo json_encode($token);

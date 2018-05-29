@@ -3,114 +3,48 @@
  * This file submits a PDF file to Rest PKI for inspection of its signatures and renders the results.
  */
 
-// The file RestPkiLegacy.php contains the helper classes to call the REST PKI API for PHP 5.3+. Notice: if you're using
-// PHP version 5.5 or greater, please use one of the other samples, which make better use of the extended capabilities
-// of the newer versions of PHP - https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP
-require_once 'RestPkiLegacy.php';
+require __DIR__ . '/vendor/autoload.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
-// initialized with the API access token
-require_once 'util.php';
+use Lacuna\RestPki\Legacy\PadesSignatureExplorer;
+use Lacuna\RestPki\Legacy\StandardSignaturePolicies;
 
-use Lacuna\PadesSignatureExplorer;
-use Lacuna\StandardSignaturePolicies;
-use Lacuna\StandardSecurityContexts;
-use Lacuna\StandardSignaturePolicyCatalog;
-
-// This function is called below. It encapsulates examples of signature validation parameters.
-function setValidationParameters($sigExplorer, $caseNumber)
-{
-
-    switch ($caseNumber) {
-
-        /**
-         * Example #1: accept any PAdES signature as long as the signer has an ICP-Brasil certificate (RECOMMENDED)
-         *
-         * These parameters will only accept signatures made with ICP-Brasil certificates that comply with the
-         * minimal security features defined in the PAdES standard (ETSI TS 102 778). The signatures need not, however,
-         * follow the extra requirements defined in the ICP-Brasil signature policy documentation (DOC-ICP-15.03).
-         *
-         * These are the recommended parameters for ICP-Brasil, since the PAdES policies, released on 2016-06-01,
-         * are still in adoption phase by most implementors.
-         */
-        case 1:
-            // By omitting the accepted policies catalog and defining a default policy, we're telling Rest PKI to
-            // validate all signatures in the file with the default policy -- even signatures with an explicit signature
-            // policy.
-            $sigExplorer->setDefaultSignaturePolicyId(StandardSignaturePolicies::PADES_BASIC);
-            // The PAdES Basic policy requires us to choose a security context
-            $sigExplorer->setSecurityContextId(StandardSecurityContexts::PKI_BRAZIL);
-            break;
-
-        /**
-         * Example #2: accept only 100%-compliant ICP-Brasil signatures
-         */
-        case 2:
-            // By specifying a catalog of acceptable policies and omitting the default signature policy, we're telling
-            // Rest PKI that only the policies in the catalog should be accepted
-            $sigExplorer->setAcceptableExplicitPolicies(StandardSignaturePolicyCatalog::getPkiBrazilPades());
-            break;
-
-        /**
-         * Example #3: accept any PAdES signature as long as the signer is trusted by Windows
-         *
-         * Same case as example #1, but using the WindowsServer trust arbitrator
-         */
-        case 3:
-            $sigExplorer->setDefaultSignaturePolicyId(StandardSignaturePolicies::PADES_BASIC);
-            $sigExplorer->setSecurityContextId(StandardSecurityContexts::WINDOWS_SERVER);
-            break;
-
-        /**
-         * Example #4: accept only 100%-compliant ICP-Brasil signatures that provide signer certificate protection.
-         *
-         * "Signer certificate protection" means that a signature keeps its validity even after the signer certificate
-         * is revoked or expires. On ICP-Brasil, this translates to policies AD-RT and up (not AD-RB).
-         */
-        case 4:
-            $sigExplorer->setAcceptableExplicitPolicies(
-                StandardSignaturePolicyCatalog::getPkiBrazilPadesWithSignerCertificateProtection());
-            break;
-
-    }
-}
-
-// Our demo only works if a userfile is given to work with
+// Our demo only works if a userfile is given to work with.
 $userfile = isset($_GET['userfile']) ? $_GET['userfile'] : null;
 if (empty($userfile)) {
     throw new \Exception("No file was uploaded");
 }
 
-// Get an instance of the PadesSignatureExplorer class, used to open/validate PDF signatures
+// Get an instance of the PadesSignatureExplorer class, used to open/validate PDF signatures.
 $sigExplorer = new PadesSignatureExplorer(getRestPkiClient());
 
-// Set the PDF file to be inspected
+// Set the PDF file to be inspected.
 $sigExplorer->setSignatureFile("app-data/{$userfile}");
 
-// Specify that we want to validate the signatures in the file, not only inspect them
+// Specify that we want to validate the signatures in the file, not only inspect them.
 $sigExplorer->setValidate(true);
 
-// Parameters for the signature validation. We have encapsulated this code in a method to include several
-// possibilities depending on the argument passed. Experiment changing the argument to see different validation
-// configurations. Once you decide which is best for your case, you can place the code directly here.
-setValidationParameters($sigExplorer, 1);
-// try changing this number ----------^ for different validation parameters
+// Accept any PAdES singature as long as is trusted by the security context.
+$sigExplorer->setDefaultSignaturePolicyId(StandardSignaturePolicies::PADES_BASIC);
 
-// Call the open() method, which returns the signature file's information
+// Specify the security context to be used to determine trust in the certificate chain. We have encapsulated the
+// security context choice on util.php.
+$sigExplorer->setSecurityContextId(getSecurityContextId());
+
+// Call the open() method, which returns the signature file's information.
 $signature = $sigExplorer->open();
 
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
     <title>Open existing PAdES Signature</title>
     <meta charset="utf-8">
-    <?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT
-    // required to use the Web PKI component) ?>
+    <?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component). ?>
 </head>
 <body>
 
-<?php include 'menu.php' // The top menu, this can be removed entirely ?>
+<?php include 'menu.php' // The top menu, this can be removed entirely. ?>
 
 <div class="container">
 
@@ -149,7 +83,10 @@ $signature = $sigExplorer->open();
                 <div id="<?php echo $collapseId ?>" class="panel-collapse collapse" role="tabpanel"
                      aria-labelledby="<?php echo $headingId ?>">
                     <div class="panel-body">
-                        <p>Signing time: <?php echo $signer->signingTime ?></p>
+                        <?php if ($signer->signingTime != null) { ?>
+                            <p>Signing time: <?= date('d/m/Y H:i', strtotime($signer->signingTime)) ?></p>
+                        <?php } ?>
+
                         <p>Message
                             digest: <?php echo $signer->messageDigest->algorithm->getName() . " " . $signer->messageDigest->hexValue ?></p>
                         <?php if ($signer->signaturePolicy != null) { ?>
@@ -179,8 +116,7 @@ $signature = $sigExplorer->open();
                         </p>
                         <?php if ($signer->validationResults != null) { ?>
                             <p>Validation results:<br/>
-                                <textarea style="width: 100%"
-                                          rows="20"><?php echo $signer->validationResults ?></textarea>
+                                <textarea style="width: 100%" rows="20"><?php echo $signer->validationResults ?></textarea>
                             </p>
                         <?php } ?>
                     </div>

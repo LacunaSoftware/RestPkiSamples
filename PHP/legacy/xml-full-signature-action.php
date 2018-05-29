@@ -4,25 +4,20 @@
  * This file receives the form submission from xml-full-signature.php. We'll call REST PKI to complete the signature.
  */
 
-// The file RestPkiLegacy.php contains the helper classes to call the REST PKI API
-require_once 'RestPkiLegacy.php';
+require __DIR__ . '/vendor/autoload.php';
 
-// The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient class
-// initialized with the API access token
-require_once 'util.php';
+use Lacuna\RestPki\Legacy\XmlSignatureFinisher;
 
-use Lacuna\XmlSignatureFinisher;
-
-// Get the token for this signature (rendered in a hidden input field, see xml-full-signature.php)
+// Get the token for this signature (rendered in a hidden input field, see xml-full-signature.php).
 $token = $_POST['token'];
 
-// Instantiate the XmlSignatureFinisher class, responsible for completing the signature process
+// Get an instance of the XmlSignatureFinisher class, responsible for completing the signature process.
 $signatureFinisher = new XmlSignatureFinisher(getRestPkiClient());
 
-// Set the token
+// Set the token.
 $signatureFinisher->setToken($token);
 
-// Call the finish() method, which finalizes the signature process and returns the signed XML
+// Call the finish() method, which finalizes the signature process and returns the signed XML.
 $signedXml = $signatureFinisher->finish();
 
 // Get information about the certificate used by the user to sign the file. This method must only be called after
@@ -36,15 +31,17 @@ $filename = uniqid() . ".xml";
 createAppData(); // make sure the "app-data" folder exists (util.php)
 file_put_contents("app-data/{$filename}", $signedXml);
 
-?><!DOCTYPE html>
+?>
+
+<!DOCTYPE html>
 <html>
 <head>
     <title>Full XML signature (enveloped signature)</title>
-    <?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component) ?>
+    <?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component). ?>
 </head>
 <body>
 
-<?php include 'menu.php' // The top menu, this can be removed entirely ?>
+<?php include 'menu.php' // The top menu, this can be removed entirely. ?>
 
 <div class="container">
 
