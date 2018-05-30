@@ -7,7 +7,6 @@
 require __DIR__ . '/vendor/autoload.php';
 
 use Lacuna\RestPki\PadesSignatureStarter;
-use Lacuna\RestPki\PadesVisualPositioningPresets;
 use Lacuna\RestPki\StandardSignaturePolicies;
 use Lacuna\RestPki\PadesMeasurementUnits;
 use Lacuna\RestPki\StandardSecurityContexts;

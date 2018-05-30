@@ -11,10 +11,8 @@
 require __DIR__ . '/vendor/autoload.php';
 
 use Lacuna\RestPki\PadesSignatureStarter;
-use Lacuna\RestPki\PadesVisualPositioningPresets;
 use Lacuna\RestPki\StandardSignaturePolicies;
 use Lacuna\RestPki\PadesMeasurementUnits;
-use Lacuna\RestPki\StandardSecurityContexts;
 
 // Instantiate the PadesSignatureStarter class, responsible for receiving the signature elements and start the signature
 // process.

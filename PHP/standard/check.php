@@ -4,7 +4,6 @@ require __DIR__ . '/vendor/autoload.php';
 
 use Lacuna\RestPki\PadesSignatureExplorer;
 use Lacuna\RestPki\StandardSignaturePolicies;
-use Lacuna\RestPki\StandardSecurityContexts;
 
 // Get document ID from query string.
 $formattedCode = isset($_GET['c']) ? $_GET['c'] : null;

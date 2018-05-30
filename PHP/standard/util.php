@@ -1,9 +1,9 @@
 <?php
 
+require __DIR__ . '/vendor/autoload.php';
+
 use Lacuna\RestPki\RestPkiClient;
 use Lacuna\RestPki\StandardSecurityContexts;
-
-require __DIR__ . '/vendor/autoload.php';
 
 function getRestPkiClient()
 {

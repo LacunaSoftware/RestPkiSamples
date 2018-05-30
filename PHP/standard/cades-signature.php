@@ -14,7 +14,6 @@
 require __DIR__ . '/vendor/autoload.php';
 
 use Lacuna\RestPki\CadesSignatureStarter;
-use Lacuna\RestPki\StandardSecurityContexts;
 use Lacuna\RestPki\StandardSignaturePolicies;
 
 $userfile = isset($_GET['userfile']) ? $_GET['userfile'] : null;

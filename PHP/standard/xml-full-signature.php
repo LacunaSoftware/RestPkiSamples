@@ -8,7 +8,6 @@
 require __DIR__ . '/vendor/autoload.php';
 
 use Lacuna\RestPki\FullXmlSignatureStarter;
-use Lacuna\RestPki\StandardSecurityContexts;
 use Lacuna\RestPki\StandardSignaturePolicies;
 
 // Instantiate the FullXmlSignatureStarter class, responsible for receiving the signature elements and start the

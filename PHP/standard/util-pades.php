@@ -1,16 +1,15 @@
 <?php
 
+require __DIR__ . '/vendor/autoload.php';
+
 use Lacuna\RestPki\Color;
 use Lacuna\RestPki\PadesVisualPositioningPresets;
-use Lacuna\RestPki\PadesMeasurementUnits;
 use Lacuna\RestPki\PdfMark;
 use Lacuna\RestPki\PdfMarkImage;
 use Lacuna\RestPki\PdfMarkImageElement;
 use Lacuna\RestPki\PdfMarkTextElement;
 use Lacuna\RestPki\PdfTextSection;
 use Lacuna\RestPki\PdfTextStyle;
-
-require __DIR__ . '/vendor/autoload.php';
 
 function getVisualRepresentation($client)
 {

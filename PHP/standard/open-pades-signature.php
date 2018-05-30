@@ -7,7 +7,6 @@ require __DIR__ . '/vendor/autoload.php';
 
 use Lacuna\RestPki\PadesSignatureExplorer;
 use Lacuna\RestPki\StandardSignaturePolicies;
-use Lacuna\RestPki\StandardSecurityContexts;
 
 // Our demo only works if a userfile is given to work with.
 $userfile = isset($_GET['userfile']) ? $_GET['userfile'] : null;

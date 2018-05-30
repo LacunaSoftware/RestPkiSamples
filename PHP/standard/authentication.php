@@ -8,7 +8,6 @@
 require __DIR__ . '/vendor/autoload.php';
 
 use Lacuna\RestPki\Authentication;
-use Lacuna\RestPki\StandardSecurityContexts;
 
 // Get an instance of the Authentication class (see util.php).
 $auth = new Authentication(getRestPkiClient());

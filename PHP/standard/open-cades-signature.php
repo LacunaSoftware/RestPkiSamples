@@ -6,8 +6,6 @@
 require __DIR__ . '/vendor/autoload.php';
 
 use Lacuna\RestPki\CadesSignatureExplorer;
-use Lacuna\RestPki\StandardSignaturePolicies;
-use Lacuna\RestPki\StandardSecurityContexts;
 use Lacuna\RestPki\StandardSignaturePolicyCatalog;
 
 // Our demo only works if a userfile is given to work with.

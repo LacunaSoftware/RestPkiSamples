@@ -10,7 +10,6 @@
 require __DIR__ . '/vendor/autoload.php';
 
 use Lacuna\RestPki\XmlElementSignatureStarter;
-use Lacuna\RestPki\StandardSecurityContexts;
 use Lacuna\RestPki\StandardSignaturePolicies;
 
 // Get the element id for this signature (received from the POST call, see batch-xml-element-signature-form.js).

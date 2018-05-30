@@ -9,10 +9,8 @@
 require __DIR__ . '/vendor/autoload.php';
 
 use Lacuna\RestPki\PadesSignatureStarter;
-use Lacuna\RestPki\PadesVisualPositioningPresets;
 use Lacuna\RestPki\StandardSignaturePolicies;
 use Lacuna\RestPki\PadesMeasurementUnits;
-use Lacuna\RestPki\StandardSecurityContexts;
 
 // Get the document id for this signature (received from the POST call, see batch-signature-form.js).
 $id = $_POST['id'];

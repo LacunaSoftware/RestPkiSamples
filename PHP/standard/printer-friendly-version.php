@@ -8,7 +8,6 @@ require __DIR__ . '/vendor/autoload.php';
 
 use Lacuna\RestPki\PadesSignatureExplorer;
 use Lacuna\RestPki\StandardSignaturePolicies;
-use Lacuna\RestPki\StandardSecurityContexts;
 use Lacuna\RestPki\PdfMark;
 use Lacuna\RestPki\PdfMarkPageOptions;
 use Lacuna\RestPki\PdfMarkImage;
