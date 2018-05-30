@@ -1,5 +1,13 @@
 {
+    "autoload": {
+        "files": [
+            "util.php",
+            "util-pades.php",
+            "storage-mock.php",
+            "config.php"
+        ]
+    },
     "require": {
-        "nategood/httpful": "*"
+        "lacuna/restpki-client-legacy": "^1.0.0"
     }
 }

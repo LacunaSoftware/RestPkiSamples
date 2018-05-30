@@ -1,31 +1,54 @@
 <?php
 
-require_once 'RestPkiLegacy.php';
+require __DIR__ . '/vendor/autoload.php';
 
-use Lacuna\RestPkiClient;
+use Lacuna\RestPki\Legacy\RestPkiClient;
+use Lacuna\RestPki\Legacy\StandardSecurityContexts;
 
 function getRestPkiClient()
 {
-
-    // -----------------------------------------------------------------------------------------------------------
-    // PASTE YOUR ACCESS TOKEN BELOW
-    $restPkiAccessToken = 'PLACE YOUR API ACCESS TOKEN HERE';
-    //                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    // -----------------------------------------------------------------------------------------------------------
+    $config = getConfig();
+    $accessToken = $config['restPki']['accessToken'];
 
     // Throw exception if token is not set (this check is here just for the sake of newcomers, you can remove it)
-    if (strpos($restPkiAccessToken, ' API ') !== false) {
-        throw new \Exception('The API access token was not set! Hint: to run this sample you must generate an API access token on the REST PKI website and paste it on the file api/util.php');
+    if (empty($accessToken) || strpos($accessToken, ' API ') !== false) {
+        throw new \Exception('The API access token was not set! Hint: to run this sample you must generate an API access token on the REST PKI website and paste it on the file config.php');
     }
 
     // -----------------------------------------------------------------------------------------------------------
     // IMPORTANT NOTICE: in production code, you should use HTTPS to communicate with REST PKI, otherwise your API
     // access token, as well as the documents you sign, will be sent to REST PKI unencrypted.
     // -----------------------------------------------------------------------------------------------------------
-    $restPkiUrl = 'http://pki.rest/';
-    //$restPkiUrl = 'https://pki.rest/'; // <--- USE THIS IN PRODUCTION!
+    $endpoint = $config['restPki']['endpoint'];
+    if (empty($endpoint)) {
+        $endpoint = 'http://pki.rest/';
+        //$endpoint = 'https://pki.rest/'; // <--- USE THIS IS PRODUCTION!
+    }
 
-    return new RestPkiClient($restPkiUrl, $restPkiAccessToken);
+    return new RestPkiClient($endpoint, $accessToken);
+}
+
+/**
+ * This method is called by all pages to determine the security context to be used.
+ *
+ * Security contexts dictate witch root certification authorities are trusted during certificate validation. In your
+ * API calls, you can use one of the standard security contexts or reference one of your custom contexts.
+ */
+function getSecurityContextId()
+{
+    /*
+     * Lacuna Test PKI (for development purposes only!)
+     *
+     * This security context trusts ICP-Brasil certificates as well as certificates on Lacuna Software's test PKI. Use it
+     * to accept the test certificates provided by Lacuna Software, uncomment the following line.
+     *
+     * THIS SHOULD NEVER BE USED ON A PRODUCTION ENVIRONMENT!
+     * For more information, see https://github.com/LacunaSoftware/RestPkiSamples/blob/master/TestCertificates.md
+     */
+    //return StandardSecurityContexts::LACUNA_TEST;
+
+    // In production, accept only certificates from ICP-Brasil.
+    return StandardSecurityContexts::PKI_BRAZIL;
 }
 
 function setNoCacheHeaders()
