@@ -8,6 +8,6 @@
     ]
   },
   "require": {
-    "lacuna/restpki-client": "^2.2.6"
+    "lacuna/restpki-client": "^2.2.7"
   }
 }
