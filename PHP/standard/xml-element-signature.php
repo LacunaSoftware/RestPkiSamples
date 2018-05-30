@@ -8,7 +8,6 @@
 require __DIR__ . '/vendor/autoload.php';
 
 use Lacuna\RestPki\XmlElementSignatureStarter;
-use Lacuna\RestPki\StandardSecurityContexts;
 use Lacuna\RestPki\StandardSignaturePolicies;
 
 // Instantiate the XmlElementSignatureStarter class, responsible for receiving the signature elements and start the
@@ -24,10 +23,8 @@ $signatureStarter->toSignElementId = 'NFe351412143140500006625500100010842711823
 // Set the signature policy
 $signatureStarter->signaturePolicy = StandardSignaturePolicies::XML_ICPBR_NFE_PADRAO_NACIONAL;
 
-// Optionally, set a SecurityContext to be used to determine trust in the certificate chain. Since we're using the
-// XML_ICPBR_NFE_PADRAO_NACIONAL policy, the security context will default to PKI Brazil (ICP-Brasil)
-//$signatureStarter->securityContext = StandardSecurityContexts::PKI_BRAZIL;
-// Note: By changing the SecurityContext above you can accept only certificates from a custom PKI for tests.
+// Set the security context. We have encapsulated the security context choice on util.php.
+$signatureStarter->securityContext = getSecurityContextId();
 
 // Call the startWithWebPki() method, which initiates the signature. This yields the token, a 43-character
 // case-sensitive URL-safe string, which identifies this signature process. We'll use this value to call the
@@ -45,20 +42,20 @@ setExpiredPage();
 <html>
 <head>
     <title>XML element signature</title>
-    <?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component) ?>
+    <?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component). ?>
 </head>
 <body>
 
-<?php include 'menu.php' // The top menu, this can be removed entirely ?>
+<?php include 'menu.php' // The top menu, this can be removed entirely. ?>
 
 <div class="container">
 
     <h2>XML element signature</h2>
 
-    <?php // notice that we'll post to a different PHP file ?>
+    <?php // Notice that we'll post to a different PHP file. ?>
     <form id="signForm" action="xml-element-signature-action.php" method="POST">
 
-        <?php // render the $token in a hidden input field ?>
+        <?php // Render the $token in a hidden input field. ?>
         <input type="hidden" name="token" value="<?= $token ?>">
 
         <div class="form-group">
@@ -69,7 +66,7 @@ setExpiredPage();
 
         <?php
         // Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it
-        // later on (see javascript below).
+        // later on (see signature-form.js).
         ?>
         <div class="form-group">
             <label for="certificateSelect">Choose a certificate</label>
@@ -79,7 +76,7 @@ setExpiredPage();
         <?php
         // Action buttons. Notice that the "Sign File" button is NOT a submit button. When the user clicks the button,
         // we must first use the Web PKI component to perform the client-side computation necessary and only when
-        // that computation is finished we'll submit the form programmatically (see javascript below).
+        // that computation is finished we'll submit the form programmatically (see signature-form.js).
         ?>
         <button id="signButton" type="button" class="btn btn-primary">Sign File</button>
         <button id="refreshButton" type="button" class="btn btn-default">Refresh Certificates</button>
@@ -91,7 +88,7 @@ setExpiredPage();
 // The file below contains the JS lib for accessing the Web PKI component. For more information, see:
 // https://webpki.lacunasoftware.com/#/Documentation
 ?>
-<script src="content/js/lacuna-web-pki-2.6.1.js"></script>
+<script src="content/js/lacuna-web-pki-2.9.0.js"></script>
 
 <?php
 // The file below contains the logic for calling the Web PKI component. It is only an example, feel free to alter it
@@ -100,13 +97,13 @@ setExpiredPage();
 <script src="content/js/signature-form.js"></script>
 <script>
     $(document).ready(function () {
-        // Once the page is ready, we call the init() function on the javascript code (see signature-form.js)
+        // Once the page is ready, we call the init() function on the javascript code (see signature-form.js).
         signatureForm.init({
-            token: '<?= $token ?>',                     // token acquired from REST PKI
-            form: $('#signForm'),                       // the form that should be submitted when the operation is complete
-            certificateSelect: $('#certificateSelect'), // the select element (combo box) to list the certificates
-            refreshButton: $('#refreshButton'),         // the "refresh" button
-            signButton: $('#signButton')                // the button that initiates the operation
+            token: '<?= $token ?>',                     // The token acquired from REST PKI.
+            form: $('#signForm'),                       // The form that should be submitted when the operation is complete.
+            certificateSelect: $('#certificateSelect'), // The <select> element (combo box) to list the certificates.
+            refreshButton: $('#refreshButton'),         // The "refresh" button.
+            signButton: $('#signButton')                // The button that initiates the operation.
         });
     });
 </script>

@@ -3,10 +3,11 @@
     "files": [
       "util.php",
       "util-pades.php",
-      "storage-mock.php"
+      "storage-mock.php",
+      "config.php"
     ]
   },
   "require": {
-    "lacuna/restpki-client": "^2.2.3"
+    "lacuna/restpki-client": "^2.2.6"
   }
 }

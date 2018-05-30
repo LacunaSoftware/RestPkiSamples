@@ -8,16 +8,16 @@ require __DIR__ . '/vendor/autoload.php';
 
 use Lacuna\RestPki\XmlSignatureFinisher;
 
-// Get the token for this signature (rendered in a hidden input field, see xml-full-signature.php)
+// Get the token for this signature (rendered in a hidden input field, see xml-full-signature.php).
 $token = $_POST['token'];
 
-// Instantiate the XmlSignatureFinisher class, responsible for completing the signature process
+// Instantiate the XmlSignatureFinisher class, responsible for completing the signature process.
 $signatureFinisher = new XmlSignatureFinisher(getRestPkiClient());
 
-// Set the token
+// Set the token.
 $signatureFinisher->token = $token;
 
-// Call the finish() method, which finalizes the signature process and returns the signed XML
+// Call the finish() method, which finalizes the signature process and returns the signed XML.
 $signedXml = $signatureFinisher->finish();
 
 // Get information about the certificate used by the user to sign the file. This method must only be called after
@@ -28,18 +28,18 @@ $signerCert = $signatureFinisher->getCertificateInfo();
 // store the PDF on a temporary folder publicly accessible and render a link to it.
 
 $filename = uniqid() . ".xml";
-createAppData(); // make sure the "app-data" folder exists (util.php)
+createAppData(); // make sure the "app-data" folder exists (util.php).
 file_put_contents("app-data/{$filename}", $signedXml);
 
 ?><!DOCTYPE html>
 <html>
 <head>
     <title>Full XML signature (enveloped signature)</title>
-    <?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component) ?>
+    <?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component). ?>
 </head>
 <body>
 
-<?php include 'menu.php' // The top menu, this can be removed entirely ?>
+<?php include 'menu.php' // The top menu, this can be removed entirely. ?>
 
 <div class="container">
 

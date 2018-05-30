@@ -8,16 +8,16 @@ require __DIR__ . '/vendor/autoload.php';
 
 use Lacuna\RestPki\PadesSignatureFinisher2;
 
-// Get the token for this signature (rendered in a hidden input field, see pades-signature.php)
+// Get the token for this signature (rendered in a hidden input field, see pades-signature.php).
 $token = $_POST['token'];
 
-// Instantiate the PadesSignatureFinisher2 class, responsible for completing the signature process
+// Instantiate the PadesSignatureFinisher2 class, responsible for completing the signature process.
 $signatureFinisher = new PadesSignatureFinisher2(getRestPkiClient());
 
-// Set the token
+// Set the token.
 $signatureFinisher->token = $token;
 
-// Call the finish() method, which finalizes the signature process and returns a SignatureResult object
+// Call the finish() method, which finalizes the signature process and returns a SignatureResult object.
 $signatureResult = $signatureFinisher->finish();
 
 // The "certificate" property of the SignatureResult object contains information about the certificate used by the user
@@ -38,11 +38,11 @@ $signatureResult->writeToFile("app-data/{$filename}");
 <html>
 <head>
     <title>PAdES Signature</title>
-    <?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component) ?>
+    <?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component). ?>
 </head>
 <body>
 
-<?php include 'menu.php' // The top menu, this can be removed entirely ?>
+<?php include 'menu.php' // The top menu, this can be removed entirely. ?>
 
 <div class="container">
 

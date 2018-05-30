@@ -1,31 +1,56 @@
 <?php
 
-use Lacuna\RestPki\RestPkiClient;
-
 require __DIR__ . '/vendor/autoload.php';
+
+use Lacuna\RestPki\RestPkiClient;
+use Lacuna\RestPki\StandardSecurityContexts;
 
 function getRestPkiClient()
 {
 
-    // -----------------------------------------------------------------------------------------------------------
-    // PASTE YOUR ACCESS TOKEN BELOW
-    $restPkiAccessToken = 'PLACE YOUR API ACCESS TOKEN HERE';
-    //                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    // -----------------------------------------------------------------------------------------------------------
+    $accessToken = getConfig()['restPki']['accessToken'];
 
-    // Throw exception if token is not set (this check is here just for the sake of newcomers, you can remove it)
-    if (strpos($restPkiAccessToken, ' API ') !== false) {
-        throw new \Exception('The API access token was not set! Hint: to run this sample you must generate an API access token on the REST PKI website and paste it on the file api/util.php');
+    // Throw exception if token is not set (this check is here just for the sake of newcomers, you can remove it).
+    if (empty($accessToken) || strpos($accessToken, ' API ') !== false) {
+        throw new \Exception('The API access token was not set! Hint: to run this sample you must generate an API access token on the REST PKI website and paste it on the file config.php');
     }
 
     // -----------------------------------------------------------------------------------------------------------
     // IMPORTANT NOTICE: in production code, you should use HTTPS to communicate with REST PKI, otherwise your API
     // access token, as well as the documents you sign, will be sent to REST PKI unencrypted.
     // -----------------------------------------------------------------------------------------------------------
-    $restPkiUrl = 'http://pki.rest/';
-    //$restPkiUrl = 'https://pki.rest/'; // <--- USE THIS IN PRODUCTION!
+    $endpoint = getConfig()['restPki']['endpoint'];
+    if (empty($endpoint)) {
+        $endpoint = 'http://pki.rest/';
+        //$endpoint = 'https://pki.rest/'; // <--- USE THIS IN PRODUCTION!
+    }
 
-    return new RestPkiClient($restPkiUrl, $restPkiAccessToken);
+    return new RestPkiClient($endpoint, $accessToken);
+}
+
+/**
+ * This method is called by all pages to determine the security context to be used.
+ *
+ * Security contexts dictate witch root certification authorities are trusted during
+ * certificate validation. In you API calls, you can use one of the standard security
+ * contexts or reference one of you custom contexts.
+ */
+function getSecurityContextId() {
+
+    /*
+     * Lacuna Text PKI (for development purposes only!)
+     *
+     * This security context trusts ICP-Brasil certificates as well as certificates on Lacuna Software's
+     * test PKI. Use it to accept the test certificates provided by Lacuna Software, uncomment the following
+     * line.
+     *
+     * THIS SHOULD NEVER BE USED ON A PRODUCTION ENVIRONMENT!
+     * For more information, see https://github.com/LacunaSoftware/RestPkiSamples/blob/master/TestCertificates.md
+     */
+    //return StandardSecurityContexts::LACUNA_TEST;
+
+    // In production, accept only certificates from ICP-Brasil.
+    return StandardSecurityContexts::PKI_BRAZIL;
 }
 
 function setExpiredPage()
@@ -85,7 +110,7 @@ function generateVerificationCode()
      * Configuration of the code generation
      * ------------------------------------
      *
-     * - CodeSize   : size of the code in characters
+     * - CodeSize   : size of the code in characters.
      *
      * Entropy
      * -------
@@ -99,7 +124,7 @@ function generateVerificationCode()
      */
     $codeSize = 16;
 
-    // Generate the entropy with PHP's pseudo-random bytes generator function
+    // Generate the entropy with PHP's pseudo-random bytes generator function.
     $numBytes = floor($codeSize / 2);
     $randInt = openssl_random_pseudo_bytes($numBytes);
 
@@ -121,7 +146,7 @@ function formatVerificationCode($code)
      */
     $codeGroups = 4;
 
-    // Return the code separated in groups
+    // Return the code separated in groups.
     $charsPerGroup = (strlen($code) - (strlen($code) % $codeGroups)) / $codeGroups;
     $text = '';
     for ($ind = 0; $ind < strlen($code); $ind++) {
