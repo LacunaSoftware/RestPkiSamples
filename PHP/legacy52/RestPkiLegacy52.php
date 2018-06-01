@@ -53,6 +53,7 @@ class RestPkiClient {
                 'Authorization' => 'Bearer ' . $this->accessToken,
                 'Content-Type' => 'application/json')
             );
+
             $httpResponse = new LacunaRestResponse($response, $this->pest->lastStatus());
 
 		} catch (Pest_Exception $ex) {
@@ -462,6 +463,168 @@ class RestPkiCadesSignatureFinisher {
 	}
 }
 
+abstract class RestPkiSignatureExplorer {
+
+    /** @var RestPkiClient */
+    protected $restPkiClient;
+    protected $signatureFileContent;
+    protected $validate;
+    protected $defaultSignaturePolicyId;
+    protected $acceptableExplicitPolicies;
+    protected $securityContextId;
+
+    protected function __construct($restPkiClient) {
+        $this->restPkiClient = $restPkiClient;
+    }
+
+    public function setSignatureFile($filePath) {
+        $this->signatureFileContent = file_get_contents($filePath);
+    }
+
+    public function setValidate($validate) {
+        $this->validate = $validate;
+    }
+
+    public function setDefaultSignaturePolicyId($signaturePolicyId) {
+        $this->defaultSignaturePolicyId = $signaturePolicyId;
+    }
+
+    public function setAcceptableExplicitPolicies($policyCatalog) {
+        $this->acceptableExplicitPolicies = $policyCatalog;
+    }
+
+    public function setSecurityContextId($securityContextId) {
+        $this->securityContextId = $securityContextId;
+    }
+
+    protected function getRequest($mimeType) {
+        $request = array(
+            'validate' => $this->validate,
+            'defaultSignaturePolicyId' => $this->defaultSignaturePolicyId,
+            'securityContextId' => $this->securityContextId,
+            'acceptableExplicitPolicies' => $this->acceptableExplicitPolicies,
+            'file' => null
+        );
+
+        if ($this->signatureFileContent != null) {
+            $request['file'] = array(
+                'content' => base64_encode($this->signatureFileContent),
+                'mimeType' => $mimeType,
+                'blobId' => null
+            );
+        }
+
+        return $request;
+    }
+}
+
+class RestPkiPadesSignatureExplorer extends RestPkiSignatureExplorer {
+    const PDF_MIME_TYPE = "application/pdf";
+
+    public function __construct($client) {
+        parent::__construct($client);
+    }
+
+    public function open() {
+        if(!isset($this->signatureFileContent)) {
+            throw new RuntimeException("The signature file to open not set");
+        } else {
+            $request = $this->getRequest(self::PDF_MIME_TYPE);
+            $response = $this->restPkiClient->post("Api/PadesSignatures/Open", $request);
+
+            foreach ($response->signers as $signer) {
+                $signer->validationResults = new RestPkiValidationResults($signer->validationResults);
+                $signer->messageDigest->algorithm = RestPkiDigestAlgorithm::getInstanceByApiAlgorithm($signer->messageDigest->algorithm);
+
+                if(isset($signer->signingTime)) {
+                    $signer->signingTime = date("d/m/Y H:i:s P", strtotime($signer->signingTime));
+                }
+            }
+
+            return $response;
+        }
+    }
+}
+
+class RestPkiCadesSignatureExplorer extends RestPkiSignatureExplorer {
+    const CMS_SIGNATURE_MIME_TYPE = "application/pkcs7-signature";
+
+    private $dataFileContent;
+
+    public function __construct($client) {
+        parent::__construct($client);
+    }
+
+    public function setDataFile($filePath) {
+        $this->dataFileContent = file_get_contents($filePath);
+    }
+
+    public function open() {
+        $dataHashes = null;
+        if(!isset($this->signatureFileContent)) {
+            throw new RuntimeException("The signature file to open not set");
+        }
+
+        if($this->dataFileContent != null) {
+            $requiredHashes = $this->getRequiredHashes();
+            if (count($requiredHashes) > 0) {
+                $dataHashes = $this->computeDataHashes($this->dataFileContent, $requiredHashes);
+            }
+        }
+
+        $request = $this->getRequest(self::CMS_SIGNATURE_MIME_TYPE);
+
+        $request['dataHashes'] = $dataHashes;
+
+        $response = $this->restPkiClient->post("Api/CadesSignatures/Open", $request);
+
+        foreach ($response->signers as $signer) {
+            $signer->validationResults = new RestPkiValidationResults($signer->validationResults);
+            $signer->messageDigest->algorithm = RestPkiDigestAlgorithm::getInstanceByApiAlgorithm($signer->messageDigest->algorithm);
+
+            if(isset($signer->signingTime)) {
+                $signer->signingTime = date("d/m/Y H:i:s P", strtotime($signer->signingTime));
+            }
+        }
+
+        return $response;
+    }
+
+    private function getRequiredHashes() {
+        $request = array(
+            "content" => base64_encode($this->signatureFileContent),
+            "mimeType" => self::CMS_SIGNATURE_MIME_TYPE,
+            "blobId" => null
+        );
+
+        $response = $this->restPkiClient->post("Api/CadesSignatures/RequiredHashes", $request);
+
+        $algs = array();
+
+        foreach ($response->body as $alg) {
+            array_push($algs, RestPkiDigestAlgorithm::getInstanceByApiAlgorithm($alg));
+        }
+
+        return $algs;
+    }
+
+    private function computeDataHashes($dataFileStream, $algorithms) {
+        $dataHashes = array();
+        foreach ($algorithms as $algorithm) {
+            $digestValue = mhash($algorithm->getHashId(), $dataFileStream);
+            $dataHash = array (
+                'algorithm' => $algorithm->getAlgorithm(),
+                'value' => base64_encode($digestValue),
+                'hexValue' => null
+            );
+
+            array_push($dataHashes, $dataHash);
+        }
+
+        return $dataHashes;
+    }
+}
+
 abstract class RestPkiXmlSignatureStarter {
 
 	/** @var RestPkiClient */
@@ -656,6 +819,8 @@ class RestPkiStandardSecurityContexts {
 
 class RestPkiStandardSignaturePolicies {
 	const PADES_BASIC = '78d20b33-014d-440e-ad07-929f05d00cdf';
+    const PADES_ICPBR_ADR_BASICA = '531d5012-4c0d-4b6f-89e8-ebdcc605d7c2';
+    const PADES_ICPBR_ADR_TEMPO = '10f0d9a5-a0a9-42e9-9523-e181ce05a25b';
 	const CADES_BES = 'a4522485-c9e5-46c3-950b-0d6e951e17d1';
 	const CADES_ICPBR_ADR_BASICA = '3ddd8001-1672-4eb5-a4a2-6e32b17ddc46';
 	const CADES_ICPBR_ADR_TEMPO = 'a5332ad1-d105-447c-a4bb-b5d02177e439';
@@ -667,6 +832,49 @@ class RestPkiStandardSignaturePolicies {
 	const XML_ICPBR_ADR_BASICA = '1cf5db62-58b6-40ba-88a3-d41bada9b621';
 	const XML_ICPBR_ADR_TEMPO = '5aa2e0af-5269-43b0-8d45-f4ef52921f04';
 }
+
+class RestPkiStandardSignaturePolicyCatalog {
+    protected $policies;
+
+    public function __construct($policies) {
+        $this->policies = $policies;
+    }
+
+    public static function getPkiBrazilCades() {
+        return array(
+            RestPkiStandardSignaturePolicies::CADES_ICPBR_ADR_BASICA,
+            RestPkiStandardSignaturePolicies::CADES_ICPBR_ADR_TEMPO,
+            RestPkiStandardSignaturePolicies::CADES_ICPBR_ADR_COMPLETA
+        );
+    }
+
+    public static function getPkiBrazilCadesWithSignerCertificateProtection() {
+        return array(
+            RestPkiStandardSignaturePolicies::CADES_ICPBR_ADR_TEMPO,
+            RestPkiStandardSignaturePolicies::CADES_ICPBR_ADR_COMPLETA
+        );
+    }
+
+    public static function getPkiBrazilCadesWithCACertificateProtection() {
+        return array(
+            RestPkiStandardSignaturePolicies::CADES_ICPBR_ADR_COMPLETA
+        );
+    }
+
+    public static function getPkiBrazilPades() {
+        return array(
+            RestPkiStandardSignaturePolicies::PADES_ICPBR_ADR_BASICA,
+            RestPkiStandardSignaturePolicies::PADES_ICPBR_ADR_TEMPO
+        );
+    }
+
+    public static function getPkiBrazilPadesWithSignerCertificateProtection() {
+        return array(
+            RestPkiStandardSignaturePolicies::PADES_ICPBR_ADR_TEMPO
+        );
+    }
+}
+
 
 class RestPkiXmlInsertionOptions {
 	const APPEND_CHILD = 'AppendChild';
@@ -889,4 +1097,53 @@ class RestPkiValidationItem {
 		return $text;
 	}
 
+}
+
+class RestPkiDigestAlgorithm {
+    const MD5 = 'MD5';
+    const SHA1 = 'SHA-1';
+    const SHA256 = 'SHA-256';
+    const SHA384 = 'SHA-384';
+    const SHA512 = 'SHA-512';
+
+    private $name;
+    private $algorithm;
+
+    private function __construct($name) {
+        $this->name = constant('RestPkiDigestAlgorithm::' . $name);
+        $this->algorithm = $name;
+    }
+
+    public static function getInstanceByApiAlgorithm($algorithm) {
+        if(defined('RestPkiDigestAlgorithm::' . $algorithm)) {
+            return new RestPkiDigestAlgorithm($algorithm);
+        } else {
+            throw new RuntimeException("Unsupported digest algorithm: " . $algorithm); // should not happen
+        }
+    }
+
+    public function getHashId() {
+        switch($this->algorithm) {
+            case 'MD5':
+                return MHASH_MD5;
+            case 'SHA1':
+                return MHASH_SHA1;
+            case 'SHA256':
+                return MHASH_SHA256;
+            case 'SHA384':
+                return MHASH_SHA384;
+            case 'SHA512':
+                return MHASH_SHA512;
+            default:
+                throw new RuntimeException("Could not get MessageDigest instance for algorithm " . $this->algorithm);
+        }
+    }
+
+    public function getName() {
+        return $this->name;
+    }
+
+    public function getAlgorithm() {
+        return $this->algorithm;
+    }
 }
