@@ -8,13 +8,14 @@
  * start and complete each signature.
  */
 
-// It is up to your application's business logic to determine which documents will compose the batch
+// It is up to your application's business logic to determine which documents will compose the batch.
 function int2digitsString($id) {
     return sprintf("%02d", $id);
 }
 $documentsIds = array_map('int2digitsString', range(1,30) );
 
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -24,11 +25,11 @@ $documentsIds = array_map('int2digitsString', range(1,30) );
 </head>
 <body>
 
-<?php include 'menu.php' // The top menu, this can be removed entirely ?>
+<?php include 'menu.php' // The top menu, this can be removed entirel. ?>
 
 <div class="container">
 
-	<?php // Messages about the signature process will be rendered in here ?>
+	<?php // Messages about the signature process will be rendered in here. ?>
     <div id="messagesPanel"></div> 
 	
     <h2>Batch Signature</h2>
@@ -58,7 +59,7 @@ $documentsIds = array_map('int2digitsString', range(1,30) );
         </div>
 
         <?php
-        // Action buttons. Notice that the "Sign File" button is NOT a submit button. When the user clicks the button,
+        // Action buttons. Notice that the "Sign Batch" button is NOT a submit button. When the user clicks the button,
         // we must first use the Web PKI component to perform the client-side computation necessary and only when
         // that computation is finished we'll submit the form programmatically (see batch-signature-form.js).
         ?>
@@ -74,7 +75,7 @@ $documentsIds = array_map('int2digitsString', range(1,30) );
 // The file below contains the JS lib for accessing the Web PKI component. For more information, see:
 // https://webpki.lacunasoftware.com/#/Documentation
 ?>
-<script src="content/js/lacuna-web-pki-2.5.0.js"></script>
+<script src="content/js/lacuna-web-pki-2.9.0.js"></script>
 
 <?php
 // The file below contains the logic for calling the Web PKI component. It is only an example, feel free to alter it
@@ -83,12 +84,12 @@ $documentsIds = array_map('int2digitsString', range(1,30) );
 <script src="content/js/batch-signature-form.js"></script>
 <script>
     $(document).ready(function () {
-        // Once the page is ready, we call the init() function on the javascript code (see batch-signature-form.js)
+        // Once the page is ready, we call the init() function on the javascript code (see batch-signature-form.js).
         batchSignatureForm.init({                    	
-            documentsIds: <?php echo json_encode($documentsIds); ?>, // ids of documents
-            certificateSelect: $('#certificateSelect'), // the select element (combo box) to list the certificates
-            refreshButton: $('#refreshButton'),         // the "refresh" button
-            signButton: $('#signButton')               // the button that initiates the operation
+            documentsIds: <?php echo json_encode($documentsIds); ?>, // The IDs of documents.
+            certificateSelect: $('#certificateSelect'),              // The <select> element (combo box) to list the certificates.
+            refreshButton: $('#refreshButton'),                      // The "refresh" button.
+            signButton: $('#signButton')                             // The button that initiates the operation.
         });
     });
 </script>
