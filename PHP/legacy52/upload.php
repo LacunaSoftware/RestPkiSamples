@@ -10,7 +10,7 @@ require_once 'util.php';
 
 if (isset($_FILES['userfile'])) {
 
-	// Process the file uploaded
+	// Process the file uploaded.
 
 	$file = $_FILES['userfile'];
 	if ($file['size'] > 10485760) { // 10MB
@@ -19,30 +19,32 @@ if (isset($_FILES['userfile'])) {
 	$filenameParts = explode('.', $file['name']);
 	$fileExt = end($filenameParts);
 
-	// Generate a unique filename
+	// Generate a unique filename.
 	$filename = uniqid() . ".{$fileExt}";
 
-	// Move the file to the "app-data" folder with the unique filename
-	createAppData(); // make sure the "app-data" folder exists (util.php)
+	// Move the file to the "app-data" folder with the unique filename.
+	createAppData(); // Make sure the "app-data" folder exists (util.php).
 	if (!move_uploaded_file($file['tmp_name'], "app-data/{$filename}")) {
 		die('File upload error');
 	}
 
-	// Redirect the user to the PAdES signature page, passing the name of the file as a URL argument
+	// Redirect the user to the PAdES signature page, passing the name of the file as a URL argument.
 	header("Location: " . $_GET['goto'] . ".php?userfile={$filename}", true, 302);
 	exit;
 
 }
 
-?><!DOCTYPE html>
+?>
+
+<!DOCTYPE html>
 <html>
 <head>
 	<title>Upload a file</title>
-	<?php include 'includes.php' // jQuery and other libs (for a sample without jQuery, see https://github.com/LacunaSoftware/RestPkiSamples/tree/master/PHP) ?>
+	<?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component). ?>
 </head>
 <body>
 
-<?php include 'menu.php' // The top menu, this can be removed entirely ?>
+<?php include 'menu.php' // The top menu, this can be removed entirely. ?>
 
 <div class="container">
 

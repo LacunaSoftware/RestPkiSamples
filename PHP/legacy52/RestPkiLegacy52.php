@@ -21,6 +21,7 @@ include 'vendor/educoder/pest/PestXML.php';
 
 
 class RestPkiClient {
+    const LIB_VERSION = '0.1.0';
 
 	private $endpointUrl;
 	private $accessToken;
@@ -36,7 +37,8 @@ class RestPkiClient {
 		$verb = 'GET';
         try {
             $response = $this->pest->get($url, null, array(
-                'Authorization' => 'Bearer ' . $this->accessToken)
+                'Authorization' => 'Bearer ' . $this->accessToken,
+                'X-RestPki-Client' => 'PHP Legacy52 ' . RestPkiClient::LIB_VERSION)
             );
             $httpResponse = new LacunaRestResponse($response, $this->pest->lastStatus());
 		} catch (Pest_Exception $ex) {
@@ -51,6 +53,7 @@ class RestPkiClient {
         try {
             $response = $this->pest->post($url, json_encode($data), array(
                 'Authorization' => 'Bearer ' . $this->accessToken,
+                'X-RestPki-Client' => 'PHP Legacy52 ' . RestPkiClient::LIB_VERSION,
                 'Content-Type' => 'application/json')
             );
 
@@ -535,10 +538,6 @@ class RestPkiPadesSignatureExplorer extends RestPkiSignatureExplorer {
             foreach ($response->signers as $signer) {
                 $signer->validationResults = new RestPkiValidationResults($signer->validationResults);
                 $signer->messageDigest->algorithm = RestPkiDigestAlgorithm::getInstanceByApiAlgorithm($signer->messageDigest->algorithm);
-
-                if(isset($signer->signingTime)) {
-                    $signer->signingTime = date("d/m/Y H:i:s P", strtotime($signer->signingTime));
-                }
             }
 
             return $response;
@@ -581,10 +580,6 @@ class RestPkiCadesSignatureExplorer extends RestPkiSignatureExplorer {
         foreach ($response->signers as $signer) {
             $signer->validationResults = new RestPkiValidationResults($signer->validationResults);
             $signer->messageDigest->algorithm = RestPkiDigestAlgorithm::getInstanceByApiAlgorithm($signer->messageDigest->algorithm);
-
-            if(isset($signer->signingTime)) {
-                $signer->signingTime = date("d/m/Y H:i:s P", strtotime($signer->signingTime));
-            }
         }
 
         return $response;
@@ -815,6 +810,7 @@ class RestPkiStandardSecurityContexts {
 	const PKI_BRAZIL = '201856ce-273c-4058-a872-8937bd547d36';
 	const PKI_ITALY = 'c438b17e-4862-446b-86ad-6f85734f0bfe';
 	const WINDOWS_SERVER = '3881384c-a54d-45c5-bbe9-976b674f5ec7';
+    const LACUNA_TEST = '803517ad-3bbc-4169-b085-60053a8f6dbf';
 }
 
 class RestPkiStandardSignaturePolicies {
