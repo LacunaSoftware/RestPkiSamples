@@ -1,4 +1,5 @@
-﻿using Lacuna.RestPki.Client;
+﻿using Lacuna.RestPki.Api;
+using Lacuna.RestPki.Client;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -43,7 +44,7 @@ namespace WebForms {
 			 * 
 			 * THIS SHOULD NEVER BE USED ON A PRODUCTION ENVIRONMENT!
 			 */
-			return new Guid("803517ad-3bbc-4169-b085-60053a8f6dbf");
+			return StandardSecurityContexts.LacunaTest;
 			// Notice for On Premises users: this security context might not exist on your installation,
 			// if you encounter an error please contact developer support.
 #else

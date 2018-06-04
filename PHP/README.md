@@ -25,7 +25,7 @@ The standard PHP sample can be found in the folder [standard](standard/). To run
 
 2. Generate an API access token on the [REST PKI website](https://pki.rest/)
 
-3. Paste your access token on the file `util.php`
+3. Paste your access token on the file `config.php`
 
 4. In a command prompt, navigate to the folder `PHP/standard` and run the command
    `composer install` to download the dependencies (if you don't have Composer installed, get it [here](https://getcomposer.org/))
@@ -64,7 +64,18 @@ This dependency is specified in the file `composer.json`:
 
 	{
 		"require": {
-			"lacuna/restpki-client": "^2.2.3"
+			"lacuna/restpki-client": "^2.2.7"
+		}
+	}
+	
+The sample projects depend on [Rest PKI client lib for PHP](https://github.com/LacunaSoftware/RestPkiPhpClientLegacy) library, which in turn requires **PHP 5.3** or
+**PHP 5.4**.
+
+This dependency is specified in the file `composer.json`:
+
+	{
+		"require": {
+			"lacuna/restpki-client-legacy": "^1.0.0"
 		}
 	}
 
