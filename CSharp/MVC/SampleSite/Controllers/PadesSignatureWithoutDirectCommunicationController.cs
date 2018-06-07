@@ -44,54 +44,17 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
                     // Set the signature policy.
                     SignaturePolicyId = StandardPadesSignaturePolicies.Basic,
 
-                    // Set a SecurityContext to be used to determine trust in the certificate chain.
+                    // Set the security context to be used to determine trust in the certificate chain. We have
+					// encapsulated the security context choice on Util.cs.
                     SecurityContextId = Util.GetSecurityContextId(),
 
                     // Set a visual representation for the signature.
-                    VisualRepresentation = new PadesVisualRepresentation() {
+                    VisualRepresentation = PadesVisualElements.GetVisualRepresentation()
+				};
 
-                        // The tags {{name}} and {{national_id}} will be substituted according to the user's
-                        // certificate:
-                        //
-                        //		name        : Full name of the signer;
-                        //		national_id : If the certificate is ICP-Brasil, contains the signer's CPF.
-                        //
-                        // For a full list of the supported tags, see:
-                        // https://github.com/LacunaSoftware/RestPkiSamples/blob/master/PadesTags.md
-                        Text = new PadesVisualText("Signed by {{name}} ({{national_id}})") {
-
-                            // Specify that the signing time should also be rendered.
-                            IncludeSigningTime = true,
-
-                            // Optionally set the horizontal alignment of the text ('Left' or 'Right'), if
-                            // not set the default is Left.
-                            HorizontalAlign = PadesTextHorizontalAlign.Left
-
-                        },
-
-                        // We'll use as background the image in Content/PdfStamp.png.
-                        Image = new PadesVisualImage(Util.GetPdfStampContent(), "image/png") {
-
-                            // Opacity is an integer from 0 to 100. (0 is completely transparent, 100 is
-                            // completely opaque)
-                            Opacity = 50,
-
-                            // Align the image to the right.
-                            HorizontalAlign = PadesHorizontalAlign.Right
-
-                        },
-
-                        // Position of the visual representation. We have encapsulated this code in a method
-                        // to include several possibilities depending on the argument passed. Experiment
-                        // changing the argument to see different examples of signature positioning. Once you
-                        // decide which is best for your case, you can place the code directly here.
-                        Position = PadesVisualElements.GetVisualPositioning(1)
-                    }
-                };
-
-                // Set certificate's content. (received from a hidden field on the form submission, its value
-                // is filled on javascript, see signature-start-form.js)
-                signatureStarter.SetSignerCertificate(model.CertContent);
+				// Set certificate's content. (received from a hidden field on the form submission, its value
+				// is filled on javascript, see signature-start-form.js)
+				signatureStarter.SetSignerCertificate(model.CertContent);
 
                 // Set PDF to be signed.
                 signatureStarter.SetPdfToSign(Util.GetSampleDocPath());
@@ -112,7 +75,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 			     */
                 //signatureStarter.PdfMarks.Add(PadesVisualElements.GetPdfMark(1));
 
-                // Call the StartAsync() method, which initiates the signature. This yields the parameters
+                // Call the Start() method, which initiates the signature. This yields the parameters
                 // for the signature using the certificates.
                 signatureParams = await signatureStarter.StartAsync();
 
@@ -172,7 +135,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 
                 };
 
-                // Call the FinishAsync() method, which finalizes the signature process and returns a
+                // Call the Finish() method, which finalizes the signature process and returns a
                 // SignatureResult object.
                 var result = await signatureFinisher.FinishAsync();
 
@@ -201,8 +164,8 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 
             }
 
-            // Render the signature infomation
-            return View("SignatureInfo", new SignatureInfoModel() {
+			// Render the signature information page.
+			return View("SignatureInfo", new SignatureInfoModel() {
                 File = fileId,
                 SignerCertificate = signerCert
             });

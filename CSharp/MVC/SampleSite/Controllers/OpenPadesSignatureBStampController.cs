@@ -15,8 +15,8 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 	public class OpenPadesSignatureBStampController : Controller {
 
 		/**
-		 *	This action submits a PDF file to Rest PKI for inspection of its signatures, specifying that
-		 *	an "audit package" should be generated.
+		 *	This action submits a PDF file to Rest PKI for inspection of its signatures, specifying that an
+		 *	"audit package" should be generated.
 		 */
 		[HttpGet]
 		public async Task<ActionResult> Index(string userfile) {
@@ -32,8 +32,9 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
                 // Specify the parameters for the signature validation:
                 // Accept any PAdES signature as long as the signer has an ICP-Brasil certificate.
                 DefaultSignaturePolicyId = StandardPadesSignaturePolicies.Basic,
-                // We have encapsulated the security context choice on Util.cs.
-                SecurityContextId = Util.GetSecurityContextId()
+				// Specify the security context to be used to determine trust in the certificate chain. We
+				// have encapsulated the security context choice on Util.cs.
+				SecurityContextId = Util.GetSecurityContextId()
             };
 
 			// Set the PDF file.
@@ -46,7 +47,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
                 // ASP.NET MVC.
             }
 
-            // Call the OpenAsync() method, which returns the signature file's information.
+            // Call the Open() method, which returns the signature file's information.
             var signature = await sigExplorer.OpenAsync();
 
 			// If the document has been B-Stamped, store the "digest index file" to show a link on the page.
@@ -68,8 +69,8 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 				ViewBag.AuditPackageFile = auditPkgId;
 			}
 
-            // Render the information. (see file Views/OpenPadesSignatureBStamp/Index.html for more
-            // information on the information returned)
+            // Render the information (see file OpenPadesSignatureBStamp/Index.html for more
+            // information on the information returned).
 			return View(signature);
 		}
 	}

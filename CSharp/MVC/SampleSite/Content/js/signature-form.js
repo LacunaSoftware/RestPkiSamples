@@ -4,10 +4,8 @@
 // ----------------------------------------------------------------------------------------------------------
 var signatureForm = (function () {
 
-    // Auxiliary global variables.
-    var token = null;
-    var selectElement = null;
-    var formElement = null;
+    // Auxiliary global variable.
+    var formElements = null;
 
     // Create an instance of the Lacuna object.
     var pki = new LacunaWebPKI(_webPkiLicense);
@@ -15,18 +13,17 @@ var signatureForm = (function () {
     // ------------------------------------------------------------------------------------------------------
     // Initializes the signature form.
     // ------------------------------------------------------------------------------------------------------
-    function init(args) {
+    function init(fe) {
 
-        token = args.token;
-        formElement = args.form;
-        selectElement = args.certificateSelect;
+        // Receive from parameters received as arguments.
+        formElements = fe;
 
         // Wireup of button clicks.
-        args.signButton.click(sign);
-        args.refreshButton.click(refresh);
+        formElements.signButton.click(sign);
+        formElements.refreshButton.click(refresh);
 
         // Block the UI while we get things ready.
-        $.blockUI();
+        $.blockUI({ message: 'Initializing ...' });
 
         // Call the init() method on the LacunaWebPKI object, passing a callback for when the component is
         // ready to be used and another to be called when an error occurrs on any of the subsequent
@@ -34,9 +31,9 @@ var signatureForm = (function () {
         // https://docs.lacunasoftware.com/en-us/articles/web-pki/get-started.html#coding-the-first-lines
         // http://webpki.lacunasoftware.com/Help/classes/LacunaWebPKI.html#method_init
         pki.init({
-            ready: loadCertificates, // As soon as the component is ready we'll load the certificates.
-            defaultError: onWebPkiError, // Generic error callback on Content/js/app/site.js.
-            restPkiUrl: _restPkiEndpoint
+            ready: loadCertificates,        // As soon as the component is ready we'll load the certificates.
+            defaultError: onWebPkiError,    // Generic error callback defined below.
+            restPkiUrl: _restPkiEndpoint    // REST PKI endpoint to communication between Web PKI.
         });
     }
 
@@ -60,24 +57,21 @@ var signatureForm = (function () {
         // http://webpki.lacunasoftware.com/Help/classes/LacunaWebPKI.html#method_listCertificates
         pki.listCertificates({
 
-            // Specify that expired certificates should be ignored.
-            filter: pki.filters.isWithinValidity,
-
-            // In order to list only certificates within validity period and having a CPF (ICP-Brasil), use
-            // this instead:
-            //filter: pki.filters.all(pki.filters.hasPkiBrazilCpf, pki.filters.isWithinValidity),
-
-            // ID of the select to be populated with the certificates.
-            selectId: selectElement.attr('id'),
+            // The ID of the <select> element to be populated with the certificates.
+            selectId: formElements.certificateSelect.attr('id'),
 
             // Function that will be called to get the text that should be displayed for each option.
             selectOptionFormatter: function (cert) {
-                return cert.subjectName + ' (issued by ' + cert.issuerName + ')';
+                var s = cert.subjectName + ' (issued by ' + cert.issuerName + ')';
+                if (new Date() > cert.validityEnd) {
+                    s = '[EXPIRED] ' + s;
+                }
+                return s;
             }
 
         }).success(function () {
 
-            // Unblock the UI.
+            // Once the certificates have been listed, unblock the UI.
             $.unblockUI();
 
         });
@@ -89,19 +83,19 @@ var signatureForm = (function () {
     function sign() {
 
         // Block the UI while we perform the signature.
-        $.blockUI();
+        $.blockUI({ message: 'Signing ...' });
 
         // Get the thumbprint of the selected certificate.
-        var selectedCertThumbprint = selectElement.val();
+        var selectedCertThumbprint = formElements.certificateSelect.val();
 
         // Call signWithRestPki() on the Web PKI component passing the token received from REST PKI and the
         // certificate selected by the user.
         pki.signWithRestPki({
-            token: token,
+            token: formElements.token,
             thumbprint: selectedCertThumbprint
         }).success(function () {
             // Once the operation is completed, we submit the form.
-            formElement.submit();
+            formElements.form.submit();
         });
     }
 
@@ -113,7 +107,7 @@ var signatureForm = (function () {
         // Unblock the UI.
         $.unblockUI();
 
-        // Log the error to the browser console. (for debugging purposes)
+        // Log the error to the browser console (for debugging purposes).
         if (console) {
             console.log('An error has occurred on the signature browser component: ' + message, error);
         }

@@ -6,92 +6,62 @@ using System.Drawing;
 namespace Lacuna.RestPki.SampleSite.Classes {
 	public class PadesVisualElements {
 
-		// This function is called by the Pades Signature Starter action (see PadesSignatureController.cs).
-		// It contains examples of signature visual representation positionings.
-		public static PadesVisualPositioning GetVisualPositioning(int sampleNumber) {
+		// This function is called by the PAdES samples. It contains a example of signature visual
+		// representation. This is only in a separate function in order to organize the various
+		// examples.
+		public static PadesVisualRepresentation GetVisualRepresentation() {
 
-			switch (sampleNumber) {
+			// Create a visual representation.
+			var visualRepresentation = new PadesVisualRepresentation() {
+				// For a full list of the supported tags, see:
+				// https://github.com/LacunaSoftware/RestPkiSamples/blob/master/PadesTags.md
+				Text = new PadesVisualText("Signed by {{name}} ({{national_id}})") {
+					FontSize = 13.0,
+					// Specify that the signing time should also be rendered.
+					IncludeSigningTime = true,
+					// Optionally, set the horizontal alignment of the text. If not set, the default is
+					// Left.
+					HorizontalAlign = PadesTextHorizontalAlign.Left,
+					// Optionally set the container within the signature rectangle on which to place the
+					// text. By default, the text can occupy the entire rectangle (how much of the
+					// rectangle the text will actually fill depends on the length and font size).
+					// Below, we specify that the text should respect a right margin of 1.5 cm.
+					Container = new PadesVisualRectangle() {
+						Left = 0.2,
+						Top = 0.2,
+						Right = 0.2,
+						Bottom = 0.2
+					}
+				},
+				Image = new PadesVisualImage(Util.GetPdfStampContent(), "image/png") {
+					// Align image to the right horizontally.
+					HorizontalAlign = PadesHorizontalAlign.Right,
+					// Align image to the center vertically.
+					VerticalAlign = PadesVerticalAlign.Center
+				},
+			};
 
-				case 1:
-                    // Example #1: Automatic positioning on footnote. This will insert the signature, and
-                    // future signatures, ordered as a footnote of the last page of the document.
-					return PadesVisualPositioning.GetFootnote(Util.GetRestPkiClient());
+			// Position of the visual represention. We get the footnote position preset and customize
+			// it.
+			var visualPositioning = PadesVisualPositioning.GetFootnote(Util.GetRestPkiClient());
+			visualPositioning.Container.Height = 4.94;
+			visualPositioning.SignatureRectangleSize.Width = 8.0;
+			visualPositioning.SignatureRectangleSize.Height = 4.94;
+			visualRepresentation.Position = visualPositioning;
 
-				case 2:
-					// Example #2: Get the footnote positioning preset and customize it.
-					var footnotePosition = PadesVisualPositioning.GetFootnote(Util.GetRestPkiClient());
-					footnotePosition.Container.Left = 2.54;
-					footnotePosition.Container.Bottom = 2.54;
-					footnotePosition.Container.Right = 2.54;
-					return footnotePosition;
-
-				case 3:
-                    // Example #3: Automatic positioning on new page. This will insert the signature, and
-                    // future signatures, in a new page appended to the end of the document.
-					return PadesVisualPositioning.GetNewPage(Util.GetRestPkiClient());
-
-				case 4:
-					// Example #4: Get the "new page" positioning preset and customize it.
-					var newPagePos = PadesVisualPositioning.GetNewPage(Util.GetRestPkiClient());
-					newPagePos.Container.Left = 2.54;
-					newPagePos.Container.Top = 2.54;
-					newPagePos.Container.Right = 2.54;
-					newPagePos.SignatureRectangleSize.Width = 5;
-					newPagePos.SignatureRectangleSize.Height = 3;
-					return newPagePos;
-
-				case 5:
-                    // Example #5: Manual positioning.
-                    // The first parameter is the page number. Zero means the signature will be placed on a
-                    // new page appended to the end of the document.
-					return new PadesVisualManualPositioning(0, new PadesVisualRectangle() {
-                        // Define a manual position of 5cm x 3cm, positioned at 1 inch from  the left and
-                        // bottom margins.
-						Left = 2.54,
-						Bottom = 2.54,
-						Width = 5,
-						Height = 3
-					});
-
-				case 6:
-					// Example #6: Custom auto positioning.
-					return new PadesVisualAutoPositioning() {
-						PageNumber = -1, // Negative values represent pages counted from the end of the document (-1 is last page)
-
-						// Specification of the container where the signatures will be placed, one after the
-                        // other.
-						Container = new PadesVisualRectangle() {
-                            // Specifying left and right (but no width) results in a variable-width container
-                            // with the given margins.
-							Left = 2.54,
-							Right = 2.54,
-							// Specifying bottom and height (but no top) results in a bottom-aligned
-                            // fixed-height container.
-							Bottom = 2.54,
-							Height = 12.31
-						},
-						// Specification of the size of each signature rectangle.
-						SignatureRectangleSize = new PadesSize(5, 3),
-                        // The signatures will be placed in the container side by side. If there's no room
-                        // left, the signatures will "wrap" to the next row. The value below specifies the
-                        // vertical distance between rows.
-						RowSpacing = 1
-					};
-
-				default:
-					return null;
-			}
+			return visualRepresentation;
 		}
 
-		// This function is called by the Pades Signature Starter action (see PadesSignatureController.cs).
-		// It contains examples of PDF marks, visual elements of arbitrary content placed in every page.
+		// This function is called by the PAdES samples. It contains examples of PDF marks, visual
+		// elements of arbitrary content placed in every page.
 		public static PdfMark GetPdfMark(int sampleNumber) {
 
 			switch (sampleNumber) {
 
 				case 1:
 					// Example #1: A sample text and image are placed at the bottom of every page.
-					// First, we create the mark object. It contains no elements, being a simple empty box.
+					// First, we create the mark object. It contains no elements, being a simple empty
+					// box.
 					var mark = new PdfMark() {
 						// Here, we set the mark's position in every page.
 						Container = new PadesVisualRectangle() {
@@ -103,8 +73,8 @@ namespace Lacuna.RestPki.SampleSite.Classes {
 							Bottom = 0.2,
 							Height = 0.6
 						}
-						// This example has no background and no borders, so we don't set BackgroundColor nor
-                        // BorderColor.
+						// This example has no background and no borders, so we don't set
+						// BackgroundColor nor BorderColor.
 					};
 
 					// First, the image.
@@ -115,8 +85,8 @@ namespace Lacuna.RestPki.SampleSite.Classes {
                             // fixed-width container.
 							Right = 0,
 							Width = 1,
-                            // Specifying top and bottom (but no height) results in a variable-height
-                            // container with the given margins.
+							// Specifying top and bottom (but no height) results in a variable-height
+							// container with the given margins.
 							Top = 0,
 							Bottom = 0
 						},
@@ -131,8 +101,8 @@ namespace Lacuna.RestPki.SampleSite.Classes {
 					mark.Elements.Add(new PdfMarkTextElement() {
 						// We center the text.
 						RelativeContainer = new PadesVisualRectangle() {
-                            // Specifying left and right (but no width) results in a variable-width container
-                            // with the given margins.
+							// Specifying left and right (but no width) results in a variable-width
+							// container with the given margins.
 							Left = 1,
 							Right = 0,
                             // Specifying just the height results in a vertically centered fixed-height
@@ -170,7 +140,8 @@ namespace Lacuna.RestPki.SampleSite.Classes {
 
 				case 2:
 					// Example #2: An image will be placed at the bottom of every page.
-					// First, we create the mark object. It contains no elements, being a simple empty box.
+					// First, we create the mark object. It contains no elements, being a simple empty
+					// box.
 					mark = new PdfMark() {
 						// Then, we set the mark's position in every page.
 						Container = new PadesVisualRectangle() {
@@ -207,14 +178,14 @@ namespace Lacuna.RestPki.SampleSite.Classes {
 					return mark;
 
 				case 3:
-                    // Example #3: 'Signed with RestPKI' is printed at the top of every page in a blue
-                    // horizontal bar. First, we create the mark object. It contains no elements, being a
-                    // simple empty box.
+					// Example #3: 'Signed with RestPKI' is printed at the top of every page in a blue
+					// horizontal bar. First, we create the mark object. It contains no elements, being
+					// a simple empty box.
 					mark = new PdfMark() {
 						// Then, we set the mark's position in every page.
 						Container = new PadesVisualRectangle() {
-                            // Specifying left and right (but no width) results in a variable-width container
-                            // with the given margins.
+							// Specifying left and right (but no width) results in a variable-width
+							// container with the given margins.
 							Left = 0,
 							Right = 0,
 							// Specifying top and height (but no bottom) results in a top-aligned

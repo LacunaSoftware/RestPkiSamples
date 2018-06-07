@@ -35,7 +35,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 				// Set the signature policy.
 				SignaturePolicyId = StandardCadesSignaturePolicies.PkiBrazil.AdrBasica,
 
-                // Set a SecurityContext to be used to determine trust in the certificate chain. We have
+                // Set the security context to be used to determine trust in the certificate chain. We have
                 // encapsulated the security context choice on Util.cs.
                 SecurityContextId = Util.GetSecurityContextId(),
 
@@ -83,11 +83,11 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 
 			}
 
-            // Call the StartWithWebPki() method, which initiates the signature. This yields the token, a
-            // 43-character case-sensitive URL-safe string, which identifies this signature process. We'll
-            // use this value to call the signWithRestPki() method on the Web PKI component (see javascript
-            // on the view) and also to complete the signature on the POST action below (this should not be
-            // mistaken with the API access token).
+			// Call the StartWithWebPki() method, which initiates the signature. This yields the token, a
+			// 43-character case-sensitive URL-safe string, which identifies this signature process. We'll
+			// use this value to call the signWithRestPki() method on the Web PKI component
+			// (see signature-form.js) and also to complete the signature on the POST action below (this
+			// should not be mistaken with the API access token).
 			var token = await signatureStarter.StartWithWebPkiAsync();
 
             // The token acquired above can only be used for a single signature attempt. In order to retry
@@ -117,12 +117,12 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
             // process.
 			var signatureFinisher = new CadesSignatureFinisher2(Util.GetRestPkiClient()) {
 
-				// Set the token for this signature. (rendered in a hidden input field, see the view)
+				// Set the token for this signature (rendered in a hidden input field, see the view).
 				Token = model.Token
 
 			};
 
-            // Call the FinishAsync() method, which finalizes the signature process and returns a
+            // Call the Finish() method, which finalizes the signature process and returns a
             // SignatureResult object.
 			var result = await signatureFinisher.FinishAsync();
 

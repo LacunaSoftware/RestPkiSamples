@@ -41,14 +41,15 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 			// Set the signature policy.
 			signatureStarter.SetSignaturePolicy(StandardXmlSignaturePolicies.PkiBrazil.NFePadraoNacional);
 
-            // Set a SecurityContext to be used to determine trust in the certificate chain.
+            // Set the security context to be used to determine trust in the certificate chain. we have
+			// encapsulated the security context choice on Util.cs.
             signatureStarter.SetSecurityContext(Util.GetSecurityContextId());
 
-            // Call the StartWithWebPkiAsync() method, which initiates the signature. This yields the token,
-            // a 43-character case-sensitive URL-safe string, which identifies this signature process. We'll
-            // use this value to call the signWithRestPki() method on the Web PKI component (see javascript
-            // on the view) and also to complete the signature on the POST action below (this should not be
-            // mistaken with the API access token).
+			// Call the StartWithWebPki() method, which initiates the signature. This yields the token,
+			// a 43-character case-sensitive URL-safe string, which identifies this signature process. We'll
+			// use this value to call the signWithRestPki() method on the Web PKI component (see
+			// signature-form.js) and also to complete the signature on the POST action below (this should
+			// not be mistaken with the API access token).
             var token = await signatureStarter.StartWithWebPkiAsync();
 
             // The token acquired above can only be used for a single signature attempt. In order to retry
@@ -75,12 +76,11 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
             // Get an instance of the XmlSignatureFinisher class, responsible for completing the signature
             // process.
             var signatureFinisher = new XmlSignatureFinisher(Util.GetRestPkiClient()) {
-                // Set the token for this signature. (rendered in a hidden input field, see the view)
+                // Set the token for this signature (rendered in a hidden input field, see the view).
                 Token = model.Token
             };
 
-            // Call the FinishAsync() method, which finalizes the signature process and returns the signed
-            // PDF.
+            // Call the Finish() method, which finalizes the signature process and returns the signed PDF.
 			var signedXml = await signatureFinisher.FinishAsync();
 
             // Get information about the certificate used by the user to sign the file. This method must only
@@ -91,7 +91,8 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
             // purposes, we'll store the PDF on our mock Storage class.
             var fileId = StorageMock.Store(signedXml, ".xml");
 
-            return View("SignatureInfo", new SignatureInfoModel() {
+			// Render the signature information page.
+			return View("SignatureInfo", new SignatureInfoModel() {
 				File = fileId,
 				SignerCertificate = signerCert
 			});

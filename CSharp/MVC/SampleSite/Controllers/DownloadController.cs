@@ -12,9 +12,8 @@ using System.Web.Mvc;
 namespace SampleSite.Controllers {
 
 	/**
-	 * This controller's purpose is to download the sample file that is signed during the
-	 * signature examples or download a upload file for signature or download a previously performed
-	 * signature.
+	 * This controller's purpose is to download the sample file that is signed during the signature examples
+	 * or download a upload file for signature or download a previously performed signature.
 	 */
 	public class DownloadController : Controller {
 

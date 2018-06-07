@@ -49,14 +49,14 @@
     <Reference Include="Lacuna.DataAnnotations, Version=1.2.0.0, Culture=neutral, PublicKeyToken=5a78866d7d68b0f7, processorArchitecture=MSIL">
       <HintPath>..\packages\Lacuna.DataAnnotations.1.2.0\lib\net45\Lacuna.DataAnnotations.dll</HintPath>
     </Reference>
-    <Reference Include="Lacuna.RestClient, Version=1.10.0.0, Culture=neutral, PublicKeyToken=bf845f78aead27bc, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lacuna.RestClient.1.10.0\lib\net45\Lacuna.RestClient.dll</HintPath>
+    <Reference Include="Lacuna.RestClient, Version=1.10.2.0, Culture=neutral, PublicKeyToken=bf845f78aead27bc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lacuna.RestClient.1.10.2\lib\net45\Lacuna.RestClient.dll</HintPath>
     </Reference>
-    <Reference Include="Lacuna.RestPki.Api, Version=1.16.0.0, Culture=neutral, PublicKeyToken=5705bce581cd1847, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lacuna.RestPki.Api.1.16.0\lib\net45\Lacuna.RestPki.Api.dll</HintPath>
+    <Reference Include="Lacuna.RestPki.Api, Version=1.17.0.0, Culture=neutral, PublicKeyToken=5705bce581cd1847, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lacuna.RestPki.Api.1.17.0\lib\net45\Lacuna.RestPki.Api.dll</HintPath>
     </Reference>
-    <Reference Include="Lacuna.RestPki.Client, Version=1.14.0.0, Culture=neutral, PublicKeyToken=5705bce581cd1847, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lacuna.RestPki.Client.1.14.0\lib\net45\Lacuna.RestPki.Client.dll</HintPath>
+    <Reference Include="Lacuna.RestPki.Client, Version=1.14.1.0, Culture=neutral, PublicKeyToken=5705bce581cd1847, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lacuna.RestPki.Client.1.14.1\lib\net45\Lacuna.RestPki.Client.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.8.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.8\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
@@ -113,10 +113,11 @@
     <Content Include="Content\css\bootstrap.css" />
     <Content Include="Content\css\site.css" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\icp-brasil.png" />
     <Content Include="Content\InvoiceWithSigs.xml" />
     <Content Include="Content\js\batch-signature-form.js" />
     <Content Include="Content\js\batch-signature-optimized-form.js" />
-    <Content Include="Content\js\lacuna-web-pki-2.6.1.js" />
+    <Content Include="Content\js\lacuna-web-pki-2.9.0.js" />
     <Content Include="Content\js\signature-complete-form.js" />
     <Content Include="Content\js\signature-form.js" />
     <Content Include="Content\js\signature-start-form.js" />
@@ -124,6 +125,8 @@
     <Content Include="Content\js\bootstrap.js" />
     <Content Include="Content\js\jquery-1.11.3.js" />
     <Content Include="Content\js\jquery.blockUI.js" />
+    <Content Include="Content\not-ok.png" />
+    <Content Include="Content\ok.png" />
     <Content Include="Content\PdfStamp.png" />
     <Content Include="Content\SampleDocument.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -141,14 +144,17 @@
     <Compile Include="Classes\Util.cs" />
     <Compile Include="Controllers\AuthenticationController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\BatchCadesSignatureController.cs" />
+    <Compile Include="Controllers\BatchPadesSignatureController.cs" />
     <Compile Include="Controllers\BatchSignatureOptimizedController.cs" />
     <Compile Include="Controllers\CadesSignatureController.cs" />
-    <Compile Include="Controllers\BatchSignatureController.cs" />
+    <Compile Include="Controllers\CheckController.cs" />
     <Compile Include="Controllers\OpenPadesSignatureBStampController.cs" />
     <Compile Include="Controllers\OpenXmlSignatureController.cs" />
     <Compile Include="Controllers\OpenPadesSignatureController.cs" />
     <Compile Include="Controllers\OpenCadesSignatureController.cs" />
     <Compile Include="Controllers\PadesSignatureWithoutDirectCommunicationController.cs" />
+    <Compile Include="Controllers\PrinterFriendlyVersionController.cs" />
     <Compile Include="Controllers\XadesElementSignatureController.cs" />
     <Compile Include="Controllers\XmlFullSignatureController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -162,6 +168,7 @@
     <Compile Include="Models\AuthenticationModel.cs" />
     <Compile Include="Models\BatchSignatureModel.cs" />
     <Compile Include="Models\BatchSignatureOptimizedModels.cs" />
+    <Compile Include="Models\CheckModel.cs" />
     <Compile Include="Models\PadesSignatureModel.cs" />
     <Compile Include="Models\CadesSignatureModel.cs" />
     <Compile Include="Models\SignatureStartModel.cs" />
@@ -192,7 +199,7 @@
     <Content Include="Views\XmlElementSignature\SignatureInfo.cshtml" />
     <Content Include="Views\XmlFullSignature\Index.cshtml" />
     <Content Include="Views\XmlFullSignature\SignatureInfo.cshtml" />
-    <Content Include="Views\BatchSignature\Index.cshtml" />
+    <Content Include="Views\BatchPadesSignature\Index.cshtml" />
     <Content Include="Content\01.pdf" />
     <Content Include="Content\02.pdf" />
     <Content Include="Content\03.pdf" />
@@ -216,6 +223,8 @@
     <Content Include="Views\PadesSignatureWithoutDirectCommunication\Index.cshtml" />
     <Content Include="Views\PadesSignatureWithoutDirectCommunication\Complete.cshtml" />
     <Content Include="Views\PadesSignatureWithoutDirectCommunication\SignatureInfo.cshtml" />
+    <Content Include="Views\Check\Index.cshtml" />
+    <Content Include="Views\BatchCadesSignature\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

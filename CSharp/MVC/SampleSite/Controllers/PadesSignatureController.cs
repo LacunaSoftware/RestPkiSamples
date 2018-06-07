@@ -23,76 +23,38 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 		[HttpGet]
 		public async Task<ActionResult> Index(string userfile) {
 
-            // Get an instance of the PadesSignatureStarter class, responsible for receiving the signature
-            // elements and start the signature process.
-            var signatureStarter = new PadesSignatureStarter(Util.GetRestPkiClient()) {
+			// Get an instance of the PadesSignatureStarter class, responsible for receiving the signature
+			// elements and start the signature process.
+			var signatureStarter = new PadesSignatureStarter(Util.GetRestPkiClient()) {
 
-                // Set the unit of measurement used to edit the pdf marks and visual representations.
-                MeasurementUnits = PadesMeasurementUnits.Centimeters,
+				// Set the unit of measurement used to edit the pdf marks and visual representations.
+				MeasurementUnits = PadesMeasurementUnits.Centimeters,
 
-                // Set the signature policy.
-                SignaturePolicyId = StandardPadesSignaturePolicies.Basic,
+				// Set the signature policy.
+				SignaturePolicyId = StandardPadesSignaturePolicies.Basic,
 
-                // Set a SecurityContext to be used to determine trust in the certificate chain.
-                SecurityContextId = Util.GetSecurityContextId(),
+				// Set the security context to be used to determine trust in the certificate chain. We have
+				// encapsulated the security context choice on Util.cs.
+				SecurityContextId = Util.GetSecurityContextId(),
 
 				// Set a visual representation for the signature.
-				VisualRepresentation = new PadesVisualRepresentation() {
-
-                    // The tags {{name}} and {{national_id}} will be substituted according to the user's
-                    // certificate:
-                    //
-                    //		name        : full name of the signer;
-                    //		national_id : if the certificate is ICP-Brasil, contains the signer's CPF.
-                    //
-                    // For a full list of the supported tags, see:
-                    // https://github.com/LacunaSoftware/RestPkiSamples/blob/master/PadesTags.md
-					Text = new PadesVisualText("Signed by {{name}} ({{national_id}})") {
-
-						// Specify that the signing time should also be rendered.
-						IncludeSigningTime = true,
-
-                        // Optionally set the horizontal alignment of the text ('Left' or 'Right'), if not
-                        // set the default is Left.
-						HorizontalAlign = PadesTextHorizontalAlign.Left
-
-					},
-
-					// We'll use as background the image in Content/PdfStamp.png.
-					Image = new PadesVisualImage(Util.GetPdfStampContent(), "image/png") {
-
-                        // Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is
-                        // completely opaque).
-						Opacity = 50,
-
-						// Align the image to the right.
-						HorizontalAlign = PadesHorizontalAlign.Right
-
-					},
-
-                    // Position of the visual representation. We have encapsulated this code in a method to
-                    // include several possibilities depending on the argument passed. Experiment changing
-                    // the argument to see different examples of signature positioning. Once you decide which
-                    // is best for your case, you can place the code directly here.
-					Position = PadesVisualElements.GetVisualPositioning(1)
-				},
+				VisualRepresentation = PadesVisualElements.GetVisualRepresentation()
 			};
 
-            // If the user was redirected here by UploadController (signature with file uploaded by user),
-            // the "userfile" URL argument will contain the filename under the "App_Data" folder. Otherwise
-            // (signature with server file), we'll sign a sample.
-			// document.
+			// If the user was redirected here by UploadController (signature with file uploaded by user),
+			// the "userfile" URL argument will contain the filename under the "App_Data" folder. Otherwise
+			// (signature with server file), we'll sign a sample document.
 			if (string.IsNullOrEmpty(userfile)) {
-				// Set the PDF to be signed
+				// Set the PDF to be signed.
 				signatureStarter.SetPdfToSign(Util.GetSampleDocPath());
 			} else {
-                // Set the path of the file to be signed
+                // Set the path of the file to be signed.
                 signatureStarter.SetPdfToSign(Server.MapPath("~/App_Data/" + userfile.Replace("_", ".")));
                 // Note: we're receiving the userfile argument with "_" as "." because of limitations of
                 // ASP.NET MVC.
             }
 
-            /*
+			/*
 				Optionally, add marks to the PDF before signing. These differ from the signature visual
                 representation in that they are actually changes done to the document prior to signing, not
                 binded to any signature. Therefore, any number of marks can be added, for instance one per
@@ -106,13 +68,13 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
                 argument passed. Experiment changing the argument to see different examples of PDF marks.
                 Once you decide which is best for your case, you can place the code directly here.
 			*/
-            //signatureStarter.PdfMarks.Add(PadesVisualElements.GetPdfMark(1));
+			//signatureStarter.PdfMarks.Add(PadesVisualElements.GetPdfMark(1));
 
-            // Call the StartWithWebPki() method, which initiates the signature. This yields the token, a
-            // 43-character case-sensitive URL-safe string, which identifies this signature process. We'll
-            // use this value to call the signWithRestPki() method on the Web PKI component (see javascript
-            // on the view) and also to complete the signature on the POST action below (this should not be
-            // mistaken with the API access token).
+			// Call the StartWithWebPki() method, which initiates the signature. This yields the token, a
+			// 43-character case-sensitive URL-safe string, which identifies this signature process. We'll
+			// use this value to call the signWithRestPki() method on the Web PKI component (see 
+			// signature-forms.js) and also to complete the signature on the POST action below (this should
+			// not be mistaken with the API access token).
             var token = await signatureStarter.StartWithWebPkiAsync();
 
             // The token acquired above can only be used for a single signature attempt. In order to retry
@@ -146,7 +108,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 
 			};
 
-            // Call the FinishAsync() method, which finalizes the signature process and returns a
+            // Call the Finish() method, which finalizes the signature process and returns a
             // SignatureResult object.
 			var result = await signatureFinisher.FinishAsync();
 
@@ -166,7 +128,8 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
                 fileId = StorageMock.Store(resultStream, ".pdf");
             }
 
-            return View("SignatureInfo", new SignatureInfoModel() {
+			// Render the signature information page.
+			return View("SignatureInfo", new SignatureInfoModel() {
 				File = fileId,
 				SignerCertificate = signerCert
 			});

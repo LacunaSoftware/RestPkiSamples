@@ -32,18 +32,19 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
                 // Specify the parameters for the signature validation:
                 // Accept any PAdES signature as long as the signer has an ICP-Brasil certificate.
                 DefaultSignaturePolicyId = StandardPadesSignaturePolicies.Basic,
-                // We have encapsulated the security context choice on Util.cs.
-                SecurityContextId = Util.GetSecurityContextId()
+				// Specify the security context to be used to determine trust in the certificate chain. We
+				// have encapsulated the security context choice on Util.cs.
+				SecurityContextId = Util.GetSecurityContextId()
             };
 
-			// Set the PDF file
+			// Set the PDF file.
 			sigExplorer.SetSignatureFile(Server.MapPath("~/App_Data/" + filename));
 
-            // Call the Open() method, which returns the signature file's information
+            // Call the Open() method, which returns the signature file's information.
             var signature = sigExplorer.Open();
 
-            // Render the information (see file Views/OpenPadesSignature/Index.html for more information on
-            // the information returned)
+            // Render the information (see file OpenPadesSignature/Index.html for more information on
+            // the information returned).
 			return View(signature);
 		}
 	}

@@ -15,10 +15,10 @@ using System.Web.Mvc;
 namespace Lacuna.RestPki.SampleSite.Controllers {
 
 	/**
-	 * This controller contains the server-side logic for the optimized batch signature example.
+	 * This controller contains the server-side logic for the optimized batch of PAdES signatures example.
 	 *
 	 * The logic for the example is more complex than the "regular" batch signature example (controller
-     * BatchSignatureController), but the performance is significantly improved (roughly 50% faster).
+     * BatchPadesSignatureController), but the performance is significantly improved (roughly 50% faster).
      *
 	 * Notice that the optimized batch example requires a use license for the Web PKI component (every other
      * example in this project	does not). The licensing is not enforced when running on localhost, but in
@@ -98,53 +98,15 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 				// Set the signature policy.
 				SignaturePolicyId = StandardPadesSignaturePolicies.Basic,
 
-                // Set a SecurityContext to be used to determine trust in the certificate chain. We have
+                // Set the security context to be used to determine trust in the certificate chain. We have
                 // encapsulated the security context choice on Util.cs.
                 SecurityContextId = Util.GetSecurityContextId(),
 
 				// Set a visual representation for the signature.
-				VisualRepresentation = new PadesVisualRepresentation() {
-
-                    // The tags {{name}} and {{national_id}} will be substituted according to the user's
-                    // certificate:
-                    //
-                    //      name        : Full name of the signer;
-                    //      national_id : If the certificate is ICP-Brasil, contains the signer's CPF.
-                    //
-                    // For a full list of the supported tags, see:
-                    // https://github.com/LacunaSoftware/RestPkiSamples/blob/master/PadesTags.md
-                    Text = new PadesVisualText("Signed by {{name}} ({{national_id}})") {
-
-						// Specify that the signing time should also be rendered.
-						IncludeSigningTime = true,
-
-                        // Optionally set the horizontal alignment of the text ('Left' or 'Right'), if not
-                        // set the default is Left.
-						HorizontalAlign = PadesTextHorizontalAlign.Left
-
-					},
-
-					// We'll use as background the image in Content/PdfStamp.png.
-					Image = new PadesVisualImage(Util.GetPdfStampContent(), "image/png") {
-
-                        // Opacity is an integer from 0 to 100 (0 is completely transparent, 100 is
-                        // completely opaque).
-						Opacity = 50,
-
-						// Align the image to the right.
-						HorizontalAlign = PadesHorizontalAlign.Right
-
-					},
-
-                    // Position of the visual representation. We have encapsulated this code in a method to
-                    // include several possibilities depending on the argument passed. Experiment changing
-                    // the argument to see different examples of signature positioning. Once you decide which
-                    // is best for your case, you can place the code directly here.
-					Position = PadesVisualElements.GetVisualPositioning(1)
-				}
+				VisualRepresentation = PadesVisualElements.GetVisualRepresentation()
 			};
 
-			// Set the document to be signed based on its ID. (passed to us from the page)
+			// Set the document to be signed based on its ID (passed to us from the page).
 			signatureStarter.SetPdfToSign(Util.GetBatchDocPath(request.DocumentId));
 
             // Call the Start() method, which initiates the signature. Notice that, on the regular signature
@@ -159,7 +121,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
             // therefore no caching of the response will be made by browsers.
 
             // Return a JSON with the token obtained from REST PKI, along with the parameters for the
-            // signHash() call. (the page will use jQuery to decode this value)
+            // signHash() call (the page will use jQuery to decode this value).
 			var response = new BatchSignatureStartResponse() {
 				Token = signatureParams.Token,
 				ToSignHash = Convert.ToBase64String(signatureParams.ToSignHash),
@@ -180,7 +142,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
             // process.
 			var signatureFinisher = new PadesSignatureFinisher2(Util.GetRestPkiClient()) {
 
-				// Set the token for this signature. (rendered in a hidden input field, see the view)
+				// Set the token for this signature (rendered in a hidden input field, see the view).
 				Token = request.Token,
 
                 // Set the result of the RSA signature. Notice that this call is not necessary on the
@@ -189,7 +151,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 
 			};
 
-            // Call the FinishAsync() method, which finalizes the signature process and returns a
+            // Call the Finish() method, which finalizes the signature process and returns a
             // SignatureResult object.
 			var result = await signatureFinisher.FinishAsync();
 
@@ -209,8 +171,8 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
                 fileId = StorageMock.Store(resultStream, ".pdf");
             }
 
-            // Return a JSON with the signed file's id, stored using our mock class. (the page wil use
-            // jQuery to decode this value)
+            // Return a JSON with the signed file's id, stored using our mock class (the page wil use
+            // jQuery to decode this value).
 			return Json(fileId);
 		}
 	}

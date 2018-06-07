@@ -5,7 +5,7 @@
 
 <form id="signForm" method="POST">
 
-    @* render the token in a hidden input field *@
+    @* Render the token in a hidden input field. *@
     @Html.HiddenFor(m => m.Token)
 
     <div class="form-group">
@@ -19,16 +19,20 @@
         }
     </div>
 
-    @* Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it later on (see javascript below). *@
+    @* 
+        Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate
+        it later on (see siganture-form.js).
+    *@
     <div class="form-group">
         <label for="certificateSelect">Choose a certificate</label>
         <select id="certificateSelect" class="form-control"></select>
     </div>
 
     @*
-        Action buttons. Notice that the "Sign File" button is NOT a submit button. When the user clicks the button,
-        we must first use the Web PKI component to perform the client-side computation necessary and only when
-        that computation is finished we'll submit the form programmatically (see javascript below).
+        Action buttons. Notice that the "Sign File" button is NOT a submit button. When the user clicks the
+        button, we must first use the Web PKI component to perform the client-side computation necessary and
+        only when that computation is finished we'll submit the form programmatically
+        (see signature-form.js).
     *@
     <button id="signButton" type="button" class="btn btn-primary">Sign File</button>
     <button id="refreshButton" type="button" class="btn btn-default">Refresh Certificates</button>
@@ -41,7 +45,7 @@
         The file below contains the JS lib for accessing the Web PKI component. For more information, see:
         https://webpki.lacunasoftware.com/#/Documentation
     *@
-    <script src="@Url.Content("~/Content/js/lacuna-web-pki-2.6.1.js")"></script>
+    <script src="@Url.Content("~/Content/js/lacuna-web-pki-2.9.0.js")"></script>
 
     @*
         The file below contains the logic for calling the Web PKI component. It is only an example, feel
@@ -51,13 +55,14 @@
     <script src="@Url.Content("~/Content/js/signature-form.js")"></script>
     <script>
         $(document).ready(function () {
-            // Once the page is ready, we call the init() function on the javascript code (see signature-form.js)
+            // Once the page is ready, we call the init() function on the javascript code
+            // (see signature-form.js).
             signatureForm.init({
-                token: '@Model.Token',
-                form: $('#signForm'),
-                certificateSelect: $('#certificateSelect'),
-                refreshButton: $('#refreshButton'),
-                signButton: $('#signButton')
+                token: '@Model.Token',                      // The token acquired from REST PKI.
+                form: $('#signForm'),                       // The form that should be submitted when the operation is completed.
+                certificateSelect: $('#certificateSelect'), // The <select> element (combo box) to list the certificates.
+                refreshButton: $('#refreshButton'),         // The "refresh" button.
+                signButton: $('#signButton')                // The button that initiates the operation.
             });
         });
     </script>

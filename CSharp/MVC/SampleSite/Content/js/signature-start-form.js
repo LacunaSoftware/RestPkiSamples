@@ -4,7 +4,7 @@
 // ----------------------------------------------------------------------------------------------------------
 var signatureStartForm = (function () {
 
-    // Auxiliary global variables.
+    // Auxiliary global variable.
     var formElements = null;
 
     // Create an instance of the LacunaWebPKI object.
@@ -37,7 +37,7 @@ var signatureStartForm = (function () {
     }
 
     // ------------------------------------------------------------------------------------------------------
-    // Function called when the user clicks the "Refresh" button
+    // Function called when the user clicks the "Refresh" button.
     // ------------------------------------------------------------------------------------------------------
     function refresh() {
         // Block the UI while we load the certificates.
@@ -52,23 +52,20 @@ var signatureStartForm = (function () {
     // ------------------------------------------------------------------------------------------------------
     function loadCertificates() {
 
-        // Call the listCertificates() method to list the user's certificates.
+        // Call the listCertificates() method to list the user's certificates. For more information see:
+        // http://webpki.lacunasoftware.com/Help/classes/LacunaWebPKI.html#method_listCertificates
         pki.listCertificates({
 
-            // Specify that expired certificates should be ignored:
-            filter: pki.filters.isWithinValidity,
-
-            // In order to list only certificates within validity period and having a CPF (ICP-Brasil),
-            // use this instead:
-            //filter: pki.filters.all(pki.filters.hasPkiBrazilCpf, pki.filters.isWithinValidity),
-
-            // Set the reference of the select to be populated with the certificates:
+            // The ID of the <select> element to be populated with the certificates.
             selectId: formElements.certificateSelect.attr('id'),
 
-            // Add the function that will be called to get the text that should be displayed for each
-            // option:
+            // Function that will be called to get the text that should be displayed for each option.
             selectOptionFormatter: function (cert) {
-                return cert.subjectName + ' (issued by ' + cert.issuerName + ')';
+                var s = cert.subjectName + ' (issued by ' + cert.issuerName + ')';
+                if (new Date() > cert.validityEnd) {
+                    s = '[EXPIRED] ' + s;
+                }
+                return s;
             }
 
         }).success(function () {
@@ -105,14 +102,14 @@ var signatureStartForm = (function () {
     }
 
     // -------------------------------------------------------------------------------------------------
-    // Function called if an error occurs on the Web PKI component
+    // Function called if an error occurs on the Web PKI component.
     // -------------------------------------------------------------------------------------------------
     function onWebPkiError(message, error, origin) {
 
-        // Unblock the UI
+        // Unblock the UI.
         $.unblockUI();
 
-        // Log the error to the browser console (for debugging purposes)
+        // Log the error to the browser console (for debugging purposes).
         if (console) {
             console.log('An error has occurred on the signature browser component: ' + message, error);
         }
