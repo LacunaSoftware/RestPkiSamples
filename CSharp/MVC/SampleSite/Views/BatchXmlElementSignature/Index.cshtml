@@ -1,24 +1,28 @@
 ﻿@using Lacuna.RestPki.SampleSite.Models
-@model BatchSignatureModel
-<h2>Batch of PAdES Signatures</h2>
+@using Newtonsoft.Json
+@model BatchXmlElementModel
+<h2>Batch of XML Element Signatures on the Same Document</h2>
+
+<div id="signatureResult" class="form-group" style="display: none;">
+    <h3>File signed successfully!</h3>
+
+    <label for="actions">Actions:</label>
+    <ul id="actions">
+        <li><a id="signedFileLink">Download the signed file</a></li>
+        <li><a id="openSignatureLink">Open/validate the signed file</a></li>
+    </ul>
+</div>
 
 <form id="signForm" method="POST">
 
 	<div class="form-group">
 		<label>File to sign</label>
-		<p>
-			You'll be signing the following files:
-			@* 
-                UL element to hold the batch's documents (we'll render these programatically,
-                see batch-signature-form.js).
-            *@
-			<ul id="docList" />
-		</p>
+		<p>You are signing a batch of nodes of <a href='/Download/Manifesto'>this sample XML</a>.</p>
 	</div>
 
 	@* 
         Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate
-        it later on (see batch-signature-form.js).
+        it later on (see batch-xml-element-signature-form.js).
     *@
 	<div class="form-group">
 		<label for="certificateSelect">Choose a certificate</label>
@@ -29,7 +33,7 @@
 		Action buttons. Notice that the "Sign Batch" button is NOT a submit button. When the user clicks the
         button, we must first use the Web PKI component to perform the client-side computation necessary and
         only when that computation is finished we'll submit the form programmatically
-        (see batch-signature-form.js).
+        (see batch-xml-element-signature-form.js).
 	*@
 	<button id="signButton" type="button" class="btn btn-primary">Sign Batch</button>
 	<button id="refreshButton" type="button" class="btn btn-default">Refresh Certificates</button>
@@ -49,18 +53,17 @@
         to alter it to meet your application's needs. You can also bring the code into the javascript block
         below if you prefer.
     *@
-    <script src="@Url.Content("~/Content/js/batch-signature-form.js")"></script>
+    <script src="@Url.Content("~/Content/js/batch-xml-element-signature-form.js")"></script>
     <script>
         $(document).ready(function () {
             // Once the page is ready, we call the init() function on the javascript code
-            // (see batch-signature-form.js).
-            batchSignatureForm.init({
-                documentsIds: [ @string.Join("," , Model.DocumentIds) ], // The IDs of documents.
-                certificateSelect: $('#certificateSelect'),              // The <select> element (combo box) to list the certificates.
-                docList: $('#docList'),                                  // The <ul> element that holds the batch's documents.
-                refreshButton: $('#refreshButton'),                      // The "refresh" button.
-                signButton: $('#signButton'),                            // The button that initiates the operation.
-                sampleApi: 'BatchPadesSignature'                         // The API controller address to be direct request for PAdES actions.
+            // (see batch-xml-element-signature-form.js).
+            batchXmlElementSignatureForm.init({
+                elementIds: @Html.Raw(JsonConvert.SerializeObject(Model.ElementIds)), // The elements IDs of the document.
+                certificateSelect: $('#certificateSelect'),           // The <select> element (combo box) to list the certificates.
+                docList: $('#docList'),                               // The <ul> element that holds the batch's documents.
+                refreshButton: $('#refreshButton'),                   // The "refresh" button.
+                signButton: $('#signButton'),                         // The button that initiates the operation.
             });
         });
 

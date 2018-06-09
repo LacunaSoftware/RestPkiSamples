@@ -92,6 +92,10 @@ namespace SampleSite.Classes {
 			return Path.Combine(ContentPath, "InvoiceWithSigs.xml");
 		}
 
+		public static string GetSampleManifestPath() {
+			return Path.Combine(ContentPath, "EventoManifesto.xml");
+		}
+
 		public static string JoinStringsPt(IEnumerable<string> strings) {
 			var text = new System.Text.StringBuilder();
 			var count = strings.Count();

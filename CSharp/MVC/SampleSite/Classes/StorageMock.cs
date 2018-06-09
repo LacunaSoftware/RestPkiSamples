@@ -13,14 +13,16 @@ namespace Lacuna.RestPki.SampleSite.Classes {
             }
         }
 
-        public static string Store(Stream stream, string extension = "") {
+        public static string Store(Stream stream, string extension = "", string filename = null) {
 
             if (!Directory.Exists(AppDataPath)) {
                 Directory.CreateDirectory(AppDataPath);
             }
 
-            var filename = Guid.NewGuid() + extension;
-            var path = Path.Combine(AppDataPath, filename);
+			if (string.IsNullOrEmpty(filename)) {
+				filename = Guid.NewGuid() + extension;
+			}
+			var path = Path.Combine(AppDataPath, filename.Replace("_", "."));
             using (var fileStream = File.Create(path)) {
                 stream.CopyTo(fileStream);
             }
@@ -30,10 +32,10 @@ namespace Lacuna.RestPki.SampleSite.Classes {
             // ASP.NET MVC.
         }
 
-        public static string Store(byte[] content, string extension = "") {
+        public static string Store(byte[] content, string extension = "", string filename = null) {
             string fileId;
             using (var stream = new MemoryStream(content)) {
-                fileId = Store(stream, extension);
+                fileId = Store(stream, extension, filename);
             }
             return fileId;
         }

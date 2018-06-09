@@ -41,7 +41,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 			// Set the signature policy.
 			signatureStarter.SetSignaturePolicy(StandardXmlSignaturePolicies.PkiBrazil.NFePadraoNacional);
 
-            // Set the security context to be used to determine trust in the certificate chain. we have
+            // Set the security context to be used to determine trust in the certificate chain. We have
 			// encapsulated the security context choice on Util.cs.
             signatureStarter.SetSecurityContext(Util.GetSecurityContextId());
 
@@ -83,8 +83,8 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
             // Call the Finish() method, which finalizes the signature process and returns the signed PDF.
 			var signedXml = await signatureFinisher.FinishAsync();
 
-            // Get information about the certificate used by the user to sign the file. This method must only
-            // be called after calling the Finish() method.
+			// Get information about the signer's certificate used. This method must only be called after
+			// calling the Finish() method.
 			var signerCert = signatureFinisher.GetCertificateInfo();
 
             // At this point, you'd typically store the signed XML on your database. For demonstration
