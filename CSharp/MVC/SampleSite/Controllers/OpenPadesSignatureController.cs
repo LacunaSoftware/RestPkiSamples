@@ -4,6 +4,7 @@ using SampleSite.Classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -15,7 +16,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 		 *	This action submits a PDF file to Rest PKI for inspection of its signatures.
 		 */
 		[HttpGet]
-		public ActionResult Index(string userfile) {
+		public async Task<ActionResult> Index(string userfile) {
 
 			// Our action only works if a userfile is given to work with.
 			if (string.IsNullOrEmpty(userfile)) {
@@ -41,7 +42,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 			sigExplorer.SetSignatureFile(Server.MapPath("~/App_Data/" + filename));
 
             // Call the Open() method, which returns the signature file's information.
-            var signature = sigExplorer.Open();
+            var signature = await sigExplorer.OpenAsync();
 
             // Render the information (see file OpenPadesSignature/Index.html for more information on
             // the information returned).

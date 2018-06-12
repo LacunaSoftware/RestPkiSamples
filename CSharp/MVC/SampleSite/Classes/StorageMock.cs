@@ -84,7 +84,8 @@ namespace Lacuna.RestPki.SampleSite.Classes {
         }
 
 		/// <summary>
-		/// Returns the verification code associated with the given document, or null if no verification code has been associated with it
+		/// Returns the verification code associated with the given document, or null if no verification code
+		/// has been associated with it.
 		/// </summary>
 		public static string GetVerificationCode(string fileId) {
 			// >>>>> NOTICE <<<<<
@@ -105,7 +106,8 @@ namespace Lacuna.RestPki.SampleSite.Classes {
 		}
 
 		/// <summary>
-		/// Returns the ID of the document associated with a given verification code, or null if no document matches the given code
+		/// Returns the ID of the document associated with a given verification code, or null if no document
+		/// matches the given code.
 		/// </summary>
 		public static string LookupVerificationCode(string code) {
 			if (string.IsNullOrEmpty(code)) {
