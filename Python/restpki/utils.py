@@ -8,7 +8,7 @@ def get_restpki_client():
     # ==========================================================================
     #                    >>> PASTE YOUR ACCESS TOKEN BELOW <<<
     # ==========================================================================
-    restpki_access_token = 'YOUR API ACCESS TOKEN HERE'
+    restpki_access_token = 'PLACE YOUR API ACCESS TOKEN HERE'
 
     # Throw exception if token is not set (this check is here just for the sake
     # of newcomers, you can remove it)
