@@ -1,10 +1,10 @@
-from flask import send_from_directory
-
-from app.blueprints import download
-from app import APPDATA_FOLDER
+from flask import send_from_directory, current_app, Blueprint
 
 
-@download.route('/<filename>')
+blueprint = Blueprint('download', __name__, url_prefix='/files')
+
+
+@blueprint.route('/<filename>')
 def get_file(filename):
     """
 
@@ -14,4 +14,4 @@ def get_file(filename):
 
     """
 
-    return send_from_directory(APPDATA_FOLDER, filename)
+    return send_from_directory(current_app.config['APPDATA_FOLDER'], filename)

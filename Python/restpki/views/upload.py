@@ -1,14 +1,15 @@
 import os
 import uuid
-from flask import render_template, request
+from flask import render_template, request, current_app, Blueprint
 from werkzeug.utils import secure_filename, redirect
 
-from app import APPDATA_FOLDER
-from app.blueprints import upload
-from app.util import create_app_data
+from ..utils import create_app_data
 
 
-@upload.route('/<goto>', methods=['GET', 'POST'])
+blueprint = Blueprint('upload', __name__, url_prefix='/upload')
+
+
+@blueprint.route('/<goto>', methods=['GET', 'POST'])
 def upload(goto):
     """
 
@@ -22,16 +23,17 @@ def upload(goto):
     if request.method == 'POST':
         userfile = request.files['userfile']
 
-        # Generate a unique filename
+        # Generate a unique filename.
         filename = '%s_%s' % (str(uuid.uuid1()), secure_filename(
             userfile.filename))
 
         # Move the file to the "app_data" with the unique filename. Make sure
-        # the "app_data" folder exists (static/util.py)
+        # the "app_data" folder exists (static/util.py).
         create_app_data()
-        userfile.save(os.path.join(APPDATA_FOLDER, filename))
+        userfile.save(
+            os.path.join(current_app.config['APPDATA_FOLDER'], filename))
 
-        # Redirect the user to the name of the file as a
+        # Redirect the user to the redirect parameter "goto"
         return redirect('/%s/%s' % (goto, filename))
     else:
         return render_template('upload/index.html')

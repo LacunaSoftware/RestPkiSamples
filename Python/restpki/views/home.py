@@ -1,9 +1,10 @@
-from flask import render_template
-
-from app.blueprints import home
+from flask import render_template, Blueprint
 
 
-@home.route('/')
+blueprint = Blueprint('home', __name__, url_prefix='/')
+
+
+@blueprint.route('/')
 def index():
     """
 

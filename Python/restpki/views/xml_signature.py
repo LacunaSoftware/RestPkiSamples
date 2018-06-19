@@ -1,17 +1,19 @@
 import os
 import uuid
-from flask import make_response, render_template, request
+from flask import make_response, render_template, request, current_app, \
+    Blueprint
 from lacunarestpki import FullXmlSignatureStarter, NamespaceManager, \
     XmlInsertionOptions, StandardSignaturePolicies, \
     XmlElementSignatureStarter, XmlSignatureFinisher
 
-from app import APPDATA_FOLDER, STATIC_FOLDER
-from app.blueprints import xml_signature
-from app.util import get_restpki_client, get_expired_page_headers, \
+from restpki.utils import get_restpki_client, get_expired_page_headers, \
     get_security_context_id
 
 
-@xml_signature.route('/full')
+blueprint = Blueprint('xml_signature', __name__, url_prefix='/xml-signature')
+
+
+@blueprint.route('/full')
 def full():
     """
 
@@ -29,7 +31,7 @@ def full():
 
         # Set the XML to be signed, a sample XML Document.
         signature_starter.set_xml_path(
-            '%s/%s' % (STATIC_FOLDER, 'SampleDocument.xml'))
+            '%s/%s' % (current_app.static_folder, 'SampleDocument.xml'))
 
         # Set the location on which to insert the signature node. If the
         # location is not specified, the signature will appended to the root
@@ -45,8 +47,9 @@ def full():
         # Set the signature policy.
         signature_starter.signature_policy_id = StandardSignaturePolicies.XADES_BES
 
-        # Set a SecurityContext to be used to determine trust in the certificate
-        # chain. We have encapsulated the security context choice on util.py.
+        # Set the security context to be used to determine trust in the
+        # certificate chain. We have encapsulated the security context choice on
+        # util.py.
         signature_starter.security_context_id = get_security_context_id()
 
         # Call the start_with_webpki() method, which initiates the signature.
@@ -75,7 +78,7 @@ def full():
     return response
 
 
-@xml_signature.route('/element')
+@blueprint.route('/element')
 def element():
     """
 
@@ -92,7 +95,7 @@ def element():
 
         # Set the XML to be signed, a sample XML Document.
         signature_starter.set_xml_path(
-            '%s/%s' % (STATIC_FOLDER, 'SampleNFe.xml'))
+            '%s/%s' % (current_app.static_folder, 'SampleNFe.xml'))
 
         # Set the ID of the element to be signed.
         signature_starter.element_tosign_id = 'NFe35141214314050000662550010001084271182362300'
@@ -130,7 +133,7 @@ def element():
     return response
 
 
-@xml_signature.route('/action', methods=['POST'])
+@blueprint.route('/action', methods=['POST'])
 def action():
     """
 
@@ -163,7 +166,8 @@ def action():
     # accessible and render a link to it.
 
     filename = '%s.xml' % (str(uuid.uuid1()))
-    signature_finisher.write_signed_xml(os.path.join(APPDATA_FOLDER, filename))
+    signature_finisher.write_signed_xml(
+        os.path.join(current_app.config['APPDATA_FOLDER'], filename))
 
     return render_template('xml_signature/action.html', filename=filename,
                            signer_cert=signer_cert)

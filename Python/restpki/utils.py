@@ -3,14 +3,12 @@ from datetime import datetime, timedelta
 from lacunarestpki import RestPkiClient, StandardSecurityContexts
 from flask import current_app
 
-from app import STATIC_FOLDER
-
 
 def get_restpki_client():
     # ==========================================================================
     #                    >>> PASTE YOUR ACCESS TOKEN BELOW <<<
     # ==========================================================================
-    restpki_access_token = 'PLACE YOUR API ACCESS TOKEN HERE'
+    restpki_access_token = 'YOUR API ACCESS TOKEN HERE'
 
     # Throw exception if token is not set (this check is here just for the sake
     # of newcomers, you can remove it)
@@ -23,32 +21,6 @@ def get_restpki_client():
 
     restpki_url = 'https://pki.rest/'
     return RestPkiClient(restpki_url, restpki_access_token)
-
-
-def get_expired_page_headers():
-    headers = dict()
-    now = datetime.utcnow()
-    expires = now - timedelta(seconds=3600)
-
-    headers['Expires'] = expires.strftime("%a, %d %b %Y %H:%M:%S GMT")
-    headers['Last-Modified'] = now.strftime("%a, %d %b %Y %H:%M:%S GMT")
-    headers[
-        'Cache-Control'] = 'private, no-store, max-age=0, no-cache, must-revalidate, post-check=0, pre-check=0'
-    headers['Pragma'] = 'no-cache'
-    return headers
-
-
-def create_app_data():
-    if not os.path.exists(current_app.config['APPDATA_FOLDER']):
-        os.makedirs(current_app.config['APPDATA_FOLDER'])
-
-
-def get_pdf_stamp_content():
-    # Read the PDF stamp image
-    f = open('%s/%s' % (STATIC_FOLDER, 'PdfStamp.png'), 'rb')
-    pdf_stamp = f.read()
-    f.close()
-    return pdf_stamp
 
 
 def get_security_context_id():
@@ -65,7 +37,7 @@ def get_security_context_id():
     :return: StandardSecurityContexts
 
     """
-    if current_app.debug:
+    if current_app.env == 'development':
         # Lacuna Text PKI (for development purposes only!)
         #
         # This security context trusts ICP-Brasil certificates as well as
@@ -81,3 +53,29 @@ def get_security_context_id():
     else:
         # In production, accepting only certificates from ICP-Brasil
         return StandardSecurityContexts.PKI_BRAZIL
+
+
+def get_expired_page_headers():
+    headers = dict()
+    now = datetime.utcnow()
+    expires = now - timedelta(seconds=3600)
+
+    headers['Expires'] = expires.strftime("%a, %d %b %Y %H:%M:%S GMT")
+    headers['Last-Modified'] = now.strftime("%a, %d %b %Y %H:%M:%S GMT")
+    headers['Cache-Control'] = 'private, no-store, max-age=0, no-cache,' \
+                               ' must-revalidate, post-check=0, pre-check=0'
+    headers['Pragma'] = 'no-cache'
+    return headers
+
+
+def create_app_data():
+    if not os.path.exists(current_app.config['APPDATA_FOLDER']):
+        os.makedirs(current_app.config['APPDATA_FOLDER'])
+
+
+def get_pdf_stamp_content():
+    # Read the PDF stamp image
+    f = open('%s/%s' % (current_app.static_folder, 'PdfStamp.png'), 'rb')
+    pdf_stamp = f.read()
+    f.close()
+    return pdf_stamp

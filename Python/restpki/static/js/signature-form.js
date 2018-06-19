@@ -117,13 +117,3 @@ var signatureForm = (function() {
     };
 
 })();
-
-
-
-
-
-
-
-
-// Schedule the init function to be called once the page is loaded
-$(document).ready(init);
