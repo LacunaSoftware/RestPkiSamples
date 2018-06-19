@@ -5,12 +5,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import sample.Application;
-import sample.controller.util.PadesVisualElements;
-import sample.util.*;
+import sample.util.PadesVisualElements;
+import sample.util.Util;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.UUID;
 
 @Controller

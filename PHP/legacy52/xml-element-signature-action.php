@@ -4,23 +4,23 @@
  * This file receives the form submission from xml-element-signature.php. We'll call REST PKI to complete the signature.
  */
 
-// The file RestPkiLegacy52.php contains the helper classes to call the REST PKI API
+// The file RestPkiLegacy52.php contains the helper classes to call the REST PKI API.
 require_once 'RestPkiLegacy52.php';
 
 // The file util.php contains the function getRestPkiClient(), which gives us an instance of the RestPkiClient
-// class initialized with the API access token
+// class initialized with the API access token.
 require_once 'util.php';
 
-// Get the token for this signature (rendered in a hidden input field, see xml-element-signature.php)
+// Get the token for this signature (rendered in a hidden input field, see xml-element-signature.php).
 $token = $_POST['token'];
 
-// Instantiate the RestPkiXmlSignatureFinisher class, responsible for completing the signature process
+// Instantiate the RestPkiXmlSignatureFinisher class, responsible for completing the signature process.
 $signatureFinisher = new RestPkiXmlSignatureFinisher(getRestPkiClient());
 
-// Set the token
+// Set the token.
 $signatureFinisher->setToken($token);
 
-// Call the finish() method, which finalizes the signature process and returns the signed XML
+// Call the finish() method, which finalizes the signature process and returns the signed XML.
 $signedXml = $signatureFinisher->finish();
 
 // Get information about the certificate used by the user to sign the file. This method must only be called after
@@ -31,18 +31,20 @@ $signerCert = $signatureFinisher->getCertificate();
 // store the PDF on a temporary folder publicly accessible and render a link to it.
 
 $filename = uniqid() . ".xml";
-createAppData(); // make sure the "app-data" folder exists (util.php)
+createAppData(); // Make sure the "app-data" folder exists (util.php).
 file_put_contents("app-data/{$filename}", $signedXml);
 
-?><!DOCTYPE html>
+?>
+
+<!DOCTYPE html>
 <html>
 <head>
 	<title>XML element signature</title>
-	<?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component) ?>
+	<?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component). ?>
 </head>
 <body>
 
-<?php include 'menu.php' // The top menu, this can be removed entirely ?>
+<?php include 'menu.php' // The top menu, this can be removed entirely. ?>
 
 <div class="container">
 
@@ -63,6 +65,8 @@ file_put_contents("app-data/{$filename}", $signedXml);
 				<li>Responsavel: <?php echo $signerCert->pkiBrazil->responsavel; ?></li>
 				<li>Empresa: <?php echo $signerCert->pkiBrazil->companyName; ?></li>
 				<li>CNPJ: <?php echo $signerCert->pkiBrazil->cnpj; ?></li>
+                <li>RG: <?php echo  $signerCert->pkiBrazil->rgNumero." ".$signerCert->pkiBrazil->rgEmissor." ".$signerCert->pkiBrazil->rgEmissorUF ?></li>
+                <li>OAB: <?php echo  $signerCert->pkiBrazil->oabNumero." ".$signerCert->pkiBrazil->oabUF ?></li>
 			</ul>
 		</li>
 	</ul>

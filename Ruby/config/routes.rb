@@ -11,10 +11,24 @@ Rails.application.routes.draw do
     get 'pades_signature', to: 'pades_signature#index'
     post 'pades_signature', to: 'pades_signature#action'
 
+    get 'pades_signature_without_integration', to: 'pades_signature_without_integration#index'
+    post 'pades_signature_without_integration', to: 'pades_signature_without_integration#action'
+
+    get 'cades_signature', to: 'cades_signature#index'
+    post 'cades_signature', to: 'cades_signature#action'
+
     get 'full_xml_signature', to: 'full_xml_signature#index'
     post 'full_xml_signature', to: 'full_xml_signature#action'
 
     get 'xml_element_signature', to: 'xml_element_signature#index'
     post 'xml_element_signature', to: 'xml_element_signature#action'
+
+    get 'batch_signature', to: 'batch_signature#index'
+    post 'batch_signature/start/:id', to: 'batch_signature#start'
+    post 'batch_signature/complete/:id', to: 'batch_signature#complete'
+
+    get 'cades_batch_signature', to: 'cades_batch_signature#index'
+    post 'cades_batch_signature/start/:id', to: 'cades_batch_signature#start'
+    post 'cades_batch_signature/complete/:id', to: 'cades_batch_signature#complete'
 
 end

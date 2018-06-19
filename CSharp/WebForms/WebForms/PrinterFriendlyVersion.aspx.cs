@@ -91,7 +91,7 @@ namespace WebForms {
 			var sigExplorer = new PadesSignatureExplorer(client) {
 				Validate = true,
 				DefaultSignaturePolicyId = StandardPadesSignaturePolicies.Basic,
-				SecurityContextId = StandardSecurityContexts.PkiBrazil,
+				SecurityContextId = Util.GetSecurityContextId(),
 			};
 			sigExplorer.SetSignatureFile(blob);
 			var signature = sigExplorer.Open();

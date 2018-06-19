@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d2dc617a4d1501ca119120d04af8b24e",
-    "content-hash": "47ecf2e0c916dd910a99ab508e74b68e",
+    "hash": "ff520f35fbfc261dc931d043c67f202d",
+    "content-hash": "2daccc3bdaafdfd2266e825b100e1282",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
-            "version": "6.3.0",
+            "version": "6.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "f4db5a78a5ea468d4831de7f0bf9d9415e348699"
+                "reference": "407b0cb880ace85c9b63c5f9551db498cb2d50ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/f4db5a78a5ea468d4831de7f0bf9d9415e348699",
-                "reference": "f4db5a78a5ea468d4831de7f0bf9d9415e348699",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/407b0cb880ace85c9b63c5f9551db498cb2d50ba",
+                "reference": "407b0cb880ace85c9b63c5f9551db498cb2d50ba",
                 "shasum": ""
             },
             "require": {
@@ -28,7 +28,7 @@
             },
             "require-dev": {
                 "ext-curl": "*",
-                "phpunit/phpunit": "^4.0 || ^5.0",
+                "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.4 || ^7.0",
                 "psr/log": "^1.0"
             },
             "suggest": {
@@ -37,7 +37,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "6.2-dev"
+                    "dev-master": "6.3-dev"
                 }
             },
             "autoload": {
@@ -70,7 +70,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2017-06-22 18:50:49"
+            "time": "2018-04-22 15:46:56"
         },
         {
             "name": "guzzlehttp/promises",
@@ -190,16 +190,16 @@
         },
         {
             "name": "lacuna/restpki-client",
-            "version": "2.2.1",
+            "version": "2.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/LacunaSoftware/RestPkiPhpClient.git",
-                "reference": "b08bee13cbc459cfa4bbc064fbb510b1779d0f4a"
+                "reference": "48a3a3f54fbc956ddd2ec9660bbcfe3653629d66"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LacunaSoftware/RestPkiPhpClient/zipball/b08bee13cbc459cfa4bbc064fbb510b1779d0f4a",
-                "reference": "b08bee13cbc459cfa4bbc064fbb510b1779d0f4a",
+                "url": "https://api.github.com/repos/LacunaSoftware/RestPkiPhpClient/zipball/48a3a3f54fbc956ddd2ec9660bbcfe3653629d66",
+                "reference": "48a3a3f54fbc956ddd2ec9660bbcfe3653629d66",
                 "shasum": ""
             },
             "require": {
@@ -231,7 +231,7 @@
                 "rest pki",
                 "signature"
             ],
-            "time": "2017-07-18 18:23:34"
+            "time": "2018-06-11 20:58:09"
         },
         {
             "name": "psr/http-message",

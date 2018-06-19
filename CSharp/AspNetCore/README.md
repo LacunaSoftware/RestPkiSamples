@@ -28,7 +28,7 @@ Running the sample
 See also
 --------
 
-* [Test certificates](../TestCertificates.md)
+* [Test certificates](../../TestCertificates.md)
 * [Samples in other C# technologies](../)
 * [Samples in other programming languages](https://github.com/LacunaSoftware/RestPkiSamples)
 * [REST PKI .NET client lib on Nuget](https://www.nuget.org/packages/Lacuna.RestPki.Client)
