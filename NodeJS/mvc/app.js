@@ -1,11 +1,11 @@
-var express = require('express'),
-    session = require('express-session'),
-    path = require('path'),
-    logger = require('morgan'),
-    bodyParser = require('body-parser');
+let express = require('express');
+let session = require('express-session');
+let path = require('path');
+let logger = require('morgan');
+let bodyParser = require('body-parser');
 
 // Create global app object
-var app = express();
+let app = express();
 
 // View engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -29,7 +29,7 @@ app.use(require('./routes'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-   var err = new Error('Not Found');
+   let err = new Error('Not Found');
    err.status = 404;
    next(err);
 });
