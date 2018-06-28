@@ -1,12 +1,11 @@
-var express = require('express');
-var request = require('request');
-var fs = require('fs');
-var uuid = require('node-uuid');
-var restPki = require('../lacuna-restpki');
-var util = require('../util');
+const express = require('express');
+const uuid = require('node-uuid');
+const { XmlElementSignatureStarter, StandardSignaturePolicies, XmlSignatureFinisher } = require('restpki-client');
 
-var router = express.Router();
-var appRoot = process.cwd();
+let { Util } = require('../util');
+
+let router = express.Router();
+let appRoot = process.cwd();
 
 /*
  * GET /xml-element-signature
@@ -16,67 +15,51 @@ var appRoot = process.cwd();
  */
 router.get('/', function(req, res, next) {
 
-   // Request to be sent to REST PKI.
-   var restRequest = {
+   // Get an instance of the XmlElementSignatureStarter class, responsible for
+   // responsible for receiving the signature elements and the start the
+   // signature process.
+   let signatureStarter = new XmlElementSignatureStarter(Util.getRestPkiClient());
 
-      // Set the XML to be signed, a sample XML Document.
-      xml: new Buffer(util.getSampleNFe()).toString('base64'),
+   // Set the XML to be signed, a sample Brazilian fiscal invoice pre-generated.
+   signatureStarter.xmlToSign = Util.getSampleNFePath();
 
-      // Set the ID of the element to be signed.
-      elementToSignId: 'NFe35141214314050000662550010001084271182362300',
+   // Set the ID of the element to be signed.
+   signatureStarter.toSignElementId = 'NFe35141214314050000662550010001084271182362300';
 
-      // Set the signature policy.
-      signaturePolicyId: restPki.standardSignaturePolicies.pkiBrazilNFePadraoNacional
+   // Set the signature policy.
+   signatureStarter.signaturePolicyId = StandardSignaturePolicies.PKI_BRAZIL_NFE_PADRAO_NACIONAL;
 
-      // Optionally, set a SecurityContext to be used to determine trust in the
-      // certificate chain. Since we're using the
-      // StandardXmlSignaturePolicies.PkiBrazil.NFePadraoNacional policy, the
-      // security context will default to PKI Brazil (ICP-Brasil):
+   // Set the security context to be used to determine trust in the certificate
+   // chain. We have encapsulated the security context choice on util.js.
+   signatureStarter.securityContextId = Util.getSecurityContextId();
 
-      // securityContextId: restPki.standardSecurityContexts.pkiBrazil
+   // Call the startWithWebPki() method, which initiates the signature. This
+   // yields the token, a 43-character case-sensitive URL-safe string, which
+   // identifies this signature process. We'll use this value to call the
+   // signWithRestPki() method on the WebPKI component
+   // (see public/js/signature-form.js) and also to complete the signature after
+   // the form is submitted (see post method). This should not be mistaken with
+   // with the API access token.
+   signatureStarter.startWithWebPki()
+   .then((token) => {
 
-      // Note: By changing the SecurityContext above you can accept only
-      // certificates from a certain PKI Set a SecurityContext to be used to
-      // determine trust in the certificate chain
-   };
+      // The token acquired can only be used for a single signature attempt.
+      // In order to retry the signature it is necessary to get a new token.
+      // This can be a problem if the user uses the back button of the
+      // browser, since the browser might show a cached page that we rendered
+      // previously, with a now stale token. To prevent this from happening,
+      // we set some response headers specifying that the page should not be
+      // cached.
+      Util.setExpiredPage(res);
 
-   // Call the action POST Api/XmlSignatures/XmlElementSignature on REST PKI,
-   // which initiates the signature.
-   request.post(util.endpoint + 'Api/XmlSignatures/XmlElementSignature', {
+      // Render the signature page
+      res.render('xml-element-signature', {
+         token: token
+      });
 
-      json: true,
-      headers: {'Authorization': 'Bearer ' + util.accessToken},
-      body: restRequest
+   })
+   .catch((err) => next(err));
 
-   }, function(err, restRes, body) {
-
-      if (restPki.checkResponse(err, restRes, body, next)) {
-
-         // This operation yields the token, a 43-character case-sensitive
-         // URL-safe string, which identifies this signature process. We'll use
-         // this value to call the signWithRestPki() method on the Web
-         // component (see view 'xml-element-signature') and also to complete
-         // the signature after the form is submitted. This should not be
-         // mistaken with the API access token.
-         var token = restRes.body.token;
-
-         // The token acquired can only be used for a single signature attempt.
-         // In order to retry the signature it is necessary to get a new token.
-         // This can be a problem if the user uses the back button of the
-         // browser, since the browser might show a cached page that we rendered
-         // previously, with a now stale token. To prevent this from happening,
-         // we set some response headers specifying that the page should not be
-         // cached.
-         util.setExpiredPage(res);
-
-         // Render the signature page
-         res.render('xml-element-signature', {
-            token: token,
-            userfile: req.query.userfile
-         });
-      }
-
-   });
 });
 
 /*
@@ -87,39 +70,46 @@ router.get('/', function(req, res, next) {
  */
 router.post('/', function(req, res, next) {
 
-   // Retrieve the token from the URL
-   var token = req.body.token;
+   // Retrieve the token from the URL.
+   let token = req.body.token;
 
-   // Call the action POST Api/XmlSignatures/{token}/Finalize on REST PKI,
-   // which finalizes the signature process and returns the signed PDF
-   request.post(util.endpoint + 'Api/XmlSignatures/' + token + '/Finalize', {
+   // Get an instance of XmlSignatureFinisher class, responsible for complete
+   // the signature process.
+   let signatureFinisher = new XmlSignatureFinisher(Util.getRestPkiClient());
 
-      json: true,
-      headers: {'Authorization': 'Bearer ' + util.accessToken}
+   // Set the token.
+   signatureFinisher.token = token;
 
-   }, function(err, restRes, body) {
+   // Call the finish() method, which finalizes the signature process and
+   // returns the signed XML.
+   signatureFinisher.finish()
+   .then((result) => {
 
-      if (restPki.checkResponse(err, restRes, body, next)) {
+      // The "certificate" property of the SignatureResult object contains
+      // information about the certificate used by the user to sign the file.
+      let signerCert = result.certificate;
 
-         var signedXmlContent = new Buffer(restRes.body.signedXml, 'base64');
+      // At this point, you'd typically store the signed PDF on you database.
+      // For demonstration purposes, we'll store the PDF on a temporary folder
+      // publicly accessible and render a link to it.
 
-         // At this point, you'd typically store the signed PDF on your
-         // database. For demonstration purposes, we'll store the PDF on a
-         // temporary folder publicly accessible and render a link to it.
-         var filename = uuid.v4() + '.xml';
-         var appDataPath = appRoot + '/public/app-data/';
-         if (!fs.existsSync(appDataPath)) {
-            fs.mkdirSync(appDataPath);
-         }
-         fs.writeFileSync(appDataPath + filename, signedXmlContent);
-         res.render('xml-signature-complete', {
-            signedFile: filename,
-            signerCert: restRes.body.certificate
-         });
+      Util.createAppData(); // Make sure the "app-data" folder exists (util.js).
+      let filename = uuid.v4() + '.xml';
 
-      }
+      // The SignatureResult object has functions for writing the signature file
+      // to a local life (writeToFile()) and to get its raw contents
+      // (getContent()). For large files, use writeToFile() in order to avoid
+      // memory allocation issues.
+      result.writeToFile(appRoot + '/public/app-data/' + filename);
 
-   });
+      res.render('xml-signature-complete', {
+         signedFile: filename,
+         signerCert: signerCert
+      });
+
+   })
+   .catch((err) => next(err));
+
 });
 
 module.exports = router;

@@ -1,13 +1,10 @@
-var express = require('express');
-var request = require('request');
-var fs = require('fs');
-var moment = require('moment');
+const express = require('express');
+const { PadesSignatureExplorer, StandardSignaturePolicies} = require('restpki-client');
 
-var restPki = require('../lacuna-restpki');
-var util = require('../util');
+const { Util } = require('../util');
 
-var router = express.Router();
-var appRoot = process.cwd();
+let router = express.Router();
+let appRoot = process.cwd();
 
 /*
  * GET /open-pades-signature
@@ -23,57 +20,38 @@ router.get('/', function(req, res, next) {
       return;
    }
 
-   // Request to be sent to REST PKI.
-   var openRequest = {
+   // Get an instance of the PadesSignatureExplorer class, used to open/validate
+   // PDF signatures.
+   let sigExplorer = new PadesSignatureExplorer(Util.getRestPkiClient());
 
-      // Specify that we want to validate the signatures in the file, not only
-      // inspect them.
-      validate: true,
+   // Set the PDF file to be inspected.
+   sigExplorer.signatureFile = appRoot + '/public/app-data/' + res.query.userfile;
 
-      // Specify the signature policy for signature validation. On this sample,
-      // we will accept any PAdES signature as long as the signer has an
-      // ICP-Brasil certificate.
-      defaultSignaturePolicyId: restPki.standardSignaturePolicies.padesBasicWithPkiBrazilCerts,
+   // Specify that we want to validate the signatures in the file, not only
+   // inspect them.
+   sigExplorer.validate = true;
 
-      // Specify file to be inspected.
-      file: {
+   // Specify the signature policy for signature validation. On this sample,
+   // we will accept any valid PAdES signature as long as the signer is trusted
+   // by the security context.
+   sigExplorer.defaultSignaturePolicyId = StandardSignaturePolicies.PADES_BASIC;
 
-         // Inform the file content encoded in Base64.
-         content: new Buffer(fs.readFileSync(appRoot + '/public/app-data/' + req.query.userfile)).toString('base64')
-      }
-   };
+   // Specify the security context to be used to determine trust in the
+   // certificate chain. We have encapsulated the security context choice on
+   // util.js.
+   sigExplorer.securityContextId = Util.getSecurityContextId();
 
-   // Call the action POST Api/PadesSignatures/Open, which open/validate the
-   // signature.
-   request.post(util.endpoint + 'Api/PadesSignatures/Open', {
-      json: true,
-      headers: {'Authorization': 'Bearer ' + util.accessToken},
-      body: openRequest
-   }, function(err, restRes, body) {
+   // Call the open() method, which returns the signature file's information.
+   sigExplorer.open()
+   .then((signature) => {
 
-      if (restPki.checkResponse(err, restRes, body, next)) {
+      // Render the signature opening page.
+      res.render('open-pades-signature', {
+         signature: signature
+      });
 
-         // Parse output
-         var signature = restRes.body;
-         signature.signers.forEach(function(signer) {
-            signer.validationResults = new restPki.ValidationResults(signer.validationResults);
-            if (signer.signingTime) {
-               // Format date using moment package.
-               signer.signingTime = moment(signer.signingTime).format('DD/MM/YYYY HH:mm');
-            }
-            if (signer.certificate && signer.certificate.pkiBrazil) {
-               signer.certificate.pkiBrazil.cpfFormatted = util.formatCpf(signer.certificate.pkiBrazil.cpf);
-               signer.certificate.pkiBrazil.cnpjFormatted = util.formatCnpj(signer.certificate.pkiBrazil.cnpj);
-            }
-         });
-
-         // Render the signature page
-         res.render('open-pades-signature', {
-            signature: signature
-         });
-
-      }
-   });
+   })
+   .catch((err) => next(err));
 
 });
 

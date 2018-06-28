@@ -1,13 +1,10 @@
-var express = require('express');
-var request = require('request');
-var fs = require('fs');
-var moment = require('moment');
+const express = require('express');
+const { CadesSignatureExplorer, StandardSignaturePolicyCatalog } = require('restpki-client');
 
-var restPki = require('../lacuna-restpki');
-var util = require('../util');
+const { Util } = require('../util');
 
-var router = express.Router();
-var appRoot = process.cwd();
+let router = express.Router();
+let appRoot = process.cwd();
 
 /*
  * GET /open-cades-signature
@@ -23,62 +20,37 @@ router.get('/', function(req, res, next) {
       return;
    }
 
-   // Request to be sent to REST PKI.
-   var openRequest = {
+   // Get an instance of the CadesSignatureExplorer class, used to open/validate
+   // CAdES signatures.
+   let sigExplorer = new CadesSignatureExplorer(Util.getRestPkiClient());
 
-      // Specify that we want to validate the signatures in the file, not only
-      // inspect them.
-      validate: true,
+   // Set the CAdES signature file to be inspected.
+   sigExplorer.signatureFile = appRoot + '/public/app-data' + req.query.userfile;
 
-      // Specify the signature policy for signature validation. On this sample,
-      // we will accept only 100%-compliant ICP-Brasil signatures.
-      acceptableExplicitPolicies: [
-         restPki.standardSignaturePolicies.pkiBrazilCadesAdrBasica,
-         restPki.standardSignaturePolicies.pkiBrazilCadesAdrTempo,
-         restPki.standardSignaturePolicies.pkiBrazilCadesAdrCompleta
-      ],
+   // Specify that we want to validate the signatures in the file, not only
+   // inspect them.
+   sigExplorer.validate = true;
 
-      // Specify file to be inspected.
-      file: {
+   // Specify the signature policy for signature validation. On this sample,
+   // we will accept only 100%-compliant ICP-Brasil signatures.
+   sigExplorer.acceptableExplicitPolicies = StandardSignaturePolicyCatalog.getPkiBrazilCades();
 
-         // Inform the file content encoded in Base64.
-         content: new Buffer(fs.readFileSync(appRoot + '/public/app-data/' + req.query.userfile)).toString('base64')
-      },
+   // Specify the security context to be used to determine trust in the
+   // certificate chain. We have encapsulated the security context choice on
+   // util.js.
+   sigExplorer.securityContextId = Util.getSecurityContextId();
 
-      // Specify if wants to extract encapsulated content.
-      extractEncapsulatedContent: false
-   };
+   // Call the open() method, which returns the signature file's information.
+   sigExplorer.open()
+   .then((signature) => {
 
-   // Call the action POST Api/CadesSignatures/Open, which open/validate the
-   // signature.
-   request.post(util.endpoint + 'Api/CadesSignatures/Open', {
-      json: true,
-      headers: {'Authorization': 'Bearer ' + util.accessToken},
-      body: openRequest
-   }, function(err, restRes, body) {
+      // Render the signature opening page.
+      res.render('open-cades-signature', {
+         signature: signature
+      });
 
-      if (restPki.checkResponse(err, restRes, body, next)) {
-
-         // Parse output
-         var signature = restRes.body;
-         signature.signers.forEach(function(signer) {
-            signer.validationResults = new restPki.ValidationResults(signer.validationResults);
-            if (signer.signingTime) {
-               // Format date using moment package.
-               signer.signingTime = moment(signer.signingTime).format('DD/MM/YYYY HH:mm');
-            }
-            if (signer.certificate && signer.certificate.pkiBrazil) {
-               signer.certificate.pkiBrazil.cpfFormatted = util.formatCpf(signer.certificate.pkiBrazil.cpf);
-               signer.certificate.pkiBrazil.cnpjFormatted = util.formatCnpj(signer.certificate.pkiBrazil.cnpj);
-            }
-         });
-
-         // Render the signature page.
-         res.render('open-cades-signature', {
-            signature: signature
-         });
-      }
-   });
+   })
+   .catch((err) => next(err));
 
 });
 

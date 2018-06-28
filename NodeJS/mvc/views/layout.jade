@@ -48,5 +48,13 @@ body
 							li
 								a(href='xml-full-signature') Full XML signature (enveloped signature)
 								a(href='xml-element-signature') XML element signature
+
 	div(class='container')
-			block content
+		if (userId)
+			br
+			p
+				| You are signed in as&nbsp;
+				b #{userId}&nbsp;
+				a(href='sign-out') Sign Out
+
+		block content
