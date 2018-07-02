@@ -1,5 +1,5 @@
 const express = require('express');
-const { Authentication, StandardSecurityContexts } = require('restpki-client');
+const { Authentication } = require('restpki-client');
 
 const { Util } = require('../util');
 
@@ -23,8 +23,9 @@ router.get('/', function(req, res, next) {
    // the signWithRestPki() method on the Web PKI component
    // (see public/javascripts/signature-form.js) and also call the
    // completeWithWebPki() method on "complete" step. This should not be
-   // mistaken with the API access token.
-   auth.startWithWebPki(StandardSecurityContexts.PKI_BRAZIL)
+   // mistaken with the API access token. We have encapsulated the security
+   // context choice on util.js.
+   auth.startWithWebPki(Util.getSecurityContextId(res.locals.environment))
    .then((token) => {
 
       // The token acquired can only be used for a single authentication.

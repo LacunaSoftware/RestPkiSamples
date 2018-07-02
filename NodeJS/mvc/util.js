@@ -2,6 +2,9 @@ const fs = require('fs');
 const crypto = require('crypto');
 const { RestPkiClient, StandardSecurityContexts } = require('restpki-client');
 
+let appRoot = process.cwd();
+
+
 class Util {
 
    static getRestPkiClient() {
@@ -36,9 +39,9 @@ class Util {
     * during certificate validation. In you API calls, you can use on of the
     * standard security contexts or reference one of your custom contexts.
     */
-   static getSecurityContextId() {
+   static getSecurityContextId(env) {
 
-      if (app.get('env') === 'development') {
+      if (env === 'development') {
 
          /*
           * Lacuna Text PKI (for development purposes only!)
@@ -49,14 +52,14 @@ class Util {
           *
           * THIS SHOULD NEVER BE USED ON A PRODUCTION ENVIRONMENT!
           */
-         return StandardSecurityContexts.lacunaTest;
+         return StandardSecurityContexts.LACUNA_TEST;
          // Notice for On Premises users: this security context might not exist
          // on your installation, if you encounter an error please contact
          // developer support.
       }
 
       // In production, accepting only certificates from ICP-Brasil
-      return StandardSecurityContexts.pkiBrazil;
+      return StandardSecurityContexts.PKI_BRAZIL;
    }
 
    static createAppData() {
@@ -112,27 +115,6 @@ class Util {
          text += strings[i];
       }
       return text;
-   }
-
-   static formatCpf(cpf) {
-
-      if (!cpf) {
-         return '';
-      }
-
-      return cpf.substring(0, 3) + '.' + cpf.substring(3, 6) + '.' +
-          cpf.substring(6, 9) + '-' + cpf.substring(9);
-   }
-
-   static formatCnpj(cnpj) {
-
-      if (!cnpj) {
-         return '';
-      }
-
-      return cnpj.substring(0, 2) + '.' + cnpj.substring(2, 5) + '.' +
-          cnpj.substring(5, 8) + '/' + cnpj.substring(8, 12)  + '-' +
-          cnpj.substring(12);
    }
 
    static generateVerificationCode() {

@@ -1,6 +1,4 @@
 const express = require('express');
-const request = require('request');
-const fs = require('fs');
 const moment = require('moment');
 const {
    PadesSignatureExplorer,
@@ -65,7 +63,7 @@ router.get('/', function(req, res, next) {
    }
 
    // Locate document and read content.
-   let filePath = appRoot + '/public/' + fileId;
+   let filePath = appRoot + '/public/app-data/' + fileId;
 
    // Check if doc already has a verification code registered on storage.
    let verificationCode = StorageMock.getVerificationCode(req.session, fileId);
@@ -76,7 +74,7 @@ router.get('/', function(req, res, next) {
    }
 
    // Generate the printer-friendly version.
-   generatePrinterFriendlyVersion(filePath, verificationCode)
+   generatePrinterFriendlyVersion(filePath, verificationCode, res.locals.environment)
    .then((pfvContent) => {
 
       // Return the generate file.
@@ -88,7 +86,7 @@ router.get('/', function(req, res, next) {
 
 });
 
-function generatePrinterFriendlyVersion(pdfPath, verificationCode) {
+function generatePrinterFriendlyVersion(pdfPath, verificationCode, environment) {
 
    // The verification code is generated without hyphens to save storage space
    // and avoid copy-and-paste problems. On the PDF generation, we use the
@@ -121,7 +119,7 @@ function generatePrinterFriendlyVersion(pdfPath, verificationCode) {
    // Specify the security context to be used to determine trust in the
    // certificate chain. We have encapsulated the security context choice on
    // util.js.
-   signatureExplorer.securityContextId = Util.getSecurityContextId();
+   signatureExplorer.securityContextId = Util.getSecurityContextId(environment);
 
    // Call the open() method, which returns the signature file's information.
    return new Promise((resolve, reject) => {
@@ -140,7 +138,7 @@ function generatePrinterFriendlyVersion(pdfPath, verificationCode) {
          signature.signers.forEach(function(signer) {
             certDisplayNames.push(_getDisplayName(signer.certificate));
          });
-         let signerNames = util.joinStringPt(certDisplayNames);
+         let signerNames = Util.joinStringPt(certDisplayNames);
          let allPagesMessage = `Este documento foi assinado digitalmente por ${signerNames}.\n` +
              `Para verificar a validade das assinaturas acesse ${verificationSiteNameWithArticle}` +
              ` em ${verificationSite} e informe o código ${formattedVerificationCode}`;
@@ -301,7 +299,7 @@ function generatePrinterFriendlyVersion(pdfPath, verificationCode) {
 
             // Green "check" or red "X" icon depending on result of validation for
             // this signer.
-            element = new PdfMarkTextElement();
+            element = new PdfMarkImageElement();
             element.relativeContainer = {
                height: 0.5,
                top: verticalOffset + 0.2,
@@ -310,6 +308,7 @@ function generatePrinterFriendlyVersion(pdfPath, verificationCode) {
             };
             element.image = new PdfMarkImage(Util.getValidationResultIcon(signer.validationResults.isValid()), 'image/png');
             manifestMark.elements.push(element);
+
             // Description of signer (see method __getSignerDescription() below.
             element = new PdfMarkTextElement();
             element.relativeContainer = {
@@ -346,7 +345,7 @@ function generatePrinterFriendlyVersion(pdfPath, verificationCode) {
          element.textSections.push(textSection);
          textSection = new PdfTextSection();
          textSection.fontSize = normalFontSize;
-         textSection.color = new Color('#0000FF', 100);
+         textSection.color = Color.fromRGBString('#0000FF', 100);
          textSection.text = verificationSite;
          element.textSections.push(textSection);
          textSection = new PdfTextSection();
@@ -369,7 +368,7 @@ function generatePrinterFriendlyVersion(pdfPath, verificationCode) {
          element.align = 'Center';
          textSection = new PdfTextSection();
          textSection.fontSize = normalFontSize;
-         textSection.color = new Color('#0000FF', 100);
+         textSection.color = Color.fromRGBString('#0000FF', 100);
          textSection.text = verificationLink;
          element.textSections.push(textSection);
          manifestMark.elements.push(element);
@@ -412,7 +411,7 @@ function _getSignerDescription(signer) {
    let text = '';
    text += _getDescription(signer.certificate);
    if (signer.signingTime) {
-      text += ' em ' + signer.signingTime.format(dateFormat);
+      text += ' em ' + moment(signer.signingTime).format(dateFormat);
    }
    return text;
 }

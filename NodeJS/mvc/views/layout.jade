@@ -5,10 +5,6 @@ html
 		link(rel='stylesheet', href='/stylesheets/bootstrap.css')
 		link(rel='stylesheet', href='/stylesheets/bootstrap-theme.css')
 		link(rel='stylesheet', href='/stylesheets/site.css')
-		script(src='/javascripts/jquery-1.11.3.js')
-		script(src='/javascripts/jquery.blockUI.js')
-		script(src='/javascripts/bootstrap.js')
-		script(src='/javascripts/lacuna-web-pki-2.5.0.js')
 body
 	nav(class='navbar navbar-inverse navbar-fixed-top')
 		div(class='container')
@@ -58,3 +54,9 @@ body
 				a(href='sign-out') Sign Out
 
 		block content
+
+	script(src='/javascripts/jquery-1.11.3.js')
+	script(src='/javascripts/jquery.blockUI.js')
+	script(src='/javascripts/bootstrap.js')
+
+	block scripts

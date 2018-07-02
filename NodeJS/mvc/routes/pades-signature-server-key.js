@@ -137,9 +137,9 @@ router.get('/', function(req, res, next) {
       // to a local life (writeToFile()) and to get its raw contents
       // (getContent()). For large files, use writeToFile() in order to avoid
       // memory allocation issues.
-      result.writeToFile(appRoot + '/public/app-data/' + filename);
+      result.writeToFileSync(appRoot + '/public/app-data/' + filename);
 
-      res.render('pades-signature-complete', {
+      res.render('pades-signature-server-key', {
          signedFile: filename,
          signerCert: signerCert
       });

@@ -48,7 +48,7 @@ router.get('/', function(req, res, next) {
    // Specify the security context to be used to determine trust in the
    // certificate chain. We have encapsulated the security context choice on
    // util.js.
-   sigExplorer.securityContextId = Util.getSecurityContextId();
+   sigExplorer.securityContextId = Util.getSecurityContextId(res.locals.environment);
 
    // Call the open() method, which returns the signature file's information.
    sigExplorer.open()

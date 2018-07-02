@@ -41,7 +41,7 @@ router.get('/', function(req, res, next) {
 
    // Set the security context to be used to determine trust in the certificate
    // chain. We have encapsulated the security context choice on util.js.
-   signatureStarter.securityContextId = Util.getSecurityContextId();
+   signatureStarter.securityContext = Util.getSecurityContextId(res.locals.environment);
 
    // Call the startWithWebPki() method, which initiates the signature. This
    // yields the token, a 43-character case-sensitive URL-safe string, which
@@ -51,7 +51,7 @@ router.get('/', function(req, res, next) {
    // the form is submitted (see post method). This should not be mistaken with
    // with the API access token.
    signatureStarter.startWithWebPki()
-   .then((token) => {
+   .then((result) => {
 
       // The token acquired can only be used for a single signature attempt.
       // In order to retry the signature it is necessary to get a new token.
@@ -64,7 +64,7 @@ router.get('/', function(req, res, next) {
 
       // Render the signature page
       res.render('xml-full-signature', {
-         token: token
+         token: result.token
       });
 
    })
@@ -110,7 +110,7 @@ router.post('/', function(req, res, next) {
       // to a local life (writeToFile()) and to get its raw contents
       // (getContent()). For large files, use writeToFile() in order to avoid
       // memory allocation issues.
-      result.writeToFile(appRoot + '/public/app-data/' + filename);
+      result.writeToFileSync(appRoot + '/public/app-data/' + filename);
 
       res.render('xml-signature-complete', {
          signedFile: filename,

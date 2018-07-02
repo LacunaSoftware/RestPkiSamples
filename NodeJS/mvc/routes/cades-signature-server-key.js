@@ -22,7 +22,7 @@ router.get('/', function(req, res, next) {
 
    // Get an instance of the CadesSignatureStarter class, responsible for
    // receiving the signature elements and start the signature process.
-   let signatureStarter = new CadesSignatureStarter(Util.getRestPkiClient());
+   let signatureStarter = new CadesSignatureStarter(Util.getRestPkiClient(res.locals.environment));
 
    if (req.query.userfile) {
 
@@ -60,11 +60,11 @@ router.get('/', function(req, res, next) {
    }
 
    // Set the signature policy.
-   signatureStarter.signaturePolicyId = StandardSignaturePolicies.PKI_BRAZIL_CADES_ADR_BASICA;
+   signatureStarter.signaturePolicy = StandardSignaturePolicies.PKI_BRAZIL_CADES_ADR_BASICA;
 
    // Set the security context to be used to determine trust in the certificate
    // chain.
-   signatureStarter.securityContextId = StandardSecurityContexts.LACUNA_TEST;
+   signatureStarter.securityContext = StandardSecurityContexts.LACUNA_TEST;
 
    // Set the signer certificate.
    signatureStarter.signerCertificate = cert;
@@ -150,9 +150,9 @@ router.get('/', function(req, res, next) {
       // to a local life (writeToFile()) and to get its raw contents
       // (getContent()). For large files, use writeToFile() in order to avoid
       // memory allocation issues.
-      result.writeToFile(appRoot + '/public/app-data/' + filename);
+      result.writeToFileSync(appRoot + '/public/app-data/' + filename);
 
-      res.render('cades-signature-complete', {
+      res.render('cades-signature-server-key', {
          signedFile: filename,
          signerCert: signerCert
       });

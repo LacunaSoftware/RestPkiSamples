@@ -25,6 +25,12 @@ app.use(function(req, res, next) {
    next();
 });
 
+// Add middleware to add environment info to locals.
+app.use(function(req, res, next) {
+   res.locals.environment = app.get('env');
+   next();
+});
+
 app.use(require('./routes'));
 
 // catch 404 and forward to error handler

@@ -35,7 +35,7 @@ class PadesVisualElements {
 
            // We'll use as background the image content/PdfStamp.png
            resource: {
-              content: new Buffer(util.getPdfStampContent()).toString('base64'), // Base-64 encoded!
+              content: new Buffer(Util.getPdfStampContent()).toString('base64'), // Base-64 encoded!
               mimeType: 'image/png'
            },
 

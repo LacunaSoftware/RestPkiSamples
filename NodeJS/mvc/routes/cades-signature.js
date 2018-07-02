@@ -66,7 +66,7 @@ router.get('/', function(req, res, next) {
 
    // Set the security context to be used to determine trust in the certificate
    // chain. We have encapsulated the security context choice on util.js.
-   signatureStarter.securityContext = Util.getSecurityContextId();
+   signatureStarter.securityContext = Util.getSecurityContextId(res.locals.environment);
 
    // Optionally, set whether the content should be encapsulated in the
    // resulting CMS. If this parameter is omitted, the following rules apply:
@@ -83,7 +83,7 @@ router.get('/', function(req, res, next) {
    // after the form is submitted (see post method). This should not be mistaken
    // with the API access token.
    signatureStarter.startWithWebPki()
-   .then((token) => {
+   .then((result) => {
 
       // The token acquired above can only be used for a single signature
       // attempt. In order to retry the signature it is necessary to get a new
@@ -96,7 +96,7 @@ router.get('/', function(req, res, next) {
 
       // Render the signature page
       res.render('cades-signature', {
-         token: token,
+         token: result.token,
          userfile: req.query.userfile,
          cmsfile: req.query.cmsfile
       });
@@ -119,7 +119,7 @@ router.post('/', function(req, res, next) {
    let signatureFinisher = new CadesSignatureFinisher(Util.getRestPkiClient());
 
    // Set the token.
-   signatureFinisher.token = req.query.token;
+   signatureFinisher.token = req.body.token;
 
    // Call the finish() method, which finalizes the signature process and
    // returns the SignatureResult object.
@@ -141,7 +141,7 @@ router.post('/', function(req, res, next) {
       // to a local life (writeToFile()) and to get its raw contents
       // (getContent()). For large files, use writeToFile() in order to avoid
       // memory allocation issues.
-      result.writeToFile(appRoot + '/public/app-data/' + filename);
+      result.writeToFileSync(appRoot + '/public/app-data/' + filename);
 
       // Render the result page.
       res.render('cades-signature-complete', {
