@@ -77,7 +77,7 @@ class Util {
    }
 
    static getPdfStampContent() {
-      return fs.readFileSync(appRoot + '/resources/PdfStamp.png');
+      return fs.readFileSync(appRoot + '/public/PdfStamp.png');
    }
 
    static getSamplePdfPath() {

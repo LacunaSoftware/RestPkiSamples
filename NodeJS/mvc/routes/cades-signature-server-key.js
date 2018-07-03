@@ -83,31 +83,8 @@ router.get('/', function(req, res, next) {
       // Read PEM-encoded private-key file for ("Pierre de Fermat").
       let pkey = fs.readFileSync('./resources/fermat-pkey.pem', 'binary');
 
-      // Get signature algorithm from the digestAlgorithmOid. It will be used
-      // by the crypto library to perform the signature.
-      let signatureAlgorithm;
-      switch (signatureParams.digestAlgorithmOid) {
-         case '1.2.840.113549.2.5':
-            signatureAlgorithm = 'RSA-MD5';
-            break;
-         case '1.3.14.3.2.26':
-            signatureAlgorithm = 'RSA-SHA1';
-            break;
-         case '2.16.840.1.101.3.4.2.1':
-            signatureAlgorithm = 'RSA-SHA256';
-            break;
-         case '2.16.840.1.101.3.4.2.2':
-            signatureAlgorithm = 'RSA-SHA384';
-            break;
-         case '2.16.840.1.101.3.4.2.3':
-            signatureAlgorithm = 'RSA-SHA512';
-            break;
-         default:
-            signatureAlgorithm = null;
-      }
-
       // Create a new signature, setting the algorithm that will be used.
-      let sign = crypto.createSign(signatureAlgorithm);
+      let sign = crypto.createSign(signatureParams.cryptoSignatureAlgorithm);
 
       // Set the data that will be signed.
       sign.write(new Buffer(signatureParams.toSignData, 'base64'));
