@@ -5,9 +5,9 @@ from flask import render_template
 from flask import current_app
 from flask import Blueprint
 from flask import jsonify
-from lacunarestpki import CadesSignatureStarter
-from lacunarestpki import CadesSignatureFinisher
-from lacunarestpki import StandardSignaturePolicies
+from restpki_client.cades_signature_starter import CadesSignatureStarter
+from restpki_client.cades_signature_finisher import CadesSignatureFinisher
+from restpki_client.standard_signature_policies import StandardSignaturePolicies
 
 from restpki.utils import get_restpki_client
 from restpki.utils import get_security_context_id

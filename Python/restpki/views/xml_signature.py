@@ -6,12 +6,13 @@ from flask import render_template
 from flask import request
 from flask import current_app
 from flask import Blueprint
-from lacunarestpki import FullXmlSignatureStarter
-from lacunarestpki import NamespaceManager
-from lacunarestpki import XmlInsertionOptions
-from lacunarestpki import StandardSignaturePolicies
-from lacunarestpki import XmlElementSignatureStarter
-from lacunarestpki import XmlSignatureFinisher
+from restpki_client.full_xml_signature_starter import FullXmlSignatureStarter
+from restpki_client.namespace_manager import NamespaceManager
+from restpki_client.xml_insertion_options import XmlInsertionOptions
+from restpki_client.standard_signature_policies import StandardSignaturePolicies
+from restpki_client.xml_element_signature_starter import \
+    XmlElementSignatureStarter
+from restpki_client.xml_signature_finisher import XmlSignatureFinisher
 
 from restpki.utils import get_restpki_client
 from restpki.utils import create_app_data

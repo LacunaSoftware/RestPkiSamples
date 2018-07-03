@@ -1,5 +1,6 @@
 from base64 import b64encode
-from lacunarestpki import PadesVisualPositioningPresets
+from restpki_client.pades_visual_positioning_presets import \
+    PadesVisualPositioningPresets
 
 from restpki.utils import get_pdf_stamp_content
 from restpki.utils import get_restpki_client

@@ -74,14 +74,14 @@ def action():
         # the authentication process. The call yields a ValidationResults
         # object, which denotes whether the authentication was successful or not
         # (we'll use it to render the page accordingly, see below).
-        vr = auth.complete_with_webpki(token)
+        result = auth.complete_with_webpki(token)
 
-        vr_html = str(vr)
+        vr_html = str(result.validation_results)
         vr_html = vr_html.replace('\n', '<br/>')
         vr_html = vr_html.replace('\t', '&nbsp;&nbsp;&nbsp;&nbsp;')
 
         user_cert = None
-        if vr.is_valid:
+        if result.validation_results.is_valid:
             # At this point, you have assurance that the certificate is valid
             # according to the SecurityContext specified on the method
             # start_with_webpki() and that the user is indeed the certificate's
@@ -92,10 +92,10 @@ def action():
             # logic) and set the user as authenticated with whatever web
             # security framework your application uses. For demonstration
             # purposes, we'll just render the user's certificate information.
-            user_cert = auth.certificate
+            user_cert = result.certificate
 
         return render_template('authentication/action.html',
-                               valid=vr.is_valid,
+                               valid=result.validation_results.is_valid,
                                vr_html=vr_html,
                                user_cert=user_cert)
 

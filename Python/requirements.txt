@@ -9,3 +9,4 @@ wheel==0.31.1
 six==1.10.0
 simplejson==3.8.1
 docopt==0.6.1
+C:/Projetos/RestPkiPythonClient/
