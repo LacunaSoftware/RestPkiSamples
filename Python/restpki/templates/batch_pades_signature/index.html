@@ -3,24 +3,33 @@
 {% block content %}
 <div class="container">
 
-	<h2>Full XML Signature</h2>
+    <!-- Messages about the signature process will be rendered in here -->
+    <div id="messagesPanel"></div>
 
-	<form id="signForm" action="/xml-signature/action" method="post">
+	<h2>Batch of PAdES Signatures</h2>
 
-		<!-- Render the $token in a hidden input field. -->
-		<input type="hidden" id="token" name="token" value="{{token}}">
+	<form id="signForm" method="post">
 
 		<div class="form-group">
-			<label>File to sign</label>
-			<p>You are signing this <b>entire</b> <a href='/static/SampleDocument.xml'>sample XML</a>.</p>
-		</div>
+            <label>File to sign</label>
+            <p>
+                You'll be signing the following files:
+                <!--
+
+                UL element to hold the batch's documents (we'll render
+                these programatically, see batch-signature-form.js).
+
+                -->
+                <ul id="docList" />
+            </p>
+        </div>
 
 		<!--
 
 		Render a select (combo box) to list the user's certificates. For now it
-		will be empty, we'll populate it later on (see signature-form.js).
+		will be empty, we'll populate it later on (see batch-signature-form.js).
 
-		 -->
+		 -->		
 		<div class="form-group">
 			<label for="certificateSelect">Choose a certificate</label>
 			<select id="certificateSelect" class="form-control"></select>
@@ -28,14 +37,14 @@
 
 		<!--
 
-		Action buttons. Notice that the "Sign File" button is NOT a submit
+		Action buttons. Notice that the "Sign Batch" button is NOT a submit
 		button. When the user clicks the button, we must first use the Web PKI
 		component to perform the client-side computation necessary and only when
 		that computation is finished we'll submit the form programmatically
-		(see signature-form.js).
+		(see batch-signature-form.js).
 
-		 -->
-		<button id="signButton" type="button" class="btn btn-primary">Sign</button>
+		-->
+		<button id="signButton" type="button" class="btn btn-primary">Sign Batch</button>
 		<button id="refreshButton" type="button" class="btn btn-default">Refresh Certificates</button>
 	</form>
 
@@ -60,17 +69,18 @@ an example, feel free to alter it to meet your application's needs. You can also
 bring the code into the javascript block below if you prefer.
 
 -->
-<script src="{{ url_for('static', filename='js/signature-form.js') }}"></script>
+<script src="{{ url_for('static', filename='js/batch-signature-form.js') }}"></script>
 <script>
     $(document).ready(function () {
         // Once the page is ready, we call the init() function on the javascript
-        // code (see signature-form.js)
-        signatureForm.init({
-            token: '{{ token }}',                       // The token acquired from REST PKI.
-            form: $('#signForm'),                       // The form that should be submitted when the operation is complete.
+        // code (see batch-signature-form.js)
+        batchSignatureForm.init({
+            documentsIds: {{ document_ids | tojson }},         // The IDs of documents.
             certificateSelect: $('#certificateSelect'), // The <select> element (combo box) to list the certificates.
+            docList: $('#docList'),                     // The <ul> element that holds the batch's documents.
             refreshButton: $('#refreshButton'),         // The "refresh" button.
-            signButton: $('#signButton')                // The button that initiates the operation.
+            signButton: $('#signButton'),               // The button that initiates the operation.
+            sampleApi: 'batch-pades-signature'          // The API controller address to be direct request for PAdES actions.
         });
     });
 </script>

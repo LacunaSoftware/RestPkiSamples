@@ -1,7 +1,10 @@
 import os
-from datetime import datetime, timedelta
-from lacunarestpki import RestPkiClient, StandardSecurityContexts
+
+from datetime import datetime
+from datetime import timedelta
 from flask import current_app
+from lacunarestpki import RestPkiClient
+from lacunarestpki import StandardSecurityContexts
 
 
 def get_restpki_client():
@@ -16,7 +19,7 @@ def get_restpki_client():
         raise Exception(
             'The API access token was not set! Hint: to run this sample you'
             'must generate an API access token on the REST PKI website and'
-            'paste it on the file app/util.py'
+            'paste it on the file restpki/utils.py'
         )
 
     restpki_url = 'https://pki.rest/'
@@ -79,3 +82,19 @@ def get_pdf_stamp_content():
     pdf_stamp = f.read()
     f.close()
     return pdf_stamp
+
+
+def get_sample_doc_path():
+    return '%s/%s' % (current_app.static_folder, 'SampleDocument.pdf')
+
+
+def get_sample_nfe_path():
+    return '%s/%s' % (current_app.static_folder, 'SampleNFe.xml')
+
+
+def get_sample_xml_document_path():
+    return '%s/%s' % (current_app.static_folder, 'SampleDocument.xml')
+
+
+def get_sample_batch_doc_path(file_id):
+    return '%s/%02d.pdf' % (current_app.static_folder, (int(file_id) % 10))

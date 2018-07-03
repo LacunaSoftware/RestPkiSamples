@@ -6,7 +6,8 @@
 	<h2>CAdES Signature</h2>
 
 	<form id="signForm" action="/cades-signature/action" method="post">
-		<!-- render the $token in a hidden input field -->
+
+		<!-- Render the token in a hidden input field. -->
 		<input type="hidden" id="token" name="token" value="{{token}}">
 
 		<div class="form-group">
@@ -23,7 +24,7 @@
 		<!--
 
 		Render a select (combo box) to list the user's certificates. For now it
-		will be empty, we'll populate it later on (see javascript below).
+		will be empty, we'll populate it later on (see signature-form.js).
 
 		 -->		
 		<div class="form-group">
@@ -32,14 +33,14 @@
 		</div>
 		<!--
 
-		Action buttons. Notice that the "Sign File" button is NOT a submit
-		button. When the user clicks the button, we must first use the Web PKI
-		component to perform the client-side computation necessary and only when
-		that computation is finished we'll submit the form programmatically
-		(see javascript below).
+		Action buttons. Notice that the "Sign" button is NOT a submit button.
+		When the user clicks the button, we must first use the Web PKI component
+		to perform the client-side computation necessary and only when that
+		computation is finished we'll submit the form programmatically
+		(see signature-form.js).
 
 		-->
-		<button id="signButton" type="button" class="btn btn-primary">Sign File</button>
+		<button id="signButton" type="button" class="btn btn-primary">Sign</button>
 		<button id="refreshButton" type="button" class="btn btn-default">Refresh Certificates</button>
 	</form>
 
@@ -51,9 +52,8 @@
 
 <!--
 
-The file below contains the JS lib for accessing the Web PKI component.
-For more information, see:
-https://webpki.lacunasoftware.com/#/Documentation
+The file below contains the JS lib for accessing the Web PKI component. For more
+information, see: https://webpki.lacunasoftware.com/#/Documentation
 
 -->
 <script src="{{ url_for('static', filename='js/lacuna-web-pki-2.9.0.js') }}"></script>
@@ -71,9 +71,9 @@ bring the code into the javascript block below if you prefer.
         // Once the page is ready, we call the init() function on the javascript
         // code (see signature-form.js)
         signatureForm.init({
-            token: '{{ token }}',                       // Token acquired from REST PKI.
+            token: '{{ token }}',                       // The token acquired from REST PKI.
             form: $('#signForm'),                       // The form that should be submitted when the operation is complete.
-            certificateSelect: $('#certificateSelect'), // The select element (combo box) to list the certificates.
+            certificateSelect: $('#certificateSelect'), // The <select> element (combo box) to list the certificates.
             refreshButton: $('#refreshButton'),         // The "refresh" button.
             signButton: $('#signButton')                // The button that initiates the operation.
         });

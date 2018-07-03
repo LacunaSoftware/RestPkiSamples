@@ -1,8 +1,11 @@
-from flask import make_response, render_template, request, redirect, url_for, \
-    Blueprint
+from flask import render_template
+from flask import make_response
+from flask import request
+from flask import Blueprint
 
-from ..utils import get_restpki_client, get_expired_page_headers, \
-    get_security_context_id
+from restpki.utils import get_restpki_client
+from restpki.utils import get_expired_page_headers
+from restpki.utils import get_security_context_id
 
 
 blueprint = Blueprint('authentication', __name__, url_prefix='/authentication')
@@ -18,6 +21,7 @@ def index():
     """
 
     try:
+
         # Get an instance of the Authentication class.
         auth = get_restpki_client().get_authentication()
 
@@ -31,9 +35,6 @@ def index():
         # encapsulated the security context choice on util.py.
         token = auth.start_with_webpki(get_security_context_id())
 
-        response = make_response(render_template('authentication/index.html',
-                                                 token=token))
-
         # The token acquired above can only be used for a single
         # authentication. In order to retry authenticating it is necessary to
         # get a new token. This can be a problem if the user uses the back
@@ -41,8 +42,9 @@ def index():
         # we rendered previously, with a now stale token. To prevent this from
         # happening, we force page expiration through HTTP headers to prevent
         # caching of the page.
+        response = make_response(render_template('authentication/index.html',
+                                                 token=token))
         response.headers = get_expired_page_headers()
-
         return response
 
     except Exception as e:
@@ -54,12 +56,13 @@ def action():
     """
 
     This view function receives the form submission from the template
-    authnetication/index.html. We'll call REST PKI to validate the
+    authentication/index.html. We'll call REST PKI to validate the
     authentication.
 
     """
 
     try:
+
         # Get the token for this authentication (rendered in a hidden input
         # field, see authentication/index.html template).
         token = request.form['token']
@@ -91,8 +94,10 @@ def action():
             # purposes, we'll just render the user's certificate information.
             user_cert = auth.certificate
 
-        return render_template('authentication/action.html', valid=vr.is_valid,
-                               vr_html=vr_html, user_cert=user_cert)
+        return render_template('authentication/action.html',
+                               valid=vr.is_valid,
+                               vr_html=vr_html,
+                               user_cert=user_cert)
 
     except Exception as e:
         return render_template('error.html', msg=e)

@@ -1,9 +1,14 @@
 import os
 import uuid
-from flask import render_template, request, current_app, Blueprint
-from werkzeug.utils import secure_filename, redirect
 
-from ..utils import create_app_data
+from flask import render_template
+from flask import request
+from flask import current_app
+from flask import Blueprint
+from werkzeug.utils import secure_filename
+from werkzeug.utils import redirect
+
+from restpki.utils import create_app_data
 
 
 blueprint = Blueprint('upload', __name__, url_prefix='/upload')
@@ -33,7 +38,7 @@ def upload(goto):
         userfile.save(
             os.path.join(current_app.config['APPDATA_FOLDER'], filename))
 
-        # Redirect the user to the redirect parameter "goto"
+        # Redirect the user to the redirect parameter "goto".
         return redirect('/%s/%s' % (goto, filename))
     else:
         return render_template('upload/index.html')

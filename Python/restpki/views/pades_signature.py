@@ -1,13 +1,21 @@
 import os
 import uuid
-from flask import make_response, render_template, request, current_app, \
-    Blueprint
-from lacunarestpki import PadesSignatureStarter, PadesSignatureFinisher, \
-    StandardSignaturePolicies
 
-from ..utils import get_restpki_client, get_expired_page_headers, \
-    get_security_context_id
-from ..utils_pades import get_visual_representation
+from flask import render_template
+from flask import make_response
+from flask import request
+from flask import current_app
+from flask import Blueprint
+from lacunarestpki import PadesSignatureStarter
+from lacunarestpki import PadesSignatureFinisher
+from lacunarestpki import StandardSignaturePolicies
+
+from restpki.utils import get_restpki_client
+from restpki.utils import create_app_data
+from restpki.utils import get_expired_page_headers
+from restpki.utils import get_security_context_id
+from restpki.utils import get_sample_doc_path
+from restpki.utils_pades import get_visual_representation
 
 
 blueprint = Blueprint('pades_signature', __name__,
@@ -43,8 +51,7 @@ def index(userfile=None):
             signature_starter.set_pdf_path(
                 '%s/%s' % (current_app.config['APPDATA_FOLDER'], userfile))
         else:
-            signature_starter.set_pdf_path(
-                '%s/%s' % (current_app.static_folder, 'SampleDocument.pdf'))
+            signature_starter.set_pdf_path(get_sample_doc_path())
 
         # Set the signature policy.
         signature_starter.signature_policy_id = StandardSignaturePolicies.PADES_BASIC
@@ -56,7 +63,7 @@ def index(userfile=None):
 
         # Set the visual representation for the signature. We have encapsulated
         # this code (on util-pades.py) to be used on various PAdES examples.
-        signature_starter.visual_representation = get_visual_representation(get_restpki_client())
+        signature_starter.visual_representation = get_visual_representation()
 
         # Call the start_with_webpki() method, which initiates the signature.
         # This yields the token, a 43-character case-sensitive URL-safe string,
@@ -67,10 +74,6 @@ def index(userfile=None):
         # should not be mistaken with the API access token.
         token = signature_starter.start_with_webpki()
 
-        response = make_response(render_template('pades_signature/index.html',
-                                                 token=token,
-                                                 userfile=userfile))
-
         # The token acquired above can only be used for a single signature
         # attempt. In order to retry the signature it is necessary to get a new
         # token. This can be a problem if the user uses the back button of the
@@ -78,8 +81,10 @@ def index(userfile=None):
         # previously, with a now stale token. To prevent this from happen, we
         # force page expiration through HTTP headers to prevent caching of the
         # page.
+        response = make_response(render_template('pades_signature/index.html',
+                                                 token=token,
+                                                 userfile=userfile))
         response.headers = get_expired_page_headers()
-
         return response
 
     except Exception as e:
@@ -90,13 +95,13 @@ def index(userfile=None):
 def action():
     """
 
-    This function receives the form submission from the template. We'll call
-    REST PKI to complete the signature.
+    This function receives the form submission from the template
+    cades-signature/index.html. We'll call REST PKI to complete the signature.
 
     """
 
     # Get the token for this signature. (rendered in a hidden input field, see
-    # pades-signature.html template)
+    # pades-signature/index.html template)
     token = request.form['token']
 
     # Get an intance of the PadesSignatureFinisher class, responsible for
@@ -118,9 +123,11 @@ def action():
     # demonstration purposes, we'll store the PDF on a temporary folder publicly
     # accessible and render a link to it.
 
+    create_app_data()  # Guarantees that "app data" folder exists.
     filename = '%s.pdf' % (str(uuid.uuid1()))
     signature_finisher.write_signed_pdf(
         os.path.join(current_app.config['APPDATA_FOLDER'], filename))
 
-    return render_template('pades_signature/action.html', filename=filename,
+    return render_template('pades_signature/action.html',
+                           filename=filename,
                            signer_cert=signer_cert)
