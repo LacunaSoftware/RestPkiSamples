@@ -317,7 +317,7 @@ var batchSignatureForm = (function () {
         ).append(
             document.createTextNode(' ')
         ).append(
-            $('<a />').text(step.signedFileId.replace('_', '.')).attr('href', '/Download/File/' + step.signedFileId)
+            $('<a />').text(step.signedFileId.replace('_', '.')).attr('href', '/files/' + step.signedFileId)
         );
     }
 
