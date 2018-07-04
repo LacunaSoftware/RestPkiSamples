@@ -8,7 +8,7 @@ from flask import Blueprint
 from werkzeug.utils import secure_filename
 from werkzeug.utils import redirect
 
-from restpki.utils import create_app_data
+from sample.utils import create_app_data
 
 
 blueprint = Blueprint('upload', __name__, url_prefix='/upload')

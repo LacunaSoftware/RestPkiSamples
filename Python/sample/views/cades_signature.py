@@ -6,15 +6,15 @@ from flask import make_response
 from flask import request
 from flask import current_app
 from flask import Blueprint
-from restpki_client.cades_signature_starter import CadesSignatureStarter
-from restpki_client.cades_signature_finisher import CadesSignatureFinisher
-from restpki_client.standard_signature_policies import StandardSignaturePolicies
+from restpki_client import CadesSignatureStarter
+from restpki_client import CadesSignatureFinisher
+from restpki_client import StandardSignaturePolicies
 
-from restpki.utils import get_restpki_client
-from restpki.utils import create_app_data
-from restpki.utils import get_expired_page_headers
-from restpki.utils import get_security_context_id
-from restpki.utils import get_sample_doc_path
+from sample.utils import get_restpki_client
+from sample.utils import create_app_data
+from sample.utils import get_expired_page_headers
+from sample.utils import get_security_context_id
+from sample.utils import get_sample_doc_path
 
 blueprint = Blueprint('cades_signature', __name__, url_prefix='/cades-signature')
 

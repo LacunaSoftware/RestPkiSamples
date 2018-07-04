@@ -5,17 +5,18 @@ from flask import render_template
 from flask import current_app
 from flask import Blueprint
 from flask import jsonify
-from restpki_client.cades_signature_starter import CadesSignatureStarter
-from restpki_client.cades_signature_finisher import CadesSignatureFinisher
-from restpki_client.standard_signature_policies import StandardSignaturePolicies
+from restpki_client import PadesSignatureStarter
+from restpki_client import PadesSignatureFinisher
+from restpki_client import StandardSignaturePolicies
 
-from restpki.utils import get_restpki_client
-from restpki.utils import get_security_context_id
-from restpki.utils import get_sample_batch_doc_path
-from restpki.utils import create_app_data
+from sample.utils import get_restpki_client
+from sample.utils import create_app_data
+from sample.utils import get_security_context_id
+from sample.utils import get_sample_batch_doc_path
+from sample.utils_pades import get_visual_representation
 
-blueprint = Blueprint('batch_cades_signature', __name__,
-                      url_prefix='/batch-cades-signature')
+blueprint = Blueprint('batch_pades_signature', __name__,
+                      url_prefix='/batch-pades-signature')
 
 
 @blueprint.route('/')
@@ -36,7 +37,7 @@ def index():
     document_ids = list(range(1, 31))
 
     # Render the batch signature page.
-    return render_template('batch_cades_signature/index.html',
+    return render_template('batch_pades_signature/index.html',
                            document_ids=document_ids)
 
 
@@ -46,36 +47,30 @@ def start(file_id=None):
 
     This function is called asynchonously via AJAX by the batch signature page
     for each document being signed. It receives the ID of the document and
-    initiates a CAdES signature using REST PKI and returns a JSON with the
+    initiates a PAdES signature using REST PKI and returns a JSON with the
     token, which identifies this signature process, to be used in the next
     signature steps (see batch-signature-form.js).
 
     """
 
-    # Get an instantiate of the CadesSignatureStarter class, responsible for
+    # Get an instantiate of the PadesSignatureStarter class, responsible for
     # receiving the signature elements and start the signature process.
-    signature_starter = CadesSignatureStarter(get_restpki_client())
+    signature_starter = PadesSignatureStarter(get_restpki_client())
 
     # Set the document to be signed based on its ID.
-    signature_starter.set_file_to_sign_path(get_sample_batch_doc_path(file_id))
+    signature_starter.set_pdf_path(get_sample_batch_doc_path(file_id))
 
     # Set the signature policy.
     signature_starter.signature_policy_id = \
-        StandardSignaturePolicies.CADES_ICPBR_ADR_BASICA
+        StandardSignaturePolicies.PADES_BASIC
 
-    # Set a security context. We have encapsulated the security context
-    # choice on util.py.
+    # Set a security context to determine trust in the certificate chain. We
+    # have encapsulated the security context choice on util.py.
     signature_starter.security_context_id = get_security_context_id()
 
-    # Optionally, set whether the content should be encapsulated in the
-    # resulting CMS. If this parameter is ommitted, the following rules
-    # apply:
-    # - If no CmsToCoSign is given, the resulting CMS will include the
-    # content.
-    # - If a CmsToCoSign is given, the resulting CMS will include the
-    # content if and only if the CmsToCoSign also includes the content.
-    #
-    signature_starter.encapsulate_content = True
+    # Set the visual representation for the signature. We have encapsulated
+    # this code (on util-pades.py) to be used on various PAdES examples.
+    signature_starter.visual_representation = get_visual_representation()
 
     # Call the start_with_webpki() method, which initiates the signature.
     # This yields the token, a 43-character case-sensitive URL-safe string,
@@ -102,24 +97,24 @@ def complete(token=None):
 
     """
 
-    # Get an instance of the CadesSignatureFinisher class, responsible for
+    # Get an intance of the PadesSignatureFinisher class, responsible for
     # completing the signature process.
-    signature_finisher = CadesSignatureFinisher(get_restpki_client())
+    signature_finisher = PadesSignatureFinisher(get_restpki_client())
 
     # Set the token.
     signature_finisher.token = token
 
     # Call the finish() method, which finalizes the signature process.The
-    # return value is the CMS content.
+    # return value is the signed PDF content.
     signature_finisher.finish()
 
     # At this point, you'd typically store the signed PDF on your database.
-    # For demonstration purposes, we'll store the CMS on a temporary folder
+    # For demonstration purposes, we'll store the PDF on a temporary folder
     # publicly accessible and render a link to it.
 
     create_app_data()  # Guarantees that "app data" folder exists.
-    filename = '%s.p7s' % (str(uuid.uuid1()))
-    signature_finisher.write_cms(
+    filename = '%s.pdf' % (str(uuid.uuid1()))
+    signature_finisher.write_signed_pdf(
         os.path.join(current_app.config['APPDATA_FOLDER'], filename))
 
     return jsonify(filename)

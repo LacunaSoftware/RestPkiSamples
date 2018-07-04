@@ -3,9 +3,9 @@ from flask import make_response
 from flask import request
 from flask import Blueprint
 
-from restpki.utils import get_restpki_client
-from restpki.utils import get_expired_page_headers
-from restpki.utils import get_security_context_id
+from sample.utils import get_restpki_client
+from sample.utils import get_expired_page_headers
+from sample.utils import get_security_context_id
 
 
 blueprint = Blueprint('authentication', __name__, url_prefix='/authentication')

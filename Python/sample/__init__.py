@@ -4,7 +4,7 @@ import sys
 from imp import reload
 from flask import Flask
 
-from restpki.views import blueprints
+from sample.views import blueprints
 
 if sys.version_info[0] < 3:
     reload(sys)

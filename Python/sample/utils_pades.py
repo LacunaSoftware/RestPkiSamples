@@ -1,9 +1,8 @@
 from base64 import b64encode
-from restpki_client.pades_visual_positioning_presets import \
-    PadesVisualPositioningPresets
+from restpki_client import PadesVisualPositioningPresets
 
-from restpki.utils import get_pdf_stamp_content
-from restpki.utils import get_restpki_client
+from sample.utils import get_pdf_stamp_content
+from sample.utils import get_restpki_client
 
 
 def get_visual_representation():

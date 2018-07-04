@@ -6,16 +6,16 @@ from flask import make_response
 from flask import request
 from flask import current_app
 from flask import Blueprint
-from restpki_client.pades_signature_starter import PadesSignatureStarter
-from restpki_client.pades_signature_finisher import PadesSignatureFinisher
-from restpki_client.standard_signature_policies import StandardSignaturePolicies
+from restpki_client import PadesSignatureStarter
+from restpki_client import PadesSignatureFinisher
+from restpki_client import StandardSignaturePolicies
 
-from restpki.utils import get_restpki_client
-from restpki.utils import create_app_data
-from restpki.utils import get_expired_page_headers
-from restpki.utils import get_security_context_id
-from restpki.utils import get_sample_doc_path
-from restpki.utils_pades import get_visual_representation
+from sample.utils import get_restpki_client
+from sample.utils import create_app_data
+from sample.utils import get_expired_page_headers
+from sample.utils import get_security_context_id
+from sample.utils import get_sample_doc_path
+from sample.utils_pades import get_visual_representation
 
 
 blueprint = Blueprint('pades_signature', __name__,

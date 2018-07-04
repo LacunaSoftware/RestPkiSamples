@@ -6,20 +6,19 @@ from flask import render_template
 from flask import request
 from flask import current_app
 from flask import Blueprint
-from restpki_client.full_xml_signature_starter import FullXmlSignatureStarter
-from restpki_client.namespace_manager import NamespaceManager
-from restpki_client.xml_insertion_options import XmlInsertionOptions
-from restpki_client.standard_signature_policies import StandardSignaturePolicies
-from restpki_client.xml_element_signature_starter import \
-    XmlElementSignatureStarter
-from restpki_client.xml_signature_finisher import XmlSignatureFinisher
+from restpki_client import FullXmlSignatureStarter
+from restpki_client import NamespaceManager
+from restpki_client import XmlInsertionOptions
+from restpki_client import StandardSignaturePolicies
+from restpki_client import XmlElementSignatureStarter
+from restpki_client import XmlSignatureFinisher
 
-from restpki.utils import get_restpki_client
-from restpki.utils import create_app_data
-from restpki.utils import get_expired_page_headers
-from restpki.utils import get_security_context_id
-from restpki.utils import get_sample_nfe_path
-from restpki.utils import get_sample_xml_document_path
+from sample.utils import get_restpki_client
+from sample.utils import create_app_data
+from sample.utils import get_expired_page_headers
+from sample.utils import get_security_context_id
+from sample.utils import get_sample_nfe_path
+from sample.utils import get_sample_xml_document_path
 
 
 blueprint = Blueprint('xml_signature', __name__, url_prefix='/xml-signature')

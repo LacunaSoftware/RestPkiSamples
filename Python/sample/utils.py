@@ -3,8 +3,8 @@ import os
 from datetime import datetime
 from datetime import timedelta
 from flask import current_app
-from restpki_client.restpki_client import RestPkiClient
-from restpki_client.standard_security_contexts import StandardSecurityContexts
+from restpki_client import RestPkiClient
+from restpki_client import StandardSecurityContexts
 
 
 def get_restpki_client():
