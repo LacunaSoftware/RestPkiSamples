@@ -113,7 +113,7 @@ def complete(token=None):
     # publicly accessible and render a link to it.
 
     create_app_data()  # Guarantees that "app data" folder exists.
-    filename = '%s.pdf' % (str(uuid.uuid1()))
+    filename = '%s.pdf' % (str(uuid.uuid4()))
     signature_finisher.write_signed_pdf(
         os.path.join(current_app.config['APPDATA_FOLDER'], filename))
 

@@ -118,7 +118,7 @@ def complete(token=None):
     # publicly accessible and render a link to it.
 
     create_app_data()  # Guarantees that "app data" folder exists.
-    filename = '%s.p7s' % (str(uuid.uuid1()))
+    filename = '%s.p7s' % (str(uuid.uuid4()))
     signature_finisher.write_cms(
         os.path.join(current_app.config['APPDATA_FOLDER'], filename))
 

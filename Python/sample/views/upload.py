@@ -29,7 +29,7 @@ def upload(goto):
         userfile = request.files['userfile']
 
         # Generate a unique filename.
-        filename = '%s_%s' % (str(uuid.uuid1()), secure_filename(
+        filename = '%s_%s' % (str(uuid.uuid4()), secure_filename(
             userfile.filename))
 
         # Move the file to the "app_data" with the unique filename. Make sure
