@@ -7,9 +7,9 @@ block content
 
     div(class="panel-group", id="accordion", role="tablist", aria-multiselectable="true")
 
-        for signer in signature.signers
-            - var collapseId = `signer_${i}_collapse`;
-            - var headingId = `signer_${i}_heading`;
+        each signer, index in signature.signers
+            - var collapseId = `signer_${index}_collapse`;
+            - var headingId = `signer_${index}_heading`;
 
             div(class="panel panel-default")
                 div(class="panel-heading", role="tab", id="#{headingId}")
