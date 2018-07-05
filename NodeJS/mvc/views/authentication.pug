@@ -1,0 +1,45 @@
+extends layout
+
+block content
+
+    h2 Authentication
+
+    form(id='signInForm', method='POST')
+
+        //- Render the token in a hidden input field.
+        input(type='hidden', name='token', id='tokenInput' value=token)
+
+        //- Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate it
+        //- later on (see signature-form.js).
+        .form-group
+            label(for='certificateSelect') Choose a certificate
+            select(id='certificateSelect', class='form-control')
+
+        //- Action buttons. Notice that the "Sign In" button is NOT a submit button. When the user clicks the button,
+        //- we must first use the Web PKI component to perform the client-side computation necessary and only when
+        //- that computation is finished we'll submit the form programmatically (see signature-form.js).
+        button(id='signInButton', type='button', class='btn btn-primary') Sign In
+        | &nbsp;
+        button(id='refreshButton', type='button', class='btn btn-default') Refresh Certificates
+
+block scripts
+
+    //- The file below contains the JS lib for accessing the Web PKI component. For more information, see:
+    //- https://webpki.lacunasoftware.com/#/Documentation
+    script(src="/javascripts/lacuna-web-pki-2.9.0.js")
+
+    //- The file below contains the logic for calling the Web PKI component. It is only an example, feel free to alter
+    //- it to meet your application's needs. You can also bring the code into the javascript block below if you prefer.
+    script(src="/javascripts/signature-form.js")
+
+    script.
+       $(document).ready(function() {
+          // Once the page is ready, we call the init() function on the javascript code (see signature-form.js).
+          signatureForm.init({
+             token: '#{token}',							 // The token acquired from REST PKI.
+             form: $('#signInForm'),					 // The form that should be submitted when the operation is completed.
+             certificateSelect: $('#certificateSelect'), // The <select> element (combo box) to list the certificates.
+             refreshButton: $('#refreshButton'),		 // The "refresh" button.
+             signButton: $('#signInButton')				 // The button that initiates the operation.
+          });
+       });
