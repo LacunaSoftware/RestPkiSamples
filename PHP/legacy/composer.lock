@@ -4,21 +4,64 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "23a8e36f68296772060beb439f615853",
-    "content-hash": "c644e8e0b6b35a5ed33a5a3f1cfe5b8d",
+    "hash": "7bc919f521eeca4ff466b7aa56444751",
+    "content-hash": "77f1c3b6c581b50c4f6dc4efee4ebaa4",
     "packages": [
         {
-            "name": "nategood/httpful",
-            "version": "0.2.19",
+            "name": "lacuna/restpki-client-legacy",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/nategood/httpful.git",
-                "reference": "bd73f89d34d8f879c54ac46eb94b0f7be1d00820"
+                "url": "https://github.com/LacunaSoftware/RestPkiPhpClientLegacy.git",
+                "reference": "81d20b556afaa1518171b31445d0a6721acc4be5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nategood/httpful/zipball/bd73f89d34d8f879c54ac46eb94b0f7be1d00820",
-                "reference": "bd73f89d34d8f879c54ac46eb94b0f7be1d00820",
+                "url": "https://api.github.com/repos/LacunaSoftware/RestPkiPhpClientLegacy/zipball/81d20b556afaa1518171b31445d0a6721acc4be5",
+                "reference": "81d20b556afaa1518171b31445d0a6721acc4be5",
+                "shasum": ""
+            },
+            "require": {
+                "nategood/httpful": "^0.2.20",
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Lacuna\\RestPki\\Legacy\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Ismael Medeiros",
+                    "email": "IsmaelM@lacunasoftware.com"
+                }
+            ],
+            "description": "Client Legacy lib for Rest PKI",
+            "homepage": "https://pki.rest/",
+            "keywords": [
+                "client lib",
+                "lacuna",
+                "legacy",
+                "pki",
+                "rest",
+                "signature"
+            ],
+            "time": "2018-05-29 17:59:55"
+        },
+        {
+            "name": "nategood/httpful",
+            "version": "0.2.20",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nategood/httpful.git",
+                "reference": "c1cd4d46a4b281229032cf39d4dd852f9887c0f6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nategood/httpful/zipball/c1cd4d46a4b281229032cf39d4dd852f9887c0f6",
+                "reference": "c1cd4d46a4b281229032cf39d4dd852f9887c0f6",
                 "shasum": ""
             },
             "require": {
@@ -55,7 +98,7 @@
                 "rest",
                 "restful"
             ],
-            "time": "2015-03-08 15:22:23"
+            "time": "2015-10-26 16:11:30"
         }
     ],
     "packages-dev": [],
