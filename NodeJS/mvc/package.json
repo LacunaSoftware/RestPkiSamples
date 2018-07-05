@@ -10,12 +10,12 @@
     "debug": "~2.2.0",
     "express": "~4.13.1",
     "express-session": "~1.15.6",
-    "session-file-store": "^1.2.0",
-    "jade": "~1.11.0",
+    "pug": "~2.0.3",
+    "moment": "^2.22.2",
     "morgan": "~1.6.1",
     "multer": "^1.1.0",
-    "node-uuid": "^1.4.7",
-    "request": "^2.67.0",
-    "moment": "~2.22.1"
+    "uuid": "^3.3.2",
+    "request": "^2.87.0",
+    "restpki-client": "^1.0.0"
   }
 }

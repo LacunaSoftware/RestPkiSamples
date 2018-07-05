@@ -2,9 +2,11 @@ extends layout
 
 block content
 
-	h2 CAdES Signature
+	h2 XML Signature
 	
-	p File signed successfully!
+	p
+		| File signed successfully!&nbsp;
+		a(href=`app-data/${signedFile}`, target='_blank') Click here to download the signed file
 	
 	p
 		| Signer information:
@@ -14,18 +16,9 @@ block content
 			li ICP-Brasil fields
 				ul
 					li Tipo de certificado: #{signerCert.pkiBrazil.certificateType}
-					li CPF: #{signerCert.pkiBrazil.cpf}
+					li CPF: #{signerCert.pkiBrazil.cpfFormatted}
 					li Responsavel: #{signerCert.pkiBrazil.responsavel}
 					li Empresa: #{signerCert.pkiBrazil.companyName}
-					li CNPJ: #{signerCert.pkiBrazil.cnpj}
+					li CNPJ: #{signerCert.pkiBrazil.cnpjFormatted}
 					li RG: #{signerCert.pkiBrazil.rgNumero} #{signerCert.pkiBrazil.rgEmissor} #{signerCert.pkiBrazil.rgEmissorUF}
 					li OAB: #{signerCert.pkiBrazil.oabNumero} #{signerCert.pkiBrazil.oabUF}
-
-	h3 Actions:
-	ul
-		li
-			a(href='app-data/' + signedFile, target='_blank') Download the signed file
-		li
-			a(href='open-cades-signature?userfile=' + signedFile) Open/validate the signed file
-		li
-			a(href='cades-signature?cmsfile=' + signedFile) Co-sign with another certificate

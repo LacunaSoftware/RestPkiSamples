@@ -4,15 +4,15 @@
  * to the /pades-signature route passing the filename on the "userfile" URL
  * argument.
  */
-var express = require('express');
-var fs = require('fs');
-var uuid = require('node-uuid');
-var path = require('path');
-var multer = require('multer');
+const express = require('express');
+const fs = require('fs');
+const uuidv4 = require('uuid/v4');
+const path = require('path');
+const multer = require('multer');
 
-var upload = multer();
-var router = express.Router();
-var appRoot = process.cwd();
+let upload = multer();
+let router = express.Router();
+let appRoot = process.cwd();
 
 router.get('/', function(req, res, next) {
    res.render('upload');
@@ -21,11 +21,11 @@ router.get('/', function(req, res, next) {
 router.post('/', upload.single('userfile'), function(req, res, next) {
 
    // Generate a unique filename with the original extension.
-   var fileExt = path.extname(req.file.originalname);
-   var filename = uuid.v4() + fileExt;
+   let fileExt = path.extname(req.file.originalname);
+   let filename = uuidv4() + fileExt;
 
    // make sure the "public/app-data" folder exists.
-   var appDataPath = appRoot + '/public/app-data/';
+   let appDataPath = appRoot + '/public/app-data/';
    if (!fs.existsSync(appDataPath)) {
       fs.mkdirSync(appDataPath);
    }
