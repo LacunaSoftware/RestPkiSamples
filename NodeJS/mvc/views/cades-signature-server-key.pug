@@ -2,7 +2,7 @@ extends layout
 
 block content
 
-    h2 PAdES Signature with Server Key
+    h2 CAdES Signature with Server Key
 
     p File signed successfully!
 
@@ -24,8 +24,6 @@ block content
     h3 Actions:
     ul
         li
-            a(href="app-data/#{signedFile}", target='_blank') Download the signed file
+            a(href=`app-data/${signedFile}`, target='_blank') Download the signed file
         li
-            a(href="printer-friendly-version?file=#{signedFile}", target='_blank') Download a printer-friendly version of the signed file
-        li
-            a(href="open-pades-signature?userfile=#{signedFile}") Open/validate the signed file
+            a(href=`open-cades-signature?userfile=${signedFile}`) Open/validate the signed file

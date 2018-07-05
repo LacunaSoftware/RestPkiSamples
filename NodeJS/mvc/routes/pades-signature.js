@@ -1,5 +1,5 @@
 const express = require('express');
-const uuid = require('node-uuid');
+const uuidv4 = require('uuid/v4');
 const { PadesSignatureStarter, PadesSignatureFinisher, PadesMeasurementUnits, StandardSignaturePolicies } = require('restpki-client');
 
 const { Util } = require('../util');
@@ -112,7 +112,7 @@ router.post('/', function(req, res, next) {
       // publicly accessible and render a link to it.
 
       Util.createAppData(); // Make sure the "app-data" folder exists (util.js).
-      let filename = uuid.v4() + '.pdf';
+      let filename = uuidv4() + '.pdf';
 
       // The SignatureResult object has functions for writing the signature file
       // to a local life (writeToFile()) and to get its raw contents

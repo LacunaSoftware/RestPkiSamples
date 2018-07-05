@@ -6,7 +6,7 @@
  */
 const express = require('express');
 const fs = require('fs');
-const uuid = require('node-uuid');
+const uuidv4 = require('uuid/v4');
 const path = require('path');
 const multer = require('multer');
 
@@ -22,7 +22,7 @@ router.post('/', upload.single('userfile'), function(req, res, next) {
 
    // Generate a unique filename with the original extension.
    let fileExt = path.extname(req.file.originalname);
-   let filename = uuid.v4() + fileExt;
+   let filename = uuidv4() + fileExt;
 
    // make sure the "public/app-data" folder exists.
    let appDataPath = appRoot + '/public/app-data/';

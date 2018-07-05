@@ -1,7 +1,7 @@
 extends layout
 
 block content
-    h2 Open existing PAdES Signature
+    h2 Open existing CAdES Signature
 
     h3 The given file contains #{signature.signers.length} signatures:
 
@@ -12,9 +12,9 @@ block content
             - var headingId = `signer_${index}_heading`;
 
             div(class="panel panel-default")
-                div(class="panel-heading", role="tab", id="#{headingId}")
+                div(class="panel-heading", role="tab", id=`${headingId}`)
                     h4(class="panel-title")
-                        a(class="collapsed", role="button", data-toggle="collapse", data-parent="#accordion" href="##{collapseId}", aria-expanded="true", aria-controls="#{collapseId}")
+                        a(class="collapsed", role="button", data-toggle="collapse", data-parent="#accordion" href=`#${collapseId}`, aria-expanded="true", aria-controls=`${collapseId}`)
                             | #{signer.certificate.subjectName.commonName}
                             if signer.validationResults
                                 text &nbsp;-&nbsp;
@@ -23,7 +23,7 @@ block content
                                 else
                                     span(style="color: red; font-weight: bold;") invalid
 
-                div(id="#{collapseId}", class="panel-collapse collapse", role="tabpanel", aria-labelledby="#{headingId}")
+                div(id=`${collapseId}`, class="panel-collapse collapse", role="tabpanel", aria-labelledby=`${headingId}`)
                     div(class="panel-body")
                         p Signing time: #{signer.signingTime}
                         p Message digest: #{signer.messageDigest.algorithm.name} #{signer.messageDigest.hexValue.toUpperCase()}

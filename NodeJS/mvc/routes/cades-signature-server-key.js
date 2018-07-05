@@ -1,7 +1,7 @@
 const express = require('express');
 const crypto = require('crypto');
 const fs = require('fs');
-const uuid = require('node-uuid');
+const uuidv4 = require('uuid/v4');
 let { CadesSignatureStarter, CadesSignatureFinisher, StandardSignaturePolicies, StandardSecurityContexts } = require('restpki-client');
 
 let { Util } = require('../util');
@@ -121,7 +121,7 @@ router.get('/', function(req, res, next) {
       // publicly accessible and render a link to it.
 
       Util.createAppData(); // Make sure the "app-data" folder exists (util.js).
-      let filename = uuid.v4() + '.p7s';
+      let filename = uuidv4() + '.p7s';
 
       // The SignatureResult object has functions for writing the signature file
       // to a local life (writeToFile()) and to get its raw contents

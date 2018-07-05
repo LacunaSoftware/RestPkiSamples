@@ -2,7 +2,7 @@ extends layout
 
 block content
 
-    h2 CAdES Signature
+    h2 PAdES Signature
 
     form(id='signForm', method='POST')
 
@@ -12,14 +12,10 @@ block content
         .form-group
             label File to sign
             p
+                | You are signing&nbsp;
                 if userfile
-                    | You'll be signing&nbsp;
-                    a(href="/app-data/#{userfile}", target='_blank') this document
-                else if cmsfile
-                    | You'll be co-signing&nbsp;
-                    a(href="/app-data/#{cmsfile}", target='_blank') this CMS
+                    a(href=`/app-data/${userfile}`, target='_blank') this document
                 else
-                    | You'll be signing&nbsp;
                     a(href='/SampleDocument.pdf', target='_blank') this sample document
                 | .
 
