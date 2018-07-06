@@ -8,22 +8,23 @@
 
 	<p>
 		Signer information:
-	<ul>
-		<li>Subject: {{ signer_cert.subjectName.commonName }}</li>
-		<li>Email: {{ signer_cert.emailAddress }}</li>
-		<li>
-			ICP-Brasil fields
-			<ul>
-				<li>Tipo de certificado: {{ signer_cert.pkiBrazil.certificateType }} </li>
-				<li>CPF:  {{ signer_cert.pkiBrazil.cpf }}</li>
-				<li>Responsavel: {{ signer_cert.pkiBrazil.responsavel }} </li>
-				<li>Empresa: {{ signer_cert.pkiBrazil.companyName }} </li>
-				<li>CNPJ: {{ signer_cert.pkiBrazil.cnpj }} </li>
-				<li>RG: {{ signer_cert.pkiBrazil.rgNumero }} {{ signer_cert.pkiBrazil.rgEmissor }} {{ signer_cert.pkiBrazil.rgEmissorUF }}</li>
-				<li>OAB: {{ signer_cert.pkiBrazil.oabNumero }} {{ signer_cert.pkiBrazil.oabUF }}</li>
-			</ul>
-		</li>
-	</ul>
+        <ul>
+            <li>Subject: {{ signer_cert.subject_name.common_name }}</li>
+            <li>Email: {{ signer_cert.email_address }}</li>
+            <li>
+                ICP-Brasil fields
+                <ul>
+                    <li>Tipo de certificado: {{ signer_cert.pki_brazil.certificate_type }} </li>
+                    <li>CPF:  {{ signer_cert.pki_brazil.cpf_formatted }}</li>
+                    <li>Responsavel: {{ signer_cert.pki_brazil.responsavel }} </li>
+                    <li>Empresa: {{ signer_cert.pki_brazil.company_name }} </li>
+                    <li>CNPJ: {{ signer_cert.pki_brazil.cnpj_formatted }} </li>
+                    <li>RG: {{ signer_cert.pki_brazil.rg_numero }} {{ signer_cert.pki_brazil.rg_emissor }} {{ signer_cert.pki_brazil.rg_emissor_uf }}</li>
+                    <li>OAB: {{ signer_cert.pki_brazil.oab_numero }} {{ signer_cert.pki_brazil.oab_uf }}</li>
+
+                </ul>
+            </li>
+        </ul>
 	</p>
 
 	<h3>Actions:</h3>

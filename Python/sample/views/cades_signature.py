@@ -73,13 +73,13 @@ def index(userfile=None, cmsfile=None):
             signature_starter.set_file_to_sign_path(get_sample_doc_path())
 
         # Set the signature policy.
-        signature_starter.signature_policy_id = \
+        signature_starter.signature_policy = \
             StandardSignaturePolicies.CADES_ICPBR_ADR_BASICA
 
         # Set a security context to be used to determine trust in the
         # certificate chain. We have encapsulated the security context choice on
         # util.py.
-        signature_starter.security_context_id = get_security_context_id()
+        signature_starter.security_context = get_security_context_id()
 
         # Optionally, set whether the content should be encapsulated in the
         # resulting CMS. If this parameter is ommitted, the following rules
@@ -99,7 +99,7 @@ def index(userfile=None, cmsfile=None):
         # signature-form.js) and also to complete the signature after
         # the form is submitted (see method action()). This should not be
         # mistaken with the API access token.
-        token = signature_starter.start_with_webpki()
+        result = signature_starter.start_with_webpki()
 
         # The token acquired above can only be used for a single signature
         # attempt. In order to retry the signature it is necessary to get a
@@ -110,7 +110,7 @@ def index(userfile=None, cmsfile=None):
         # this from happen, we force page expiration through HTTP headers to
         # prevent caching of the page.
         response = make_response(render_template('cades_signature/index.html',
-                                                 token=token,
+                                                 token=result.token,
                                                  userfile=userfile,
                                                  cmsfile=cmsfile))
         response.headers = get_expired_page_headers()
@@ -143,12 +143,12 @@ def action():
 
         # Call the finish() method, which finalizes the signature process.The
         # return value is the CMS content.
-        signature_finisher.finish()
+        result = signature_finisher.finish()
 
         # Get information about the certificate used by the user to sign the
         # file.This method must only be called after calling the finish()
         # method.
-        signer_cert = signature_finisher.certificate
+        signer_cert = result.certificate
 
         # At this point, you'd typically store the signed PDF on your database.
         # For demonstration purposes, we'll store the CMS on a temporary folder
@@ -156,7 +156,7 @@ def action():
 
         create_app_data()  # Guarantees that "app data" folder exists.
         filename = '%s.p7s' % (str(uuid.uuid4()))
-        signature_finisher.write_cms(
+        result.write_to_file(
             os.path.join(current_app.config['APPDATA_FOLDER'], filename))
 
         return render_template('cades_signature/action.html', filename=filename,

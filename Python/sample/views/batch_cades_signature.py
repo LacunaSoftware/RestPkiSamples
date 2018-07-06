@@ -60,12 +60,12 @@ def start(file_id=None):
     signature_starter.set_file_to_sign_path(get_sample_batch_doc_path(file_id))
 
     # Set the signature policy.
-    signature_starter.signature_policy_id = \
+    signature_starter.signature_policy = \
         StandardSignaturePolicies.CADES_ICPBR_ADR_BASICA
 
     # Set a security context. We have encapsulated the security context
     # choice on util.py.
-    signature_starter.security_context_id = get_security_context_id()
+    signature_starter.security_context = get_security_context_id()
 
     # Optionally, set whether the content should be encapsulated in the
     # resulting CMS. If this parameter is ommitted, the following rules
@@ -84,11 +84,11 @@ def start(file_id=None):
     # signature-form.js) and also to complete the signature after
     # the form is submitted (see method action()). This should not be
     # mistaken with the API access token.
-    token = signature_starter.start_with_webpki()
+    result = signature_starter.start_with_webpki()
 
     # Return a JSON with the token obtained from REST PKI (the page will use
     # jQuery to decode this value).
-    return jsonify(token)
+    return jsonify(result.token)
 
 
 @blueprint.route('/complete/<token>', methods=['POST'])
@@ -111,7 +111,7 @@ def complete(token=None):
 
     # Call the finish() method, which finalizes the signature process.The
     # return value is the CMS content.
-    signature_finisher.finish()
+    result = signature_finisher.finish()
 
     # At this point, you'd typically store the signed PDF on your database.
     # For demonstration purposes, we'll store the CMS on a temporary folder
@@ -119,7 +119,7 @@ def complete(token=None):
 
     create_app_data()  # Guarantees that "app data" folder exists.
     filename = '%s.p7s' % (str(uuid.uuid4()))
-    signature_finisher.write_cms(
+    result.write_to_file(
         os.path.join(current_app.config['APPDATA_FOLDER'], filename))
 
     return jsonify(filename)

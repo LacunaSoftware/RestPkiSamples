@@ -48,18 +48,19 @@ def index(userfile=None):
         # user). We'll set the path of the file to be signed, which was saved
         # in the app_data folder by "upload" view.
         if userfile is not None:
-            signature_starter.set_pdf_path(
+            signature_starter.set_pdf_to_sign(
                 '%s/%s' % (current_app.config['APPDATA_FOLDER'], userfile))
         else:
-            signature_starter.set_pdf_path(get_sample_doc_path())
+            signature_starter.set_pdf_to_sign(get_sample_doc_path())
 
         # Set the signature policy.
-        signature_starter.signature_policy_id = StandardSignaturePolicies.PADES_BASIC
+        signature_starter.signature_policy =\
+            StandardSignaturePolicies.PADES_BASIC
 
         # Set a security context to be used to determine trust in the
         # certificate chain. We have encapsulated the security context choice on
         # util.py.
-        signature_starter.security_context_id = get_security_context_id()
+        signature_starter.security_context = get_security_context_id()
 
         # Set the visual representation for the signature. We have encapsulated
         # this code (on util-pades.py) to be used on various PAdES examples.
@@ -72,7 +73,7 @@ def index(userfile=None):
         # signature-form.js javascript) and also to complete the signature after
         # the form is submitted (see method pades_signature_action()). This
         # should not be mistaken with the API access token.
-        token = signature_starter.start_with_webpki()
+        result = signature_starter.start_with_webpki()
 
         # The token acquired above can only be used for a single signature
         # attempt. In order to retry the signature it is necessary to get a new
@@ -82,7 +83,7 @@ def index(userfile=None):
         # force page expiration through HTTP headers to prevent caching of the
         # page.
         response = make_response(render_template('pades_signature/index.html',
-                                                 token=token,
+                                                 token=result.token,
                                                  userfile=userfile))
         response.headers = get_expired_page_headers()
         return response
@@ -100,34 +101,39 @@ def action():
 
     """
 
-    # Get the token for this signature. (rendered in a hidden input field, see
-    # pades-signature/index.html template)
-    token = request.form['token']
+    try:
 
-    # Get an intance of the PadesSignatureFinisher class, responsible for
-    # completing the signature process.
-    signature_finisher = PadesSignatureFinisher(get_restpki_client())
+        # Get the token for this signature. (rendered in a hidden input field, see
+        # pades-signature/index.html template)
+        token = request.form['token']
 
-    # Set the token.
-    signature_finisher.token = token
+        # Get an intance of the PadesSignatureFinisher class, responsible for
+        # completing the signature process.
+        signature_finisher = PadesSignatureFinisher(get_restpki_client())
 
-    # Call the finish() method, which finalizes the signature process. The
-    # return value is the signed PDF content.
-    signature_finisher.finish()
+        # Set the token.
+        signature_finisher.token = token
 
-    # Get information about the certificate used by the user to sign the file.
-    # This method must only be called after calling the finish() method.
-    signer_cert = signature_finisher.certificate
+        # Call the finish() method, which finalizes the signature process. The
+        # return value is the signed PDF content.
+        result = signature_finisher.finish()
 
-    # At this point, you'd typically store the signed PDF on your database. For
-    # demonstration purposes, we'll store the PDF on a temporary folder publicly
-    # accessible and render a link to it.
+        # Get information about the certificate used by the user to sign the file.
+        # This method must only be called after calling the finish() method.
+        signer_cert = result.certificate
 
-    create_app_data()  # Guarantees that "app data" folder exists.
-    filename = '%s.pdf' % (str(uuid.uuid4()))
-    signature_finisher.write_signed_pdf(
-        os.path.join(current_app.config['APPDATA_FOLDER'], filename))
+        # At this point, you'd typically store the signed PDF on your database. For
+        # demonstration purposes, we'll store the PDF on a temporary folder publicly
+        # accessible and render a link to it.
 
-    return render_template('pades_signature/action.html',
-                           filename=filename,
-                           signer_cert=signer_cert)
+        create_app_data()  # Guarantees that "app data" folder exists.
+        filename = '%s.pdf' % (str(uuid.uuid4()))
+        result.write_to_file(
+            os.path.join(current_app.config['APPDATA_FOLDER'], filename))
+
+        return render_template('pades_signature/action.html',
+                               filename=filename,
+                               signer_cert=signer_cert)
+
+    except Exception as e:
+        return render_template('error.html', msg=e)

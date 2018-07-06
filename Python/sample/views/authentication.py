@@ -87,7 +87,7 @@ def action():
             # start_with_webpki() and that the user is indeed the certificate's
             # subject. Now, you'd typically query your database for a user that
             # matches one of the certificate's fields, such as
-            # user_cert.emailAddress or user_cert.pkiBrazil.cpf (the actual
+            # user_cert.emailAddress or user_cert.pki_brazil.cpf (the actual
             # field to be used as key depends on your application's business
             # logic) and set the user as authenticated with whatever web
             # security framework your application uses. For demonstration

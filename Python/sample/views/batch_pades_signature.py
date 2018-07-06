@@ -58,15 +58,15 @@ def start(file_id=None):
     signature_starter = PadesSignatureStarter(get_restpki_client())
 
     # Set the document to be signed based on its ID.
-    signature_starter.set_pdf_path(get_sample_batch_doc_path(file_id))
+    signature_starter.set_pdf_to_sign(get_sample_batch_doc_path(file_id))
 
     # Set the signature policy.
-    signature_starter.signature_policy_id = \
+    signature_starter.signature_policy = \
         StandardSignaturePolicies.PADES_BASIC
 
     # Set a security context to determine trust in the certificate chain. We
     # have encapsulated the security context choice on util.py.
-    signature_starter.security_context_id = get_security_context_id()
+    signature_starter.security_context = get_security_context_id()
 
     # Set the visual representation for the signature. We have encapsulated
     # this code (on util-pades.py) to be used on various PAdES examples.
@@ -79,11 +79,11 @@ def start(file_id=None):
     # signature-form.js) and also to complete the signature after
     # the form is submitted (see method action()). This should not be
     # mistaken with the API access token.
-    token = signature_starter.start_with_webpki()
+    result = signature_starter.start_with_webpki()
 
     # Return a JSON with the token obtained from REST PKI (the page will use
     # jQuery to decode this value).
-    return jsonify(token)
+    return jsonify(result.token)
 
 
 @blueprint.route('/complete/<token>', methods=['POST'])
@@ -106,7 +106,7 @@ def complete(token=None):
 
     # Call the finish() method, which finalizes the signature process.The
     # return value is the signed PDF content.
-    signature_finisher.finish()
+    result = signature_finisher.finish()
 
     # At this point, you'd typically store the signed PDF on your database.
     # For demonstration purposes, we'll store the PDF on a temporary folder
@@ -114,7 +114,7 @@ def complete(token=None):
 
     create_app_data()  # Guarantees that "app data" folder exists.
     filename = '%s.pdf' % (str(uuid.uuid4()))
-    signature_finisher.write_signed_pdf(
+    result.write_to_file(
         os.path.join(current_app.config['APPDATA_FOLDER'], filename))
 
     return jsonify(filename)

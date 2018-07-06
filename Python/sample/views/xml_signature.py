@@ -41,7 +41,7 @@ def full():
         signature_starter = FullXmlSignatureStarter(get_restpki_client())
 
         # Set the XML to be signed, a sample XML Document.
-        signature_starter.set_xml_path(get_sample_xml_document_path())
+        signature_starter.set_xml_to_sign(get_sample_xml_document_path())
 
         # Set the location on which to insert the signature node. If the
         # location is not specified, the signature will appended to the root
@@ -50,18 +50,18 @@ def full():
         nsm.add_namespace('ls', 'http://www.lacunasoftware.com/sample')
         signature_starter.set_signature_element_location(
             '//ls:signaturePlaceholder',
-            XmlInsertionOptions.appendChild,
+            XmlInsertionOptions.APPEND_CHILD,
             nsm
         )
 
         # Set the signature policy.
-        signature_starter.signature_policy_id = \
+        signature_starter.signature_policy = \
             StandardSignaturePolicies.XADES_BES
 
         # Set the security context to be used to determine trust in the
         # certificate chain. We have encapsulated the security context choice on
         # util.py.
-        signature_starter.security_context_id = get_security_context_id()
+        signature_starter.security_context = get_security_context_id()
 
         # Call the start_with_webpki() method, which initiates the signature.
         # This yields the token, a 43-character case-sensitive URL-safe string,
@@ -70,7 +70,7 @@ def full():
         # signature-form.js javascript) and also to complete the signature after
         # the form is submitted (see method pades_signature_action()). This
         # should not be mistaken with the API access token.
-        token = signature_starter.start_with_webpki()
+        result = signature_starter.start_with_webpki()
 
         # The token acquired above can only be used for a single signature
         # attempt. In order to retry the signature it is necessary to get a new
@@ -80,7 +80,7 @@ def full():
         # force page expiration through HTTP headers to prevent caching of the
         # page.
         response = make_response(render_template('xml_signature/full.html',
-                                                 token=token))
+                                                 token=result.token))
         response.headers = get_expired_page_headers()
         return response
 
@@ -104,20 +104,20 @@ def element():
         signature_starter = XmlElementSignatureStarter(get_restpki_client())
 
         # Set the XML to be signed, a sample XML Document.
-        signature_starter.set_xml_path(get_sample_nfe_path())
+        signature_starter.set_xml_to_sign(get_sample_nfe_path())
 
         # Set the ID of the element to be signed.
-        signature_starter.element_tosign_id = \
+        signature_starter.to_sign_element_id = \
             'NFe35141214314050000662550010001084271182362300'
 
         # Set the signature policy.
-        signature_starter.signature_policy_id = \
+        signature_starter.signature_policy = \
             StandardSignaturePolicies.NFE_PADRAO_NACIONAL
 
         # Set a security context to be used to determine trust in the
         # certificate chain. We have encapsulated the security context choice on
         # util.py.
-        signature_starter.security_context_id = get_security_context_id()
+        signature_starter.security_context = get_security_context_id()
 
         # Call the start_with_webpki() method, which initiates the signature.
         # This yields the token, a 43-character case-sensitive URL-safe string,
@@ -126,7 +126,7 @@ def element():
         # signature-form.js javascript) and also to complete the signature after
         # the form is submitted (see method action()). This should not be
         # mistaken with the API access token.
-        token = signature_starter.start_with_webpki()
+        result = signature_starter.start_with_webpki()
 
         # The token acquired above can only be used for a single signature
         # attempt. In order to retry the signature it is necessary to get a new
@@ -135,7 +135,7 @@ def element():
         # previously, with a now stale token. We force page expiration through
         # HTTP headers to prevent caching of the page.
         response = make_response(render_template('xml_signature/element.html',
-                                                 token=token))
+                                                 token=result.token))
         response.headers = get_expired_page_headers()
         return response
 
@@ -152,34 +152,39 @@ def action():
 
     """
 
-    # Get the token for this signature. (rendered in a hidden input field, see
-    # xml-signature/index.html template)
-    token = request.form['token']
+    try:
 
-    # Instantiate the XmlSignatureFinisher class, responsible for completing
-    # the signature process.
-    signature_finisher = XmlSignatureFinisher(get_restpki_client())
+        # Get the token for this signature. (rendered in a hidden input field, see
+        # xml-signature/index.html template)
+        token = request.form['token']
 
-    # Set the token.
-    signature_finisher.token = token
+        # Instantiate the XmlSignatureFinisher class, responsible for completing
+        # the signature process.
+        signature_finisher = XmlSignatureFinisher(get_restpki_client())
 
-    # Call the finish() method, which finalizes the signature process and
-    # returns the signed XML.
-    signature_finisher.finish()
+        # Set the token.
+        signature_finisher.token = token
 
-    # Get information about the certificate used by the user to sign the file.
-    # This method must only be called after calling the finish() method.
-    signer_cert = signature_finisher.certificate
+        # Call the finish() method, which finalizes the signature process and
+        # returns the signed XML.
+        result = signature_finisher.finish()
 
-    # At this point, you'd typically store the signed PDF on your database. For
-    # demonstration purposes, we'll store the XML on a temporary folder publicly
-    # accessible and render a link to it.
+        # Get information about the certificate used by the user to sign the file.
+        # This method must only be called after calling the finish() method.
+        signer_cert = result.certificate
 
-    create_app_data()  # Guarantees that "app data" folder exists.
-    filename = '%s.xml' % (str(uuid.uuid4()))
-    signature_finisher.write_signed_xml(
-        os.path.join(current_app.config['APPDATA_FOLDER'], filename))
+        # At this point, you'd typically store the signed PDF on your database. For
+        # demonstration purposes, we'll store the XML on a temporary folder publicly
+        # accessible and render a link to it.
 
-    return render_template('xml_signature/action.html',
-                           filename=filename,
-                           signer_cert=signer_cert)
+        create_app_data()  # Guarantees that "app data" folder exists.
+        filename = '%s.xml' % (str(uuid.uuid4()))
+        result.write_to_file(
+            os.path.join(current_app.config['APPDATA_FOLDER'], filename))
+
+        return render_template('xml_signature/action.html',
+                               filename=filename,
+                               signer_cert=signer_cert)
+
+    except Exception as e:
+        return render_template('error.html', msg=e)
