@@ -39,7 +39,10 @@
 							}
 						</p>
 					}
-					<p>Signing time: @signature.SigningTime</p>
+                    @if (signature.SigningTime != null)
+                    {
+                        <p>Signing time: @TimeZoneInfo.ConvertTime(signature.SigningTime.Value, Lacuna.RestPki.SampleSite.Controllers.PrinterFriendlyVersionController.TimeZone).ToString(Lacuna.RestPki.SampleSite.Controllers.PrinterFriendlyVersionController.DateFormat, Lacuna.RestPki.SampleSite.Controllers.PrinterFriendlyVersionController.CultureInfo) (@Lacuna.RestPki.SampleSite.Controllers.PrinterFriendlyVersionController.TimeZoneDisplayName)</p>
+                    }
 					@if (signature.SignaturePolicy != null) {
 						<p>Signature policy: @signature.SignaturePolicy.Oid</p>
 					}

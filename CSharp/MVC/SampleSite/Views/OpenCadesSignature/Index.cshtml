@@ -29,38 +29,43 @@
 				</h4>
 			</div>
 			<div id="@collapseId" class="panel-collapse collapse" role="tabpanel" aria-labelledby="@headingId">
-				<div class="panel-body">
-					<p>Signing time: @signer.SigningTime</p>
-					<p>Message digest: @signer.MessageDigest.Algorithm.Name @BitConverter.ToString(signer.MessageDigest.Value) </p>
-					@if (signer.SignaturePolicy != null) {
-						<p>Signature policy: @signer.SignaturePolicy.Oid</p>
-					}
-					<p>
-						Signer information:
-						<ul>
-							<li>Subject: @signer.Certificate.SubjectName.CommonName</li>
-							<li>Email: @signer.Certificate.EmailAddress</li>
-							<li>
-								ICP-Brasil fields
-								<ul>
-									<li>Tipo de certificado: @signer.Certificate.PkiBrazil.CertificateType</li>
-									<li>CPF: @signer.Certificate.PkiBrazil.Cpf</li>
-									<li>Responsavel: @signer.Certificate.PkiBrazil.Responsavel</li>
-									<li>Empresa: @signer.Certificate.PkiBrazil.CompanyName</li>
-									<li>CNPJ: @signer.Certificate.PkiBrazil.Cnpj</li>
-									<li>RG: @signer.Certificate.PkiBrazil.RGNumero @signer.Certificate.PkiBrazil.RGEmissor @signer.Certificate.PkiBrazil.RGEmissorUF</li>
-									<li>OAB: @signer.Certificate.PkiBrazil.OabNumero @signer.Certificate.PkiBrazil.OabUF</li>
-								</ul>
-							</li>
-						</ul>
-					</p>
-					@if (signer.ValidationResults != null) {
-						<p>
-								Validation results:<br/>
-								<textarea style="width: 100%" rows="20">@signer.ValidationResults.ToString()</textarea>
-						</p>
-					}
-				</div>
+                <div class="panel-body">
+                    @if (signer.SigningTime != null)
+                    {
+                        <p>Signing time: @TimeZoneInfo.ConvertTime(signer.SigningTime.Value, Lacuna.RestPki.SampleSite.Controllers.PrinterFriendlyVersionController.TimeZone).ToString(Lacuna.RestPki.SampleSite.Controllers.PrinterFriendlyVersionController.DateFormat, Lacuna.RestPki.SampleSite.Controllers.PrinterFriendlyVersionController.CultureInfo) (@Lacuna.RestPki.SampleSite.Controllers.PrinterFriendlyVersionController.TimeZoneDisplayName)</p>
+                    }
+                    <p>Message digest: @signer.MessageDigest.Algorithm.Name @BitConverter.ToString(signer.MessageDigest.Value) </p>
+                    @if (signer.SignaturePolicy != null)
+                    {
+                        <p>Signature policy: @signer.SignaturePolicy.Oid</p>
+                    }
+                    <p>
+                        Signer information:
+                        <ul>
+                            <li>Subject: @signer.Certificate.SubjectName.CommonName</li>
+                            <li>Email: @signer.Certificate.EmailAddress</li>
+                            <li>
+                                ICP-Brasil fields
+                                <ul>
+                                    <li>Tipo de certificado: @signer.Certificate.PkiBrazil.CertificateType</li>
+                                    <li>CPF: @signer.Certificate.PkiBrazil.Cpf</li>
+                                    <li>Responsavel: @signer.Certificate.PkiBrazil.Responsavel</li>
+                                    <li>Empresa: @signer.Certificate.PkiBrazil.CompanyName</li>
+                                    <li>CNPJ: @signer.Certificate.PkiBrazil.Cnpj</li>
+                                    <li>RG: @signer.Certificate.PkiBrazil.RGNumero @signer.Certificate.PkiBrazil.RGEmissor @signer.Certificate.PkiBrazil.RGEmissorUF</li>
+                                    <li>OAB: @signer.Certificate.PkiBrazil.OabNumero @signer.Certificate.PkiBrazil.OabUF</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </p>
+                    @if (signer.ValidationResults != null)
+                    {
+                        <p>
+                            Validation results:<br />
+                            <textarea style="width: 100%" rows="20">@signer.ValidationResults.ToString()</textarea>
+                        </p>
+                    }
+                </div>
 			</div>
 		</div>
 	}
