@@ -1,0 +1,35 @@
+extends layout
+
+block content
+	h2 REST PKI Samples
+	p Choose one of the following:
+	ul
+		li
+			a(href='authentication') Authentication with digital certificate
+		li PAdES signature
+			ul
+				li
+					a(href='pades-signature') Create a signature with a file already on server
+				li 
+					a(href='upload?goto=pades-signature') Create a signature with a file uploaded by user
+				li
+					a(href='upload?goto=open-pades-signature') Open/validate an existing signature
+				li
+					a(href='upload?goto=pades-signature-server-key') Create a signature using a server key
+
+		li CAdES signature
+			ul
+				li 
+					a(href='cades-signature') Create a signature with a file already on server
+				li 
+					a(href='upload?goto=cades-signature') Create a signature with a file uploaded by user
+				li
+					a(href='upload?goto=open-cades-signature') Open/validate an existing signature
+				li
+					a(href='upload?goto=cades-signature-server-key') Create a signature using a server key
+		li XML signature
+			ul
+				li 
+					a(href='xml-full-signature') Create a full XML signature (enveloped signature)
+				li 
+					a(href='xml-element-signature') Create a XML element signature

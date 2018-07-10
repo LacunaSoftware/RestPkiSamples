@@ -14,20 +14,20 @@ block content
 			li ICP-Brasil fields
 				ul
 					li Tipo de certificado: #{signerCert.pkiBrazil.certificateType}
-					li CPF: #{signerCert.pkiBrazil.cpf}
+					li CPF: #{signerCert.pkiBrazil.cpfFormatted}
 					li Responsavel: #{signerCert.pkiBrazil.responsavel}
 					li Empresa: #{signerCert.pkiBrazil.companyName}
-					li CNPJ: #{signerCert.pkiBrazil.cnpj}
+					li CNPJ: #{signerCert.pkiBrazil.cnpjFormatted}
 					li RG: #{signerCert.pkiBrazil.rgNumero} #{signerCert.pkiBrazil.rgEmissor} #{signerCert.pkiBrazil.rgEmissorUF}
 					li OAB: #{signerCert.pkiBrazil.oabNumero} #{signerCert.pkiBrazil.oabUF}
 
 	h3 Actions:
 	ul
 		li
-			a(href='app-data/' + signedFile, target='_blank') Download the signed file
+			a(href=`app-data/${signedFile}`, target='_blank') Download the signed file
 		li
-			a(href='printer-friendly-version?file=' + signedFile, target='_blank') Download a printer-friendly version of the signed file
+			a(href=`printer-friendly-version?file=${signedFile}`, target='_blank') Download a printer-friendly version of the signed file
 		li
-			a(href='open-pades-signature?userfile=' + signedFile) Open/validate the signed file
+			a(href=`open-pades-signature?userfile=${signedFile}`) Open/validate the signed file
 		li
-			a(href='pades-signature?userfile=' + signedFile) Co-sign with another certificate
+			a(href=`pades-signature?userfile=${signedFile}`) Co-sign with another certificate

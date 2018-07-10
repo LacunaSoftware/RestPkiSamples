@@ -1,0 +1,57 @@
+extends layout
+
+block content
+    h2 Check signatures on printer-friendly PDF
+
+    h3 The given file contains #{signature.signers.length} signatures:
+
+    div(class="panel-group", id="accordion", role="tablist", aria-multiselectable="true")
+
+        each signer, index in signature.signers
+            - var collapseId = `signer_${index}_collapse`;
+            - var headingId = `signer_${index}_heading`;
+
+            div(class="panel panel-default")
+                div(class="panel-heading", role="tab", id=`${headingId}`)
+                    h4(class="panel-title")
+                        a(class="collapsed", role="button", data-toggle="collapse", data-parent="#accordion" href=`#${collapseId}`, aria-expanded="true", aria-controls=`${collapseId}`)
+                            | #{signer.certificate.subjectName.commonName}
+                            if signer.validationResults
+                                text &nbsp;-&nbsp;
+                                if signer.validationResults.isValid()
+                                    span(style="color: green; font-weight: bold;") valid
+                                else
+                                    span(style="color: red; font-weight: bold;") invalid
+
+                div(id=`${collapseId}`, class="panel-collapse collapse", role="tabpanel", aria-labelledby=`${headingId}`)
+                    div(class="panel-body")
+                        p Signing time: #{signer.signingTime}
+                        p Message digest: #{signer.messageDigest.algorithm.name} #{signer.messageDigest.hexValue.toUpperCase()}
+                        if signer.signaturePolicy
+                            p Signature policy: #{signer.signaturePolicy.oid}
+                        p
+                        | Signer information:
+                        ul
+                            li Subject: #{signer.certificate.subjectName.commonName}
+                            li Email: #{signer.emailAddress}
+                            li ICP-Brasil fields:
+                                ul
+                                    li Tipo de certificado: #{signer.certificate.pkiBrazil.certificateType}
+                                    li CPF: #{signer.certificate.pkiBrazil.cpfFormatted}
+                                    li Responsavel: #{signer.certificate.pkiBrazil.responsavel}
+                                    li Empresa: #{signer.certificate.pkiBrazil.companyName}
+                                    li CNPJ: #{signer.certificate.pkiBrazil.cnpjFormatted}
+                                    li RG: #{signer.certificate.pkiBrazil.rgNumero} #{signer.certificate.pkiBrazil.rgEmissor} #{signer.certificate.pkiBrazil.rgEmissorUF}
+                                    li OAB: #{signer.certificate.pkiBrazil.oabNumero} #{signer.certificate.pkiBrazil.oabUF}
+
+                        p Validation Results:
+
+                        p
+                            textarea(style="width: 100%" rows="20") #{signer.validationResults.toString()}
+
+    h3 Actions:
+    ul
+        li
+            a(href=`app-data/${fileId}`, target='_blank') Download the signed file
+        li
+            a(href=`printer-friendly-version?file=${fileId}`) Download printer-friendly version of signed file

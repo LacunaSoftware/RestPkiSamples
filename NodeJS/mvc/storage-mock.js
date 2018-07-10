@@ -1,8 +1,8 @@
-module.exports = {
+class StorageMock {
 
    // Returns the verification code associated with the given document, or null
    // if no verification code has been associated with it.
-   getVerificationCode: function(session, fileId) {
+   static getVerificationCode(session, fileId) {
 
       // >>>>> NOTICE <<<<<
       // This should be implemented on your application as a SELECT on your
@@ -12,10 +12,10 @@ module.exports = {
          return session['Files/' + fileId + '/Code'];
       }
       return null;
-   },
+   }
 
    // Registers the verification code for a given document.
-   setVerificationCode: function(session, fileId, code) {
+   static setVerificationCode(session, fileId, code) {
 
       // >>>>> NOTICE <<<<<
       // This should be implemented on your application as a UPDATE on your
@@ -23,11 +23,11 @@ module.exports = {
       // an indexed column.
       session['Files/' + fileId + '/Code'] = code;
       session['Codes/' + code] = fileId;
-   },
+   }
 
    // Returns the ID of the document associated with a given verification code,
    // or null if no document matches the given code.
-   lookupVerificationCode: function(session, code) {
+   static lookupVerificationCode(session, code) {
 
       if (!code) {
          return null;
@@ -43,4 +43,6 @@ module.exports = {
       return null;
 
    }
-};
+}
+
+exports.StorageMock = StorageMock;
