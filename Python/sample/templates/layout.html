@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet" />
+	<link href="{{ url_for('static', filename='css/bootstrap-theme.css') }}" rel="stylesheet" />
+	<link href="{{ url_for('static', filename='css/site.css') }}" rel="stylesheet" />
+
+	<title>REST PKI Samples</title>
+</head>
+<body>
+    {% include "menu.html" %}
+
+	{% block content %}
+	{% endblock %}
+
+	<script src="{{ url_for('static', filename='js/jquery-1.11.3.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/jquery.blockUI.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+    {% block scripts %}
+    {% endblock %}
+</body>
+</html>
