@@ -73,8 +73,8 @@ def index(userfile=None, cmsfile=None):
             signature_starter.set_file_to_sign_path(get_sample_doc_path())
 
         # Set the signature policy.
-        signature_starter.signature_policy = \
-            StandardSignaturePolicies.CADES_ICPBR_ADR_BASICA
+        signature_starter.signature_policy =\
+            StandardSignaturePolicies.PKI_BRAZIL_CADES_ADR_BASICA
 
         # Set a security context to be used to determine trust in the
         # certificate chain. We have encapsulated the security context choice on
