@@ -15,18 +15,18 @@
 		<p>
 			User certificate information:
 			<ul>
-				<li>Subject: {{ user_cert.subject_name.common_name }}</li>
-				<li>Email: {{ user_cert.emailAddress }}</li>
+				<li>Subject: {{ user_cert.subject_name.common_name or '' }}</li>
+				<li>Email: {{ user_cert.email_address or '' }}</li>
 				<li>
 					ICP-Brasil fields
 					<ul>
-						<li>Tipo de certificado: {{ user_cert.pki_brazil.certificate_type }}</li>
-						<li>CPF: {{ user_cert.pki_brazil.cpf_formmatted }}</li>
-						<li>Responsavel: {{ user_cert.pki_brazil.responsavel }}</li>
-						<li>Empresa: {{ user_cert.pki_brazil.company_name }}</li>
-						<li>CNPJ: {{ user_cert.pki_brazil.cnpj_formatted }} </li>
-						<li>RG: {{ user_cert.pki_brazil.rg_numero }} {{ user_cert.pki_brazil.rg_emissor }} {{ user_cert.pki_brazil.rg_emissor_uf }}</li>
-						<li>OAB: {{ user_cert.pki_brazil.oab_numero }} {{ user_cert.pki_brazil.oab_uf }}</li>
+						<li>Tipo de certificado: {{ user_cert.pki_brazil.certificate_type or '' }}</li>
+						<li>CPF: {{ user_cert.pki_brazil.cpf_formatted or '' }}</li>
+						<li>Responsavel: {{ user_cert.pki_brazil.responsavel or '' }}</li>
+						<li>Empresa: {{ user_cert.pki_brazil.company_name or '' }}</li>
+						<li>CNPJ: {{ user_cert.pki_brazil.cnpj_formatted or '' }} </li>
+						<li>RG: {{ user_cert.pki_brazil.rg_numero or '' }} {{ user_cert.pki_brazil.rg_emissor or '' }} {{ user_cert.pki_brazil.rg_emissor_uf or '' }}</li>
+						<li>OAB: {{ user_cert.pki_brazil.oab_numero or '' }} {{ user_cert.pki_brazil.oab_uf or '' }}</li>
 					</ul>
 				</li>
 			</ul>
