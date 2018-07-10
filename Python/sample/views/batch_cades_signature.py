@@ -61,7 +61,7 @@ def start(file_id=None):
 
     # Set the signature policy.
     signature_starter.signature_policy = \
-        StandardSignaturePolicies.CADES_ICPBR_ADR_BASICA
+        StandardSignaturePolicies.PKI_BRAZIL_CADES_ADR_BASICA
 
     # Set a security context. We have encapsulated the security context
     # choice on util.py.
