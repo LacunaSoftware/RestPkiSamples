@@ -7,11 +7,9 @@ import sample.util.Util;
 
 @Controller
 public class HomeController {
-	
-    @RequestMapping("/")
-    public String index() {
-        return "index";
-    }
 
+	@RequestMapping("/")
+	public String index() {
+		return "index";
+	}
 }
-
