@@ -116,6 +116,7 @@
     <Content Include="Content\InvoiceWithSigs.xml" />
     <Content Include="Content\js\batch-signature-form.js" />
     <Content Include="Content\js\batch-signature-optimized-form.js" />
+    <Content Include="Content\js\lacuna-web-pki-2.11.0.js" />
     <Content Include="Content\js\lacuna-web-pki-2.6.1.js" />
     <Content Include="Content\js\signature-complete-form.js" />
     <Content Include="Content\js\signature-form.js" />
