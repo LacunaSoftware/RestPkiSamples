@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+	{% if valid %}
+
+		<!--
+
+		We'll render different contents depending on whether the authentication
+		succeeded or not.
+
+		-->
+		<h2>Authentication successful</h2>
+
+		<p>
+			User certificate information:
+			<ul>
+				<li>Subject: {{ user_cert.subject_name.common_name or '' }}</li>
+				<li>Email: {{ user_cert.email_address or '' }}</li>
+				<li>
+					ICP-Brasil fields
+					<ul>
+						<li>Tipo de certificado: {{ user_cert.pki_brazil.certificate_type or '' }}</li>
+						<li>CPF: {{ user_cert.pki_brazil.cpf_formatted or '' }}</li>
+						<li>Responsavel: {{ user_cert.pki_brazil.responsavel or '' }}</li>
+						<li>Empresa: {{ user_cert.pki_brazil.company_name or '' }}</li>
+						<li>CNPJ: {{ user_cert.pki_brazil.cnpj_formatted or '' }} </li>
+						<li>RG: {{ user_cert.pki_brazil.rg_numero or '' }} {{ user_cert.pki_brazil.rg_emissor or '' }} {{ user_cert.pki_brazil.rg_emissor_uf or '' }}</li>
+						<li>OAB: {{ user_cert.pki_brazil.oab_numero or '' }} {{ user_cert.pki_brazil.oab_uf or '' }}</li>
+					</ul>
+				</li>
+			</ul>
+		</p>
+	{% else %}
+        <!--
+
+        The $vr object can be used as a string, but the string contains tabs and
+        new line characters for formatting, which we'll convert to <br>'s and
+        &nbsp;'s.
+
+        -->
+		<h2>Authentication Failed</h2>
+		<p>
+			{{ vr_html|safe }}
+		</p>
+		<p><a href="/authentication" class="btn btn-primary">Try again</a></p>
+	{% endif %}
+</div>
+{% endblock %}
