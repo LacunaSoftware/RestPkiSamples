@@ -30,9 +30,8 @@ public class AuthenticationController {
 		// Note: By changing the SecurityContext above you can accept only certificates from a certain PKI,
 		// for instance, ICP-Brasil (SecurityContext.pkiBrazil).
 
-		// Alternative option: authenticate the user with a custom security context containing, for instance, your
-		// private PKI certificate
-		//String token = auth.startWithWebPki(new SecurityContext("ID OF YOUR CUSTOM SECURITY CONTEXT"));
+		// Alternative option: authenticate the user with Lacuna Test's security context.
+		//String token = auth.startWithWebPki(new SecurityContext("803517ad-3bbc-4169-b085-60053a8f6dbf"));
 
 		// The token acquired above can only be used for a single authentication attempt. In order to retry the
 		// signature it is necessary to get a new token. This can be a problem if the user uses the back button of the
