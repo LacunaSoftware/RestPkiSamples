@@ -1,0 +1,66 @@
+﻿@using Lacuna.RestPki.SampleSite.Models
+@model AuthModel
+
+<h2>Authentication without direct communication between Web PKI and REST PKI</h2>
+
+<form id="signInForm" method="POST">
+
+	@*
+		Hidden fields used to pass data from the action to the "authentication form" javascript (see below)
+		and vice-versa.
+	*@
+	@Html.HiddenFor(m => m.Nonce, new { @id = "nonce" })
+	@Html.HiddenFor(m => m.CertContent, new { @id = "certContent" })
+	@Html.HiddenFor(m => m.Signature, new { @id = "signature" })
+
+	@*
+		Render a select (combo box) to list the user's certificates. For now it will be empty, we'll populate
+		it later on (see authentication-form.js).
+	*@
+	<div class="form-group">
+		<label for="certificateSelect">Choose a certificate</label>
+		<select id="certificateSelect" class="form-control"></select>
+	</div>
+
+	@*
+		Action buttons. Notice that the "Sign In" button is NOT a submit button. When the user clicks the
+		button, we must first use the Web PKI component to perform the client-side computation necessary and
+		only when that computation is finished we'll submit the form programmatically
+		(see authentication-form.js).
+	*@
+	<button id="signInButton" type="button" class="btn btn-primary">Sign In</button>
+	<button id="refreshButton" type="button" class="btn btn-default">Refresh Certificates</button>
+
+</form>
+
+@section Scripts {
+
+	@*
+		The file below contains the JS lib for accessing the Web PKI component. For more information, see:
+		https://webpki.lacunasoftware.com/#/Documentation
+	*@
+	<script src="@Url.Content("~/Content/js/lacuna-web-pki-2.11.0.js")"></script>
+
+	@*
+		The file below contains the logic for calling the Web PKI component. It is only an example, feel
+		free to alter it to meet your application's needs. You can also bring the code into the javascript
+		block below if you prefer.
+	*@
+	<script src="@Url.Content("~/Content/js/authentication-form.js")"></script>
+	<script>
+		$(document).ready(function () {
+			// Once the page is ready, we call the init() function on the javascript code
+			// (see authentication-form.js).
+			authForm.init({
+				form: $('#signInForm'),
+				nonceField: $('#nonce'),
+				certContentField: $('#certContent'),
+				signatureField: $('#signature'),
+				certificateSelect: $('#certificateSelect'),
+				refreshButton: $('#refreshButton'),
+				signInButton: $('#signInButton')
+			});
+		});
+	</script>
+
+}
