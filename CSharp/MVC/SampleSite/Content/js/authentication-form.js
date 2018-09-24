@@ -4,7 +4,7 @@
 // ----------------------------------------------------------------------------------------------------------
 var authForm = (function () {
 
-	// Auxiliary global variables.
+	// Auxiliary global variable.
 	var formElements = null;
 
 	// Create an instance of the Lacuna object.
@@ -19,7 +19,7 @@ var authForm = (function () {
 		formElements = fe;
 
 		// Wireup of buttons clicks.
-		formElements.signInButton.click(sign);
+		formElements.signInButton.click(signIn);
 		formElements.refreshButton.click(refresh);
 
 		// Block the UI while we get things ready.
@@ -57,7 +57,7 @@ var authForm = (function () {
 		// http://webpki.lacunasoftware.com/Help/classes/LacunaWebPKI.html#method_listCertificates
 		pki.listCertificates({
 
-			// ID of the select to be populated with the certificates.
+			// ID of the <select> element to be populated with the certificates.
 			selectId: formElements.certificateSelect.attr('id'),
 
 			// Function that will be called to get the text that should be displayed for each option.
@@ -78,9 +78,9 @@ var authForm = (function () {
 	}
 
 	// ------------------------------------------------------------------------------------------------------
-	// Function called when the user clicks the "Sign" button.
+	// Function called when the user clicks the "Sign In" button.
 	// ------------------------------------------------------------------------------------------------------
-	function sign() {
+	function signIn() {
 
 		// Block the UI while we perform the signature.
 		$.blockUI({ message: 'Signing in ...' });

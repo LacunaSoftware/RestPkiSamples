@@ -24,7 +24,7 @@ namespace Lacuna.RestPki.SampleSite.Controllers {
 			// on the view) and also to call the Complete() method on the POST action below.
 			var nonce = await auth.StartAsync();
 
-			// The token acquired above can only be used for a single authentication. In order to retry
+			// The nonce acquired above can only be used for a single authentication. In order to retry
 			// authenticating it is necessary to get a new token. This can be a problem if the user uses the
 			// back button of the browser, since the browser might show a cached page that we rendered
 			// previously, with a now stale token. To prevent this from happening, we call the method
