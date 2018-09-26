@@ -112,14 +112,19 @@ LacunaWebPKI = function (license) {
 	$._installUrl = 'https://get.webpkiplugin.com/';
 	$._chromeExtensionId = 'dcngeagmmhegagicpcmpinaoklddcgon';
 	$._firefoxExtensionId = 'webpki@lacunasoftware.com';
+	$._edgeExtensionId = 'd2798a85-9698-425a-add7-3db79a39ca8a';
 	$._chromeExtensionFirstVersionWithSelfUpdate = '2.0.20';
-    
-    // latest components version ----------------------
-	$._extensionRequiredVersion = '2.11.7';
-	$._chromeNativeWinRequiredVersion = '2.6.2';
-	$._chromeNativeLinuxRequiredVersion = '2.7.4';
-	$._chromeNativeMacRequiredVersion = '2.7.4';
-	$._ieAddonRequiredVersion = '2.4.2';
+	$._jslibVersion = '2.11.0';
+	$._mobileSupported = 'true' === 'true';
+	$._buildChannel = 'stable';
+
+	// latest components version ----------------------
+	$._extensionRequiredVersion = '2.12.1';
+	$._chromeNativeWinRequiredVersion = '2.7.0';
+	$._chromeNativeLinuxRequiredVersion = '2.8.0';
+	$._chromeNativeMacRequiredVersion = '2.8.0';
+	$._ieAddonRequiredVersion = '2.4.8';
+	$._mobileRequiredVersion = '1.0.0';
     // ------------------------------------------------
 
     $._chromeInstallationStates = {
@@ -142,21 +147,23 @@ LacunaWebPKI = function (license) {
         nonRepudiation: 64
     };
 
-    $.apiVersions = {
-        v1_0: '1.0',
-        v1_1: '1.1',
-        v1_2: '1.2',
-        v1_3: '1.3',
+	$.apiVersions = {
+		v1_0: '1.0',
+		v1_1: '1.1',
+		v1_2: '1.2',
+		v1_3: '1.3',
 		v1_4: '1.4',
-        latest: 'latest'
-    };
+		v1_4_1: '1.4.1',
+		latest: 'latest'
+	};
 
     $._apiMap = {
         nativeWin: {}, 
         nativeLinux: {},
         nativeMac: {},
         ieAddon: {},
-        extension: {}
+        extension: {},
+        mobile: {}
     };
     // syntax: api_version: supported_since_version
     // Windows
@@ -165,6 +172,7 @@ LacunaWebPKI = function (license) {
     $._apiMap.nativeWin[$.apiVersions.v1_2] = '2.4.1';
     $._apiMap.nativeWin[$.apiVersions.v1_3] = '2.5.0';
     $._apiMap.nativeWin[$.apiVersions.v1_4] = '2.6.2';
+    $._apiMap.nativeWin[$.apiVersions.v1_4_1] = '2.6.5';
 
     // IE
     $._apiMap.ieAddon[$.apiVersions.v1_0] = '2.0.4';
@@ -172,6 +180,7 @@ LacunaWebPKI = function (license) {
     $._apiMap.ieAddon[$.apiVersions.v1_2] = '2.2.4';
     $._apiMap.ieAddon[$.apiVersions.v1_3] = '2.3.0';
     $._apiMap.ieAddon[$.apiVersions.v1_4] = '2.4.2';
+    $._apiMap.ieAddon[$.apiVersions.v1_4_1] = '2.4.5';
 
     // Linux
     $._apiMap.nativeLinux[$.apiVersions.v1_0] = '2.0.0';
@@ -179,6 +188,7 @@ LacunaWebPKI = function (license) {
     $._apiMap.nativeLinux[$.apiVersions.v1_2] = '2.6.2';
     $._apiMap.nativeLinux[$.apiVersions.v1_3] = '2.7.0';
     $._apiMap.nativeLinux[$.apiVersions.v1_4] = '2.7.4';
+    $._apiMap.nativeLinux[$.apiVersions.v1_4_1] = '2.7.4';
 
     // Mac
     $._apiMap.nativeMac[$.apiVersions.v1_0] = '2.3.0';
@@ -186,6 +196,7 @@ LacunaWebPKI = function (license) {
     $._apiMap.nativeMac[$.apiVersions.v1_2] = '2.6.1';
     $._apiMap.nativeMac[$.apiVersions.v1_3] = '2.7.0';
     $._apiMap.nativeMac[$.apiVersions.v1_4] = '2.7.4';
+    $._apiMap.nativeMac[$.apiVersions.v1_4_1] = '2.7.4';
 
     // WebExtension
     $._apiMap.extension[$.apiVersions.v1_0] = '2.3.2';
@@ -193,6 +204,15 @@ LacunaWebPKI = function (license) {
     $._apiMap.extension[$.apiVersions.v1_2] = '2.9.1';
     $._apiMap.extension[$.apiVersions.v1_3] = '2.10.1';
     $._apiMap.extension[$.apiVersions.v1_4] = '2.11.7';
+    $._apiMap.extension[$.apiVersions.v1_4_1] = '2.11.7';
+
+	// Mobile
+    $._apiMap.mobile[$.apiVersions.v1_0] = '1.0.0';
+    $._apiMap.mobile[$.apiVersions.v1_1] = '1.0.0';
+    $._apiMap.mobile[$.apiVersions.v1_2] = '1.0.0';
+    $._apiMap.mobile[$.apiVersions.v1_3] = '1.0.0';
+	$._apiMap.mobile[$.apiVersions.v1_4] = '1.0.0';
+	$._apiMap.mobile[$.apiVersions.v1_4_1] = '1.0.0';
 
     // All latest
     $._apiMap.nativeWin  [$.apiVersions.latest] = $._chromeNativeWinRequiredVersion;
@@ -200,6 +220,7 @@ LacunaWebPKI = function (license) {
     $._apiMap.nativeLinux[$.apiVersions.latest] = $._chromeNativeLinuxRequiredVersion;
     $._apiMap.nativeMac  [$.apiVersions.latest] = $._chromeNativeMacRequiredVersion;
     $._apiMap.extension  [$.apiVersions.latest] = $._extensionRequiredVersion;
+    $._apiMap.mobile     [$.apiVersions.latest] = $._mobileRequiredVersion;
 
 	// populated after init
     $._nativeInfo = {};
@@ -391,8 +412,11 @@ LacunaWebPKI = function (license) {
 	    DECODE_ERROR:                   'decode_error',
 	    CSP_KEYSET_NOT_DEFINED:         'csp_keyset_not_defined',
 	    CSP_INVALID_ALGORITHM:          'csp_invalid_algorithm',
-	    CSP_INVALID_PROVIDER_TYPE:      'csp_invalid_provider_type'
-	    
+	    CSP_INVALID_PROVIDER_TYPE:      'csp_invalid_provider_type',
+	    MOBILE_TIMEOUT:                 'mobile_timeout',
+	    MOBILE_NOT_AUTHORIZED:          'mobile_not_authorized',
+	    MOBILE_SEND_MESSAGE:            'mobile_send_message',
+	    COMMAND_DECRYPT_ERROR:          'command_decrypt_error'
 	};
 
 	// -------------------- "Private" static functions (no reference to 'this') --------------------
@@ -444,9 +468,14 @@ LacunaWebPKI = function (license) {
 		return 0;
 	};
 
-	$._log = function (message) {
+
+	$._log = function (message, data) {
 		if (window.console) {
-			window.console.log(message);
+			if (data) {
+				window.console.log(message, data);
+			} else {
+				window.console.log(message);
+			}
 		}
 	};
 
@@ -512,7 +541,8 @@ LacunaWebPKI = function (license) {
 		}
 		var context = {
 			promise: promise,
-			license: this.license
+			license: this.license,
+			instance: $._supportedMobileDetected ? this : undefined
 		};
 		return context;
 	};
@@ -936,7 +966,7 @@ LacunaWebPKI = function (license) {
 	};
 
 	$.redirectToInstallPage = function () {
-		document.location.href = $._installUrl + (this.brand || '') + '?returnUrl=' + encodeURIComponent(document.URL) + '&jslib=2.9.0';
+		document.location.href = $._installUrl + (this.brand || '') + '?returnUrl=' + encodeURIComponent(document.URL) + '&jslib=' + $._jslibVersion;
 	};
 
 	$.updateExtension = function (args) {
@@ -1076,6 +1106,7 @@ LacunaWebPKI = function (license) {
 	    return context.promise;
 	};
 
+
 	$.listTokens = function(args) {
 		var context = this._createContext(args);
 		var request = {
@@ -1164,6 +1195,25 @@ LacunaWebPKI = function (license) {
 		return M.join(' ');
 	})();
 
+	$._supportedMobileDetected = false;
+	var mobileOs = (function () {
+		var nAgt = navigator.userAgent;
+		var os = '';
+		var clientStrings = [
+			 { s: 'Android', r: /Android/ },
+			 { s: 'iOS', r: /(iPhone|iPad|iPod)/ }
+		];
+		for (var id in clientStrings) {
+			var cs = clientStrings[id];
+			if (cs.r.test(nAgt)) {
+				os = cs.s;
+				$._supportedMobileDetected = true && $._mobileSupported;
+				break;
+			}
+		}
+		return os;
+	})();
+
 
 
 
@@ -1178,10 +1228,15 @@ LacunaWebPKI = function (license) {
 		var chromeNativeLinuxRequiredVersion = null;
 		var chromeNativeMacRequiredVersion = null;
 		var ieAddonRequiredVersion = null;
+		var mobileRequiredVersion = null;
 
 		var isIE = null;
 		var isChrome = null;
 		var isFirefox = null;
+		var isEdge = null;
+		var isSafari = null;
+		var isAndroid = null;
+		var isiOS = null;
 
 		var setRequiredComponentVersions = function (apiVersion) {
 			if (!apiVersion) {
@@ -1197,16 +1252,24 @@ LacunaWebPKI = function (license) {
 			chromeNativeMacRequiredVersion   = $._apiMap.nativeMac[apiVersion];
 			ieAddonRequiredVersion           = $._apiMap.ieAddon[apiVersion];
 			extensionRequiredVersion         = $._apiMap.extension[apiVersion];
+			mobileRequiredVersion            = $._apiMap.mobile[apiVersion];
 			if (isChrome) {
 				extensionFirstVersionWithSelfUpdate = $._chromeExtensionFirstVersionWithSelfUpdate;
 			}
 		};
 
+		// browser
 		isIE = ($.detectedBrowser.indexOf('IE') >= 0);
 		isChrome = ($.detectedBrowser.indexOf('Chrome') >= 0);
 		isFirefox = ($.detectedBrowser.indexOf('Firefox') >= 0);
+		isEdge = ($.detectedBrowser.indexOf('Edge') >= 0);
+		isSafari = ($.detectedBrowser.indexOf('Safari') >= 0);
+		// mobile os
+		isAndroid = ($._supportedMobileDetected && mobileOs === 'Android');
+		isiOS = ($._supportedMobileDetected && mobileOs === 'iOS');
+		$._supportedMobileDetected = $._supportedMobileDetected && (isChrome || isFirefox || isSafari);
 		
-		if (!isIE) {
+		if (!$._supportedMobileDetected && !isIE) {
 
 			// --------------------------------------------------------------------------------------------------------------------------------
 			// ------------------------------------------------ WEB EXTENSION REQUEST HANDLER -------------------------------------------------
@@ -1218,6 +1281,11 @@ LacunaWebPKI = function (license) {
 				var requestEventName = 'com.lacunasoftware.WebPKI.RequestEvent';
 				var responseEventName = 'com.lacunasoftware.WebPKI.ResponseEvent';
 				var pendingRequests = {};
+
+				if (isEdge && $._buildChannel !== 'stable') {
+					requestEventName = 'com.lacunasoftware.WebPKI.RequestEvent';
+					responseEventName = 'com.lacunasoftware.WebPKI.ResponseEvent';
+				}
 
 
 				var s4 = function () {
@@ -1243,9 +1311,12 @@ LacunaWebPKI = function (license) {
 						request: request
 					};
 					if (isChrome) {
-					    var event = new CustomEvent('build', { 'detail': message });
-					    event.initEvent(requestEventName);
-					    document.dispatchEvent(event);
+						var eventC = new CustomEvent('build', { 'detail': message });
+						eventC.initEvent(requestEventName);
+						document.dispatchEvent(eventC);
+					} else if (isEdge) {
+						var eventE = new CustomEvent(requestEventName, { 'detail': message });
+						document.dispatchEvent(eventE);
 					} else {
 					    window.postMessage({
 					        port: requestEventName,
@@ -1255,13 +1326,13 @@ LacunaWebPKI = function (license) {
 				};
 
 				var checkInstalled = function (context, apiVersion) {
-				    setRequiredComponentVersions(apiVersion);
+					setRequiredComponentVersions(apiVersion);
 					setTimeout(function () { pollExtension(context, 25); }, 200); // 25 x 200 ms = 5 seconds until we give up
 				};
 
 				var pollExtension = function (context, tryCount) {
 					$._log('polling extension');
-					var meta = document.getElementById($._chromeExtensionId) || document.getElementById($._firefoxExtensionId.replace(/[^A-Za-z0-9_]/g, '_'));
+					var meta = document.getElementById($._chromeExtensionId) || document.getElementById($._firefoxExtensionId.replace(/[^A-Za-z0-9_]/g, '_')) || document.getElementById($._edgeExtensionId);
 					if (meta === null) {
 						if (tryCount > 1) {
 							setTimeout(function () {
@@ -1378,14 +1449,14 @@ LacunaWebPKI = function (license) {
 						}
 						request.promise._invokeSuccess(result.response);
 					} else {
-					    request.promise._invokeError(result.exception);
+						request.promise._invokeError(result.exception);
 					}
 				};
 
 				this.sendCommand = sendCommand;
 				this.checkInstalled = checkInstalled;
 
-				if (isChrome) {
+				if (isChrome || isEdge) {
 				    document.addEventListener(responseEventName, function (event) {
 				        onResponseReceived(event.detail);
 				    });
@@ -1399,7 +1470,7 @@ LacunaWebPKI = function (license) {
 
 			};
 
-		} else {
+		} else if (isIE) {
 
 			// --------------------------------------------------------------------------------------------------------------------------------
 			// ------------------------------------------------------ IE REQUEST HANDLER ------------------------------------------------------
@@ -1463,7 +1534,7 @@ LacunaWebPKI = function (license) {
 										}
 										pendingRequest.promise._invokeSuccess(result.response);
 									} else {
-									    pendingRequest.promise._invokeError(result.exception);
+										pendingRequest.promise._invokeError(result.exception);
 									}
 									removePendingRequest = true;
 								} else if (currentPollIndex >= pendingRequest.pollStart + 120) { // timeout: 120 x 500ms = 60 seconds
@@ -1565,7 +1636,7 @@ LacunaWebPKI = function (license) {
 				};
 
 				var checkInstalled = function (context, apiVersion) {
-				    setRequiredComponentVersions(apiVersion);
+					setRequiredComponentVersions(apiVersion);
 					setTimeout(function () { checkExtension(context, 25); }, 200); // 25 x 200 ms = 5 seconds until we give up
 				};
 
@@ -1574,9 +1645,602 @@ LacunaWebPKI = function (license) {
 				poll();
 			};
 
+		// is mobile
+		} else {
+
+			// --------------------------------------------------------------------------------------------------------------------------------
+			// -------------------------------------------------- Mobile REQUEST HANDLER ------------------------------------------------------
+			// --------------------------------------------------------------------------------------------------------------------------------
+
+			// signalR script
+			var s = document.createElement('script');
+			s.setAttribute('src', 'https://cloud.lacunasoftware.com/scripts/signalr-client-1.0.0-alpha2-final.min.js');
+			document.getElementsByTagName('head')[0].appendChild(s);
+
+			// forge script
+			s = document.createElement('script');
+			s.setAttribute('src', 'https://cloud.lacunasoftware.com//js/forge-cipher.min.js');
+			document.getElementsByTagName('head')[0].appendChild(s);
+
+			console.log('[Mobile] Dependent scripts injected');
+
+			$._requestHandler = new function () {
+
+				var pendingRequests = [];
+				var signalServerUrl = 'https://cloud.lacunasoftware.com/';
+				var signalApiSessionUrl = signalServerUrl + 'api/sessions/';
+				var signalSessionUrl = signalServerUrl + 'session/';
+				var currentSessionId = null;
+				var scriptsLoaded = false;
+				var secretKey = null;
+				var deviceConnected = false;
+
+				var s4 = function () {
+					return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+				};
+
+				var clearParams = function() {
+					pendingRequests = [];
+					currentSessionId = null;
+					deviceConnected = false;
+				};
+
+				var generateGuid = function () {
+					return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+				};
+
+				var sendNext = function () {
+					// dequeue
+					pendingRequests.shift();
+					sendWork();
+				};
+
+				var sendWork = function () {
+					if (pendingRequests.length > 0) {
+						var request = pendingRequests[0];
+						request.time = new Date().getTime();
+						httpPost(signalApiSessionUrl + currentSessionId + '/request', request.data,
+							// success
+							function (data) {
+								if (!data || !data.sentToDevice) {
+									request.promise._invokeError({ message: 'Could not send message to mobile', code: $.errorCodes.MOBILE_SEND_MESSAGE });
+									sendNext();
+								}
+							},
+							// error
+							function (status, err) {
+								request.promise._invokeError({
+									message: 'Error while sending message to mobile: ' + status,
+									complete: typeof err === 'string' ? err : JSON.stringify(err),
+									code: $.errorCodes.MOBILE_SEND_MESSAGE
+								});
+								sendNext();
+							});
+						sendTimeout(request);
+					}
+				};
+
+				var sendTimeout = function (request) {
+					if (!checkPendingRequestsQueue(request.requestId)) {
+						return;
+					}
+					if (new Date().getTime() > request.time + 60000) {
+						// timeout, dequeue and reject
+						request.promise._invokeError({
+							message: 'The mobile is not responding',
+							complete: 'The operation has timed out',
+							origin: 'jslib',
+							code: $.errorCodes.MOBILE_TIMEOUT
+						});
+						// send next
+						sendNext();
+						return;
+					}
+
+					setTimeout(function () { sendTimeout(request); }, 2000);
+				};
+
+				var checkPendingRequestsQueue = function (expectedId) {
+					return pendingRequests.length != 0 && pendingRequests[0].requestId === expectedId;
+				};
+
+				var sendCommand = function (context, command, request, responseProcessor) {
+
+					if (currentSessionId == null) {
+						throw 'The component is not initialized. Make sure the init method was called.';
+					}
+
+					var message = {
+						requestId: generateGuid(),
+						license: context.license,
+						command: command,
+						request: request,
+						domain: window.location.hostname
+					};
+
+					var encrypted = message ? encryptMessage(JSON.stringify(message), secretKey) : null;
+
+					var data = {
+						type: 'request',
+						id: message.requestId,
+						content: encrypted
+					};
+
+					pendingRequests.push({
+						requestId: message.requestId,
+						promise: context.promise,
+						responseProcessor: responseProcessor,
+						data: data
+					});
+
+					if (pendingRequests.length <= 1) {
+						// start work
+						sendWork();
+					}
+				};
+
+				var checkInstalled = function (context, apiVersion) {
+					clearParams();
+					setRequiredComponentVersions(apiVersion);
+					checkScripts(context);
+				};
+
+				var checkScripts = function (context, tryCount) {
+					tryCount = tryCount || 1;
+					if (scriptsLoaded) {
+						signalRSetup(context);
+						return;
+					}
+					// 10 seconds timeout
+					if (tryCount > 50) {
+						context.promise._invokeError({
+							message: 'Dependency scripts did not load',
+							complete: 'Dependency scripts did not load',
+							code: $.errorCodes.UNDEFINED
+						});
+					}
+					setTimeout(function () { checkScripts(context, tryCount + 1); }, 200);
+				};
+
+				var signalRSetup = function (context) {
+
+					var signalStop = function (connection) {
+						hideModal();
+						try {
+							connection.stop();
+						} catch (ex) {
+							console.log('[Signal] error while stopping signalR', ex);
+						}
+					};
+
+					var connectTimeout = function (connection, count) {
+						count = count || 1;
+						console.log('[Mobile] waiting device connection');
+						if (deviceConnected) {
+							return;
+						}
+						// 10 seconds timeout
+						if (count > 5) {
+							signalStop(connection);
+							context.instance.redirectToInstallPage();
+							return;
+						}
+						setTimeout(function () {
+							connectTimeout(connection, count + 1);
+						}, 2000);
+					};
+
+					startSignalConnection(signalSessionUrl, function (connection) {
+						// Create a function that the hub can call to broadcast messages.
+						connection.on('connected', function (message) {
+							deviceConnected = true;
+							hideModal();
+							console.log('[Mobile] device connected');
+							var subPromise = new $.Promise(null);
+							subPromise.success(function (response) {
+
+								var status = $.installationStates.INSTALLED;
+								if ($._compareVersions(response.version, mobileRequiredVersion) < 0) {
+									status = $.installationStates.OUTDATED;
+								}
+								context.promise._invokeSuccess({
+									nativeInfo: {
+										os: response.os,
+										installedVersion: response.version
+									},
+									isInstalled: status === $.installationStates.INSTALLED,
+									status: status
+								});
+
+							}).fail(function (exception) {
+								context.promise._invokeError(exception);
+							});
+							console.log('[Mobile] sending first command');
+							sendCommand({ license: context.license, promise: subPromise }, 'getInfo', null);
+						});
+
+						connection.on('message', function (message) {
+							// have available response
+							console.log('[Mobile] available response');
+							httpGet(signalApiSessionUrl + currentSessionId + '/response', onResponseReceived);
+						});
+
+						connection.onclose(function () {
+							console.log('[Signal] disconnected');
+						});
+					})
+					.then(function (connection) {
+						console.log('[Mobile] getting session');
+						var request = { connectionId: connection.connection.connectionId };
+						httpPost(signalApiSessionUrl, request, function (data) {
+							currentSessionId = data.sessionId;
+							secretKey = generateSecretKey();
+							console.log('[Mobile] session started');
+							console.log('[Mobile] showing modal deep link');
+
+							var deepLinkQuery = 'start?s=' + currentSessionId + '&k=' + secretKey.hex + '&b=' + $.detectedBrowser + '&o=' + window.location.hostname;
+							var deepLink = 'webpki://' + deepLinkQuery;
+							if (isAndroid) {
+								deepLink = 'intent://' + deepLinkQuery + '#Intent;scheme=webpki;S.browser_fallback_url=' + encodeURIComponent($._installUrl + (context.instance.brand || '') + '?returnUrl=' + encodeURIComponent(document.URL) + '&jslib=' + $._jslibVersion) + ';end';
+							}
+
+							// Modal ------------------------------
+							modalElement = document.getElementById('webPkiModal');
+
+							if (modalElement != null) {
+								modalElement.removeChild(modalElement.firstChild);
+								document.getElementsByTagName('body')[0].removeChild(modalElement);
+							}
+
+							// modal root
+							modalElement = document.createElement('div');
+							modalElement.setAttribute('id', 'webPkiModal');
+							modalElement.setAttribute('style', 'display: none;');
+
+							// modal content
+							var modalContentElement = document.createElement('div');
+							modalContentElement.setAttribute('style', 'display: table; background-color: #fefefe; margin: 5%; width: 90%; height: 90%; font-family: "Helvetica"; text-align: center; border-radius: 10px;');
+
+							var middleContentDiv = document.createElement('div');
+							middleContentDiv.setAttribute('style', 'display: table-cell; vertical-align: middle;');
+
+							// modal wait
+							var waitElement = document.createElement('p');
+							waitElement.setAttribute('id', 'webPkiWaitElement');
+							waitElement.setAttribute('style', 'display: none');
+							waitElement.appendChild(document.createTextNode(getResource('wait')));
+
+							// modal text
+							var textElement = document.createElement('p');
+							textElement.setAttribute('id', 'webPkiTextElement');
+							textElement.setAttribute('style', 'padding-left: 5%; padding-right: 5%; font-size: 1.6em; color: black; word-wrap: break-word; white-space: normal;');
+							textElement.appendChild(document.createTextNode(getResource('accessCertificates').split('{{domain}}')[0]));
+							var bold = document.createElement('strong');
+							bold.appendChild(document.createTextNode(window.location.hostname));
+							textElement.appendChild(bold);
+							textElement.appendChild(document.createTextNode(getResource('accessCertificates').split('{{domain}}')[1]));
+
+							// modal buttons
+							var buttonsDiv = document.createElement('div');
+							buttonsDiv.setAttribute('id', 'webPkiButtonsElement');
+
+							var cancelButton = document.createElement('a');
+							cancelButton.setAttribute('style', '-webkit-appearance: button; -moz-appearance: button; appearance: button; padding: 2% 4%; text-align: center; text-decoration: none; display: inline-block; font-size: 1.1em; margin: 5%; cursor: pointer; background-color: #e7e7e7; color: black');
+							cancelButton.appendChild(document.createTextNode(getResource('cancel')));
+
+							var authButton = document.createElement('a');
+							authButton.setAttribute('style', '-webkit-appearance: button; -moz-appearance: button; appearance: button; padding: 2% 4%; text-align: center; text-decoration: none; display: inline-block; font-size: 1.1em; margin: 5%; cursor: pointer; background-color: #0078e7; color: white');
+							authButton.setAttribute('id', 'wpkiModalDeepLink');
+							authButton.setAttribute('href', deepLink);
+							authButton.appendChild(document.createTextNode(getResource('authorize')));
+
+							if (isiOS) {
+								buttonsDiv.appendChild(cancelButton);
+								buttonsDiv.appendChild(authButton);
+							} else {
+								buttonsDiv.appendChild(authButton);
+								buttonsDiv.appendChild(cancelButton);
+							}
+
+							// append children
+							middleContentDiv.appendChild(waitElement);
+							middleContentDiv.appendChild(textElement);
+							middleContentDiv.appendChild(buttonsDiv);
+							modalContentElement.appendChild(middleContentDiv);
+							modalElement.appendChild(modalContentElement);
+							document.getElementsByTagName('body')[0].appendChild(modalElement);
+
+							// wire clicks
+							authButton.onclick = function () {
+								if (isiOS) {
+									showWait();
+									connectTimeout(connection);
+								}
+							};
+							cancelButton.onclick = function () {
+								signalStop(connection);
+								context.promise._invokeError({
+									message: 'Start mobile app cancelled',
+									complete: 'Start mobile app cancelled',
+									code: $.errorCodes.USER_CANCELLED
+								});
+							};
+
+							// show modal
+							showModal();
+							// ------------------------------------
+						});
+					});
+
+					var modalElement = null;
+					var hideModal = function () {
+						modalElement.setAttribute('style', 'display: none;');
+					};
+
+					var showModal = function () {
+						modalElement.setAttribute('style', 'display: block; position: fixed; z-index: 100000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgb(0,0,0); background-color: rgba(0,0,0,0.4);');
+					};
+
+					var showWait = function () {
+						document.getElementById('webPkiTextElement').setAttribute('style', 'display: none;');
+						document.getElementById('webPkiButtonsElement').setAttribute('style', 'display: none;');
+						document.getElementById('webPkiWaitElement').setAttribute('style', 'padding-left: 5%; padding-right: 5%; font-size: 1.6em; color: black; word-wrap: break-word;');
+					};
+				};
+
+				var onResponseReceived = function (data) {
+					data = (typeof data === 'string') ? JSON.parse(data) : data;
+					console.log('[Mobile] got response. Type: ' + data.type);
+					var result = {};
+					try {
+						if (data.format != 0) {
+							throw { message: 'Unknown data format: ' + data.format };
+						}
+
+						if (data.type !== 'Error') {
+							result = JSON.parse(decryptMessage(data.content, secretKey));
+
+						} else {
+							result = {
+								requestId: data.id,
+								success: false,
+								exception: data.content ? (typeof data.content === 'string' ? JSON.parse(data.content) : data.content) : {
+									message: 'Cryptographic error on mobile native',
+									error: 'Cryptographic error on mobile native',
+									code: $.errorCodes.COMMAND_DECRYPT_ERROR
+								}
+							};
+						}
+					} catch (ex) {
+						result = {
+							requestId: data.id,
+							success: false,
+							exception: {
+								message: 'Error while decrypting response message',
+								error: typeof (ex) === 'object' ? ex.message || JSON.stringify(ex) : ex,
+								code: $.errorCodes.COMMAND_DECRYPT_ERROR
+							}
+						};
+					}
+
+					if (!checkPendingRequestsQueue(data.id)) {
+						// this is a response for a previous request that timed out
+						// do nothing
+						return;
+					}
+
+					var request = pendingRequests[0];
+					if (result.success) {
+						if (request.responseProcessor) {
+							result.response = request.responseProcessor(result.response);
+						}
+						request.promise._invokeSuccess(result.response);
+					} else {
+						request.promise._invokeError(result.exception);
+					}
+					// work
+					sendNext();
+				};
+
+				// HTTP handlers
+				var httpGet = function (url, successCallback, errorCallback) {
+					var httpRequest = new XMLHttpRequest();
+					httpRequest.onreadystatechange = function () {
+						onHttpStateChanged(httpRequest, 'GET', url, successCallback, errorCallback);
+					};
+					httpRequest.open('GET', url, true);
+					httpRequest.setRequestHeader('Accept', 'application/json');
+					console.log('[HttpHandler] Get ' + url);
+					httpRequest.send();
+				};
+
+				var httpPost = function (url, data, successCallback, errorCallback) {
+					var httpRequest = new XMLHttpRequest();
+					httpRequest.onreadystatechange = function () {
+						onHttpStateChanged(httpRequest, 'POST', url, successCallback, errorCallback);
+					};
+					httpRequest.open('POST', url, true);
+					httpRequest.setRequestHeader('Content-Type', 'application/json');
+					httpRequest.setRequestHeader('Accept', 'application/json');
+					console.log('[HttpHandler] Post on ' + '(' + url + '): ', data);
+					httpRequest.send(JSON.stringify(data));
+				};
+
+				var onHttpStateChanged = function (httpRequest, verb, url, successCallback, errorCallback) {
+					if (httpRequest.readyState === 4) {
+						if (httpRequest.status >= 200 && httpRequest.status <= 299) {
+							var response = null;
+							if (httpRequest.status === 200 || httpRequest.status === 201) {
+								try {
+									response = JSON.parse(httpRequest.responseText);
+								} catch (e) {
+									console.log('[HttpHandler] error parsing response. Set as it is');
+									response = httpRequest.responseText;
+								}
+							}
+							console.log('[HttpHandler] received response from ' + verb + ' ' + url, response);
+							successCallback(response);
+						} else {
+							var errorModel;
+							try {
+								errorModel = JSON.parse(httpRequest.responseText);
+							} catch (e) {
+								console.log('[HttpHandler] error parsing error');
+								errorModel = null;
+							}
+							console.log('[HttpHandler] error: ' + httpRequest.responseText);
+							errorCallback(httpRequest.status, errorModel);
+						}
+					}
+				};
+
+				var startSignalConnection = null;
+
+				document.addEventListener('DOMContentLoaded', function () {
+
+					var pollScripts = function(count) {
+						count = count || 1;
+						if (count > 100) { // 20 seconds tiemout
+							throw 'Script ' + ((!window.forge && !window.signalR) ? 'forge / signalR' : (!window.forge ? 'forge' : 'signalR')) + ' did not load';
+						}
+
+						if (window.signalR !== undefined && window.forge !== undefined) {
+							startSignalConnection = function (url, configureConnection) {
+								return function start(transport) {
+									console.log('[Signal] Starting connection using '+ signalR.TransportType[transport] + ' transport');
+									var connection = new signalR.HubConnection(url, {transport: transport});
+									if (configureConnection && typeof configureConnection === 'function') {
+										configureConnection(connection);
+									}
+
+									return connection.start()
+										.then(function() {
+											return connection;
+										})
+										['catch'](function(error) {
+											console.log('[Signal] Cannot start the connection use ' + signalR.TransportType[transport] + 'transport. Erro: ' + error.message);
+											if (transport !== signalR.TransportType.LongPolling) {
+												return start(transport + 1);
+											}
+
+											return window.Promise.reject(error); // EDIT added 'window.' before Promise
+										});
+								}(signalR.TransportType.WebSockets);
+							};
+							scriptsLoaded = true;
+						} else {
+							setTimeout(function () {
+								pollScripts(count + 1);
+							}, 200);
+						}
+					};
+
+					// start scripts poll
+					setTimeout(function () { pollScripts(); }, 50);
+				});
+
+				// public commands ------------------------
+				this.sendCommand = sendCommand;
+				this.checkInstalled = checkInstalled;
+			};
+
+			// localization -------------------------------
+			var textResources = {
+				pt: {
+					accessCertificates: 'O site {{domain}} deseja acessar seus certificados digitais.',
+					authorize: 'Permitir',
+					cancel: 'Cancelar',
+					wait: 'Aguarde...'
+				},
+				en: {
+					accessCertificates: 'The website {{domain}} wants to access your digital certificates.',
+					authorize: 'Authorize',
+					cancel: 'Cancel',
+					wait: 'Please wait...'
+				},
+				es: {
+					accessCertificates: 'El sitio {{domain}} quiere acceder a sus certificados digitales.',
+					authorize: 'Permitir',
+					cancel: 'Cancelar',
+					wait: 'Espera...'
+				}
+			};
+			var userLanguage = null;
+			var getResource = function(name) {
+				if (userLanguage === null) {
+					var lang = (window.navigator.language || 'en');
+					var availablesLangs = Object.keys(textResources);
+					userLanguage = availablesLangs.indexOf(lang) > -1 ? lang : (lang.length > 1 && availablesLangs.indexOf(lang.substring(0, 2)) > -1) ? lang.substring(0, 2) : 'en';
+				}
+				return textResources[userLanguage][name];
+			};
+
+			// forge (crypto) ------------------------------
+
+			var generateSecretKey = function() {
+				var raw = forge.random.getBytesSync(32);
+				return {
+					raw: raw,
+					b64: forge.util.encode64(raw),
+					hex: forge.util.bytesToHex(raw)
+				};
+			};
+
+			var encryptMessage = function(message, key) {
+				var iv = forge.random.getBytesSync(16);
+				var keyBytes = key.raw;
+
+				var buffer = new forge.util.ByteBuffer();
+				buffer.putBuffer(forge.util.createBuffer(message));
+
+				var cipher = forge.cipher.createCipher('AES-CBC', keyBytes);
+				cipher.start({ iv: iv });
+				cipher.update(buffer);
+				cipher.finish();
+				var ciphertext = cipher.output.bytes();
+
+				var hmac = forge.hmac.create();
+				hmac.start('sha256', keyBytes);
+				hmac.update(ciphertext);
+				hmacContent = hmac.digest().bytes();
+
+				var outBuffer = new forge.util.ByteBuffer();
+				outBuffer.putBytes(iv);
+				outBuffer.putBytes(hmacContent);
+				outBuffer.putBytes(ciphertext);
+				return forge.util.encode64(outBuffer.bytes());
+			};
+
+			var decryptMessage = function(encrypted, key) {
+				var keyBytes = key.raw;
+
+				var buffer = new forge.util.ByteBuffer();
+				buffer.putBytes(forge.util.decode64(encrypted));
+				var iv = buffer.getBytes(16);
+				var hmacCheck = buffer.getBytes(32);
+				var ciphertext = buffer.bytes();
+
+				var hmac = forge.hmac.create();
+				hmac.start('sha256', keyBytes);
+				hmac.update(ciphertext);
+				var computedHmac = hmac.digest().bytes();
+
+				if (computedHmac !== hmacCheck) {
+					throw { message: 'Error on message integrity' };
+				}
+
+				var decipher = forge.cipher.createDecipher('AES-CBC', keyBytes);
+				decipher.start({ iv: iv });
+				decipher.update(buffer);
+				var result = decipher.finish();
+
+				if (!result) {
+					throw { message: 'Error on message decryption' };
+				}
+
+				return forge.util.decodeUtf8(decipher.output.getBytes());
+			};
 		}
-
-
 	}
 
 })(LacunaWebPKI.prototype);
