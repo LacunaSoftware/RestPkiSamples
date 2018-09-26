@@ -18,7 +18,7 @@
         <dependency>
             <groupId>com.lacunasoftware.restpki</groupId>
             <artifactId>restpki-client</artifactId>
-            <version>1.8.5</version>
+            <version>1.9.0</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
