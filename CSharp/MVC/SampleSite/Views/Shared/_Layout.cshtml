@@ -7,9 +7,7 @@
 	<link href="@Url.Content("~/Content/css/bootstrap-theme.css")" rel="stylesheet">
 	<link href="@Url.Content("~/Content/css/site.css")" rel="stylesheet">
 </head>
-
 <body>
-
 	<nav class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
 			<div class="navbar-header">
@@ -23,15 +21,21 @@
 			</div>
 			<div id="navbar" class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
-					<li><a href="/Authentication">Authentication</a></li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Authentication <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="/Authentication">With browser interaction</a></li>
+							<li><a href="/AuthenticationWithoutDirectCommunication">Without direct communication between REST PKI and Web PKI</a></li>
+						</ul>
+					</li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">PAdES signature <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="/PadesSignature">With file already on server</a></li>
-                            <li><a href="/Upload?rc=PadesSignature">With file uploaded by user</a></li>
-                            <li><a href="/PadesSignatureWithoutDirectCommunication">Without direct communication between REST PKI and Web PKI</a></li>
-                            <li><a href="/Upload?rc=OpenPadesSignature">Open/validate existing signature</a></li>
-                        </ul>
+						<ul class="dropdown-menu">
+							<li><a href="/PadesSignature">With file already on server</a></li>
+							<li><a href="/Upload?rc=PadesSignature">With file uploaded by user</a></li>
+							<li><a href="/PadesSignatureWithoutDirectCommunication">Without direct communication between REST PKI and Web PKI</a></li>
+							<li><a href="/Upload?rc=OpenPadesSignature">Open/validate existing signature</a></li>
+						</ul>
 					</li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">CAdES signature <span class="caret"></span></a>
@@ -43,12 +47,12 @@
 					</li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">XML signature <span class="caret"></span></a>
-							<ul class="dropdown-menu">
-								<li><a href="/XmlFullSignature">Full XML signature (enveloped signature)</a></li>
-								<li><a href="/XmlElementSignature">XML element signature</a></li>
-								<li><a href="/XadesElementSignature">XAdES element signature</a></li>
-								<li><a href="/Upload?rc=OpenXmlSignature">Open/validate signatures on existing XML file</a></li>
-							</ul>
+						<ul class="dropdown-menu">
+							<li><a href="/XmlFullSignature">Full XML signature (enveloped signature)</a></li>
+							<li><a href="/XmlElementSignature">XML element signature</a></li>
+							<li><a href="/XadesElementSignature">XAdES element signature</a></li>
+							<li><a href="/Upload?rc=OpenXmlSignature">Open/validate signatures on existing XML file</a></li>
+						</ul>
 					</li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Batch signature <span class="caret"></span></a>
@@ -68,16 +72,15 @@
 			</div><!--/.nav-collapse -->
 		</div>
 	</nav>
-
 	<div class="container">
 		@if (User.Identity.IsAuthenticated) {
-            <br />
+			<br />
 			<p>You are signed in as <b>@User.Identity.Name</b> <a href="/Home/SignOut">Sign Out</a></p>
 		}
 		<div id="messagesPanel"></div>
 		@RenderBody()
 	</div>
-	
+
 	<script>
 		var _webPkiLicense = '@System.Configuration.ConfigurationManager.AppSettings["WebPkiLicense"]';
 		var _restPkiEndpoint = '@System.Configuration.ConfigurationManager.AppSettings["RestPkiEndpoint"]';
