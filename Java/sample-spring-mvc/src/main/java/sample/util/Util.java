@@ -32,15 +32,16 @@ public class Util {
 
 		Proxy proxy = null;
 
-		// --------------------------------------------------------------------------------------------------
+		// ------------------------------------------------------------------------------------------
 		// If you need to set a proxy for outgoing connections, uncomment the line below and set the
 		// appropriate values.
-		// --------------------------------------------------------------------------------------------------
+		// ------------------------------------------------------------------------------------------
 		//proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("10.1.1.10", 80));
 
-		// --------------------------------------------------------------------------------------------------
-		// If your proxy requires authentication, uncomment the lines below and set the appropriate values.
-		// --------------------------------------------------------------------------------------------------
+		// ------------------------------------------------------------------------------------------
+		// If your proxy requires authentication, uncomment the lines below and set the appropriate
+		// values.
+		// ------------------------------------------------------------------------------------------
 		//Authenticator.setDefault(
 		//	new Authenticator() {
 		//		public PasswordAuthentication getPasswordAuthentication() {
@@ -49,11 +50,11 @@ public class Util {
 		//	}
 		//);
 
-		// --------------------------------------------------------------------------------------------------
+		// ------------------------------------------------------------------------------------------
 		// IMPORTANT NOTICE: in production code, you should use HTTPS to communicate with REST PKI,
-		// otherwise your API access token, as well as the documents you sign, will be sent to REST PKI
-		// unencrypted.
-		// --------------------------------------------------------------------------------------------------
+		// otherwise your API access token, as well as the documents you sign, will be sent to
+		// REST PKI unencrypted.
+		// ------------------------------------------------------------------------------------------
 		String endpoint = Application.environment.getProperty("restpki.endpoint");
 		if (endpoint == null || endpoint.length() == 0) {
 			endpoint = "http://pki.rest/";
