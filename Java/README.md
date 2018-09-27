@@ -100,7 +100,7 @@ of each sample:
 	} 
 
 	dependencies {
-		compile("com.lacunasoftware.restpki:restpki-client:1.8.4")
+		compile("com.lacunasoftware.restpki:restpki-client:1.8.5")
 	}
 
 If you project uses Maven, please refer to the file [pom.xml](sample-spring-mvc/pom.xml) instead:
@@ -110,7 +110,7 @@ If you project uses Maven, please refer to the file [pom.xml](sample-spring-mvc/
 		<dependency>
 			<groupId>com.lacunasoftware.restpki</groupId>
 			<artifactId>restpki-client</artifactId>
-			<version>1.8.4</version>
+			<version>1.8.5</version>
 		</dependency>
 		...
 	</dependencies>
