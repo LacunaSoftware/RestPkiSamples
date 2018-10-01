@@ -7,29 +7,29 @@
 
 <div class="container">
 
-    <h2>XML Signature</h2>
+	<h2>XML Signature</h2>
 
-    <p>File signed successfully! <a th:href="'/files/' + ${filename}">Click here to download the signed file</a></p>
+	<p>File signed successfully! <a th:href="'/files/' + ${filename}">Click here to download the signed file</a></p>
 
-    <p>
-        Signer information:
-    <ul>
-        <li>Subject: <span th:text="${signerCert.getSubjectName().getCommonName()}" /></li>
-        <li>Email: <span th:text="${signerCert.getEmailAddress()}" /></li>
-        <li>
-            ICP-Brasil fields
-            <ul>
-                <li>Tipo de certificado: <span th:text="${signerCert.getPkiBrazil().getCertificateType()}" /></li>
-                <li>CPF: <span th:text="${signerCert.getPkiBrazil().getCpf()}" /></li>
-                <li>Responsavel: <span th:text="${signerCert.getPkiBrazil().getResponsavel()}" /></li>
-                <li>Empresa: <span th:text="${signerCert.getPkiBrazil().getCompanyName()}" /></li>
-                <li>CNPJ: <span th:text="${signerCert.getPkiBrazil().getCnpj()}" /></li>
-                <li>RG: <span th:text="${signerCert.getPkiBrazil().getRGNumero()}"/> <span th:text="${signerCert.getPkiBrazil().getRGEmissor()}"/> <span th:text="${signerCert.getPkiBrazil().getRGEmissorUF()}"/></li>
-                <li>OAB: <span th:text="${signerCert.getPkiBrazil().getOabNumero()}" /> <span th:text="${signerCert.getPkiBrazil().getOabUF()}"/></li>
-            </ul>
-        </li>
-    </ul>
-    </p>
+	<p>
+		Signer information:
+	<ul>
+		<li>Subject: <span th:text="${signerCert.getSubjectName().getCommonName()}"/></li>
+		<li>Email: <span th:text="${signerCert.getEmailAddress()}"/></li>
+		<li>
+			ICP-Brasil fields
+			<ul>
+				<li>Tipo de certificado: <span th:text="${signerCert.getPkiBrazil().getCertificateType()}"/></li>
+				<li>CPF: <span th:text="${signerCert.getPkiBrazil().getCpf()}"/></li>
+				<li>Responsavel: <span th:text="${signerCert.getPkiBrazil().getResponsavel()}"/></li>
+				<li>Empresa: <span th:text="${signerCert.getPkiBrazil().getCompanyName()}"/></li>
+				<li>CNPJ: <span th:text="${signerCert.getPkiBrazil().getCnpj()}"/></li>
+				<li>RG: <span th:text="${signerCert.getPkiBrazil().getRGNumero()}"/> <span th:text="${signerCert.getPkiBrazil().getRGEmissor()}"/> <span th:text="${signerCert.getPkiBrazil().getRGEmissorUF()}"/></li>
+				<li>OAB: <span th:text="${signerCert.getPkiBrazil().getOabNumero()}"/> <span th:text="${signerCert.getPkiBrazil().getOabUF()}"/></li>
+			</ul>
+		</li>
+	</ul>
+	</p>
 </div>
 </body>
 </html>

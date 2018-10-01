@@ -7,67 +7,58 @@
 
 <div class="container">
 
-    <h2>Open existing PAdES Signature</h2>
+	<h2>Open existing PAdES Signature</h2>
 
-    <h3>The given file contains <span th:text="${signature.getSigners().size()}" /> signatures:</h3>
+	<h3>The given file contains <span th:text="${signature.getSigners().size()}"/> signatures:</h3>
 
-    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-        <div th:each="signer,iterStat : ${signature.getSigners()}" class="panel panel-default">
-            <div class="panel-heading" role="tab" th:id="'signer_' + ${iterStat.index} + '_heading'">
-                <h4 class="panel-title">
-                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" th:href="'#signer_' + ${iterStat.index} + '_collapse'" aria-expanded="true" th:aria-controls="'signer_' + ${iterStat.index} + '_collapse'">
-                        <span th:text="${signer.getCertificate().getSubjectName().getCommonName()}" />
-                        <span th:if="${signer.getValidationResults() != null}">
-                            -
-                            <span th:if="${signer.getValidationResults().isValid()}" style="color: green; font-weight: bold;">valid</span>
-                            <span th:if="${!signer.getValidationResults().isValid()}" style="color: red; font-weight: bold;">invalid</span>
-                        </span>
-                    </a>
-                </h4>
-            </div>
-            <div th:id="'signer_' + ${iterStat.index} + '_collapse'" class="panel-collapse collapse" role="tabpanel" th:aria-labelledby="'signer_' + ${iterStat.index} + '_heading'">
-                <div class="panel-body">
-                    <p>Signing time: <span th:text="${signer.getSigningTime()}" /> </p>
-                    <p>Message digest: <span th:text="${signer.getMessageDigest().getAlgorithm().getName()}" /> <span th:text="${T(org.apache.tomcat.util.buf.HexUtils).toHexString(signer.getMessageDigest().getValue()).toUpperCase()}" /></p>
-                    <p th:if="${signer.getSignaturePolicy() != null}">
-                        Signature policy: <span th:text="${signer.getSignaturePolicy().getOid()}" />
-                    </p>
-                    <p>
-                        Signer information:
-                        <ul>
-                            <li>Subject: <span th:text="${signer.getCertificate().getSubjectName().getCommonName()}" /></li>
-                            <li>Email: <span th:text="${signer.getCertificate().getEmailAddress()}" /></li>
-                            <li>
-                                ICP-Brasil fields
-                                <ul>
-                                    <li>Tipo de certificado: <span th:text="${signer.getCertificate().getPkiBrazil().getCertificateType()}" /></li>
-                                    <li>CPF: <span th:text="${signer.getCertificate().getPkiBrazil().getCpf()}" /></li>
-                                    <li>Responsavel: <span th:text="${signer.getCertificate().getPkiBrazil().getResponsavel()}" /></li>
-                                    <li>Empresa: <span th:text="${signer.getCertificate().getPkiBrazil().getCompanyName()}" /></li>
-                                    <li>CNPJ: <span th:text="${signer.getCertificate().getPkiBrazil().getCnpj()}" /></li>
-                                    <li>
-                                        RG:
-                                        <span th:text="${signer.getCertificate().getPkiBrazil().getRGNumero()}" />
-                                        <span th:text="${signer.getCertificate().getPkiBrazil().getRGEmissor()}" />
-                                        <span th:text="${signer.getCertificate().getPkiBrazil().getRGEmissorUF()}" />
-                                    </li>
-                                    <li>
-                                        OAB:
-                                        <span th:text="${signer.getCertificate().getPkiBrazil().getOabNumero()}" />
-                                        <span th:text="${signer.getCertificate().getPkiBrazil().getOabUF()}" />
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </p>
-                    <p th:if="${signer.getValidationResults() != null}">
-                        Validation results:<br/>
-                        <textarea style="width: 100%" rows="20" th:inline="text">[[${signer.getValidationResults().toString()}]]</textarea>
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+		<div th:each="signer,iterStat : ${signature.getSigners()}" class="panel panel-default">
+			<div class="panel-heading" role="tab" th:id="'signer_' + ${iterStat.index} + '_heading'">
+				<h4 class="panel-title">
+					<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" th:href="'#signer_' + ${iterStat.index} + '_collapse'" aria-expanded="true" th:aria-controls="'signer_' + ${iterStat.index} + '_collapse'">
+						<span th:text="${signer.getCertificate().getSubjectName().getCommonName()}"/>
+						<span th:if="${signer.getValidationResults() != null}">
+							-
+							<span th:if="${signer.getValidationResults().isValid()}" style="color: green; font-weight: bold;">valid</span>
+							<span th:if="${!signer.getValidationResults().isValid()}" style="color: red; font-weight: bold;">invalid</span>
+						</span>
+					</a>
+				</h4>
+			</div>
+			<div th:id="'signer_' + ${iterStat.index} + '_collapse'" class="panel-collapse collapse" role="tabpanel" th:aria-labelledby="'signer_' + ${iterStat.index} + '_heading'">
+				<div class="panel-body">
+					<p>Signing time: <span th:text="${signer.getSigningTime()}"/></p>
+					<p>Message digest: <span th:text="${signer.getMessageDigest().getAlgorithm().getName()}"/> <span th:text="${T(org.apache.tomcat.util.buf.HexUtils).toHexString(signer.getMessageDigest().getValue()).toUpperCase()}"/></p>
+					<p th:if="${signer.getSignaturePolicy() != null}">
+						Signature policy: <span th:text="${signer.getSignaturePolicy().getOid()}"/>
+					</p>
+					<p>
+						Signer information:
+						<ul>
+							<li>Subject: <span th:text="${signer.getCertificate().getSubjectName().getCommonName()}"/></li>
+							<li>Email: <span th:text="${signer.getCertificate().getEmailAddress()}"/></li>
+							<li>
+								ICP-Brasil fields
+								<ul>
+									<li>Tipo de certificado: <span th:text="${signer.getCertificate().getPkiBrazil().getCertificateType()}"/></li>
+									<li>CPF: <span	th:text="${signer.getCertificate().getPkiBrazil().getCpf()}"/></li>
+									<li>Responsavel: <span th:text="${signer.getCertificate().getPkiBrazil().getResponsavel()}"/></li>
+									<li>Empresa: <span th:text="${signer.getCertificate().getPkiBrazil().getCompanyName()}"/></li>
+									<li>CNPJ: <span th:text="${signer.getCertificate().getPkiBrazil().getCnpj()}"/></li>
+									<li>RG: <span th:text="${signer.getCertificate().getPkiBrazil().getRGNumero()}"/> <span th:text="${signer.getCertificate().getPkiBrazil().getRGEmissor()}"/> <span th:text="${signer.getCertificate().getPkiBrazil().getRGEmissorUF()}"/></li>
+									<li>OAB: <span th:text="${signer.getCertificate().getPkiBrazil().getOabNumero()}"/> <span th:text="${signer.getCertificate().getPkiBrazil().getOabUF()}"/></li>
+								</ul>
+							</li>
+						</ul>
+					</p>
+					<p th:if="${signer.getValidationResults() != null}">
+						Validation results:<br/>
+						<textarea style="width: 100%" rows="20" th:inline="text">[[${signer.getValidationResults().toString()}]]</textarea>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
 
 </div>
 </body>
