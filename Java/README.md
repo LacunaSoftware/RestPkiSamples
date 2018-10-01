@@ -32,7 +32,7 @@ To run this project, you can use the following tools:
    double-click the file `Run-Sample.bat`.
   
 1. Once you see the message "Started Application in x.xxx seconds" (the on-screen percentage
-   will *not* reach 100%), open a web browser and go the URL [http://localhost:8080/](http://localhost:8080/)
+   will *not* reach 100%), open a web browser and go the URL http://localhost:60963
    
 > If you are on Linux, you may have to add the execution permission to *gradrew* file by executing the command
 `chmod +x gradlew`.
