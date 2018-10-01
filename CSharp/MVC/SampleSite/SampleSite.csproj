@@ -49,14 +49,14 @@
     <Reference Include="Lacuna.DataAnnotations, Version=1.2.0.0, Culture=neutral, PublicKeyToken=5a78866d7d68b0f7, processorArchitecture=MSIL">
       <HintPath>..\packages\Lacuna.DataAnnotations.1.2.0\lib\net45\Lacuna.DataAnnotations.dll</HintPath>
     </Reference>
-    <Reference Include="Lacuna.RestClient, Version=1.10.0.0, Culture=neutral, PublicKeyToken=bf845f78aead27bc, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lacuna.RestClient.1.10.0\lib\net45\Lacuna.RestClient.dll</HintPath>
+    <Reference Include="Lacuna.RestClient, Version=1.11.0.0, Culture=neutral, PublicKeyToken=bf845f78aead27bc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lacuna.RestClient.1.11.0\lib\net45\Lacuna.RestClient.dll</HintPath>
     </Reference>
-    <Reference Include="Lacuna.RestPki.Api, Version=1.16.0.0, Culture=neutral, PublicKeyToken=5705bce581cd1847, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lacuna.RestPki.Api.1.16.0\lib\net45\Lacuna.RestPki.Api.dll</HintPath>
+    <Reference Include="Lacuna.RestPki.Api, Version=1.17.0.0, Culture=neutral, PublicKeyToken=5705bce581cd1847, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lacuna.RestPki.Api.1.17.0\lib\net45\Lacuna.RestPki.Api.dll</HintPath>
     </Reference>
-    <Reference Include="Lacuna.RestPki.Client, Version=1.14.0.0, Culture=neutral, PublicKeyToken=5705bce581cd1847, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lacuna.RestPki.Client.1.14.0\lib\net45\Lacuna.RestPki.Client.dll</HintPath>
+    <Reference Include="Lacuna.RestPki.Client, Version=1.15.2.0, Culture=neutral, PublicKeyToken=5705bce581cd1847, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lacuna.RestPki.Client.1.15.2\lib\net45\Lacuna.RestPki.Client.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.8.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.8\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
@@ -116,8 +116,9 @@
     <Content Include="Content\InvoiceWithSigs.xml" />
     <Content Include="Content\js\batch-signature-form.js" />
     <Content Include="Content\js\batch-signature-optimized-form.js" />
-    <Content Include="Content\js\lacuna-web-pki-2.6.1.js" />
+    <Content Include="Content\js\lacuna-web-pki-2.11.0.js" />
     <Content Include="Content\js\signature-complete-form.js" />
+    <Content Include="Content\js\authentication-form.js" />
     <Content Include="Content\js\signature-form.js" />
     <Content Include="Content\js\signature-start-form.js" />
     <Content Include="Content\js\site.js" />
@@ -140,6 +141,7 @@
     <Compile Include="Classes\StorageMock.cs" />
     <Compile Include="Classes\Util.cs" />
     <Compile Include="Controllers\AuthenticationController.cs" />
+    <Compile Include="Controllers\AuthenticationWithoutDirectCommunicationController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\BatchSignatureOptimizedController.cs" />
     <Compile Include="Controllers\CadesSignatureController.cs" />
@@ -160,6 +162,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AuthenticationModel.cs" />
+    <Compile Include="Models\AuthModel.cs" />
     <Compile Include="Models\BatchSignatureModel.cs" />
     <Compile Include="Models\BatchSignatureOptimizedModels.cs" />
     <Compile Include="Models\PadesSignatureModel.cs" />
@@ -216,6 +219,8 @@
     <Content Include="Views\PadesSignatureWithoutDirectCommunication\Index.cshtml" />
     <Content Include="Views\PadesSignatureWithoutDirectCommunication\Complete.cshtml" />
     <Content Include="Views\PadesSignatureWithoutDirectCommunication\SignatureInfo.cshtml" />
+    <Content Include="Views\AuthenticationWithoutDirectCommunication\Index.cshtml" />
+    <Content Include="Views\AuthenticationWithoutDirectCommunication\Failed.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
