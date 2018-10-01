@@ -74,7 +74,8 @@ Java 6 sample
 If you want to use an older version than Java 7, please use the sample project for Java 6, which can be found 
 in the folder [spring-mvc-java6](spring-mvc-java6/). This sample uses another library exclusively made to work 
 with Java 6 (see [Client lib for Java 6](#client-lib-for-java-6) section below). The steps to execute the sample are
-the same as for the default sample. If you want to use Java 7 or greater, we recommend using the [Default sample](#default-sample).
+the same as for the default sample, except for the URL to access the sample, which is http://localhost:60458 in this
+sample. If you want to use Java 7 or greater, we recommend using the [Default sample](#default-sample).
    
 Opening the samples on Eclipse or IDEA
 --------------------------------------
@@ -142,7 +143,7 @@ of each sample:
 	}
 
 	dependencies {
-		compile("com.lacunasoftware.restpki:restpki-client-java6:1.8.1")
+		compile("com.lacunasoftware.restpki:restpki-client-java6:1.9.0")
 	}
 
 If you project uses Maven, please refer to the file [pom.xml](spring-mvc-java6/pom.xml) instead:
@@ -152,7 +153,7 @@ If you project uses Maven, please refer to the file [pom.xml](spring-mvc-java6/p
 		<dependency>
 			<groupId>com.lacunasoftware.restpki</groupId>
 			<artifactId>restpki-client-java6</artifactId>
-			<version>1.8.1</version>
+			<version>1.9.0</version>
 		</dependency>
 		...
 	</dependencies>
