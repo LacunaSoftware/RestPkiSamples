@@ -25,7 +25,7 @@ To run this project, you can use the following tools:
 
 1. Generate an API access token on the [REST PKI website](https://pki.rest/)
 
-1. Paste your access token on the file `Java/sample-spring-mvc/src/main/java/sample/util/Util.java`
+1. Paste your access token on the file `Java/sample-spring-mvc/src/main/resources/application.properties`
    
 1. In a command prompt, navigate to the folder `Java/sample-spring-mvc` and run the command
    `gradlew bootRun` (on Linux `./gradlew bootRun`). If you are using Windows, you can alternatively
@@ -44,7 +44,7 @@ To run this project, you can use the following tools:
 
 1. Generate an API access token on the [REST PKI website](https://pki.rest/)
 
-1. Paste your access token on the file `Java/sample-spring-mvc/src/main/java/sample/util/Util.java`
+1. Paste your access token on the file `Java/sample-spring-mvc/src/main/resources/application.properties`
 
 1. In a command prompt, navigate to the folder `Java/sample-spring-mvc` and run the command
    `mvn spring-boot:run`. To run this command, it's necessary to have the Apache Maven installed.
