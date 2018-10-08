@@ -25,14 +25,14 @@ To run this project, you can use the following tools:
 
 1. Generate an API access token on the [REST PKI website](https://pki.rest/)
 
-1. Paste your access token on the file `Java/sample-spring-mvc/src/main/java/sample/util/Util.java`
+1. Paste your access token on the file `Java/sample-spring-mvc/src/main/resources/application.properties`
    
 1. In a command prompt, navigate to the folder `Java/sample-spring-mvc` and run the command
    `gradlew bootRun` (on Linux `./gradlew bootRun`). If you are using Windows, you can alternatively
    double-click the file `Run-Sample.bat`.
   
 1. Once you see the message "Started Application in x.xxx seconds" (the on-screen percentage
-   will *not* reach 100%), open a web browser and go the URL [http://localhost:8080/](http://localhost:8080/)
+   will *not* reach 100%), open a web browser and go the URL http://localhost:60963
    
 > If you are on Linux, you may have to add the execution permission to *gradrew* file by executing the command
 `chmod +x gradlew`.
@@ -44,7 +44,7 @@ To run this project, you can use the following tools:
 
 1. Generate an API access token on the [REST PKI website](https://pki.rest/)
 
-1. Paste your access token on the file `Java/sample-spring-mvc/src/main/java/sample/util/Util.java`
+1. Paste your access token on the file `Java/sample-spring-mvc/src/main/resources/application.properties`
 
 1. In a command prompt, navigate to the folder `Java/sample-spring-mvc` and run the command
    `mvn spring-boot:run`. To run this command, it's necessary to have the Apache Maven installed.
@@ -74,7 +74,8 @@ Java 6 sample
 If you want to use an older version than Java 7, please use the sample project for Java 6, which can be found 
 in the folder [spring-mvc-java6](spring-mvc-java6/). This sample uses another library exclusively made to work 
 with Java 6 (see [Client lib for Java 6](#client-lib-for-java-6) section below). The steps to execute the sample are
-the same as for the default sample. If you want to use Java 7 or greater, we recommend using the [Default sample](#default-sample).
+the same as for the default sample, except for the URL to access the sample, which is http://localhost:60458 in this
+sample. If you want to use Java 7 or greater, we recommend using the [Default sample](#default-sample).
    
 Opening the samples on Eclipse or IDEA
 --------------------------------------
@@ -142,7 +143,7 @@ of each sample:
 	}
 
 	dependencies {
-		compile("com.lacunasoftware.restpki:restpki-client-java6:1.8.1")
+		compile("com.lacunasoftware.restpki:restpki-client-java6:1.9.0")
 	}
 
 If you project uses Maven, please refer to the file [pom.xml](spring-mvc-java6/pom.xml) instead:
@@ -152,7 +153,7 @@ If you project uses Maven, please refer to the file [pom.xml](spring-mvc-java6/p
 		<dependency>
 			<groupId>com.lacunasoftware.restpki</groupId>
 			<artifactId>restpki-client-java6</artifactId>
-			<version>1.8.1</version>
+			<version>1.9.0</version>
 		</dependency>
 		...
 	</dependencies>
