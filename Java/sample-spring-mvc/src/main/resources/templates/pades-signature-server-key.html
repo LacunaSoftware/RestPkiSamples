@@ -33,6 +33,7 @@
 	<h3>Actions:</h3>
 	<ul>
 		<li><a th:href="'/files/' + ${filename}">Download the signed file</a></li>
+		<li><a th:href="'/printer-friendly-version?fileId=' + ${filename}">Download a printer-friendly version of the signed file</a></li>
 		<li><a th:href="'/open-pades-signature?userfile=' + ${filename}">Open/validate the signed file</a></li>
 	</ul>
 </div>
