@@ -20,8 +20,8 @@ public class OpenPadesSignatureController {
 	 */
 	@RequestMapping(value = "/open-pades-signature", method = {RequestMethod.GET})
 	public String get(
-			@RequestParam(value = "userfile", required = false) String userfile,
-			Model model
+		@RequestParam(value = "userfile", required = false) String userfile,
+		Model model
 	) throws IOException, RestException {
 
 		// Get an instance the PadesSignatureExplorer2 class, used to open/validate PDF signatures.
