@@ -30,7 +30,7 @@ public class PrinterFriendlyVersionController {
 	// #############################################################################################
 
 	// Name of your website, with preceding article (article in lowercase).
-	private final String verificationSiteNameWithArticle = "a Verification Center";
+	private final String verificationSiteNameWithArticle = "my Verification Center";
 
 	// Publicly accessible URL of your website. Preferably HTTPS.
 	private final String verificationSite = "http://localhost:60963/";
@@ -44,7 +44,7 @@ public class PrinterFriendlyVersionController {
 	// Date format to be used when converting dates to string.
 	public static final String dateFormat = "dd/MM/yyyy HH:mm";
 
-	// Display name of the time zone chosen above.
+	// Display name of the time zone.
 	public static final String timeZoneDisplayName = "Brasilia timezone";
 
 	// You may also change texts, positions and more by editing directly the method

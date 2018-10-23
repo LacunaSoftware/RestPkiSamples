@@ -209,6 +209,10 @@ public class Util {
 		return certStore.getKey(alias, password.toCharArray());
 	}
 
+	public static Path getSampleCodEnvelopePath() throws IOException {
+		return new ClassPathResource("/static/SampleCodEnvelope.xml").getFile().toPath();
+	}
+
 	public static String joinStringsPt(List<String> strings) {
 		StringBuilder text = new StringBuilder();
 		int size = strings.size();

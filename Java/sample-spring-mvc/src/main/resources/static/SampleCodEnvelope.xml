@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ns1:Envelope xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" xmlns:ns1="http://www.w3.org/2001/12/soap-envelope" xsi:schemaLocation="http://www.w3.org/2001/12/soap-envelope http://www.codaladi.org/directorio/cod_ver_1.8.0.xsd">
+	<ns1:CertOrigin>
+		<CODEH id="CODEH">
+			<CODExporter>
+				<COD id="COD">
+					<CODVer>1.8.0</CODVer>
+					<CODSubmitterType>EXP</CODSubmitterType>
+					<Agreement>
+						<AgreementName>Acordo de Alcance Parcial de Complementação Econômica Nº 14</AgreementName>
+						<AgreementAcronym>A14</AgreementAcronym>
+					</Agreement>
+					<FormA14>
+						<Exporter>
+							<ExporterCountry>BR</ExporterCountry>
+							<ExporterBusinessName>IVECO LATIN AMERICA LTDA</ExporterBusinessName>
+							<ExporterAddress>RODOVIA MG 238 - KM 73,5</ExporterAddress>
+							<ExporterLocality>RODOVIA MG 238 - KM 73,5</ExporterLocality>
+							<ExporterCity>SETE LAGOAS</ExporterCity>
+							<ExporterTelephone>3121072783</ExporterTelephone>
+							<ExporterEmail>IVONE.FERREIRA@SADIBRASIL.COM.BR</ExporterEmail>
+						</Exporter>
+						<Invoices>
+							<InvoiceQty>1</InvoiceQty>
+							<Invoice>
+								<InvoiceOrderNo>1</InvoiceOrderNo>
+								<InvoiceNo>Teste Emerson - Iveco ACE-14</InvoiceNo>
+								<InvoiceDate>2016-12-01T00:00:00</InvoiceDate>
+							</Invoice>
+						</Invoices>
+						<GoodsList>
+							<GoodsQty>1</GoodsQty>
+							<Goods>
+								<GoodsOrderNo>1</GoodsOrderNo>
+								<GoodsInvoiceOrderNo>1</GoodsInvoiceOrderNo>
+								<GoodsItemCode>8704.22.10</GoodsItemCode>
+								<GoodsItemName>Veículos automóveis para transporte de mercadorias. Outros, com motor de pistão, de ignição por compressão (diesel ou semidiesel). De peso em carga máxima superior a 5 toneladas, mas não superior a 20 toneladas. Chassis com motor e cabina. </GoodsItemName>
+								<GoodsItemWeightAmount>12.0000</GoodsItemWeightAmount>
+								<GoodsItemMeasureUnit>UN</GoodsItemMeasureUnit>
+								<GoodsItemFOB>15500.00</GoodsItemFOB>
+								<GoodsItemOriginRules>XXXVIII PROTOCOLO ADICIONAL AO ACE-14 - TÍTULO III - ARTIGO 16
+								</GoodsItemOriginRules>
+								<GoodsDeclarationDate>2016-01-20T15:02:00</GoodsDeclarationDate>
+							</Goods>
+						</GoodsList>
+						<Importer>
+							<ImporterCountry>AR</ImporterCountry>
+							<ImporterBusinessName>IVECO ARGENTINA S.A.</ImporterBusinessName>
+							<ImporterAddress>RUTA NACIONAL 9, KM 695 - CC 44 FERREYRA
+CORDOBA - ARGENTINA</ImporterAddress>
+							<ImporterLocality>ARGENTINA</ImporterLocality>
+						</Importer>
+						<Transport>
+							<TransportPortOfLoading>BELO HORIZONTE</TransportPortOfLoading>
+							<TransportMeans>RODOVIARIA</TransportMeans>
+						</Transport>
+						<Declaration>
+							<DeclarationDate>2016-12-01T14:01:54</DeclarationDate>
+							<DeclarationRequestNo>165077</DeclarationRequestNo>
+						</Declaration>
+					</FormA14>
+				</COD>
+			</CODExporter>
+			<EH>
+				<EHId>036</EHId>
+				<EHCountry>BR</EHCountry>
+				<EHName>FEDERAÇÃO DAS INDUSTRIAS DO ESTADO DE MINAS GERAIS</EHName>
+				<EHAddress>AV. DO CONTORNO 4.520 </EHAddress>
+				<EHLocality>FUNCIONÁRIOS</EHLocality>
+				<EHCity>BELO HORIZONTE</EHCity>
+				<EHFax>31 32636821</EHFax>
+				<EHEmail>RCASSIA@FIEMG.COM.BR</EHEmail>
+				<EHURL>http://www.fiemg.com.br</EHURL>
+			</EH>
+			<CertificationEH>
+				<CertificateControlCode>005</CertificateControlCode>
+				<CertificateDate>2016-12-01T14:02:25</CertificateDate>
+				<CertificateID>BR036A14160000000500</CertificateID>
+			</CertificationEH>
+		</CODEH>
+	</ns1:CertOrigin>
+</ns1:Envelope>
