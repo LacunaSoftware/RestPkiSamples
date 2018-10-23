@@ -28,14 +28,12 @@
 			<div th:id="'signer_' + ${iterStat.index} + '_collapse'" class="panel-collapse collapse" role="tabpanel" th:aria-labelledby="'signer_' + ${iterStat.index} + '_heading'">
 				<div class="panel-body">
 					<p>Type: <span th:text="${signer.getType()}"/></p>
-					<p th:if="${signer.getSignedElement() != null}">
+					<p th:if="${signer.getSignedElement()}">
 						Signed element: <span th:text="${signer.getSignedElement().getLocalName()}"/>
-						<text th:if="${signer.getSignedElement().getNamespaceUri() != null}">
-							(xmlns: <span th:text="${signer.getSignedElement().getNamespaceUri()}"/>)
-						</text>
+						<text th:if="${signer.getSignedElement().getNamespaceUri()}"> (xmlns: <span th:text="${signer.getSignedElement().getNamespaceUri()}"/>)</text>
 					</p>
 					<p>Signing time: <span th:text="${signer.getSigningTime()}"/></p>
-					<p th:if="${signer.getSignaturePolicy() != null}">
+					<p th:if="${signer.getSignaturePolicy()}">
 						Signature policy: <span th:text="${signer.getSignaturePolicy().getOid()}"/>
 					</p>
 					<p>
