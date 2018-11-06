@@ -2,6 +2,7 @@ package sample.util;
 
 import com.lacunasoftware.restpki.RestPkiClient;
 import com.lacunasoftware.restpki.SecurityContext;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -11,9 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.Authenticator;
-import java.net.InetSocketAddress;
-import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.nio.file.Path;
 import java.security.*;
@@ -302,6 +300,15 @@ public class Util {
 			return formattedCode;
 		}
 		return formattedCode.replaceAll("[^A-Za-z0-9]", "");
+	}
+
+	public static byte[] convertFromBase64String(String contentBase64) {
+		return Base64.decodeBase64(contentBase64);
+	}
+
+	public static String convertToBase64String(byte[] content) {
+		byte[] base64 = Base64.encodeBase64(content);
+		return new String(base64);
 	}
 
 }

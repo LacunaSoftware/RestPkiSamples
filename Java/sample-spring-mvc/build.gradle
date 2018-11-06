@@ -25,9 +25,10 @@ jar {
 }
 
 dependencies {
-	compile("com.lacunasoftware.restpki:restpki-client:1.10.1")
+	compile("com.lacunasoftware.restpki:restpki-client:1.10.2")
 	compile("org.springframework.boot:spring-boot-starter-thymeleaf")
 	compile("commons-io:commons-io:2.4")
+	compile("commons-codec:commons-codec:1.11")
 }
 
 task wrapper(type: Wrapper) {
