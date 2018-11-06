@@ -23,20 +23,21 @@ import java.util.UUID;
  * - Portuguese: http://www.mdic.gov.br/images/REPOSITORIO/secex/deint/coreo/2014_09_19_-_Brasaladi_761_-_Documento_ALADI_SEC__di_2327__Rev_2_al_port_.pdf
  */
 @Controller
-public class CodXmlSignatureController {
+@SuppressWarnings("Duplicates")
+public class XmlCodSignatureController {
 
 	/**
 	 * This action simple renders the initial page.
 	 */
-	@RequestMapping(value = "/cod-xml-signature", method = {RequestMethod.GET})
+	@RequestMapping(value = "/xml-cod-signature", method = {RequestMethod.GET})
 	public String get() {
 
-		// Renders the page (templates/cod-xml-signature.html).
-		return "cod-xml-signature";
+		// Renders the page (templates/xml-cod-signature.html).
+		return "xml-cod-signature";
 	}
 
-	@RequestMapping(value = "/cod-xml-signature-sign-cod", method = {RequestMethod.GET})
-	public String getStartCod(
+	@RequestMapping(value = "/xml-cod-signature/sign-cod", method = {RequestMethod.GET})
+	public String getCod(
 		Model model,
 		HttpServletResponse response
 	) throws IOException, RestException {
@@ -73,13 +74,13 @@ public class CodXmlSignatureController {
 		// method Util.setNoCacheHeaders(), which sets HTTP headers to prevent caching of the page.
 		Util.setNoCacheHeaders(response);
 
-		// Render the signature page (templates/cod-xml-signature-sign-cod.html).
+		// Render the signature page (templates/xml-cod-signature-sign-cod.html).
 		model.addAttribute("token", token);
-		return "cod-xml-signature-sign-cod";
+		return "xml-cod-signature-sign-cod";
 	}
 
-	@RequestMapping(value = "/cod-xml-signature-sign-cod", method = {RequestMethod.POST})
-	public String postCompleteCod(
+	@RequestMapping(value = "/xml-cod-signature/sign-cod", method = {RequestMethod.POST})
+	public String postCod(
 		@RequestParam(value = "token") String token,
 		Model model
 	) throws IOException, RestException {
@@ -107,14 +108,14 @@ public class CodXmlSignatureController {
 		String filename = UUID.randomUUID() + ".xml";
 		Files.write(Application.getTempFolderPath().resolve(filename), signedXml);
 
-		// Render the signature page (templates/cod-xml-signature-sign-cod-result.html).
+		// Render the signature page (templates/xml-cod-signature-sign-cod-result.html).
 		model.addAttribute("signerCert", signerCert);
 		model.addAttribute("filename", filename);
-		return "cod-xml-signature-sign-cod-result";
+		return "xml-cod-signature-sign-cod-result";
 	}
 
-	@RequestMapping(value = "/cod-xml-signature-sign-codeh", method = {RequestMethod.GET})
-	public String getStartCodeh(
+	@RequestMapping(value = "/xml-cod-signature/sign-codeh", method = {RequestMethod.GET})
+	public String getCodeh(
 		@RequestParam(value = "userfile") String userfile,
 		Model model,
 		HttpServletResponse response
@@ -152,14 +153,14 @@ public class CodXmlSignatureController {
 		// method Util.setNoCacheHeaders(), which sets HTTP headers to prevent caching of the page.
 		Util.setNoCacheHeaders(response);
 
-		// Render the signature page (templates/cod-xml-signature-sign-codeh.html).
+		// Render the signature page (templates/xml-cod-signature-sign-codeh.html).
 		model.addAttribute("token", token);
 		model.addAttribute("userfile", userfile);
-		return "cod-xml-signature-sign-codeh";
+		return "xml-cod-signature-sign-codeh";
 	}
 
-	@RequestMapping(value = "/cod-xml-signature-sign-codeh", method = {RequestMethod.POST})
-	public String postCompleteCodeh(
+	@RequestMapping(value = "/xml-cod-signature/sign-codeh", method = {RequestMethod.POST})
+	public String postCodeh(
 		@RequestParam(value = "token") String token,
 		Model model
 	) throws IOException, RestException {
@@ -187,10 +188,10 @@ public class CodXmlSignatureController {
 		String filename = UUID.randomUUID() + ".xml";
 		Files.write(Application.getTempFolderPath().resolve(filename), signedXml);
 
-		// Render the signature page (templates/cod-xml-signature-sign-codeh-result.html).
+		// Render the signature page (templates/xml-cod-signature-sign-codeh-result.html).
 		model.addAttribute("signerCert", signerCert);
 		model.addAttribute("filename", filename);
-		return "cod-xml-signature-sign-codeh-result";
+		return "xml-cod-signature-sign-codeh-result";
 	}
 
 }
