@@ -1,0 +1,31 @@
+<invoice xmlns="http://www.lacunasoftware.com/sample">
+	<issuer>
+		<name>Lacuna Software Ltda EPP</name>
+		<fiscalCode>20658903000171</fiscalCode>
+	</issuer>
+	<customer>
+		<name>Banco do Brasil SA</name>
+		<fiscalCode>00000000000191</fiscalCode>
+	</customer>
+	<items>
+		<item>
+			<productCode>10201</productCode>
+			<description>Philips screws</description>
+			<quantity>100</quantity>
+			<unitPrice>0.10</unitPrice>
+			<totalPrice>10.00</totalPrice>
+			<currency>USD</currency>
+		</item>
+		<item>
+			<productCode>10200</productCode>
+			<description>Philips screwdriver</description>
+			<quantity>1</quantity>
+			<unitPrice>8.50</unitPrice>
+			<totalPrice>8.50</totalPrice>
+			<currency>USD</currency>
+		</item>
+	</items>
+	<signaturePlaceholder>
+		<!-- The signature will be inserted here -->
+	</signaturePlaceholder>
+</invoice>

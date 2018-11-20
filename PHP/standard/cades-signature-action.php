@@ -8,16 +8,16 @@ require __DIR__ . '/vendor/autoload.php';
 
 use Lacuna\RestPki\CadesSignatureFinisher2;
 
-// Get the token for this signature (rendered in a hidden input field, see cades-signature.php)
+// Get the token for this signature (rendered in a hidden input field, see cades-signature.php).
 $token = $_POST['token'];
 
-// Instantiate the CadesSignatureFinisher2 class, responsible for completing the signature process
+// Instantiate the CadesSignatureFinisher2 class, responsible for completing the signature process.
 $signatureFinisher = new CadesSignatureFinisher2(getRestPkiClient());
 
-// Set the token
+// Set the token.
 $signatureFinisher->token = $token;
 
-// Call the finish() method, which finalizes the signature process and returns a SignatureResult object
+// Call the finish() method, which finalizes the signature process and returns a SignatureResult object.
 $signatureResult = $signatureFinisher->finish();
 
 // The "certificate" property of the SignatureResult object contains information about the certificate used by the user
@@ -27,7 +27,7 @@ $signerCert = $signatureResult->certificate;
 // At this point, you'd typically store the CMS on your database. For demonstration purposes, we'll
 // store the CMS on a temporary folder publicly accessible and render a link to it.
 
-createAppData(); // make sure the "app-data" folder exists (util.php)
+createAppData(); // Make sure the "app-data" folder exists (util.php).
 $filename = uniqid() . ".p7s";
 
 // The SignatureResult object has functions for writing the signature file to a local file (writeToFile()) and to get
@@ -38,11 +38,11 @@ $signatureResult->writeToFile("app-data/{$filename}");
 <html>
 <head>
     <title>CAdES Signature</title>
-    <?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component) ?>
+    <?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component). ?>
 </head>
 <body>
 
-<?php include 'menu.php' // The top menu, this can be removed entirely ?>
+<?php include 'menu.php' // The top menu, this can be removed entirely. ?>
 
 <div class="container">
 

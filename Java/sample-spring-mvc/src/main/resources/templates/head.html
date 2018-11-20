@@ -1,9 +1,15 @@
-<meta charset="utf-8" />
-<title>Lacuna PKI Samples</title>
-<link href="/css/bootstrap.css" rel="stylesheet" />
-<link href="/css/bootstrap-theme.css" rel="stylesheet" />
-<link href="/css/site.css" rel="stylesheet" />
+<meta charset="utf-8"/>
+<title>REST PKI Samples</title>
+<link href="/css/bootstrap.css" rel="stylesheet"/>
+<link href="/css/bootstrap-theme.css" rel="stylesheet"/>
+<link href="/css/site.css" rel="stylesheet"/>
 <script src="/js/jquery-1.11.3.js"></script>
 <script src="/js/jquery.blockUI.js"></script>
 <script src="/js/bootstrap.js"></script>
-<script src="/js/app/site.js"></script>
+
+<script th:inline="javascript">
+	/*<![CDATA[*/
+	var _webPkiLicense = [[${@environment.getProperty('webpki.license')}]];
+	var _restPkiEndpoint = [[${@environment.getProperty('restpki.endpoint')}]];
+	/*]]>*/
+</script>

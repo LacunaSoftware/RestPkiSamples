@@ -7,6 +7,7 @@
 require __DIR__ . '/vendor/autoload.php';
 
 use Lacuna\RestPki\CadesSignatureStarter;
+use Lacuna\RestPki\StandardSecurityContexts;
 use Lacuna\RestPki\StandardSignaturePolicies;
 use Lacuna\RestPki\CadesSignatureFinisher2;
 
@@ -22,17 +23,17 @@ $userfile = isset($_GET['userfile']) ? $_GET['userfile'] : null;
 $cmsfile = isset($_GET['cmsfile']) ? $_GET['cmsfile'] : null;
 
 // Instantiate the CadesSignatureStarter class, responsible for receiving the signature elements and start the signature
-// process
+// process.
 $signatureStarter = new CadesSignatureStarter(getRestPkiClient());
 
-// Set the signer certificate
+// Set the signer certificate.
 $signatureStarter->setSignerCertificateRaw($certObj['cert']);
 
 if (!empty($userfile)) {
 
     // If the URL argument "userfile" is filled, it means the user was redirected here by the file upload.php (signature
     // with file uploaded by user). We'll set the path of the file to be signed, which was saved in the "app-data" folder
-    // by upload.php
+    // by upload.php.
     $signatureStarter->setFileToSignFromPath("app-data/{$userfile}");
 
 } elseif (!empty($cmsfile)) {
@@ -58,12 +59,12 @@ if (!empty($userfile)) {
 
 }
 
-// Set the signature policy
+// Set the signature policy.
 $signatureStarter->signaturePolicy = StandardSignaturePolicies::CADES_ICPBR_ADR_BASICA;
 
 // For this sample, we'll use the Lacuna Test PKI as our security context in order to accept our test certificate used
 // above ("Pierre de Fermat"). This security context should be used ***** FOR DEVELOPMENT PUPOSES ONLY *****
-$signatureStarter->securityContext = '803517ad-3bbc-4169-b085-60053a8f6dbf';
+$signatureStarter->securityContext = StandardSecurityContexts::LACUNA_TEST;
 
 // Optionally, set whether the content should be encapsulated in the resulting CMS. If this parameter is omitted,
 // the following rules apply:
@@ -146,7 +147,6 @@ $signatureResult->writeToFile("app-data/{$filename}");
     <ul>
         <li><a href="app-data/<?= $filename ?>">Download the signed file</a></li>
         <li><a href="open-cades-signature.php?userfile=<?= $filename ?>">Open/validate the signed file</a></li>
-        <li><a href="cades-signature.php?cmsfile=<?= $filename ?>">Co-sign with another certificate</a></li>
     </ul>
 
 </div>

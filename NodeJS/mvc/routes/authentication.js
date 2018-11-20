@@ -1,61 +1,50 @@
-var express = require('express');
-var request = require('request');
-var restPki = require('../lacuna-restpki');
-var util = require('../util');
+const express = require('express');
+const { Authentication } = require('restpki-client');
 
-var router = express.Router();
+const { Util } = require('../util');
+
+let router = express.Router();
+
 
 /*
  * GET /authentication
  *
- * This route initiates an certificate authentication using REST PKI and renders
- * the auth page.
+ * This route initiates a certificate authentication using REST PKI and renders
+ * the authentication page.
  */
 router.get('/', function(req, res, next) {
 
-   // Request to be sent to REST PKI.
-   var restRequest = {
-      // Set a SecurityContext to be used to determine trust in the certificate
-      // chain for authentication.
-      securityContextId: restPki.standardSecurityContexts.pkiBrazil
-   };
+   // Get an instance of the Authentication class.
+   let auth = new Authentication(Util.getRestPkiClient());
 
-   // Call the action POST Api/Authentications on REST PKI, which initiates the
-   // authentication.
-   request.post(util.endpoint + 'Api/Authentications', {
+   // Call the startWithWebPki() method, which initiates the authentication.
+   // This yields the "token", a 22-character case-sensitive URL-safe string,
+   // which represents this authentication process. We'll use this value to call
+   // the signWithRestPki() method on the Web PKI component
+   // (see public/javascripts/signature-form.js) and also call the
+   // completeWithWebPki() method on "complete" step. This should not be
+   // mistaken with the API access token. We have encapsulated the security
+   // context choice on util.js.
+   auth.startWithWebPki(Util.getSecurityContextId(res.locals.environment))
+   .then((token) => {
 
-      json: true,
-      headers: {'Authorization': 'Bearer ' + util.accessToken},
-      body: restRequest
+      // The token acquired can only be used for a single authentication.
+      // In order to retry authenticating it is necessary to get a new token.
+      // This can be a problem if the user uses the back button of the
+      // browser, since the browser might show a cached page that we rendered
+      // previously, with a now stale token. To prevent this from happening,
+      // we call the function setExpiredPage(), located in util.js, which sets
+      // HTTP headers to prevent caching of the page.
+      Util.setExpiredPage(res);
 
-   }, function(err, restRes, body) {
+      // Render the authentication page.
+      res.render('authentication', {
+         token: token
+      });
 
-      if (restPki.checkResponse(err, restRes, body, next)) {
+   })
+   .catch((err) => next(err));
 
-         // This operation yields the token, a 43-character case-sensitive
-         // URL-safe string, which identifies this signature process. We'll use
-         // this value to call the signWithRestPki() method on the Web PKI
-         // component (see view 'pades-signature') and also to complete the
-         // signature after the form is submitted. This should not be mistaken
-         // with the API access token.
-         var token = restRes.body.token;
-
-         // The token acquired can only be used for a single signature attempt.
-         // In order to retry the signature it is necessary to get a new token.
-         // This can be a problem if the user uses the back button of the
-         // browser, since the browser might show a cached page that we rendered
-         // previously, with a now stale token. To prevent this from happening,
-         // we set some response headers specifying that the page should not be
-         // cached.
-         util.setExpiredPage(res);
-
-         // Render the signature page
-         res.render('authentication', {
-            token: token
-         });
-      }
-
-   });
 });
 
 /*
@@ -66,29 +55,42 @@ router.get('/', function(req, res, next) {
  */
 router.post('/', function(req, res, next) {
 
-   // Retrieve the token from the URL.
-   var token = req.body.token;
+   // Get an instance of the Authentication class (util.js).
+   let auth = new Authentication(Util.getRestPkiClient());
 
-   // Call the action POST Api/Authentications/{token}/Finalize on REST PKI,
-   // which finalizes the authentication process and returns the certificate
-   // validation results.
-   request.post(util.endpoint + 'Api/Authentications/' + token + '/Finalize', {
+   // Call the completeWithWebPki() method with the token, which finalizes the
+   // authentication process. The call yields a ValidationResults which denotes
+   // whether the authentication was success or not.
+   auth.completeWithWebPki(req.body.token)
+   .then((result) => {
 
-      json: true,
-      headers: {'Authorization': 'Bearer ' + util.accessToken}
-
-   }, function(err, restRes, body) {
-
-      if (restPki.checkResponse(err, restRes, body, next)) {
-
-         res.render('authentication-complete', {
-            certificate: restRes.body.certificate,
-            validationResults: new restPki.ValidationResults(restRes.body.validationResults),
+      // Check the authentication result.
+      if (!result.validationResults.isValid()) {
+         // If the authentication was not successful, we render a page showing
+         // what went wrong.
+         res.render('authentication-fail', {
+            validationResults: result.validationResults
          });
-
+         return;
       }
 
-   });
+      // At this point, you have assurance tha the certificate is valid
+      // according to the TrustArbitrator you selected when starting the
+      // authentication and that the user is indeed the certificate's subject.
+      // Now, you'd typically query your database for a user that matches one of
+      // the certificate's fields, such as userCert.emailAddress or
+      // userCert.pkiBrazil.cpf (the actual field to be used as key depends on
+      // your application's business logic) and set the user ID on the cookie
+      // as if it were the user ID.
+      let userCert = result.certificate;
+      req.session.userId = userCert.emailAddress;
+
+      // Redirect to the initial page with the user logged in.
+      res.redirect('/');
+
+   })
+   .catch((err) => next(err));
+
 });
 
 module.exports = router;

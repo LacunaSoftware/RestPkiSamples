@@ -6,42 +6,7 @@
 require __DIR__ . '/vendor/autoload.php';
 
 use Lacuna\RestPki\StandardSignaturePolicies;
-use Lacuna\RestPki\StandardSecurityContexts;
 use Lacuna\RestPki\XmlSignatureExplorer;
-
-// This function is called below. It encapsulates examples of signature validation parameters.
-function setValidationParameters(XmlSignatureExplorer $sigExplorer, $caseNumber)
-{
-    switch ($caseNumber) {
-        /*
-            Example #1: accept any valid XmlDSig signature as long as the signer has an ICP-Brasil certificate
-
-            These parameters will only accept signatures made with ICP-Brasil certificates that comply with the
-            minimal security features defined in the XmlDSig standard. The signatures need not, however, follow
-            the extra requirements defined in the ICP-Brasil signature policy documentation (DOC-ICP-15.03).
-         */
-        case 1:
-            // By omitting the accepted policies catalog and defining a default policy, we're telling Rest PKI to
-            // validate all signatures in the file with the default policy -- even signatures with an explicit signature
-            // policy.
-            $sigExplorer->acceptableExplicitPolicies = null;
-            $sigExplorer->defaultSignaturePolicy = StandardSignaturePolicies::XML_DSIG_BASIC;
-            // The XmlDSigBasic policy requires us to choose a security context
-            $sigExplorer->securityContext = StandardSecurityContexts::PKI_BRAZIL;
-            break;
-
-        /*
-            Example #2: accept any valid XmlDSig signature as long as the signer is trusted by Windows
-
-            Same case as example #1, but using the WindowsServer trust arbitrator
-         */
-        case 2:
-            $sigExplorer->acceptableExplicitPolicies = null;
-            $sigExplorer->defaultSignaturePolicy = StandardSignaturePolicies::XML_DSIG_BASIC;
-            $sigExplorer->securityContext = StandardSecurityContexts::WINDOWS_SERVER;
-            break;
-    }
-}
 
 // Our demo only works if a userfile is given to work with
 $userfile = isset($_GET['userfile']) ? $_GET['userfile'] : null;
@@ -58,11 +23,12 @@ $sigExplorer->setSignatureFileFromPath("app-data/{$userfile}");
 // Specify that we want to validate the signatures in the file, not only inspect them
 $sigExplorer->validate = true;
 
-// Parameters for the signature validation. We have encapsulated this code in a method to include several
-// possibilities depending on the argument passed. Experiment changing the argument to see different validation
-// configurations. Once you decide which is best for your case, you can place the code directly here.
-setValidationParameters($sigExplorer, 1);
-// try changing this number ----------^ for different validation parameters
+// Accept any valid XmlDSig signature as long as the signer has an ICP-Brasil certificate as long as the signer is
+// trusted by the security context.
+$sigExplorer->defaultSignaturePolicy = StandardSignaturePolicies::XML_DSIG_BASIC;
+
+// Specify the security context. We have encapsulated the security context choice on util.php.
+$sigExplorer->securityContext = getSecurityContextId();
 
 // Call the open() method, which returns the signature file's information
 $signatures = $sigExplorer->open();
@@ -71,7 +37,7 @@ $signatures = $sigExplorer->open();
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Open existing CAdES Signature</title>
+    <title>Open existing signatures on an existing XML</title>
     <?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT
     // required to use the Web PKI component) ?>
 </head>
@@ -119,12 +85,14 @@ $signatures = $sigExplorer->open();
                         <?php if ($signature->signedElement != null) { ?>
                             <p>
                                 Signed element: <?= $signature->signedElement->localName ?>
-                                <?php if (empty($signature->signedElement->namespaceUri)) { ?>
+                                <?php if ($signature->signedElement->namespaceUri != null) { ?>
                                     <text>(xmlns: <?= $signature->signedElement->namespaceUri ?>)</text>
                                 <?php } ?>
                             </p>
                         <?php } ?>
-                        <p>Signing time: <?= $signature->signingTime ?></p>
+                        <?php if ($signature->signingTime != null) { ?>
+                            <p>Signing time: <?= date('d/m/Y H:i', strtotime($signature->signingTime)) ?></p>
+                        <?php } ?>
                         <?php if ($signature->signaturePolicy != null) { ?>
                             <p>Signature policy: <?= $signature->signaturePolicy->oid ?></p>
                         <?php } ?>

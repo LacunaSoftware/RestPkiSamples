@@ -6,10 +6,10 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-// Get the token for this authentication (rendered in a hidden input field, see authentication.php)
+// Get the token for this authentication (rendered in a hidden input field, see authentication.php).
 $token = $_POST['token'];
 
-// Get an instance of the Authentication class (see util.php)
+// Get an instance of the Authentication class (see util.php).
 $auth = getRestPkiClient()->getAuthentication();
 
 // Call the completeWithWebPki() method with the token, which finalizes the authentication process. The call yields a
@@ -31,17 +31,17 @@ if ($vr->isValid()) {
 <html>
 <head>
     <title>Authentication</title>
-    <?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component) ?>
+    <?php include 'includes.php' // jQuery and other libs (used only to provide a better user experience, but NOT required to use the Web PKI component). ?>
 </head>
 <body>
 
-<?php include 'menu.php' // The top menu, this can be removed entirely ?>
+<?php include 'menu.php' // The top menu, this can be removed entirely. ?>
 
 <div class="container">
 
     <?php
 
-    // We'll render different contents depending on whether the authentication succeeded or not
+    // We'll render different contents depending on whether the authentication succeeded or not.
     if ($vr->isValid()) {
 
         ?>
