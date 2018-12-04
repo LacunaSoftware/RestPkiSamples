@@ -1,6 +1,17 @@
 extends layout
 
 block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+  h2 Some error has occurred
+
+  br
+  label(for='message') Error message
+  p(id='message') #{message}
+
+  if error.status
+    label(for='status') Status Code
+    p(id='status') #{error.status}
+
+  if error.stack
+    label(for='stackTrace') StackTrace
+    p(id='stackTrace')
+      pre #{error.stack}
