@@ -1,9 +1,11 @@
 package sample;
 
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.SpringApplication;
+import org.springframework.core.env.ConfigurableEnvironment;
 import sample.util.Util;
 
 import java.io.File;
@@ -15,6 +17,7 @@ import java.io.IOException;
 public class Application {
 
 	private static File tempFolderPath;
+	public static ConfigurableEnvironment environment;
 
 	public static File getTempFolderPath() {
 		return tempFolderPath;
@@ -27,7 +30,8 @@ public class Application {
 		// application's database.
 		tempFolderPath = Util.createTempDirectory("RestPkiSample");
 
-		SpringApplication.run(Application.class, args);
+		ConfigurableApplicationContext ctx = SpringApplication.run(Application.class, args);
+		environment = ctx.getEnvironment();
 	}
 
 }
