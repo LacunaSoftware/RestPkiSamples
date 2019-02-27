@@ -65,5 +65,12 @@ namespace SampleSite.Controllers {
 			var fileContent = StorageMock.Read(Util.GetXmlInvoiceWithSigsPath());
 			return File(fileContent, "text/xml", "InvoiceWithSigs.xml");
 		}
+
+		// GET Download/SamplePeer
+		[HttpGet]
+		public ActionResult SamplePeer() {
+			var fileContent = StorageMock.Read(Util.GetSamplePeerDocumentPath());
+			return File(fileContent, "text/xml", "SamplePeerDocument.xml");
+		}
 	}
 }
