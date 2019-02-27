@@ -130,6 +130,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\SampleNFe.xml" />
+    <Content Include="Content\SamplePeerDocument.xml" />
     <Content Include="Global.asax" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

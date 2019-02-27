@@ -53,6 +53,10 @@ namespace SampleSite.Classes {
 			return Path.Combine(ContentPath, "InvoiceWithSigs.xml");
 		}
 
+		public static string GetSamplePeerDocumentPath() {
+			return Path.Combine(ContentPath, "SamplePeerDocument.xml");
+		}
+
         /*
 		 * This method is called by all pages to determine the security context to be used.
 		 * 
