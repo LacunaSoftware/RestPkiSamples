@@ -163,11 +163,11 @@ namespace WebForms {
 			// Iterate bits 5-by-5 converting into characters in our alphabet
 			var sb = new System.Text.StringBuilder();
 			for (int i = 0; i < VerificationCodeSize; i++) {
-				int n = (bits[i] ? 1 : 0) << 4
-					| (bits[i + 1] ? 1 : 0) << 3
-					| (bits[i + 2] ? 1 : 0) << 2
-					| (bits[i + 3] ? 1 : 0) << 1
-					| (bits[i + 4] ? 1 : 0);
+				int n = (bits[i * 5] ? 1 : 0) << 4
+					| (bits[i * 5 + 1] ? 1 : 0) << 3
+					| (bits[i * 5 + 2] ? 1 : 0) << 2
+					| (bits[i * 5 + 3] ? 1 : 0) << 1
+					| (bits[i * 5 + 4] ? 1 : 0);
 				sb.Append(Alphabet[n]);
 			}
 			return sb.ToString();
