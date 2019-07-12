@@ -11,9 +11,9 @@
     <div class="form-group">
         <label>XML to sign</label>
         @if (Model.UserFile == null) {
-            <p>You are signing the <i>invoice</i> node of <a href='/Download/SampleInvoice'>this sample XML</a>.</p>
+            <p>You are signing the <i>per</i> node of <a href='/Download/SamplePeer'>this sample XML</a>.</p>
         } else {
-            <p>You are signing the <i>invoice</i> node of <a href='/Download/File/@Model.UserFile'>this previously signed XML</a>.</p>
+            <p>You are signing the <i>per</i> node of <a href='/Download/File/@Model.UserFile'>this previously signed XML</a>.</p>
         }
 
     </div>
