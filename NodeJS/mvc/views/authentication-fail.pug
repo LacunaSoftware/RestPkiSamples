@@ -1,0 +1,12 @@
+extends layout
+
+block content
+    h2 Authentication Failed
+
+    p Validation Results:
+
+    p
+        textarea(style="width: 100%" rows="20") #{validationResults}
+
+    p
+        a(href='/authentication' class='btn btn-primary') Try Again

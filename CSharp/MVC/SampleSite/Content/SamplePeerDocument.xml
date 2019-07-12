@@ -1,0 +1,346 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+	
+	<per:PedidoEletronicoDeRegistro 
+		Id="PerElement0000000001"
+		xmlns="" 
+		xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns:xml="http://www.w3.org/XML/1998/namespace"
+		
+		xml:base="http://www.registradores.org.br/pedido-eletronico/2014/sistema/pedidos/registro-local"
+		rdf:about="#"
+		
+		xmlns:per="http://www.registradores.org.br/pedido-eletronico/2014/modulos/sistema/v1/#" 
+		xmlns:ps="http://www.registradores.org.br/pedido-eletronico/2014/modulos/pessoa/v1/#" 
+		xmlns:ng="http://www.registradores.org.br/pedido-eletronico/2014/modulos/negocio/v1/#" 
+		xmlns:im="http://www.registradores.org.br/pedido-eletronico/2014/modulos/imovel/v1/#" 
+		xmlns:end="http://www.registradores.org.br/pedido-eletronico/2014/modulos/endereco/v1/#" 
+		xmlns:dc="http://www.registradores.org.br/pedido-eletronico/2014/modulos/documentos/v1/#" 
+		xmlns:re="http://www.registradores.org.br/pedido-eletronico/2014/modulos/registros/v1/#" 
+		xmlns:tt="http://www.registradores.org.br/pedido-eletronico/2014/modulos/titulos/v1/#" 
+		xmlns:ct="http://www.registradores.org.br/pedido-eletronico/2014/modulos/contatos/v1/#" 
+		xmlns:ar="http://www.registradores.org.br/pedido-eletronico/2014/modulos/areas/v1/#" 
+		xmlns:ax="http://www.registradores.org.br/pedido-eletronico/2014/modulos/anexos/v1/#" 
+		xmlns:co="http://www.registradores.org.br/pedido-eletronico/2014/modulos/complementos/v1/#"
+		xmlns:num="http://www.registradores.org.br/pedido-eletronico/2014/modulos/numericos/v1/#"
+		xmlns:rp="http://www.registradores.org.br/pedido-eletronico/2014/modulos/representacao/v1/#"
+		xmlns:vr="http://www.registradores.org.br/pedido-eletronico/2014/modulos/verificacao/v1/#"
+		>
+	
+		
+		<per:remetente>
+			<per:RemetenteCartorio rdf:about="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/remetente/v1/id/999">
+				<per:cartorio rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/cartorio/v1/cns/123869"/>
+				<per:representante rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/pessoa/v1/cpf/11111111111"/>
+				<per:contato rdf:resource="#contato-001"/>
+			</per:RemetenteCartorio>
+		</per:remetente>
+		
+		<per:apresentante>
+			<per:Apresentante rdf:about="#apresentante">
+				<per:representante rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/pessoa/v1/cpf/33333333333"/>
+				<per:contato rdf:resource="#contato-002"/>
+				<per:endereco rdf:resource="#postal-001"/>
+			</per:Apresentante>
+		</per:apresentante>
+		
+		<per:negocios rdf:parseType="Collection">
+				<ng:VendaCompra rdf:about="#negocio-001">
+					<ng:valor_total rdf:datatype="http://www.registradores.org.br/pedido-eletronico/2014/listas/moeda/v1/#brl">15000.00</ng:valor_total>
+					<ng:forma_pagamento rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/pagamento/v1/#a-vista"/>
+					<ng:primeira_aquisicao_sfh>true</ng:primeira_aquisicao_sfh>
+					<ng:imoveis_negociados rdf:parseType="Collection">
+						<ng:ImovelNegociado rdf:about="#imovel-negociado-001">
+							<ng:imovel rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/imovel/v1/cns/111492/matricula/199999"/>
+							<ng:valor_venda_compra rdf:datatype="http://www.registradores.org.br/pedido-eletronico/2014/listas/moeda/v1/#brl">15000.00</ng:valor_venda_compra>
+							<ng:valor_venal rdf:datatype="http://www.registradores.org.br/pedido-eletronico/2014/listas/moeda/v1/#brl">9000.00</ng:valor_venal>
+						</ng:ImovelNegociado>
+					</ng:imoveis_negociados>					
+					<ng:outorgantes rdf:parseType="Collection">
+						<ng:Outorgante rdf:about="#outorgante-001">
+							<ng:parte rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/pessoa/v1/cpf/99999999999"/>
+							<ng:direitos_transmitidos rdf:parseType="Collection">
+								<ng:DireitoTransmitido>
+									<ng:imovel rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/imovel/v1/cns/111492/matricula/199999"/>
+									<ng:tipo_direito rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/direito/v1/#nua-propriedade"/>
+									<ng:fracao num:numerador="1" num:denominador="2" num:percentual_aproximado="50"/>
+								</ng:DireitoTransmitido>
+							</ng:direitos_transmitidos>
+						</ng:Outorgante>
+						<ng:Outorgante rdf:about="#outorgante-002">
+							<ng:parte rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/pessoa/v1/cpf/22222222222"/>
+							<ng:direitos_transmitidos rdf:parseType="Collection">
+								<ng:DireitoTransmitido>
+									<ng:imovel rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/imovel/v1/cns/111492/matricula/199999"/>
+									<ng:tipo_direito rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/direito/v1/#nua-propriedade"/>
+									<ng:fracao num:numerador="1" num:denominador="2" num:percentual_aproximado="50"/>
+								</ng:DireitoTransmitido>
+							</ng:direitos_transmitidos>
+						</ng:Outorgante>
+					</ng:outorgantes>
+					<ng:outorgados rdf:parseType="Collection">
+						<ng:Outorgado rdf:about="#outorgado-001">
+							<ng:parte rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/pessoa/v1/cpf/33333333333"/>
+							<ng:direitos_transmitidos rdf:parseType="Collection">
+								<ng:DireitoTransmitido>
+									<ng:imovel rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/imovel/v1/cns/111492/matricula/199999"/>
+									<ng:tipo_direito rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/direito/v1/#nua-propriedade"/>
+									<ng:fracao num:numerador="2" num:denominador="2" num:percentual_aproximado="100"/>
+								</ng:DireitoTransmitido>
+							</ng:direitos_transmitidos>
+						</ng:Outorgado>
+					</ng:outorgados>
+				</ng:VendaCompra>				
+		</per:negocios>
+		
+		<per:titulos rdf:parseType="Collection">
+			<tt:Titulo rdf:about="#titulo-001">
+				<tt:natureza rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/naturezatitulo/v1/#escritura-publica"/>		
+				<tt:data_formalizacao>2013-10-14</tt:data_formalizacao>
+				<tt:cidade rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/cidade/v1/#sp-saojosedoscampos"/>
+				<tt:uf rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/estado/v1/#sp"/>
+				<tt:registro rdf:resource="#reg-escritura-publica-001"/>
+			</tt:Titulo>
+		</per:titulos>
+		
+		<per:objetos rdf:parseType="Resource">
+		
+			<per:pessoas rdf:parseType="Collection">
+				
+				<ps:PessoaFisica rdf:about="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/pessoa/v1/cpf/11111111111">
+					<ps:nome>João Silva</ps:nome>
+					<ps:cpf>11111111111</ps:cpf>
+				</ps:PessoaFisica>
+				
+				<ps:PessoaFisicaQualificada rdf:about="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/pessoa/v1/cpf/99999999999">
+					<ps:nome>José Santos</ps:nome>
+					<ps:cpf>99999999999</ps:cpf>
+					<ps:tipo_documento_identificacao rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/tipodocumento/v1/#rg"/>
+					<ps:documento_identificacao rdf:resource="#documento-001"/>
+					<ps:genero rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/genero/v1/#masculino"/>
+					<ps:menor>false</ps:menor>
+					<ps:nacionalidade rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/pais/v1/bacen/01058"/>
+					<ps:profissao>Comerciante</ps:profissao>
+					<ps:endereco rdf:resource="#postal-001"/>
+					<ps:estado_civil rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/estadocivil/v1/#casado"/>
+					<ps:conjuge rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/pessoa/v1/cpf/22222222222"/>
+					<ps:data_casamento>1999-09-09</ps:data_casamento>
+					<ps:regime_bens rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/regimebens/v1/#comunhao-parcial-bens"/>
+					<ps:pacto_antenupcial>false</ps:pacto_antenupcial>
+					<ps:uniao_estavel>false</ps:uniao_estavel>
+					<ps:capacidade_civil rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/capacidadecivil/v1/#capaz"/>
+				</ps:PessoaFisicaQualificada>
+				
+				<ps:PessoaFisicaQualificada rdf:about="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/pessoa/v1/cpf/22222222222">
+					<ps:nome>Maria Silva Santos</ps:nome>
+					<ps:cpf>22222222222</ps:cpf>
+					<ps:tipo_documento_identificacao rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/tipodocumento/v1/#rg"/>
+					<ps:documento_identificacao rdf:resource="#documento-002"/>
+					<ps:genero rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/genero/v1/#feminino"/>
+					<ps:menor>false</ps:menor>
+					<ps:nacionalidade rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/pais/v1/bacen/01058"/>
+					<ps:profissao>Técnica em Radiologia</ps:profissao>
+					<ps:endereco rdf:resource="#postal-001"/>
+					<ps:estado_civil rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/estadocivil/v1/#casado"/>
+					<ps:conjuge rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/pessoa/v1/cpf/99999999999"/>
+					<ps:data_casamento>1999-09-09</ps:data_casamento>
+					<ps:regime_bens rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/regimebens/v1/#comunhao-parcial-bens"/>
+					<ps:pacto_antenupcial>false</ps:pacto_antenupcial>
+					<ps:uniao_estavel>false</ps:uniao_estavel>
+					<ps:capacidade_civil rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/capacidadecivil/v1/#capaz"/>
+				</ps:PessoaFisicaQualificada>
+				
+				<ps:PessoaFisicaQualificada rdf:about="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/pessoa/v1/cpf/33333333333">
+					<ps:nome>Maria Aparecida da Silva</ps:nome>
+					<ps:cpf>33333333333</ps:cpf>
+					<ps:tipo_documento_identificacao rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/tipodocumento/v1/#rg"/>
+					<ps:documento_identificacao rdf:resource="#documento-003"/>
+					<ps:genero rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/genero/v1/#feminino"/>
+					<ps:menor>false</ps:menor>
+					<ps:nacionalidade rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/pais/v1/bacen/01058"/>
+					<ps:profissao>Professora</ps:profissao>
+					<ps:endereco rdf:resource="#postal-002"/>
+					<ps:estado_civil rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/estadocivil/v1/#separado"/>
+					<ps:pacto_antenupcial>false</ps:pacto_antenupcial>
+					<ps:uniao_estavel>false</ps:uniao_estavel>
+					<ps:capacidade_civil rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/capacidadecivil/v1/#capaz"/>
+				</ps:PessoaFisicaQualificada>
+				
+			</per:pessoas>
+			
+			<per:documentos rdf:parseType="Collection">
+			
+				<dc:RG rdf:about="#documento-001">
+					<dc:numero>121211211</dc:numero>
+					<dc:orgao_emissor rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/orgaoemissor/v1/#ssp-sp"/>
+				</dc:RG>
+				
+				<dc:RG rdf:about="#documento-002">
+					<dc:numero>23435222</dc:numero>
+					<dc:orgao_emissor rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/orgaoemissor/v1/#ssp-sp"/>
+				</dc:RG>
+				
+				<dc:RG rdf:about="#documento-003">
+					<dc:numero>555000555</dc:numero>
+					<dc:orgao_emissor rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/orgaoemissor/v1/#ssp-sp"/>
+				</dc:RG>
+				
+			</per:documentos>
+			
+			<per:imoveis rdf:parseType="Collection">
+				
+				<im:Imovel rdf:about="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/imovel/v1/cns/111492/matricula/199999">
+					<im:registro rdf:resource="#reg-imovel-001"/>
+					<im:tipo_localizacao rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/tipolocalizacao/v1/#urbano"/>
+					<im:tipo_imovel rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/tipoimovel/v1/#terreno-fracao"/>
+					<im:endereco rdf:resource="#endereco-001"/>
+					<im:dados_cadastrais rdf:parseType="Resource">
+						<im:imovel_enfiteutico>false</im:imovel_enfiteutico>
+						<im:inscricao_municipal_iptu>60.006.000.030.000</im:inscricao_municipal_iptu>
+					</im:dados_cadastrais>		
+				</im:Imovel>
+				
+			</per:imoveis>
+			
+			<per:enderecos rdf:parseType="Collection">
+			
+				<end:EnderecoPessoa rdf:about="#postal-001">
+					<end:tipo_logradouro rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/tipologradouro/v1/#avenida"/>
+					<end:logradouro>Guadalupe</end:logradouro>			
+					<end:numero>99</end:numero>
+					<end:complemento>Apto 5555</end:complemento>
+					<end:bairro>Jd. America</end:bairro>
+					<end:pais rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/pais/v1/bacen/01058"/>
+					<end:cidade rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/cidade/v1/#sp-saojosedoscampos"/>
+					<end:uf rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/estado/v1/#sp"/>
+					<end:cep>12235000</end:cep>
+				</end:EnderecoPessoa>
+				
+				<end:EnderecoPessoa rdf:about="#postal-002">
+					<end:tipo_logradouro rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/tipologradouro/v1/#rua"/>
+					<end:logradouro>Benedito Alexandre Trindade</end:logradouro>			
+					<end:numero>100</end:numero>
+					<end:bairro>Jardim Portugal</end:bairro>
+					<end:pais rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/pais/v1/bacen/01058"/>
+					<end:cidade rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/cidade/v1/#sp-saojosedoscampos"/>
+					<end:uf rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/estado/v1/#sp"/>
+					<end:cep>12232250</end:cep>
+				</end:EnderecoPessoa>
+				
+				<end:EnderecoImovel rdf:about="#endereco-001">
+					<end:tipo_logradouro rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/tipologradouro/v1/#rua"/>
+					<end:logradouro>Nelson Karatanosov</end:logradouro>			
+					<end:numero>10</end:numero>
+					<end:complementos rdf:parseType="Resource">
+						<co:quadra>30</co:quadra>
+						<co:loteamento>Jardim Nova República</co:loteamento>
+						<co:complemento rdf:parseType="Resource">
+							<co:descricao>edifício primavera</co:descricao>
+						</co:complemento>
+					</end:complementos>
+					<end:pais rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/pais/v1/bacen/01058"/>
+					<end:cidade rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/cidade/v1/#sp-saojosedoscampos"/>
+					<end:uf rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/estado/v1/#sp"/>
+					<end:cep>99999999</end:cep>
+				</end:EnderecoImovel>
+				
+			</per:enderecos>
+			
+			<per:contatos rdf:parseType="Collection">
+			
+				<ct:Contato rdf:about="#contato-001">
+					<ct:email>3TN-SJC@gmail.com</ct:email>
+					<ct:celular ct:ddd="12" ct:numero="999999999"/>
+				</ct:Contato>
+				
+				<ct:Contato rdf:about="#contato-002">
+					<ct:email>matsubara@exemplo.com</ct:email>
+					<ct:telefone_fixo ct:ddd="12" ct:numero="88888888"/>
+					<ct:celular ct:ddd="12" ct:numero="999991111"/>
+				</ct:Contato>
+				
+			</per:contatos>
+			
+			<per:orgaos rdf:parseType="Collection">
+				<re:Cartorio rdf:about="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/cartorio/v1/cns/123869">
+					<re:cns>123869</re:cns>
+					<re:denominacao>3o Tabelião de Notas - São José dos Campos - Estado de São Paulo</re:denominacao>
+				</re:Cartorio>
+				<re:Cartorio rdf:about="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/cartorio/v1/cns/111492">
+					<re:cns>111492</re:cns>
+					<re:denominacao>1o Oficial de Registro de Imóveis - São José dos Campos</re:denominacao>
+				</re:Cartorio>
+			</per:orgaos>
+			
+			<per:registros rdf:parseType="Collection">
+				<re:RegistroImobiliario rdf:about="#reg-imovel-001">
+					<re:cartorio rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/cartorio/v1/cns/111492"/>
+					<re:forma_registro_imovel rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/formaregistroimovel/v1/#matricula"/>
+					<re:matricula>199999</re:matricula>
+					<re:data_registro>2003-01-01</re:data_registro>
+				</re:RegistroImobiliario>
+				
+				<re:RegistroEscrituraPublica rdf:about="#reg-escritura-publica-001">
+					<re:orgao rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/cartorio/v1/cns/123869"/>
+					<re:numero_livro>0747</re:numero_livro>
+					<re:numero_pagina_inicial>340</re:numero_pagina_inicial>
+					<re:numero_pagina_final>348</re:numero_pagina_final>
+					<re:numero_registro>133</re:numero_registro>
+					<re:data_registro>2013-01-01</re:data_registro>
+				</re:RegistroEscrituraPublica>
+				
+			</per:registros>
+		
+		</per:objetos>		
+		
+		<per:verificacoes rdf:parseType="Collection">
+			<vr:VerificacaoParte rdf:about="#verificacao-001">
+				<vr:parte rdf:resource="#outorgante-001"/>
+				<vr:pessoa rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/pessoa/v1/cpf/99999999999"/>
+				<vr:indisponibilidade_verificada>true</vr:indisponibilidade_verificada>
+				<vr:indisponibilidade_codigo_verificacao>5602 d676 99b8 74bc 3cf2 64d9 7978 cf5b 8aa6 3577</vr:indisponibilidade_codigo_verificacao>
+				<vr:cnd_rfb_apresentada rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/apresentacao/v1/#dispensada-adquirente"/>
+				<vr:cnd_inss_apresentada rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/apresentacao/v1/#dispensada-adquirente"/>
+				<vr:ciencia_obtencao_cndt>true</vr:ciencia_obtencao_cndt>
+			</vr:VerificacaoParte>
+			<vr:VerificacaoParte rdf:about="#verificacao-002">
+				<vr:parte rdf:resource="#outorgante-002"/>
+				<vr:pessoa rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/pessoa/v1/cpf/22222222222"/>
+				<vr:indisponibilidade_verificada>true</vr:indisponibilidade_verificada>
+				<vr:indisponibilidade_codigo_verificacao>35b8 2c99 a411 394c a3f8 f8f5 cbf1 9471 a8ae 0e3e</vr:indisponibilidade_codigo_verificacao>
+				<vr:cnd_rfb_apresentada rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/apresentacao/v1/#dispensada-adquirente"/>
+				<vr:cnd_inss_apresentada rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/apresentacao/v1/#dispensada-adquirente"/>
+				<vr:ciencia_obtencao_cndt>true</vr:ciencia_obtencao_cndt>
+			</vr:VerificacaoParte>
+			<vr:VerificacaoImovel rdf:about="#verificacao-003">
+				<vr:imovel rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/identificacao/imovel/v1/cns/111492/matricula/199999"/>
+				<vr:quitacao_condominial_apresentada>false</vr:quitacao_condominial_apresentada>
+				<vr:dispensa_certidoes>true</vr:dispensa_certidoes>
+				<vr:itbi_incidencia>true</vr:itbi_incidencia>
+				<vr:itbi_base_calculo rdf:datatype="http://www.registradores.org.br/pedido-eletronico/2014/listas/moeda/v1/#brl">9000.00</vr:itbi_base_calculo>
+				<vr:itbi_data_pagamento>2013-10-15</vr:itbi_data_pagamento>
+				<vr:itbi_autenticacao>1234567890</vr:itbi_autenticacao>
+				<vr:itbi_valor_pago rdf:datatype="http://www.registradores.org.br/pedido-eletronico/2014/listas/moeda/v1/#brl">1000.00</vr:itbi_valor_pago>
+				<vr:verificacoes_iptu rdf:parseType="Collection">
+					<vr:InscricaoIPTU>
+						<vr:iptu_codigo_inscricao>60.006.000.000.000</vr:iptu_codigo_inscricao>
+						<vr:iptu_certidao_quitacao rdf:resource="http://www.registradores.org.br/pedido-eletronico/2014/listas/apresentacao/v1/#dispensada-adquirente"/>
+					</vr:InscricaoIPTU>
+				</vr:verificacoes_iptu>
+			</vr:VerificacaoImovel>
+			
+		</per:verificacoes>
+		
+		<per:declaracao>
+			<per:Declaracao rdf:about="#declaracao-001">
+				<per:autorizo_obter_informacoes_adicionais>true</per:autorizo_obter_informacoes_adicionais>
+				<per:texto_autorizo_obter_informacoes_adicionais><![CDATA[Autorizo o Oficial de Registro de Imóveis a obter informações disponíveis na própria unidade de serviço ou em serviços de informações de órgãos oficiais publicadas na Internet, inclusive onerosas, responsabilizando-me pelo pagamento de taxas ou emolumentos na retirada do título (item 1.10 das Disposições Gerais do Capítulo XX das NSCGJ - artigo 1° do Provimento CG nº 11/2013).]]></per:texto_autorizo_obter_informacoes_adicionais>
+				<per:autorizo_atos_baseados_neste_documento>false</per:autorizo_atos_baseados_neste_documento>
+				<per:texto_autorizo_atos_baseados_neste_documento><![CDATA[Autorizo o Oficial de Registro de Imóveis a praticar os atos exclusivamente com base nos dados presentes neste documento.]]></per:texto_autorizo_atos_baseados_neste_documento>
+			</per:Declaracao>
+		</per:declaracao>
+		
+	</per:PedidoEletronicoDeRegistro>
+	
+</RDF>

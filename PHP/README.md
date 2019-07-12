@@ -64,7 +64,7 @@ This dependency is specified in the file `composer.json`:
 
 	{
 		"require": {
-			"lacuna/restpki-client": "^2.3.0"
+			"lacuna/restpki-client": "^2.3.1"
 		}
 	}
 	
@@ -75,7 +75,7 @@ This dependency is specified in the file `composer.json`:
 
 	{
 		"require": {
-			"lacuna/restpki-client-legacy": "^1.0.0"
+			"lacuna/restpki-client-legacy": "^1.1.0"
 		}
 	}
 

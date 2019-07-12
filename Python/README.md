@@ -17,22 +17,25 @@ To run the sample:
 1. [Download the project](https://github.com/LacunaSoftware/RestPkiSamples/archive/master.zip)
    or clone the repository
 
-2. Generate an API access token on the [REST PKI website](https://pki.rest/)
+1. Generate an API access token on the [REST PKI website](https://pki.rest/)
 
-3. Paste your access token on the file `demo.py`
+1. Paste your access token on the file `sample/utils.py`
    
-4. Install dependencies: `pip install -r requirements.txt`
+1. Install dependencies: `pip install -r requirements.txt`
 
-5. Run application: `python demo.py`
+1. Set the `FLASK_APP` environment variable to define the name of app that
+ should be run: `FLASK_APP=sample`
+
+5. Run the web application: `flask run`
 
 6. Access the URL [http://localhost:5000](http://localhost:5000)
 
 Optionally, you can create and activate a "virtualenv" to avoid mixing library versions:
 
-    virtualenv env
-    . ./env/bin/activate
+    virtualenv <venv>
+    source bin/activate (on Windows: ./<venv>/Scripts/activate)
     pip install -r requirements.txt
-    python demo.py
+    python manage.py runserver
     deactivate
 
 See also
