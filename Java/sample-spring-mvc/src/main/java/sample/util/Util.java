@@ -275,11 +275,11 @@ public class Util {
 		// Iterate bits 5-by-5 converting into characters in our alphabet.
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < verificationCodeSize; i++) {
-			int n = (bits.get(i) ? 1 : 0) << 4
-				| (bits.get(i + 1) ? 1 : 0) << 3
-				| (bits.get(i + 2) ? 1 : 0) << 2
-				| (bits.get(i + 3) ? 1 : 0) << 1
-				| (bits.get(i + 4) ? 1 : 0);
+			int n = (bits.get(i * 5) ? 1 : 0) << 4
+				| (bits.get(i * 5 + 1) ? 1 : 0) << 3
+				| (bits.get(i * 5 + 2) ? 1 : 0) << 2
+				| (bits.get(i * 5 + 3) ? 1 : 0) << 1
+				| (bits.get(i * 5 + 4) ? 1 : 0);
 			sb.append(alphabet.charAt(n));
 		}
 		return sb.toString();
