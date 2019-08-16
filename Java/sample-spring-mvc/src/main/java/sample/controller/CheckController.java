@@ -33,7 +33,7 @@ public class CheckController {
 		// On PrinterFriendlyVersionController, we stored the unformatted version of the verification
 		// code (without hyphens) but used the formatted version (with hyphens) on the
 		// printer-friendly PDF. Now, we remove the hyphens before looking it up.
-		String verificationCode = Util.parseVerificationCode(code);
+		String verificationCode = AlphaCode.parse(code);
 
 		// Get document associated with verification code
 		String fileId = StorageMock.lookupVerificationCode(session, verificationCode);
