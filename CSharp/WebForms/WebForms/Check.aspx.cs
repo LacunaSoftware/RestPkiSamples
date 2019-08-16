@@ -31,7 +31,7 @@ namespace WebForms {
 
 			// On PrinterFriendlyVersion.aspx, we stored the unformatted version of the verification code (without hyphens) but
 			// used the formatted version (with hyphens) on the printer-friendly PDF. Now, we remove the hyphens before looking it up.
-			var verificationCode = Util.ParseVerificationCode(formattedVerificationCode);
+			var verificationCode = AlphaCode.Parse(formattedVerificationCode);
 
 			// Get document associated with verification code
 			var fileId = StorageMock.LookupVerificationCode(verificationCode);

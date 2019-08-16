@@ -59,7 +59,7 @@ namespace WebForms {
 			var verificationCode = StorageMock.GetVerificationCode(fileId);
 			if (verificationCode == null) {
 				// If not, generate a code and register it
-				verificationCode = Util.GenerateVerificationCode();
+				verificationCode = AlphaCode.Generate();
 				StorageMock.SetVerificationCode(fileId, verificationCode);
 			}
 
@@ -79,7 +79,7 @@ namespace WebForms {
 			
 			// The verification code is generated without hyphens to save storage space and avoid copy-and-paste problems. On the PDF generation,
 			// we use the "formatted" version, with hyphens (which will later be discarded on the verification page)
-			var formattedVerificationCode = Util.FormatVerificationCode(verificationCode);
+			var formattedVerificationCode = AlphaCode.Format(verificationCode);
 
 			// Build the verification link from the constant "VerificationLinkFormat" (see above) and the formatted verification code
 			var verificationLink = string.Format(VerificationLinkFormat, formattedVerificationCode);
