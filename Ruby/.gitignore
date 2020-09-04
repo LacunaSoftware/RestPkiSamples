@@ -25,7 +25,6 @@ bower.json
 .idea
 public/uploads/*
 public/uploads
-Gemfile.lock
 
 !public/uploads/SampleDocument.pdf
 !public/uploads/SampleDocument.xml
