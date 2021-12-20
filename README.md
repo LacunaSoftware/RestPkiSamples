@@ -1,3 +1,7 @@
+Disclaimer
+--------
+This project has been migrated to the [PkiSuiteSamples](https://github.com/LacunaSoftware/PkiSuiteSamples) folder, along with other frameworks examples.
+
 REST PKI Samples
 ================
 
