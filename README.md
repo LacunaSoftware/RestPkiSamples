@@ -1,11 +1,8 @@
-> **Warning**
-> # Disclaimer
-This project has been migrated to the [PkiSuiteSamples](https://github.com/LacunaSoftware/PkiSuiteSamples) folder, along with other frameworks examples.
---------
-> **Warning**
-> # Aviso
-Este projeto foi migrado para a pasta [PkiSuiteSamples](https://github.com/LacunaSoftware/PkiSuiteSamples) junto com exemplos de outros frameworks.
---------
+# :warning: **DISCLAIMER**
+This project is **DEPRECATED** and has been **MIGRATED** to the [PkiSuiteSamples](https://github.com/LacunaSoftware/PkiSuiteSamples) folder, along with other frameworks examples.
+
+# :warning: **AVISO**
+Este projeto está **DESCONTINUADO** e foi **MIGRADO** para a pasta [PkiSuiteSamples](https://github.com/LacunaSoftware/PkiSuiteSamples), junto com exemplos de outros frameworks.
 
 
 REST PKI Samples
