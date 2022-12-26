@@ -4,6 +4,6 @@ Jinja2==2.10
 MarkupSafe==1.0
 Werkzeug==0.14.1
 click==6.7
-wheel==0.31.1
+wheel==0.38.1
 docopt==0.6.1
 restpki-client==1.0.0
