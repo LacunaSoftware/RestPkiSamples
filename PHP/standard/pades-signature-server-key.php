@@ -16,6 +16,7 @@ use Lacuna\RestPki\PadesSignatureFinisher2;
 if (!$certStore = file_get_contents("content/Pierre de Fermat.pfx")) {
     throw new \Exception("Unable to read PKCS #12 file");
 }
+
 if (!openssl_pkcs12_read($certStore, $certObj, "1234")) {
     throw new \Exception("Unable to open the PKCS #12 file");
 }
