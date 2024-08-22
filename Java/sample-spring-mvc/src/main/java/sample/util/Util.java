@@ -153,7 +153,7 @@ public class Util {
 	}
 
 	public static Certificate getSampleCertificateFromPKCS12() throws IOException, GeneralSecurityException {
-		String alias = "{ecaf2712-4631-4f0e-94d1-fa6fcbff329f}";
+		String alias = "Pierre de Fermat";
 		String password = "1234";
 
 		Resource resource = new ClassPathResource("/static/Pierre de Fermat.pfx");
@@ -166,7 +166,7 @@ public class Util {
 	}
 
 	public static Key getSampleKeyFromPKCS12() throws IOException, GeneralSecurityException {
-		String alias = "{ecaf2712-4631-4f0e-94d1-fa6fcbff329f}";
+		String alias = "Pierre de Fermat";
 		String password = "1234";
 
 		Resource resource = new ClassPathResource("/static/Pierre de Fermat.pfx");
