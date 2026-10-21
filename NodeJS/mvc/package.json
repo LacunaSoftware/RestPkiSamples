@@ -6,12 +6,12 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "body-parser": "~1.13.2",
+    "body-parser": "~1.20.1",
     "debug": "~2.6.9",
     "express": "^4.16.4",
     "express-session": "~1.15.6",
     "moment": "^2.22.2",
-    "morgan": "~1.6.1",
+    "morgan": "~1.10.0",
     "multer": "^1.4.1",
     "pug": "~2.0.3",
     "request": "^2.88.0",
