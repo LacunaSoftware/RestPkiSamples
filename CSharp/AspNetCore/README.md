@@ -1,3 +1,11 @@
+> :warning: **This repository is archived and these samples are no longer maintained.**
+> Use the current samples at [PkiSuiteSamples/dotnet](https://github.com/LacunaSoftware/PkiSuiteSamples/tree/master/dotnet) and the
+> [REST PKI documentation](https://docs.lacunasoftware.com/articles/rest-pki/dotnet).
+>
+> **Este repositório está arquivado e estes exemplos não são mais mantidos.**
+> Use os exemplos atuais em [PkiSuiteSamples/dotnet](https://github.com/LacunaSoftware/PkiSuiteSamples/tree/master/dotnet) e a
+> [documentação do REST PKI](https://docs.lacunasoftware.com/pt-br/articles/rest-pki/dotnet).
+
 REST PKI samples in ASP.NET Core
 ================================
 

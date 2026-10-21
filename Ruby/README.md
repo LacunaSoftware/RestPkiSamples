@@ -1,3 +1,11 @@
+> :warning: **This repository is archived and these samples are no longer maintained.**
+> Use the current samples at [PkiSuiteSamples/ruby](https://github.com/LacunaSoftware/PkiSuiteSamples/tree/master/ruby) and the
+> [REST PKI documentation](https://docs.lacunasoftware.com/articles/rest-pki/ruby).
+>
+> **Este repositório está arquivado e estes exemplos não são mais mantidos.**
+> Use os exemplos atuais em [PkiSuiteSamples/ruby](https://github.com/LacunaSoftware/PkiSuiteSamples/tree/master/ruby) e a
+> [documentação do REST PKI](https://docs.lacunasoftware.com/pt-br/articles/rest-pki/ruby).
+
 REST PKI Ruby Sample
 ====================
 This folder contains a web application written in Ruby using the Rails framework, that shows how to use the 

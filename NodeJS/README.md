@@ -1,3 +1,11 @@
+> :warning: **This repository is archived and these samples are no longer maintained.**
+> Use the current samples at [PkiSuiteSamples/nodejs](https://github.com/LacunaSoftware/PkiSuiteSamples/tree/master/nodejs) and the
+> [REST PKI documentation](https://docs.lacunasoftware.com/articles/rest-pki/nodejs).
+>
+> **Este repositório está arquivado e estes exemplos não são mais mantidos.**
+> Use os exemplos atuais em [PkiSuiteSamples/nodejs](https://github.com/LacunaSoftware/PkiSuiteSamples/tree/master/nodejs) e a
+> [documentação do REST PKI](https://docs.lacunasoftware.com/pt-br/articles/rest-pki/nodejs).
+
 REST PKI Node.js Sample
 =======================
 
